@@ -7,14 +7,19 @@ m4_define([niftyconf_minor_version], [0])
 m4_define([niftyconf_micro_version], [1])
 
 m4_define(niftyconf_datestamp,
-          m4_esyscmd(date +.%Y%m%d | tr -d '\n\r'))
+          m4_esyscmd(date +%Y%m%d | tr -d '\n\r'))
           
-m4_define([niftyconf_base_version],
+m4_define([niftyconf_version],
           [niftyconf_major_version.niftyconf_minor_version.niftyconf_micro_version])
 
 m4_define(niftyconf_full_version,
-          niftyconf_base_version[]niftyconf_datestamp)
-          
+          niftyconf_version[-]niftyconf_datestamp)
+
+
+# ---------------
+#  autoconf init
+# ---------------
+
 AC_INIT([Niftyconf],
         [niftyconf_version],
         [http://github.com/niftylight/niftyconf/issues],
@@ -27,8 +32,9 @@ AC_COPYRIGHT([
 ])
 
 
-# Minimal version required
+# Minimal dependency versions required
 NIFTYLED_REQUIRED=0.1.0
+
 
 
 AC_CONFIG_MACRO_DIR([m4])
@@ -96,6 +102,7 @@ AC_SUBST(NIFTYCONF_CFLAGS)
 AC_SUBST(NIFTYCONF_LIBS)
 
 
+
 # ----------------
 #  special CFLAGS
 # ----------------
@@ -107,6 +114,7 @@ CFLAGS="$CFLAGS -std=c99"
 
 AC_CONFIG_FILES([
    Makefile
+   data/niftyconf.desktop.in
    data/Makefile
    data/icons/Makefile
    src/Makefile
@@ -116,6 +124,8 @@ AC_OUTPUT
 echo "
 Configure summary:
 
+        Version.....................:  niftyconf_version
+        Build.......................:  niftyconf_datestamp
 	Compiler....................:  ${CC}
 	Compiler Flags..............:  ${CFLAGS} ${ERROR_CFLAGS}
 	Linker Flags................:  ${LDFLAGS}
