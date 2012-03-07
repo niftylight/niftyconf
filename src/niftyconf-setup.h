@@ -46,7 +46,8 @@
 
 
 
-GtkWidget *     setup_init();
+gboolean        setup_init();
+GtkWidget *     setup_tree_widget();
 gboolean        setup_load(gchar *filename);
 void            setup_cleanup();
 

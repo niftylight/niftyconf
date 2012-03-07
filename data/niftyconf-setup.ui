@@ -2,7 +2,30 @@
 <interface>
   <requires lib="gtk+" version="2.24"/>
   <!-- interface-naming-policy toplevel-contextual -->
-  <object class="GtkTreeStore" id="setup_treestore">
+  <object class="GtkHBox" id="box_tree">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkTreeView" id="treeview">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="model">treestore</property>
+        <property name="search_column">0</property>
+        <child>
+          <object class="GtkTreeViewColumn" id="column_element">
+            <property name="title" translatable="yes">Elements</property>
+            <property name="expand">True</property>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+  </object>
+  <object class="GtkTreeStore" id="treestore">
     <columns>
       <!-- column-name type -->
       <column type="gint"/>
@@ -11,39 +34,5 @@
       <!-- column-name element -->
       <column type="gpointer"/>
     </columns>
-  </object>
-  <object class="GtkVPaned" id="vpaned">
-    <property name="visible">True</property>
-    <property name="can_focus">True</property>
-    <child>
-      <object class="GtkTreeView" id="setup_treeview">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="model">setup_treestore</property>
-      </object>
-      <packing>
-        <property name="resize">False</property>
-        <property name="shrink">False</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkVBox" id="setup_prop_vbox">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-      </object>
-      <packing>
-        <property name="resize">True</property>
-        <property name="shrink">True</property>
-      </packing>
-    </child>
   </object>
 </interface>

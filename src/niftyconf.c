@@ -147,13 +147,17 @@ int main (int argc, char *argv[])
         if(!_parse_cmdline_args(argc, argv, &setupfile))
                 return -1;
 
+        /* initialize modules */
+        if(!setup_init())
+                g_error("Failed to initialize \"setup\" module");
+        
         /* build our ui */
         GtkBuilder *ui = ui_builder("niftyconf.ui");
-        GtkAlignment *alignment = GTK_ALIGNMENT(gtk_builder_get_object(ui, "niftyconf_alignment_setup"));
-
+        GtkBox *box_setup = GTK_BOX(gtk_builder_get_object(ui, "box_setup"));
+        GtkBox *box_leds = GTK_BOX(gtk_builder_get_object(ui, "box_leds"));
         
         /* add ui of modules */
-        gtk_container_add(GTK_CONTAINER(alignment), setup_init());
+        gtk_box_pack_start(box_setup, setup_tree_widget(), FALSE, FALSE, 0);
         
       
         

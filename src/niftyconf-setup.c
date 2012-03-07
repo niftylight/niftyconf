@@ -43,11 +43,29 @@
 
 #include <niftyled.h>
 #include <gtk/gtk.h>
+#include "niftyconf-setup.h"
 #include "niftyconf-ui.h"
+
+
+/* columns for our setup-treeview */
+typedef enum
+{
+        /* (gint) NIFTYLED_TYPE of element */
+        C_SETUP_TYPE = 0,
+        /* (gchararray) title of element */
+        C_SETUP_TITLE,
+        /* (gpointer) niftyled element (LedHardware, LedChain, LedTile, Led) */
+        C_SETUP_ELEMENT,
+        NUM_SETUP_COLS,
+}SETUP_TREEVIEW_COLUMNS;
 
 
 /** current niftyled settings context */
 static LedSettings *current;
+/** main container widget of this module */
+static GtkBox *box_tree;
+/** setup tree store */
+static GtkTreeStore *tree_store;
 
 
 
@@ -55,26 +73,57 @@ static LedSettings *current;
  ****************************** STATIC FUNCTIONS ******************************
  ******************************************************************************/
 
-
+/** append hardware element to setup-tree */
+static void _tree_append_hardware(GtkTreeStore *s, LedHardware *h)
+{
+        GtkTreeIter i;
+        gtk_tree_store_append(s, &i, NULL);
+        gtk_tree_store_set(s, &i,
+                           C_SETUP_TYPE, T_LED_HARDWARE,
+                           C_SETUP_TITLE, led_hardware_get_name(h), 
+                           C_SETUP_ELEMENT, (gpointer) h,
+                           -1);
+}
 
 /******************************************************************************
  ******************************************************************************/
-/** 
- * cleanup previously loaded setup 
+
+/**
+ * rebuild setup-tree according to current setup
  */
-void setup_cleanup()
+void setup_tree_rebuild()
 {
-        /* free all hardware nodes */
+        /**
+         * add every hardware-node (+ children) 
+         * to the setup-treeview 
+         */
         LedHardware *h;
-        for(h = led_settings_hardware_get_first(current);
-            h;
-            h = led_hardware_sibling_get_next(h))
-        {
-                //hardware_free(led_hardware_get_privdata(h));
+        for(h = led_settings_hardware_get_first(current); h; h = led_hardware_sibling_get_next(h))
+        {         
+                _tree_append_hardware(tree_store, h);
         }
+
+}
+
+
+/**
+ * clear setup tree
+ */
+void setup_tree_clear()
+{
+        if(!tree_store)
+                return;
         
-        led_settings_destroy(current);
-        //setup_tree_view_clear();
+        gtk_tree_store_clear(tree_store);
+}
+
+
+/**
+ * getter for tree widget
+ */
+GtkWidget *setup_tree_widget()
+{
+        return GTK_WIDGET(box_tree);
 }
 
 
@@ -96,18 +145,11 @@ gboolean setup_load(gchar *filename)
         /* save new settings */
         current = s;
 
+        /* update ui */
+        setup_tree_clear();
+        setup_tree_rebuild();
         
-        /**
-         * add every hardware-node (+ children) 
-         * to the setup-treeview 
-         */
-        LedHardware *h;
-        for(h = led_settings_hardware_get_first(s); h; h = led_hardware_sibling_get_next(h))
-        {               
-                /*if(!hardware_tree_append(_s.widgets.setup_tree_store, h))
-                        return FALSE;*/
-        }
-
+        
         /* redraw new setup */
         //setup_redraw();
         
@@ -115,16 +157,53 @@ gboolean setup_load(gchar *filename)
 }
 
 
+/** 
+ * cleanup previously loaded setup 
+ */
+void setup_cleanup()
+{
+        /* free all hardware nodes */
+        LedHardware *h;
+        for(h = led_settings_hardware_get_first(current);
+            h;
+            h = led_hardware_sibling_get_next(h))
+        {
+                //hardware_free(led_hardware_get_privdata(h));
+        }
+        
+        led_settings_destroy(current);
+        //setup_tree_view_clear();
+}
+
+
 /**
  * initialize setup module
  */
-GtkWidget *setup_init()
+gboolean setup_init()
 {
         GtkBuilder *ui = ui_builder("niftyconf-setup.ui");
-        GtkVPaned *vpaned = GTK_VPANED(gtk_builder_get_object(ui, "vpaned"));
+
+        /* get widgets */
+        if(!(box_tree = GTK_BOX(gtk_builder_get_object(ui, "box_tree"))))
+                return FALSE;
+        if(!(tree_store = GTK_TREE_STORE(gtk_builder_get_object(ui, "treestore"))))
+                return FALSE;
 
 
-        return GTK_WIDGET(vpaned);
+        /* set selection mode for setup tree */
+        GtkTreeView *tree = GTK_TREE_VIEW(gtk_builder_get_object(ui, "treeview"));       
+        gtk_tree_selection_set_mode(
+                gtk_tree_view_get_selection(tree), 
+                GTK_SELECTION_MULTIPLE);
+        
+        /* initialize setup treeview */
+        GtkTreeViewColumn *col = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(ui, "column_element"));
+        GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+        gtk_tree_view_column_pack_start(col, renderer, TRUE);
+        gtk_tree_view_column_add_attribute(col, renderer, "text", C_SETUP_TITLE);
+
+        
+        return TRUE;
 }
 
 
