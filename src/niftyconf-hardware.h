@@ -44,8 +44,16 @@
 #ifndef _NIFTYCONF_HARDWARE_H
 #define _NIFTYCONF_HARDWARE_H
 
+#include <niftyled.h>
 
 
+
+typedef struct _NiftyconfHardware NiftyconfHardware;
+
+
+
+NiftyconfHardware *     hardware_new(LedHardware *h);
+void                    hardware_free(NiftyconfHardware *h);
 
 
 

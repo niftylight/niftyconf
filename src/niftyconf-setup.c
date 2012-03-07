@@ -44,6 +44,7 @@
 #include <niftyled.h>
 #include <gtk/gtk.h>
 #include "niftyconf-setup.h"
+#include "niftyconf-hardware.h"
 #include "niftyconf-ui.h"
 
 
@@ -76,12 +77,13 @@ static GtkTreeStore *tree_store;
 /** append hardware element to setup-tree */
 static void _tree_append_hardware(GtkTreeStore *s, LedHardware *h)
 {
+        NiftyconfHardware *hardware = led_hardware_get_privdata(h);
         GtkTreeIter i;
         gtk_tree_store_append(s, &i, NULL);
         gtk_tree_store_set(s, &i,
                            C_SETUP_TYPE, T_LED_HARDWARE,
                            C_SETUP_TITLE, led_hardware_get_name(h), 
-                           C_SETUP_ELEMENT, (gpointer) h,
+                           C_SETUP_ELEMENT, (gpointer) hardware,
                            -1);
 }
 
@@ -141,6 +143,21 @@ gboolean setup_load(gchar *filename)
         /* cleanup previously loaded setup */
         if(current)
                 setup_cleanup();
+
+        /* initialize our element descriptor and set as
+           privdata in niftyled model */
+        LedHardware *h;
+        for(h = led_settings_hardware_get_first(s); 
+            h; 
+            h = led_hardware_sibling_get_next(h))
+        {
+                /* create new hardware element */
+                if(!hardware_new(h))
+                {
+                        g_warning("failed to allocate new hardware element");
+                        return FALSE;
+                }
+        }
         
         /* save new settings */
         current = s;
@@ -168,11 +185,11 @@ void setup_cleanup()
             h;
             h = led_hardware_sibling_get_next(h))
         {
-                //hardware_free(led_hardware_get_privdata(h));
+                hardware_free(led_hardware_get_privdata(h));
         }
         
         led_settings_destroy(current);
-        //setup_tree_view_clear();
+        setup_tree_clear();
 }
 
 

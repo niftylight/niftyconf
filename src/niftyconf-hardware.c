@@ -41,6 +41,17 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <gtk/gtk.h>
+#include "niftyconf-hardware.h"
+
+
+
+/** one Hardware element */
+struct _NiftyconfHardware
+{
+        /** niftyled hardware descriptor */
+        LedHardware *h;
+};
 
 
 /******************************************************************************
@@ -52,7 +63,37 @@
 /******************************************************************************
  ******************************************************************************/
 
+/**
+ * allocate new hardware element
+ */
+NiftyconfHardware *hardware_new(LedHardware *h)
+{
+        NiftyconfHardware *n;
+        if(!(n = calloc(1, sizeof(NiftyconfHardware))))
+        {
+                g_error("calloc: %s", strerror(errno));
+                return NULL;
+        }
 
+        /* save LedHardware descriptor */
+        n->h = h;
+
+        /* register Hardware descriptor as LedHardware privdata */
+        led_hardware_set_privdata(h, n);
+}
+
+
+/**
+ * free hardware element
+ */
+void hardware_free(NiftyconfHardware *h)
+{
+        if(!h)
+                return;
+
+        led_hardware_set_privdata(h->h, NULL);
+        free(h);
+}
 
 /******************************************************************************
  ***************************** CALLBACKS **************************************
