@@ -5,7 +5,11 @@ bin_PROGRAMS = \
 niftyconf_SOURCES = \
 	niftyconf.c \
 	niftyconf-ui.c \
-	niftyconf-setup.c
+	niftyconf-setup.c \
+	niftyconf-led.c \
+	niftyconf-chain.c \
+	niftyconf-tile.c \
+	niftyconf-hardware.c
 
 
 niftyconf_INCLUDES = \

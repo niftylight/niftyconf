@@ -48,7 +48,7 @@ AM_INIT_AUTOMAKE([1.11 no-define -Wno-portability tar-ustar no-dist-gzip dist-xz
 # Support silent build rules. Disable
 # by either passing --disable-silent-rules to configure or passing V=1
 # to make
-AM_SILENT_RULES([no])
+AM_SILENT_RULES([yes])
 
 
 # Check for programs

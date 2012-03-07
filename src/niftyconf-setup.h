@@ -47,7 +47,8 @@
 
 
 GtkWidget *     setup_init();
-
+gboolean        setup_load(gchar *filename);
+void            setup_cleanup();
 
 
 #endif /* _NIFTYCONF_SETUP_H */

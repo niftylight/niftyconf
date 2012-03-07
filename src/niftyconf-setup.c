@@ -46,6 +46,10 @@
 #include "niftyconf-ui.h"
 
 
+/** current niftyled settings context */
+static LedSettings *current;
+
+
 
 /******************************************************************************
  ****************************** STATIC FUNCTIONS ******************************
@@ -55,6 +59,61 @@
 
 /******************************************************************************
  ******************************************************************************/
+/** 
+ * cleanup previously loaded setup 
+ */
+void setup_cleanup()
+{
+        /* free all hardware nodes */
+        LedHardware *h;
+        for(h = led_settings_hardware_get_first(current);
+            h;
+            h = led_hardware_sibling_get_next(h))
+        {
+                //hardware_free(led_hardware_get_privdata(h));
+        }
+        
+        led_settings_destroy(current);
+        //setup_tree_view_clear();
+}
+
+
+/**
+ * load new setup from XML file definition 
+ */
+gboolean setup_load(gchar *filename)
+{
+        /* load new setup */
+        LedSettings *s;
+        if(!(s = led_settings_load(filename)))
+                return FALSE;
+
+        
+        /* cleanup previously loaded setup */
+        if(current)
+                setup_cleanup();
+        
+        /* save new settings */
+        current = s;
+
+        
+        /**
+         * add every hardware-node (+ children) 
+         * to the setup-treeview 
+         */
+        LedHardware *h;
+        for(h = led_settings_hardware_get_first(s); h; h = led_hardware_sibling_get_next(h))
+        {               
+                /*if(!hardware_tree_append(_s.widgets.setup_tree_store, h))
+                        return FALSE;*/
+        }
+
+        /* redraw new setup */
+        //setup_redraw();
+        
+        return TRUE;
+}
+
 
 /**
  * initialize setup module

@@ -133,9 +133,6 @@ static gboolean _parse_cmdline_args(int argc, char *argv[], gchar **setupfile)
 
 int main (int argc, char *argv[])
 {
-
-
-
         /* initialize GTK stuff */
         gtk_set_locale();
         gtk_init (&argc, &argv);
@@ -163,17 +160,20 @@ int main (int argc, char *argv[])
         /* free builder */
         g_object_unref(ui);
 
+
+        
         /* load setup file if any given from commandline */
         if(setupfile)
         {
-                //~ if(!setup_load(setupfile))
-                //~ {
-                        //~ g_warning("Failed to initialize setup from \"%s\"", 
-                                  //~ setupfile);
-                        //~ return -1;
-                //~ }
+                if(!setup_load(setupfile))
+                {
+                        g_warning("Failed to initialize setup from \"%s\"", 
+                                  setupfile);
+                        return -1;
+                }
                 g_free(setupfile);
         }
+
 
         
         /* main loop... */
@@ -191,6 +191,7 @@ int main (int argc, char *argv[])
 /** close main window */
 gboolean on_niftyconf_window_delete_event(GtkWidget *w, GdkEvent *e)
 {
+        setup_cleanup();
         gtk_main_quit();
         return FALSE;
 }
@@ -198,5 +199,6 @@ gboolean on_niftyconf_window_delete_event(GtkWidget *w, GdkEvent *e)
 /** menuitem "quit" selected */
 void on_niftyconf_menu_quit_activate(GtkMenuItem *i, gpointer d)
 {
+        setup_cleanup();
         gtk_main_quit();
 }
