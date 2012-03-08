@@ -41,6 +41,20 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <gtk/gtk.h>
+#include "niftyconf-led.h"
+
+
+
+/** one element */
+struct _NiftyconfLed
+{
+        /** niftyled descriptor */
+        Led *l;
+};
+
+
+
 
 
 /******************************************************************************
@@ -52,6 +66,58 @@
 /******************************************************************************
  ******************************************************************************/
 
+/**
+ * getter for libniftyled object
+ */
+Led *led_niftyled(NiftyconfLed *l)
+{
+        if(!l)
+                return NULL;
+        
+        return l->l;
+}
+
+
+/**
+ * allocate new element
+ */
+NiftyconfLed *led_new(Led *l)
+{
+        NiftyconfLed *n;
+        if(!(n = calloc(1, sizeof(NiftyconfLed))))
+        {
+                g_error("calloc: %s", strerror(errno));
+                return NULL;
+        }
+
+        /* save descriptor */
+        n->l = l;
+
+        /* register descriptor as niftyled privdata */
+        led_set_privdata(l, n);
+}
+
+
+/**
+ * free element
+ */
+void led_free(NiftyconfLed *l)
+{
+        if(!l)
+                return;
+
+        led_set_privdata(l->l, NULL);
+        free(l);
+}
+
+
+/**
+ * initialize led module
+ */
+gboolean led_init()
+{        
+        return TRUE;
+}
 
 
 /******************************************************************************

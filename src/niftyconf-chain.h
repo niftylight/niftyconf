@@ -44,9 +44,20 @@
 #ifndef _NIFTYCONF_CHAIN_H
 #define _NIFTYCONF_CHAIN_H
 
+#include <niftyled.h>
+
+
+typedef struct _NiftyconfChain NiftyconfChain;
 
 
 
+gboolean                chain_init();
+NiftyconfChain *        chain_new(LedChain *c);
+void                    chain_free(NiftyconfChain *c);
+LedChain *              chain_niftyled(NiftyconfChain *c);
+GtkWidget *             chain_list_widget();
+void                    chain_list_rebuild(NiftyconfChain *c);
+void                    chain_list_clear();
 
 
 #endif /* _NIFTYCONF_CHAIN_H */

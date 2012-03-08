@@ -64,6 +64,18 @@ struct _NiftyconfHardware
  ******************************************************************************/
 
 /**
+ * getter for libniftyled object
+ */
+LedHardware *hardware_niftyled(NiftyconfHardware *h)
+{
+        if(!h)
+                return NULL;
+        
+        return h->h;
+}
+
+
+/**
  * allocate new hardware element
  */
 NiftyconfHardware *hardware_new(LedHardware *h)
@@ -93,6 +105,15 @@ void hardware_free(NiftyconfHardware *h)
 
         led_hardware_set_privdata(h->h, NULL);
         free(h);
+}
+
+
+/**
+ * initialize hardware module
+ */
+gboolean hardware_init()
+{
+        return TRUE;
 }
 
 /******************************************************************************

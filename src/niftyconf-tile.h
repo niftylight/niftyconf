@@ -44,8 +44,18 @@
 #ifndef _NIFTYCONF_TILE_H
 #define _NIFTYCONF_TILE_H
 
+#include <niftyled.h>
 
 
+typedef struct _NiftyconfTile NiftyconfTile;
+
+
+
+
+gboolean        tile_init();
+NiftyconfTile * tile_new(LedTile *t);
+void            tile_free(NiftyconfTile *t);
+LedTile *       tile_niftyled(NiftyconfTile *t);
 
 
 

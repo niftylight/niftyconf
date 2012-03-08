@@ -45,6 +45,11 @@
 #include <niftyled.h>
 #include "niftyconf-ui.h"
 #include "niftyconf-setup.h"
+#include "niftyconf-props.h"
+#include "niftyconf-hardware.h"
+#include "niftyconf-tile.h"
+#include "niftyconf-chain.h"
+#include "niftyconf-led.h"
 #include "config.h"
 
 
@@ -148,16 +153,28 @@ int main (int argc, char *argv[])
                 return -1;
 
         /* initialize modules */
+        if(!led_init())
+                g_error("Failed to initialize \"led\" module");
+        if(!chain_init())
+                g_error("Failed to initialize \"chain\" module");
+        if(!tile_init())
+                g_error("Failed to initialize \"tile\" module");
+        if(!hardware_init())
+                g_error("Failed to initialize \"hardware\" module");
         if(!setup_init())
                 g_error("Failed to initialize \"setup\" module");
+        if(!props_init())
+                g_error("Failed to initialize \"props\" module");
+        
         
         /* build our ui */
         GtkBuilder *ui = ui_builder("niftyconf.ui");
         GtkBox *box_setup = GTK_BOX(gtk_builder_get_object(ui, "box_setup"));
-        GtkBox *box_leds = GTK_BOX(gtk_builder_get_object(ui, "box_leds"));
-        
-        /* add ui of modules */
-        gtk_box_pack_start(box_setup, setup_tree_widget(), FALSE, FALSE, 0);
+        gtk_box_pack_start(box_setup, setup_tree_widget(), TRUE, TRUE, 0);
+        GtkBox *box_chain = GTK_BOX(gtk_builder_get_object(ui, "box_chain"));
+        gtk_box_pack_start(box_chain, chain_list_widget(), TRUE, TRUE, 0);
+        GtkBox *box_props = GTK_BOX(gtk_builder_get_object(ui, "box_props"));
+        gtk_box_pack_start(box_props, props_widget(), FALSE, FALSE, 0);
         
       
         

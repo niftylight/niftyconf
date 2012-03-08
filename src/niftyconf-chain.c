@@ -41,6 +41,35 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <gtk/gtk.h>
+#include "niftyconf-ui.h"
+#include "niftyconf-led.h"
+#include "niftyconf-chain.h"
+
+
+
+/** one element */
+struct _NiftyconfChain
+{
+        /** niftyled descriptor */
+        LedChain *c;
+};
+
+
+/* columns for our listview */
+typedef enum
+{
+        /* (gint) NIFTYLED_TYPE of element */
+        C_CHAIN_LED = 0,
+        /* (gpointer) to NiftyconfLed descriptor */
+        C_CHAIN_ELEMENT,
+        NUM_CHAIN_COLS,
+}CHAIN_LISTVIEW_COLUMNS;
+
+
+
+static GtkBox *         box_chain;
+static GtkListStore *   liststore;
 
 
 /******************************************************************************
@@ -51,7 +80,137 @@
 
 /******************************************************************************
  ******************************************************************************/
+/**
+ * rebuild list
+ */
+void chain_list_rebuild(NiftyconfChain *c)
+{
+        if(!c)
+                return;
+        LedCount i;
+        for(i = 0;
+            i < led_chain_get_ledcount(c->c);
+            i++)
+        {         
+                Led *led = led_chain_get_nth(c->c, i);
+                GtkTreeIter iter;
+                gtk_list_store_append(liststore, &iter);
+                gtk_list_store_set(liststore, &iter,
+                                  C_CHAIN_LED, i,
+                                  C_CHAIN_ELEMENT, led_get_privdata(led),
+                                  -1);
+        }
 
+}
+
+
+/**
+ * clear list
+ */
+void chain_list_clear()
+{
+        if(!liststore)
+                return;
+        
+        gtk_list_store_clear(liststore);
+}
+
+
+/**
+ * getter for list widget
+ */
+GtkWidget *chain_list_widget()
+{
+        return GTK_WIDGET(box_chain);
+}
+
+
+/**
+ * getter for libniftyled object
+ */
+LedChain *chain_niftyled(NiftyconfChain *c)
+{
+        if(!c)
+                return NULL;
+        
+        return c->c;
+}
+
+
+/**
+ * allocate new element
+ */
+NiftyconfChain *chain_new(LedChain *c)
+{
+        NiftyconfChain *n;
+        if(!(n = calloc(1, sizeof(NiftyconfChain))))
+        {
+                g_error("calloc: %s", strerror(errno));
+                return NULL;
+        }
+
+        /* save descriptor */
+        n->c = c;
+
+        /* register descriptor as niftyled privdata */
+        led_chain_set_privdata(c, n);
+
+        /* allocate all LEDs of chain */
+        LedCount i;
+        for(i = 0; i < led_chain_get_ledcount(c); i++)
+        {
+                led_new(led_chain_get_nth(c, i));
+        }
+}
+
+
+/**
+ * free element
+ */
+void chain_free(NiftyconfChain *c)
+{
+        if(!c)
+                return;
+
+        /* free all LEDs of chain */
+        LedCount i;
+        for(i = 0; i < led_chain_get_ledcount(c->c); i++)
+        {
+                led_free(led_get_privdata(led_chain_get_nth(c->c, i)));
+        }
+        
+        led_chain_set_privdata(c->c, NULL);
+        free(c);
+}
+
+
+/**
+ * initialize chain module
+ */
+gboolean chain_init()
+{
+        GtkBuilder *ui = ui_builder("niftyconf-chain.ui");
+
+        /* get widgets */
+        if(!(box_chain = GTK_BOX(gtk_builder_get_object(ui, "box_chain"))))
+                return FALSE;
+        if(!(liststore = GTK_LIST_STORE(gtk_builder_get_object(ui, "liststore"))))
+                return FALSE;
+
+        /* set selection mode for tree */
+        GtkTreeView *tree = GTK_TREE_VIEW(gtk_builder_get_object(ui, "treeview"));       
+        gtk_tree_selection_set_mode(
+                gtk_tree_view_get_selection(tree), 
+                GTK_SELECTION_MULTIPLE);
+        
+        /* initialize setup treeview */
+        GtkTreeViewColumn *col = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(ui, "column_led"));
+        GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+        gtk_tree_view_column_pack_start(col, renderer, TRUE);
+        gtk_tree_view_column_add_attribute(col, renderer, "text", C_CHAIN_LED);
+        
+        return TRUE;
+}
 
 
 /******************************************************************************

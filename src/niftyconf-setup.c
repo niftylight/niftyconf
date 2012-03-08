@@ -44,6 +44,7 @@
 #include <niftyled.h>
 #include <gtk/gtk.h>
 #include "niftyconf-setup.h"
+#include "niftyconf-props.h"
 #include "niftyconf-hardware.h"
 #include "niftyconf-ui.h"
 
@@ -74,6 +75,117 @@ static GtkTreeStore *tree_store;
  ****************************** STATIC FUNCTIONS ******************************
  ******************************************************************************/
 
+/** function to process an element that is currently selected */
+static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, gpointer data)
+{
+        /* get element represented by this row */
+        gpointer *element;
+        NIFTYLED_TYPE t;
+        gtk_tree_model_get(m, i, C_SETUP_TYPE, &t, C_SETUP_ELEMENT, &element,  -1);
+
+        props_hide();
+        
+        switch(t)
+        {
+                /* hardware selected */
+                case T_LED_HARDWARE:
+                {
+                        NiftyconfHardware *h = (NiftyconfHardware *) element;
+                        props_hardware_show(h);
+
+                        /* redraw everything */
+                        //setup_redraw();
+                        
+                        /* clear led-list */
+                        chain_list_clear();
+                        break;
+                }
+
+                /* tile element selected */
+                case T_LED_TILE:
+                {
+                        NiftyconfTile *tile = (NiftyconfTile *) element;
+                        props_tile_show(tile);
+
+                        /* highlight tile */
+                        //tile_set_highlight(tile, TRUE);
+                        
+                        /* redraw everything */
+                        //setup_redraw();
+
+                        /* clear led-list */
+                        chain_list_clear();
+                        break;
+                }
+
+                /* chain element selected */
+                case T_LED_CHAIN:
+                {
+                        NiftyconfChain *chain = (NiftyconfChain *) element;
+                        props_chain_show(chain);
+
+                        /* redraw everything */
+                        //setup_redraw();
+                        
+                        /* display led-list */
+                        chain_list_rebuild(chain);
+                        
+                        break;
+                }
+
+                default:
+                {
+                        g_warning("row with unknown tile selected. This is a bug!");
+                }
+        }
+}
+
+
+/** append chain element to setup-tree */
+static void _tree_append_chain(GtkTreeStore *s, LedChain *c, GtkTreeIter *parent)
+{
+        NiftyconfChain *chain = led_chain_get_privdata(c);
+        GtkTreeIter i;
+        gtk_tree_store_append(s, &i, parent);
+        gtk_tree_store_set(s, &i,
+                           C_SETUP_TYPE, T_LED_CHAIN,
+                           C_SETUP_TITLE, "chain", 
+                           C_SETUP_ELEMENT, (gpointer) chain,
+                           -1);
+}
+
+
+/** append tile element to setup-tree */
+static void _tree_append_tile(GtkTreeStore *s, LedTile *t, GtkTreeIter *parent)
+{
+        NiftyconfTile *tile = led_tile_get_privdata(t);
+        GtkTreeIter i;
+        gtk_tree_store_append(s, &i, parent);
+        gtk_tree_store_set(s, &i,
+                           C_SETUP_TYPE, T_LED_TILE,
+                           C_SETUP_TITLE, "tile", 
+                           C_SETUP_ELEMENT, (gpointer) tile,
+                           -1);
+
+        /* append chain if there is one */
+        LedChain *c;
+        if((c = led_tile_get_chain(t)))
+        {
+                _tree_append_chain(s, c, &i);
+        }
+        
+        /* append children of this tile */
+        LedTile *child;
+        for(child = led_tile_child_get(t);
+            child;
+            child = led_tile_sibling_get_next(child))
+        {
+                _tree_append_tile(s, child, &i);
+        }
+        
+}
+
+
 /** append hardware element to setup-tree */
 static void _tree_append_hardware(GtkTreeStore *s, LedHardware *h)
 {
@@ -85,7 +197,21 @@ static void _tree_append_hardware(GtkTreeStore *s, LedHardware *h)
                            C_SETUP_TITLE, led_hardware_get_name(h), 
                            C_SETUP_ELEMENT, (gpointer) hardware,
                            -1);
+
+        /** append chain */
+        _tree_append_chain(s, led_hardware_get_chain(h), &i);
+
+        /** append all tiles */
+        LedTile *t;
+        for(t = led_hardware_get_tile(h);
+            t;
+            t = led_tile_sibling_get_next(t))
+        {
+                _tree_append_tile(s, t, &i);
+        }
 }
+
+
 
 /******************************************************************************
  ******************************************************************************/
@@ -157,6 +283,26 @@ gboolean setup_load(gchar *filename)
                         g_warning("failed to allocate new hardware element");
                         return FALSE;
                 }
+
+                /* create chain of this hardware */
+                if(!chain_new(led_hardware_get_chain(h)))
+                {
+                        g_warning("failed to allocate new chain element");
+                        return FALSE;
+                }
+
+                /* walk all tiles belonging to this hardware & initialize */
+                LedTile *t;
+                for(t = led_hardware_get_tile(h);
+                    t;
+                    t = led_tile_sibling_get_next(t))
+                {
+                        if(!tile_new(t))
+                        {
+                                g_warning("failed to allocate new tile element");
+                                return FALSE;
+                        }
+                }
         }
         
         /* save new settings */
@@ -185,6 +331,15 @@ void setup_cleanup()
             h;
             h = led_hardware_sibling_get_next(h))
         {
+                LedTile *t;
+                for(t = led_hardware_get_tile(h);
+                    t;
+                    t = led_tile_sibling_get_next(t))
+                {
+                        tile_free(led_tile_get_privdata(t));
+                }
+                
+                chain_free(led_chain_get_privdata(led_hardware_get_chain(h)));
                 hardware_free(led_hardware_get_privdata(h));
         }
         
@@ -205,7 +360,7 @@ gboolean setup_init()
                 return FALSE;
         if(!(tree_store = GTK_TREE_STORE(gtk_builder_get_object(ui, "treestore"))))
                 return FALSE;
-
+        
 
         /* set selection mode for setup tree */
         GtkTreeView *tree = GTK_TREE_VIEW(gtk_builder_get_object(ui, "treeview"));       
@@ -228,3 +383,31 @@ gboolean setup_init()
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
 
+
+/**
+ * user selected another row
+ */
+void on_setup_treeview_cursor_changed(GtkTreeView *tv, gpointer u)
+{
+        GtkTreeModel *m = gtk_tree_view_get_model(tv);
+        
+        /* unhighlight all elements */
+        //GtkTreeIter i;
+        //gtk_tree_model_get_iter_root(m, &i);
+        //_walk_tree(&i, _unhighlight_element);
+
+        
+        /* get current selection */
+        GtkTreeSelection *s;
+        if(!(s = gtk_tree_view_get_selection(tv)))
+        {
+                props_hide();
+                return;
+        }
+
+        /* process all selected elements */
+        gtk_tree_selection_selected_foreach(s, _element_selected, NULL);
+
+        //setup_redraw();
+        //scene_redraw();
+}

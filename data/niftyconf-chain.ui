@@ -2,17 +2,7 @@
 <interface>
   <requires lib="gtk+" version="2.24"/>
   <!-- interface-naming-policy toplevel-contextual -->
-  <object class="GtkTreeStore" id="treestore">
-    <columns>
-      <!-- column-name type -->
-      <column type="gint"/>
-      <!-- column-name title -->
-      <column type="gchararray"/>
-      <!-- column-name element -->
-      <column type="gpointer"/>
-    </columns>
-  </object>
-  <object class="GtkHBox" id="box_tree">
+  <object class="GtkVBox" id="box_chain">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
@@ -25,13 +15,10 @@
           <object class="GtkTreeView" id="treeview">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="model">treestore</property>
-            <property name="search_column">0</property>
-            <signal name="cursor-changed" handler="on_setup_treeview_cursor_changed" swapped="no"/>
+            <property name="model">liststore</property>
             <child>
-              <object class="GtkTreeViewColumn" id="column_element">
-                <property name="title" translatable="yes">Elements</property>
-                <property name="expand">True</property>
+              <object class="GtkTreeViewColumn" id="column_led">
+                <property name="title" translatable="yes">LEDs</property>
               </object>
             </child>
           </object>
@@ -40,8 +27,17 @@
       <packing>
         <property name="expand">True</property>
         <property name="fill">True</property>
+        <property name="padding">3</property>
         <property name="position">0</property>
       </packing>
     </child>
+  </object>
+  <object class="GtkListStore" id="liststore">
+    <columns>
+      <!-- column-name led -->
+      <column type="gint"/>
+      <!-- column-name element -->
+      <column type="gpointer"/>
+    </columns>
   </object>
 </interface>

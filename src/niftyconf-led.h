@@ -44,9 +44,18 @@
 #ifndef _NIFTYCONF_LED_H
 #define _NIFTYCONF_LED_H
 
+#include <niftyled.h>
+
+
+typedef struct _NiftyconfLed NiftyconfLed;
 
 
 
+
+gboolean        led_init();
+NiftyconfLed *  led_new(Led *l);
+void            led_free(NiftyconfLed *l);
+Led *           led_niftyled(NiftyconfLed *l);
 
 
 #endif /* _NIFTYCONF_LED_H */

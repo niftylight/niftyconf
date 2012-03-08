@@ -41,6 +41,18 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <gtk/gtk.h>
+#include "niftyconf-chain.h"
+#include "niftyconf-tile.h"
+
+
+
+/** one element */
+struct _NiftyconfTile
+{
+        /** niftyled descriptor */
+        LedTile *t;
+};
 
 
 /******************************************************************************
@@ -52,6 +64,83 @@
 /******************************************************************************
  ******************************************************************************/
 
+/**
+ * getter for libniftyled object
+ */
+LedTile *tile_niftyled(NiftyconfTile *t)
+{
+        if(!t)
+                return NULL;
+        
+        return t->t;
+}
+
+
+/**
+ * allocate new element
+ */
+NiftyconfTile *tile_new(LedTile *t)
+{
+        /* also allocate all children */
+        LedTile *tile;
+        for(tile = led_tile_child_get(t);
+            tile;
+            tile = led_tile_sibling_get_next(tile))
+        {
+                tile_new(tile);
+        }
+
+        /* allocate chain if this tile has one */
+        LedChain *c;
+        if((c = led_tile_get_chain(t)))
+        {
+                chain_new(c);
+        }
+        
+        NiftyconfTile *n;
+        if(!(n = calloc(1, sizeof(NiftyconfTile))))
+        {
+                g_error("calloc: %s", strerror(errno));
+                return NULL;
+        }
+
+        /* save descriptor */
+        n->t = t;
+
+        /* register descriptor as niftyled privdata */
+        led_tile_set_privdata(t, n);
+}
+
+
+/**
+ * free element
+ */
+void tile_free(NiftyconfTile *t)
+{
+        if(!t)
+                return;
+
+        /* free all children */
+        LedTile *tile;
+        for(tile = led_tile_child_get(t->t);
+            tile;
+            tile = led_tile_sibling_get_next(tile))
+        {
+                tile_free(led_tile_get_privdata(tile));
+        }
+        
+        led_tile_set_privdata(t->t, NULL);
+        free(t);
+}
+
+
+/**
+ * initialize tile module
+ */
+gboolean tile_init()
+{
+        return TRUE;
+}
 
 
 /******************************************************************************

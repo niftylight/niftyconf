@@ -52,9 +52,10 @@ typedef struct _NiftyconfHardware NiftyconfHardware;
 
 
 
+gboolean                hardware_init();
 NiftyconfHardware *     hardware_new(LedHardware *h);
 void                    hardware_free(NiftyconfHardware *h);
-
+LedHardware *           hardware_niftyled(NiftyconfHardware *h);
 
 
 #endif /* _NIFTYCONF_HARDWARE_H */
