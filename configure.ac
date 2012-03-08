@@ -109,7 +109,7 @@ fi
 #  compile flags
 # ---------------
 WARNING_CFLAGS="-Wall -Wreturn-type -Wswitch -Wuninitialized -Wparentheses -Wpointer-arith -Winline"
-CFLAGS="-std=c99 $CFLAGS"
+CFLAGS="-std=c99 -D_BSD_SOURCE $CFLAGS"
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
 
