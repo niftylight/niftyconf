@@ -44,7 +44,7 @@
 #include <niftyled.h>
 #include <gtk/gtk.h>
 #include "niftyconf-setup.h"
-#include "niftyconf-props.h"
+#include "niftyconf-setup-props.h"
 #include "niftyconf-hardware.h"
 #include "niftyconf-ui.h"
 
@@ -83,7 +83,7 @@ static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, g
         NIFTYLED_TYPE t;
         gtk_tree_model_get(m, i, C_SETUP_TYPE, &t, C_SETUP_ELEMENT, &element,  -1);
 
-        props_hide();
+        setup_props_hide();
         
         switch(t)
         {
@@ -91,7 +91,7 @@ static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, g
                 case T_LED_HARDWARE:
                 {
                         NiftyconfHardware *h = (NiftyconfHardware *) element;
-                        props_hardware_show(h);
+                        setup_props_hardware_show(h);
 
                         /* redraw everything */
                         //setup_redraw();
@@ -105,7 +105,7 @@ static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, g
                 case T_LED_TILE:
                 {
                         NiftyconfTile *tile = (NiftyconfTile *) element;
-                        props_tile_show(tile);
+                        setup_props_tile_show(tile);
 
                         /* highlight tile */
                         //tile_set_highlight(tile, TRUE);
@@ -122,7 +122,7 @@ static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, g
                 case T_LED_CHAIN:
                 {
                         NiftyconfChain *chain = (NiftyconfChain *) element;
-                        props_chain_show(chain);
+                        setup_props_chain_show(chain);
 
                         /* redraw everything */
                         //setup_redraw();
@@ -401,7 +401,7 @@ void on_setup_treeview_cursor_changed(GtkTreeView *tv, gpointer u)
         GtkTreeSelection *s;
         if(!(s = gtk_tree_view_get_selection(tv)))
         {
-                props_hide();
+                setup_props_hide();
                 return;
         }
 

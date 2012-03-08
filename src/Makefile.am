@@ -6,7 +6,7 @@ niftyconf_SOURCES = \
 	niftyconf.c \
 	niftyconf-ui.c \
 	niftyconf-setup.c \
-	niftyconf-props.c \
+	niftyconf-setup-props.c \
 	niftyconf-led.c \
 	niftyconf-chain.c \
 	niftyconf-tile.c \

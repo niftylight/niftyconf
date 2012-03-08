@@ -43,7 +43,7 @@
 
 #include <gtk/gtk.h>
 #include "niftyconf-ui.h"
-#include "niftyconf-props.h"
+#include "niftyconf-setup-props.h"
 #include "niftyconf-led.h"
 #include "niftyconf-chain.h"
 
@@ -87,8 +87,8 @@ static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, g
         gtk_tree_model_get(m, i, C_CHAIN_LED, &n, C_CHAIN_ELEMENT, &element,  -1);
         NiftyconfLed *l = (NiftyconfLed *) element;
 
-        props_hide();
-        props_led_show(l);
+        setup_props_hide();
+        setup_props_led_show(l);
 }
 
 

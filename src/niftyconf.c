@@ -45,7 +45,7 @@
 #include <niftyled.h>
 #include "niftyconf-ui.h"
 #include "niftyconf-setup.h"
-#include "niftyconf-props.h"
+#include "niftyconf-setup-props.h"
 #include "niftyconf-hardware.h"
 #include "niftyconf-tile.h"
 #include "niftyconf-chain.h"
@@ -163,7 +163,7 @@ int main (int argc, char *argv[])
                 g_error("Failed to initialize \"hardware\" module");
         if(!setup_init())
                 g_error("Failed to initialize \"setup\" module");
-        if(!props_init())
+        if(!setup_props_init())
                 g_error("Failed to initialize \"props\" module");
         
         
@@ -173,8 +173,8 @@ int main (int argc, char *argv[])
         gtk_box_pack_start(box_setup, setup_tree_widget(), TRUE, TRUE, 0);
         GtkBox *box_chain = GTK_BOX(gtk_builder_get_object(ui, "box_chain"));
         gtk_box_pack_start(box_chain, chain_list_widget(), TRUE, TRUE, 0);
-        GtkBox *box_props = GTK_BOX(gtk_builder_get_object(ui, "box_props"));
-        gtk_box_pack_start(box_props, props_widget(), FALSE, FALSE, 0);
+        GtkBox *box_setup_props = GTK_BOX(gtk_builder_get_object(ui, "box_setup_props"));
+        gtk_box_pack_start(box_setup_props, setup_props_widget(), FALSE, FALSE, 0);
         
       
         

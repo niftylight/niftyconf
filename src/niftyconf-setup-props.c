@@ -44,7 +44,7 @@
 #include <math.h>
 #include <gtk/gtk.h>
 #include "niftyconf-ui.h"
-#include "niftyconf-props.h"
+#include "niftyconf-setup-props.h"
 
 
 
@@ -84,14 +84,14 @@ static GtkEntry *       entry_chain_format;
 /**
  * getter for widget
  */
-GtkWidget *props_widget()
+GtkWidget *setup_props_widget()
 {
         return GTK_WIDGET(box_props);
 }
 
 
 /** show hardware props */
-void props_hardware_show(NiftyconfHardware *h)
+void setup_props_hardware_show(NiftyconfHardware *h)
 {
         if(h)
         {
@@ -107,7 +107,7 @@ void props_hardware_show(NiftyconfHardware *h)
 
 
 /** show tile props */
-void props_tile_show(NiftyconfTile *t)
+void setup_props_tile_show(NiftyconfTile *t)
 {
         if(t)
         {
@@ -126,7 +126,7 @@ void props_tile_show(NiftyconfTile *t)
 
 
 /** show chain props */
-void props_chain_show(NiftyconfChain *c)
+void setup_props_chain_show(NiftyconfChain *c)
 {
         gtk_widget_show(GTK_WIDGET(frame_chain));
 
@@ -140,7 +140,7 @@ void props_chain_show(NiftyconfChain *c)
 
 
 /** show led props */
-void props_led_show(NiftyconfLed *l)
+void setup_props_led_show(NiftyconfLed *l)
 {
         if(l)
         {
@@ -156,7 +156,7 @@ void props_led_show(NiftyconfLed *l)
 
 
 /** hide all props */
-void props_hide()
+void setup_props_hide()
 {
         gtk_widget_hide(GTK_WIDGET(frame_hardware));
         gtk_widget_hide(GTK_WIDGET(frame_tile));
@@ -168,9 +168,9 @@ void props_hide()
 /**
  * initialize led module
  */
-gboolean props_init()
+gboolean setup_props_init()
 {
-        GtkBuilder *ui = ui_builder("niftyconf-props.ui");
+        GtkBuilder *ui = ui_builder("niftyconf-setup-props.ui");
 
         /* get widgets */
         if(!(box_props = GTK_BOX(gtk_builder_get_object(ui, "box_props"))))

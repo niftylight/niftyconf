@@ -41,8 +41,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _NIFTYCONF_PROPS_H
-#define _NIFTYCONF_PROPS_H
+#ifndef _NIFTYCONF_SETUP_PROPS_H
+#define _NIFTYCONF_SETUP_PROPS_H
 
 #include "niftyconf-hardware.h"
 #include "niftyconf-tile.h"
@@ -51,13 +51,13 @@
 
 
 
-gboolean        props_init();
-GtkWidget *     props_widget();
-void            props_hardware_show(NiftyconfHardware *h);
-void            props_tile_show(NiftyconfTile *t);
-void            props_chain_show(NiftyconfChain *c);
-void            props_led_show(NiftyconfLed *l);
-void            props_hide();
+gboolean        setup_props_init();
+GtkWidget *     setup_props_widget();
+void            setup_props_hardware_show(NiftyconfHardware *h);
+void            setup_props_tile_show(NiftyconfTile *t);
+void            setup_props_chain_show(NiftyconfChain *c);
+void            setup_props_led_show(NiftyconfLed *l);
+void            setup_props_hide();
 
 
-#endif /* _NIFTYCONF_PROPS_H */
+#endif /* _NIFTYCONF_SETUP_PROPS_H */
