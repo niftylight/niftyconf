@@ -43,6 +43,7 @@
 
 #include <gtk/gtk.h>
 #include "niftyconf-ui.h"
+#include "niftyconf-props.h"
 #include "niftyconf-led.h"
 #include "niftyconf-chain.h"
 
@@ -76,6 +77,19 @@ static GtkListStore *   liststore;
  ****************************** STATIC FUNCTIONS ******************************
  ******************************************************************************/
 
+
+/** function to process an element that is currently selected */
+static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, gpointer data)
+{
+        /* get element represented by this row */
+        gpointer *element;
+        LedCount n;
+        gtk_tree_model_get(m, i, C_CHAIN_LED, &n, C_CHAIN_ELEMENT, &element,  -1);
+        NiftyconfLed *l = (NiftyconfLed *) element;
+
+        props_hide();
+        props_led_show(l);
+}
 
 
 /******************************************************************************
@@ -216,3 +230,30 @@ gboolean chain_init()
 /******************************************************************************
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
+
+
+/**
+ * user selected another row
+ */
+void on_chain_treeview_cursor_changed(GtkTreeView *tv, gpointer u)
+{
+        GtkTreeModel *m = gtk_tree_view_get_model(tv);
+        
+        /* unhighlight all elements */
+        //GtkTreeIter i;
+        //gtk_tree_model_get_iter_root(m, &i);
+        //_walk_tree(&i, _unhighlight_element);
+
+        /* get current selection */
+        GtkTreeSelection *s;
+        if(!(s = gtk_tree_view_get_selection(tv)))
+        {
+                return;
+        }
+
+        /* process all selected elements */
+        gtk_tree_selection_selected_foreach(s, _element_selected, NULL);
+
+        //setup_redraw();
+        //scene_redraw();
+}

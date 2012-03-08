@@ -87,6 +87,9 @@ NiftyconfHardware *hardware_new(LedHardware *h)
                 return NULL;
         }
 
+        /* refresh tile->chain mapping */
+        led_hardware_refresh_mapping(h);
+        
         /* save LedHardware descriptor */
         n->h = h;
 
