@@ -127,11 +127,6 @@ void log_show(gboolean visible)
         gtk_widget_set_visible(GTK_WIDGET(window), visible);
 }
 
-/** log window currently visible? */
-gboolean log_visible()
-{
-        return gtk_widget_get_visible(GTK_WIDGET(window));
-}
 
 /**
  * initialize module

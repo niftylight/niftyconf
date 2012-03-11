@@ -47,7 +47,6 @@
 
 gboolean 	log_init();
 void            log_show(gboolean visible);
-gboolean        log_visible();
 
 
 #endif /* _NIFTYCONF_LOG_H */
