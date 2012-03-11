@@ -5,6 +5,7 @@ bin_PROGRAMS = \
 niftyconf_SOURCES = \
 	niftyconf.c \
 	niftyconf-ui.c \
+	niftyconf-log.c \
 	niftyconf-setup.c \
 	niftyconf-setup-props.c \
 	niftyconf-led.c \

@@ -47,7 +47,7 @@
 #include "niftyconf-log.h"
 
 
-
+static GtkWindow *window;
 static GtkTextView *textview;
 static GtkComboBox *combobox;
 static GtkCheckButton *checkbutton_file;
@@ -81,7 +81,6 @@ static void _logger(void *userdata,
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_file)))
 	{
 		strncat(s, file, 4096-strlen(s));
-		strncat(s, ":", 4096-strlen(s));
 	}
 
 	/* include line number? */
@@ -90,7 +89,7 @@ static void _logger(void *userdata,
 		gchar *number;
 		if(!(number = alloca(64)))
 			return;
-		snprintf(number, 64, "%d ", line);
+		snprintf(number, 64, ":%d ", line);
 		strncat(s, number, 4096-strlen(s));
 	}
 	else
@@ -121,6 +120,20 @@ static void _logger(void *userdata,
  ******************************************************************************/
 
 /**
+ * show/hide log window
+ */
+void log_show(gboolean visible)
+{
+        gtk_widget_set_visible(GTK_WIDGET(window), visible);
+}
+
+/** log window currently visible? */
+gboolean log_visible()
+{
+        return gtk_widget_get_visible(GTK_WIDGET(window));
+}
+
+/**
  * initialize module
  */
 gboolean log_init()
@@ -128,31 +141,33 @@ gboolean log_init()
         GtkBuilder *ui = ui_builder("niftyconf-log.ui");
 
         /* get widgets */
+        if(!(window = GTK_WINDOW(gtk_builder_get_object(ui, "window"))))
+                return FALSE;
         if(!(textview = GTK_TEXT_VIEW(gtk_builder_get_object(ui, "textview"))))
                 return FALSE;
         if(!(combobox = GTK_COMBO_BOX(gtk_builder_get_object(ui, "combobox"))))
                 return FALSE;
         if(!(checkbutton_file = GTK_CHECK_BUTTON(gtk_builder_get_object(ui, "checkbutton_file"))))
                 return FALSE;
-		if(!(checkbutton_line = GTK_CHECK_BUTTON(gtk_builder_get_object(ui, "checkbutton_line"))))
+        if(!(checkbutton_line = GTK_CHECK_BUTTON(gtk_builder_get_object(ui, "checkbutton_line"))))
                 return FALSE;
-		if(!(checkbutton_function = GTK_CHECK_BUTTON(gtk_builder_get_object(ui, "checkbutton_function"))))
+        if(!(checkbutton_function = GTK_CHECK_BUTTON(gtk_builder_get_object(ui, "checkbutton_function"))))
                 return FALSE;
 
 	
         /* initialize loglevel combobox */
-		NftLoglevel i;        
+        NftLoglevel i;        
         for(i = L_MAX+1; i<L_MIN-1; i++)
         {
-				gtk_combo_box_append_text(combobox, nft_log_level_to_name(i));                
+                gtk_combo_box_append_text(combobox, nft_log_level_to_name(i));                
         }
 
-		/* set combobox to current loglevel */
-		gtk_combo_box_set_active(combobox, (gint) nft_log_level_get()-1);
+        /* set combobox to current loglevel */
+        gtk_combo_box_set_active(combobox, (gint) nft_log_level_get()-1);
 
-		/* register our custom logger function */
-		nft_log_func_register(_logger, textview);
-	
+        /* register our custom logger function */
+        nft_log_func_register(_logger, textview);
+
         return TRUE;
 }
 
@@ -165,7 +180,7 @@ gboolean log_init()
 gboolean on_log_window_delete_event(GtkWidget *w, GdkEvent *e)
 {
         gtk_widget_hide(w);
-        return FALSE;
+        return TRUE;
 }
 
 /** loglevel changed */

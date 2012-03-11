@@ -44,6 +44,7 @@
 #include <gtk/gtk.h>
 #include <niftyled.h>
 #include "niftyconf-ui.h"
+#include "niftyconf-log.h"
 #include "niftyconf-setup.h"
 #include "niftyconf-setup-props.h"
 #include "niftyconf-hardware.h"
@@ -153,6 +154,8 @@ int main (int argc, char *argv[])
                 return -1;
 
         /* initialize modules */
+        if(!log_init())
+                g_error("Failed to initialize \"log\" module");
         if(!led_init())
                 g_error("Failed to initialize \"led\" module");
         if(!chain_init())
@@ -222,4 +225,10 @@ void on_niftyconf_menu_quit_activate(GtkMenuItem *i, gpointer d)
 {
         setup_cleanup();
         gtk_main_quit();
+}
+
+/** menuitem "show log-window" toggled */
+void on_niftyconf_menu_log_window_activate(GtkWidget *i, gpointer u)
+{       
+        log_show(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(i)));
 }
