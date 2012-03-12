@@ -43,6 +43,7 @@
 
 #include <gtk/gtk.h>
 #include <niftyled.h>
+#include "niftyconf.h"
 #include "niftyconf-ui.h"
 #include "niftyconf-log.h"
 
@@ -124,7 +125,7 @@ static void _logger(void *userdata,
  */
 void log_show(gboolean visible)
 {
-        gtk_widget_set_visible(GTK_WIDGET(window), visible);
+        gtk_widget_set_visible(GTK_WIDGET(window), visible);        
 }
 
 
@@ -175,6 +176,7 @@ gboolean log_init()
 gboolean on_log_window_delete_event(GtkWidget *w, GdkEvent *e)
 {
         gtk_widget_hide(w);
+        niftyconf_menu_logwindow_set_visible(FALSE);
         return TRUE;
 }
 

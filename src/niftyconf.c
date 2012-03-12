@@ -56,6 +56,8 @@
 
 
 
+GtkCheckMenuItem *menuitem_log_win;
+
 /******************************************************************************
  ****************************** STATIC FUNCTIONS ******************************
  ******************************************************************************/
@@ -136,6 +138,12 @@ static gboolean _parse_cmdline_args(int argc, char *argv[], gchar **setupfile)
 /******************************************************************************
  ******************************************************************************/
 
+/** wrapper to acces widget */
+void niftyconf_menu_logwindow_set_visible(gboolean visible)
+{
+        gtk_check_menu_item_set_active(menuitem_log_win, visible);
+}
+
 
 int main (int argc, char *argv[])
 {
@@ -178,7 +186,7 @@ int main (int argc, char *argv[])
         gtk_box_pack_start(box_chain, chain_list_widget(), TRUE, TRUE, 0);
         GtkBox *box_setup_props = GTK_BOX(gtk_builder_get_object(ui, "box_setup_props"));
         gtk_box_pack_start(box_setup_props, setup_props_widget(), FALSE, FALSE, 0);
-        
+        menuitem_log_win = GTK_CHECK_MENU_ITEM(gtk_builder_get_object(ui, "menuitem_log_win"));
       
         
         /* free builder */
