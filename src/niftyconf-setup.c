@@ -68,6 +68,8 @@ static LedSettings *current;
 static GtkBox *box_tree;
 /** setup tree store */
 static GtkTreeStore *tree_store;
+/** "open" filechooser dialog */
+static GtkFileChooserDialog *open_filechooser;
 
 
 
@@ -212,6 +214,7 @@ static void _tree_append_hardware(GtkTreeStore *s, LedHardware *h)
                 _tree_append_tile(s, t, &i);
         }
 }
+
 
 
 
@@ -362,13 +365,22 @@ gboolean setup_init()
                 return FALSE;
         if(!(tree_store = GTK_TREE_STORE(gtk_builder_get_object(ui, "treestore"))))
                 return FALSE;
+        if(!(open_filechooser = GTK_FILE_CHOOSER_DIALOG(gtk_builder_get_object(ui, "filechooserdialog"))))
+                return FALSE;
         
 
+        /* initialize file-filter to only show XML files in "open" filechooser dialog */
+        GtkFileFilter *filter = GTK_FILE_FILTER(gtk_builder_get_object(ui, "filefilter"));
+        gtk_file_filter_add_mime_type(filter, "application/xml");
+        gtk_file_filter_add_mime_type(filter, "text/xml");
+
+        
         /* set selection mode for setup tree */
         GtkTreeView *tree = GTK_TREE_VIEW(gtk_builder_get_object(ui, "treeview"));       
         gtk_tree_selection_set_mode(
                 gtk_tree_view_get_selection(tree), 
                 GTK_SELECTION_MULTIPLE);
+
         
         /* initialize setup treeview */
         GtkTreeViewColumn *col = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(ui, "column_element"));
@@ -412,4 +424,64 @@ void on_setup_treeview_cursor_changed(GtkTreeView *tv, gpointer u)
 
         //setup_redraw();
         //scene_redraw();
+}
+
+
+/** menuitem "new" selected */
+void on_setup_menuitem_new_activate(GtkMenuItem *i, gpointer d)
+{
+        LedSettings *s;
+        if(!(s = led_settings_new()))
+        {
+                NFT_LOG(L_ERROR, "Failed to create new settings descriptor.");
+                return;
+        }
+        
+        setup_cleanup();
+
+        /* save new settings */
+        current = s;
+}
+
+
+/** menuitem "open" selected */
+void on_setup_menuitem_open_activate(GtkMenuItem *i, gpointer d)
+{
+        gtk_widget_show(GTK_WIDGET(open_filechooser));
+}
+
+
+/** menuitem "save" selected */
+void on_setup_menuitem_save_activate(GtkMenuItem *i, gpointer d)
+{
+        
+}
+
+
+/** menuitem "save as" selected */
+void on_setup_menuitem_save_as_activate(GtkMenuItem *i, gpointer d)
+{
+        
+}
+
+/** "cancel" button in filechooser clicked */
+void on_setup_open_cancel_clicked(GtkButton *b, gpointer u)
+{
+        gtk_widget_hide(GTK_WIDGET(open_filechooser));
+}
+
+/** open file */
+void on_setup_open_clicked(GtkButton *b, gpointer u)
+{
+        char *filename;
+        if(!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(open_filechooser))))
+                return;
+
+        if(!setup_load(filename))
+        {
+                /* @TODO display error dialog */
+                return;
+        }
+        
+        gtk_widget_hide(GTK_WIDGET(open_filechooser));
 }
