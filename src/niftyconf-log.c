@@ -113,6 +113,7 @@ static void _logger(void *userdata,
 	GtkTextIter iter;
 	gtk_text_buffer_get_end_iter(buf, &iter);
 	gtk_text_buffer_insert(buf, &iter, s, -1);
+        fprintf(stderr, "%s", s);
 }
 
 
