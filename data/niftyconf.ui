@@ -5,6 +5,8 @@
   <object class="GtkWindow" id="window">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">niftyconf</property>
+    <property name="icon">icons/hicolor_apps_128x128_niftyconf.png</property>
     <signal name="delete-event" handler="on_niftyconf_window_delete_event" swapped="no"/>
     <child>
       <object class="GtkVBox" id="vbox1">

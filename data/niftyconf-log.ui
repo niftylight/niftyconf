@@ -3,6 +3,8 @@
   <requires lib="gtk+" version="2.24"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="window">
+    <property name="title" translatable="yes">niftyconf log</property>
+    <property name="icon">icons/hicolor_apps_128x128_niftyconf.png</property>
     <property name="can_focus">False</property>
     <signal name="delete-event" handler="on_log_window_delete_event" swapped="no"/>
     <child>
