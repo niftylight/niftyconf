@@ -65,7 +65,7 @@ typedef enum
 /** current niftyled settings context */
 static LedSettings *current;
 /** main container widget of this module */
-static GtkBox *box_tree;
+static GtkBox *box;
 /** setup tree store */
 static GtkTreeStore *tree_store;
 /** "open" filechooser dialog */
@@ -101,7 +101,7 @@ static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, g
                         //setup_redraw();
                         
                         /* clear led-list */
-                        chain_list_clear();
+                        chain_ledlist_clear();
                         break;
                 }
 
@@ -118,7 +118,7 @@ static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, g
                         //setup_redraw();
 
                         /* clear led-list */
-                        chain_list_clear();
+                        chain_ledlist_clear();
                         break;
                 }
 
@@ -132,7 +132,7 @@ static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, g
                         //setup_redraw();
                         
                         /* display led-list */
-                        chain_list_rebuild(chain);
+                        chain_ledlist_rebuild(chain);
                         
                         break;
                 }
@@ -254,9 +254,9 @@ void setup_tree_clear()
 /**
  * getter for tree widget
  */
-GtkWidget *setup_tree_widget()
+GtkWidget *setup_get_widget()
 {
-        return GTK_WIDGET(box_tree);
+        return GTK_WIDGET(box);
 }
 
 
@@ -283,14 +283,14 @@ gboolean setup_load(gchar *filename)
             h = led_hardware_sibling_get_next(h))
         {
                 /* create new hardware element */
-                if(!hardware_new(h))
+                if(!hardware_register(h))
                 {
                         g_warning("failed to allocate new hardware element");
                         return FALSE;
                 }
 
                 /* create chain of this hardware */
-                if(!chain_new(led_hardware_get_chain(h)))
+                if(!chain_register(led_hardware_get_chain(h)))
                 {
                         g_warning("failed to allocate new chain element");
                         return FALSE;
@@ -302,7 +302,7 @@ gboolean setup_load(gchar *filename)
                     t;
                     t = led_tile_sibling_get_next(t))
                 {
-                        if(!tile_new(t))
+                        if(!tile_register(t))
                         {
                                 g_warning("failed to allocate new tile element");
                                 return FALSE;
@@ -341,11 +341,11 @@ void setup_cleanup()
                     t;
                     t = led_tile_sibling_get_next(t))
                 {
-                        tile_free(led_tile_get_privdata(t));
+                        tile_unregister(led_tile_get_privdata(t));
                 }
                 
-                chain_free(led_chain_get_privdata(led_hardware_get_chain(h)));
-                hardware_free(led_hardware_get_privdata(h));
+                chain_unregister(led_chain_get_privdata(led_hardware_get_chain(h)));
+                hardware_unregister(led_hardware_get_privdata(h));
         }
         
         led_settings_destroy(current);
@@ -361,7 +361,7 @@ gboolean setup_init()
         GtkBuilder *ui = ui_builder("niftyconf-setup.ui");
 
         /* get widgets */
-        if(!(box_tree = GTK_BOX(gtk_builder_get_object(ui, "box_tree"))))
+        if(!(box = GTK_BOX(gtk_builder_get_object(ui, "box"))))
                 return FALSE;
         if(!(tree_store = GTK_TREE_STORE(gtk_builder_get_object(ui, "treestore"))))
                 return FALSE;
@@ -441,6 +441,13 @@ void on_setup_menuitem_new_activate(GtkMenuItem *i, gpointer d)
 
         /* save new settings */
         current = s;
+}
+
+/** right-click over element-tree */
+gboolean on_setup_treeview_button_pressed(GtkTreeView *t, GdkEventButton *e, gpointer u)
+{
+        printf("click!\n");
+        return FALSE;
 }
 
 

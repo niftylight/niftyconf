@@ -78,7 +78,7 @@ LedHardware *hardware_niftyled(NiftyconfHardware *h)
 /**
  * allocate new hardware element
  */
-NiftyconfHardware *hardware_new(LedHardware *h)
+NiftyconfHardware *hardware_register(LedHardware *h)
 {
         NiftyconfHardware *n;
         if(!(n = calloc(1, sizeof(NiftyconfHardware))))
@@ -101,7 +101,7 @@ NiftyconfHardware *hardware_new(LedHardware *h)
 /**
  * free hardware element
  */
-void hardware_free(NiftyconfHardware *h)
+void hardware_unregister(NiftyconfHardware *h)
 {
         if(!h)
                 return;

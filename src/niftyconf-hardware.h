@@ -51,10 +51,14 @@
 typedef struct _NiftyconfHardware NiftyconfHardware;
 
 
-
+/* GUI model functions */
 gboolean                hardware_init();
-NiftyconfHardware *     hardware_new(LedHardware *h);
-void                    hardware_free(NiftyconfHardware *h);
+NiftyconfHardware *     hardware_register(LedHardware *h);
+void                    hardware_unregister(NiftyconfHardware *h);
+
+/* GUI functions */
+
+/* model functions */
 LedHardware *           hardware_niftyled(NiftyconfHardware *h);
 
 

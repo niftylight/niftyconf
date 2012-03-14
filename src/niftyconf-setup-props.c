@@ -84,7 +84,7 @@ static GtkEntry *       entry_chain_format;
 /**
  * getter for widget
  */
-GtkWidget *setup_props_widget()
+GtkWidget *setup_props_get_widget()
 {
         return GTK_WIDGET(box_props);
 }

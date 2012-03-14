@@ -45,7 +45,7 @@
 #define _NIFTYCONF_H
 
 
-void niftyconf_menu_logwindow_set_visible(gboolean visible);
+void niftyconf_menu_logwindow_set_active(gboolean active);
 
 
 #endif /* _NIFTYCONF_H */

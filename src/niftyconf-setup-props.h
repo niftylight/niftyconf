@@ -50,14 +50,19 @@
 #include "niftyconf-led.h"
 
 
-
+/* GUI model functions */
 gboolean        setup_props_init();
-GtkWidget *     setup_props_widget();
+GtkWidget *     setup_props_get_widget();
+
+/* GUI functions */
 void            setup_props_hardware_show(NiftyconfHardware *h);
 void            setup_props_tile_show(NiftyconfTile *t);
 void            setup_props_chain_show(NiftyconfChain *c);
 void            setup_props_led_show(NiftyconfLed *l);
 void            setup_props_hide();
+
+/* model functions */
+
 
 
 #endif /* _NIFTYCONF_SETUP_PROPS_H */

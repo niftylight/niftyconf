@@ -46,10 +46,16 @@
 
 
 
+/* GUI model functions */
 gboolean        setup_init();
-GtkWidget *     setup_tree_widget();
+GtkWidget *     setup_get_widget();
+
+/* GUI functions */
 gboolean        setup_load(gchar *filename);
 void            setup_cleanup();
+
+/* model functions */
+
 
 
 #endif /* _NIFTYCONF_SETUP_H */

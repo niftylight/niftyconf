@@ -81,7 +81,7 @@ Led *led_niftyled(NiftyconfLed *l)
 /**
  * allocate new element
  */
-NiftyconfLed *led_new(Led *l)
+NiftyconfLed *led_register(Led *l)
 {
         NiftyconfLed *n;
         if(!(n = calloc(1, sizeof(NiftyconfLed))))
@@ -101,7 +101,7 @@ NiftyconfLed *led_new(Led *l)
 /**
  * free element
  */
-void led_free(NiftyconfLed *l)
+void led_unregister(NiftyconfLed *l)
 {
         if(!l)
                 return;

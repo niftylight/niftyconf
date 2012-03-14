@@ -51,10 +51,14 @@ typedef struct _NiftyconfTile NiftyconfTile;
 
 
 
-
+/* GUI model functions */
 gboolean        tile_init();
-NiftyconfTile * tile_new(LedTile *t);
-void            tile_free(NiftyconfTile *t);
+NiftyconfTile * tile_register(LedTile *t);
+void            tile_unregister(NiftyconfTile *t);
+
+/* GUI functions */
+
+/* model functions */
 LedTile *       tile_niftyled(NiftyconfTile *t);
 
 

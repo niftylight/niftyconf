@@ -51,13 +51,19 @@ typedef struct _NiftyconfChain NiftyconfChain;
 
 
 
+/* GUI model functions */
 gboolean                chain_init();
-NiftyconfChain *        chain_new(LedChain *c);
-void                    chain_free(NiftyconfChain *c);
+NiftyconfChain *        chain_register(LedChain *c);
+void                    chain_unregister(NiftyconfChain *c);
+GtkWidget *             chain_ledlist_get_widget();
+
+/* GUI functions */
+void                    chain_ledlist_rebuild(NiftyconfChain *c);
+void                    chain_ledlist_clear();
+
+/* model functions */
 LedChain *              chain_niftyled(NiftyconfChain *c);
-GtkWidget *             chain_list_widget();
-void                    chain_list_rebuild(NiftyconfChain *c);
-void                    chain_list_clear();
+
 
 
 #endif /* _NIFTYCONF_CHAIN_H */

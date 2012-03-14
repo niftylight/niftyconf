@@ -97,7 +97,7 @@ static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, g
 /**
  * rebuild list
  */
-void chain_list_rebuild(NiftyconfChain *c)
+void chain_ledlist_rebuild(NiftyconfChain *c)
 {
         if(!c)
                 return;
@@ -121,7 +121,7 @@ void chain_list_rebuild(NiftyconfChain *c)
 /**
  * clear list
  */
-void chain_list_clear()
+void chain_ledlist_clear()
 {
         if(!liststore)
                 return;
@@ -133,7 +133,7 @@ void chain_list_clear()
 /**
  * getter for list widget
  */
-GtkWidget *chain_list_widget()
+GtkWidget *chain_ledlist_get_widget()
 {
         return GTK_WIDGET(box_chain);
 }
@@ -154,7 +154,7 @@ LedChain *chain_niftyled(NiftyconfChain *c)
 /**
  * allocate new element
  */
-NiftyconfChain *chain_new(LedChain *c)
+NiftyconfChain *chain_register(LedChain *c)
 {
         NiftyconfChain *n;
         if(!(n = calloc(1, sizeof(NiftyconfChain))))
@@ -173,7 +173,7 @@ NiftyconfChain *chain_new(LedChain *c)
         LedCount i;
         for(i = 0; i < led_chain_get_ledcount(c); i++)
         {
-                led_new(led_chain_get_nth(c, i));
+                led_register(led_chain_get_nth(c, i));
         }
 }
 
@@ -181,7 +181,7 @@ NiftyconfChain *chain_new(LedChain *c)
 /**
  * free element
  */
-void chain_free(NiftyconfChain *c)
+void chain_unregister(NiftyconfChain *c)
 {
         if(!c)
                 return;
@@ -190,7 +190,7 @@ void chain_free(NiftyconfChain *c)
         LedCount i;
         for(i = 0; i < led_chain_get_ledcount(c->c); i++)
         {
-                led_free(led_get_privdata(led_chain_get_nth(c->c, i)));
+                led_unregister(led_get_privdata(led_chain_get_nth(c->c, i)));
         }
         
         led_chain_set_privdata(c->c, NULL);

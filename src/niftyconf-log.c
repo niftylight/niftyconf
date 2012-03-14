@@ -177,7 +177,7 @@ gboolean log_init()
 gboolean on_log_window_delete_event(GtkWidget *w, GdkEvent *e)
 {
         gtk_widget_hide(w);
-        niftyconf_menu_logwindow_set_visible(FALSE);
+        niftyconf_menu_logwindow_set_active(FALSE);
         return TRUE;
 }
 
