@@ -523,8 +523,54 @@ gboolean on_popup_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
                 return FALSE;
-        
 
+        /* get currently selected element */
+        NIFTYLED_TYPE t;
+        gpointer element;
+        _tree_view_get_selection(&t, &element);
+        
+        /* create new tile */
+        LedTile *n;
+        if(!(n = led_tile_new()))
+                return FALSE;
+
+        switch(t)
+        {
+                /* currently selected element is a hardware-node */
+                case T_LED_HARDWARE:
+                {
+                        /* get last tile of this hardware */
+                        LedHardware *h = (LedHardware *) element;
+                        LedTile *tile;
+                        /* does hw already have a tile? */
+                        if(!(tile = led_hardware_get_tile(h)))
+                        {
+                                led_hardware_set_tile(h, n);
+                        }
+                        else
+                        {
+                                for(tile;
+                                    led_tile_sibling_get_next(tile);
+                                    tile = led_tile_sibling_get_next(tile));
+                                led_tile_sibling_append(tile, n);
+                        }
+                        
+                        break;
+                }
+
+                /* currently selected element is a tile-node */
+                case T_LED_TILE:
+                {
+                        LedTile *tile = (LedTile *) element;
+                        led_tile_sibling_append(tile, n);
+                        break;
+                }
+        }
+
+        /* refresh tree */
+        setup_tree_clear();
+        setup_tree_rebuild();
+        
         return TRUE;
 }
 
@@ -537,6 +583,10 @@ gboolean on_popup_add_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
                 return FALSE;
         
 
+        /* refresh tree */
+        setup_tree_clear();
+        setup_tree_rebuild();
+        
         return TRUE;
 }
 
