@@ -68,6 +68,8 @@ static LedSettings *current;
 static GtkBox *box;
 /** setup tree store */
 static GtkTreeStore *tree_store;
+/** setup tree-view */
+static GtkTreeView *tree_view;
 /** "open" filechooser dialog */
 static GtkFileChooserDialog *open_filechooser;
 
@@ -78,6 +80,37 @@ static GtkFileChooserDialog *open_filechooser;
 /******************************************************************************
  ****************************** STATIC FUNCTIONS ******************************
  ******************************************************************************/
+
+
+/** get last item if one or more elements are highlighted (or NULL) */
+static void _tree_view_get_selection(NIFTYLED_TYPE *t, gpointer *p)
+{
+        /* get current treeview selection */
+        GtkTreeSelection *selection;
+        selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree_view));
+        
+        *t = 0;
+        *p = NULL;
+        
+        /* something selected? */
+        GList *selected;
+        GtkTreeModel *m;
+        if(!(selected = gtk_tree_selection_get_selected_rows(selection, &m)))
+                return;
+        
+        GtkTreePath *path = (GtkTreePath *) g_list_last(selected)->data;
+        GtkTreeIter i;
+        gtk_tree_model_get_iter(m, &i, path);
+        
+        /* get this element */
+        gtk_tree_model_get(m, &i, C_SETUP_TYPE, t, C_SETUP_ELEMENT, p,  -1);
+
+        /* free list */
+        g_list_foreach(selected, (GFunc) gtk_tree_path_free, NULL);
+        g_list_free(selected);
+        
+}
+
 
 /** function to process an element that is currently selected */
 static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, gpointer data)
@@ -376,9 +409,9 @@ gboolean setup_init()
 
         
         /* set selection mode for setup tree */
-        GtkTreeView *tree = GTK_TREE_VIEW(gtk_builder_get_object(ui, "treeview"));       
+        tree_view = GTK_TREE_VIEW(gtk_builder_get_object(ui, "treeview"));       
         gtk_tree_selection_set_mode(
-                gtk_tree_view_get_selection(tree), 
+                gtk_tree_view_get_selection(tree_view), 
                 GTK_SELECTION_MULTIPLE);
 
         
@@ -398,9 +431,8 @@ gboolean setup_init()
  ******************************************************************************/
 
 
-/**
- * user selected another row
- */
+
+/** user selected another row */
 void on_setup_treeview_cursor_changed(GtkTreeView *tv, gpointer u)
 {
         GtkTreeModel *m = gtk_tree_view_get_model(tv);
@@ -443,11 +475,180 @@ void on_setup_menuitem_new_activate(GtkMenuItem *i, gpointer d)
         current = s;
 }
 
-/** right-click over element-tree */
+/** popup menu-entry selected */
+gboolean on_popup_add_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
+{
+        /* only handle button-press events */
+        if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
+                return FALSE;
+
+                                
+        /* create new niftyled hardware */
+        LedHardware *h;
+        if(!(h = led_hardware_new("Unnamed", "dummy")))
+        {
+                NFT_LOG(L_ERROR, "Failed to add new dummy-hardware");
+                return FALSE;
+        }
+        
+        /* register hardware to gui */
+        NiftyconfHardware *hardware;
+        if(!(hardware = hardware_register(h)))
+        {
+                NFT_LOG(L_ERROR, "Failed to register hardware to GUI");
+                led_hardware_destroy(h);
+                return FALSE;
+        }
+
+        /* append to end of setup */
+        LedHardware *last;
+        for(last = led_settings_hardware_get_first(current);
+            led_hardware_sibling_get_next(last);
+            last = led_hardware_sibling_get_next(last));
+
+        led_hardware_sibling_append(last, h);
+
+        /* refresh tree */
+        setup_tree_clear();
+        setup_tree_rebuild();
+
+        return TRUE;
+        
+}
+
+
+/** popup menu-entry selected */
+gboolean on_popup_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
+{
+        /* only handle button-press events */
+        if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
+                return FALSE;
+        
+
+        return TRUE;
+}
+
+
+/** popup menu-entry selected */
+gboolean on_popup_add_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
+{
+        /* only handle button-press events */
+        if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
+                return FALSE;
+        
+
+        return TRUE;
+}
+
+
+/** show setup-tree popup menu */
+static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
+{
+
+        /* get currently selected element */
+        NIFTYLED_TYPE t;
+        gpointer element;
+        _tree_view_get_selection(&t, &element);
+        
+        /* create new popup menu */
+        GtkWidget *menu = gtk_menu_new ();
+        g_signal_connect(menu, "deactivate", 
+                         G_CALLBACK (gtk_widget_destroy), NULL);
+
+        
+        /* generate "add hardware" menuitem */
+        GtkWidget *menu_hw = gtk_image_menu_item_new_with_label("Add hardware");        
+        gtk_image_menu_item_set_image(
+                        GTK_IMAGE_MENU_ITEM(menu_hw), 
+                        gtk_image_new_from_stock(
+                                        "gtk-add", 
+                                        GTK_ICON_SIZE_MENU));
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_hw);
+        g_signal_connect(menu_hw, "button-press-event",
+                                        (GCallback) (on_popup_add_hardware), NULL);
+
+
+        /* generate "add tile" menuitem */
+        if((t == T_LED_HARDWARE) || (t == T_LED_TILE))
+        {
+                GtkWidget *menu_tile = gtk_image_menu_item_new_with_label("Add tile");
+                gtk_image_menu_item_set_image(
+                                GTK_IMAGE_MENU_ITEM(menu_tile), 
+                                gtk_image_new_from_stock(
+                                                "gtk-add", 
+                                                GTK_ICON_SIZE_MENU));
+                gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_tile);
+                g_signal_connect(menu_tile, "button-press-event",
+                                        (GCallback) on_popup_add_tile, NULL);
+        }
+
+        
+        /* generate "add chain" menuitem */
+        if((t == T_LED_TILE))
+        {
+                GtkWidget *menu_chain = gtk_image_menu_item_new_with_label("Add chain");                
+                gtk_image_menu_item_set_image(
+                                GTK_IMAGE_MENU_ITEM(menu_chain), 
+                                gtk_image_new_from_stock(
+                                                "gtk-add", 
+                                                GTK_ICON_SIZE_MENU));
+                gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_chain);
+                g_signal_connect(menu_chain, "button-press-event",
+                                        (GCallback) on_popup_add_chain, NULL);
+        }
+
+        
+        /* set event-time */
+        int button, event_time;
+        if(e)
+        {
+                button = e->button;
+                event_time = e->time;
+        }
+        else
+        {
+                button = 0;
+                event_time = gtk_get_current_event_time();
+        }
+
+        
+        /* attach menu to treeview */
+        gtk_menu_attach_to_widget(GTK_MENU(menu), w, NULL);
+        /* draw... */
+        gtk_widget_show_all(menu);
+        /* popup... */
+        gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 
+                       button, event_time);
+}
+
+
+/** mouseclick over element-tree */
 gboolean on_setup_treeview_button_pressed(GtkTreeView *t, GdkEventButton *e, gpointer u)
 {
-        printf("click!\n");
+        /* only handle button-press events */
+        if(e->type != GDK_BUTTON_PRESS)
+                return FALSE;
+
+        
+        /* what kind of button pressed? */
+        switch(e->button)
+        {
+                case 3:
+                {
+                        _tree_popup_menu(GTK_WIDGET(t), e, u);
+                        return TRUE;
+                }
+        }
+    
         return FALSE;
+}
+
+
+/** request to generate popup-menu */
+gboolean on_setup_treeview_popup(GtkWidget *t, gpointer u)
+{
+        _tree_popup_menu(GTK_WIDGET(t), NULL, u);
+        return TRUE;
 }
 
 

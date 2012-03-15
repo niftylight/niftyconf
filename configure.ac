@@ -67,7 +67,7 @@ NIFTYLED_REQUIRED=0.1.0
 # ---------------------
 PKG_CHECK_MODULES(NIFTYCONF, 
 [
-        gtk+-2.0 
+        gtk+-2.0 >= 2.2
         gmodule-2.0 
         gconf-2.0 
         niftyled >= $NIFTYLED_REQUIRED
