@@ -83,7 +83,7 @@ static GtkFileChooserDialog *open_filechooser;
 
 
 /** get last item if one or more elements are highlighted (or NULL) */
-static void _tree_view_get_selection(NIFTYLED_TYPE *t, gpointer *p)
+static void _tree_view_get_selection(NIFTYLED_TYPE *t, gpointer **p)
 {
         /* get current treeview selection */
         GtkTreeSelection *selection;
@@ -105,6 +105,7 @@ static void _tree_view_get_selection(NIFTYLED_TYPE *t, gpointer *p)
         /* get this element */
         gtk_tree_model_get(m, &i, C_SETUP_TYPE, t, C_SETUP_ELEMENT, p,  -1);
 
+        
         /* free list */
         g_list_foreach(selected, (GFunc) gtk_tree_path_free, NULL);
         g_list_free(selected);
@@ -127,7 +128,7 @@ static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, g
                 /* hardware selected */
                 case T_LED_HARDWARE:
                 {
-                        NiftyconfHardware *h = (NiftyconfHardware *) element;
+                        NiftyconfHardware *h = (NiftyconfHardware *) (element);
                         setup_props_hardware_show(h);
 
                         /* redraw everything */
@@ -141,7 +142,7 @@ static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, g
                 /* tile element selected */
                 case T_LED_TILE:
                 {
-                        NiftyconfTile *tile = (NiftyconfTile *) element;
+                        NiftyconfTile *tile = (NiftyconfTile *) (element);
                         setup_props_tile_show(tile);
 
                         /* highlight tile */
@@ -158,7 +159,7 @@ static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, g
                 /* chain element selected */
                 case T_LED_CHAIN:
                 {
-                        NiftyconfChain *chain = (NiftyconfChain *) element;
+                        NiftyconfChain *chain = (NiftyconfChain *) (element);
                         setup_props_chain_show(chain);
 
                         /* redraw everything */
@@ -506,7 +507,7 @@ gboolean on_popup_add_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
             led_hardware_sibling_get_next(last);
             last = led_hardware_sibling_get_next(last));
 
-        led_hardware_sibling_append(last, h);
+        led_hardware_sibling_set(last, h);
 
         /* refresh tree */
         setup_tree_clear();
@@ -526,7 +527,7 @@ gboolean on_popup_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
 
         /* get currently selected element */
         NIFTYLED_TYPE t;
-        gpointer element;
+        gpointer *element;
         _tree_view_get_selection(&t, &element);
         
         /* create new tile */
@@ -534,39 +535,41 @@ gboolean on_popup_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
         if(!(n = led_tile_new()))
                 return FALSE;
 
+        
+        /* different possible element types */
         switch(t)
         {
                 /* currently selected element is a hardware-node */
                 case T_LED_HARDWARE:
                 {
                         /* get last tile of this hardware */
-                        LedHardware *h = (LedHardware *) element;
-                        LedTile *tile;
+                        LedHardware *h = hardware_niftyled((NiftyconfHardware *) element);
+                        
                         /* does hw already have a tile? */
+                        LedTile *tile;
                         if(!(tile = led_hardware_get_tile(h)))
                         {
                                 led_hardware_set_tile(h, n);
                         }
                         else
                         {
-                                for(tile;
-                                    led_tile_sibling_get_next(tile);
-                                    tile = led_tile_sibling_get_next(tile));
                                 led_tile_sibling_append(tile, n);
                         }
-                        
                         break;
                 }
 
                 /* currently selected element is a tile-node */
                 case T_LED_TILE:
                 {
-                        LedTile *tile = (LedTile *) element;
-                        led_tile_sibling_append(tile, n);
+                        LedTile *tile = tile_niftyled((NiftyconfTile *) element);
+                        led_tile_child_append(tile, n);
                         break;
                 }
         }
 
+        /* register new tile to gui */
+        tile_register(n);
+        
         /* refresh tree */
         setup_tree_clear();
         setup_tree_rebuild();
@@ -597,7 +600,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
 
         /* get currently selected element */
         NIFTYLED_TYPE t;
-        gpointer element;
+        gpointer *element;
         _tree_view_get_selection(&t, &element);
         
         /* create new popup menu */
