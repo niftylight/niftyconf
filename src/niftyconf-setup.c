@@ -585,7 +585,27 @@ gboolean on_popup_add_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
                 return FALSE;
         
+        /* get currently selected element */
+        NIFTYLED_TYPE t;
+        gpointer *element;
+        _tree_view_get_selection(&t, &element);
 
+        /* can only add chains to tiles */
+        if(t != T_LED_TILE)
+                return FALSE;
+        
+        /** create new chain @todo select format */
+        LedChain *n;
+        if(!(n = led_chain_new(0, "RGB u8")))
+                return FALSE;
+        
+        /* attach chain to tile */
+        LedTile *tile = tile_niftyled((NiftyconfTile *) element);
+        led_tile_set_chain(tile, n);
+
+        /* register chain to gui */
+        chain_register(n);
+        
         /* refresh tree */
         setup_tree_clear();
         setup_tree_rebuild();
