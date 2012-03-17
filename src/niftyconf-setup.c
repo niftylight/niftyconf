@@ -477,6 +477,110 @@ void on_setup_menuitem_new_activate(GtkMenuItem *i, gpointer d)
 }
 
 /** popup menu-entry selected */
+gboolean on_popup_remove_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
+{
+        /* only handle button-press events */
+        if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
+                return FALSE;
+
+        /* get currently selected element */
+        NIFTYLED_TYPE t;
+        gpointer *element;
+        _tree_view_get_selection(&t, &element);
+
+        /* works only if hardware-element is selected */
+        if(t != T_LED_HARDWARE)
+                return FALSE;
+
+        /* get hardware element */
+        NiftyconfHardware *hw = (NiftyconfHardware *) element;
+        LedHardware *h = hardware_niftyled(hw);
+        
+        /* unregister hardware */
+        hardware_unregister(hw);
+        led_settings_hardware_unlink(current, h);
+        led_hardware_destroy(h);
+        
+        
+        /* refresh tree */
+        setup_tree_clear();
+        setup_tree_rebuild();
+
+        return TRUE;
+        
+}
+
+
+/** popup menu-entry selected */
+gboolean on_popup_remove_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
+{
+        /* only handle button-press events */
+        if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
+                return FALSE;
+
+        /* get currently selected element */
+        NIFTYLED_TYPE t;
+        gpointer *element;
+        _tree_view_get_selection(&t, &element);
+
+        /* works only if tile-element is selected */
+        if(t != T_LED_TILE)
+                return FALSE;
+
+        /* get element */
+        NiftyconfTile *tile = (NiftyconfTile *) element;
+        LedTile *t = tile_niftyled(tile);
+        
+        /* unregister from gui */
+        tile_unregister(tile);
+        led_settings_tile_unlink(current, t);
+        led_tile_destroy(t);
+                
+        /* refresh tree */
+        setup_tree_clear();
+        setup_tree_rebuild();
+
+        return TRUE;
+        
+}
+
+
+/** popup menu-entry selected */
+gboolean on_popup_remove_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
+{
+        /* only handle button-press events */
+        if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
+                return FALSE;
+
+        /* get currently selected element */
+        NIFTYLED_TYPE t;
+        gpointer *element;
+        _tree_view_get_selection(&t, &element);
+
+        /* works only if tile-element is selected */
+        if(t != T_LED_TILE)
+                return FALSE;
+
+        /* get element */
+        NiftyconfTile *tile = (NiftyconfTile *) element;
+        LedTile *t = tile_niftyled(tile);
+        LedChain *c = led_tile_get_chain(t);
+        
+        /* unregister from gui */
+        chain_unregister(c);
+        led_settings_chain_unlink(current, c);
+        led_chain_destroy(c);
+                
+        /* refresh tree */
+        setup_tree_clear();
+        setup_tree_rebuild();
+
+        return TRUE;
+        
+}
+
+
+/** popup menu-entry selected */
 gboolean on_popup_add_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
@@ -509,6 +613,10 @@ gboolean on_popup_add_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
 
         led_hardware_sibling_set(last, h);
 
+        /* create config */
+        if(!led_settings_create_from_hardware(current, h))
+                return FALSE;
+        
         /* refresh tree */
         setup_tree_clear();
         setup_tree_rebuild();
@@ -569,6 +677,10 @@ gboolean on_popup_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
 
         /* register new tile to gui */
         tile_register(n);
+
+        /* create config */
+        if(!led_settings_create_from_tile(current, n))
+                return FALSE;
         
         /* refresh tree */
         setup_tree_clear();
@@ -603,6 +715,10 @@ gboolean on_popup_add_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
         LedTile *tile = tile_niftyled((NiftyconfTile *) element);
         led_tile_set_chain(tile, n);
 
+        /* create config */
+        if(!led_settings_create_from_chain(current, n))
+                return FALSE;
+        
         /* register chain to gui */
         chain_register(n);
         
@@ -614,7 +730,7 @@ gboolean on_popup_add_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
 }
 
 
-/** show setup-tree popup menu */
+/** create & show setup-tree popup menu */
 static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
 
@@ -622,6 +738,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
         NIFTYLED_TYPE t;
         gpointer *element;
         _tree_view_get_selection(&t, &element);
+
         
         /* create new popup menu */
         GtkWidget *menu = gtk_menu_new ();
@@ -629,7 +746,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                          G_CALLBACK (gtk_widget_destroy), NULL);
 
         
-        /* generate "add hardware" menuitem */
+        /* always generate "add hardware" menuitem (will be added toplevel only) */
         GtkWidget *menu_hw = gtk_image_menu_item_new_with_label("Add hardware");        
         gtk_image_menu_item_set_image(
                         GTK_IMAGE_MENU_ITEM(menu_hw), 
@@ -641,33 +758,106 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                                         (GCallback) (on_popup_add_hardware), NULL);
 
 
-        /* generate "add tile" menuitem */
-        if((t == T_LED_HARDWARE) || (t == T_LED_TILE))
-        {
-                GtkWidget *menu_tile = gtk_image_menu_item_new_with_label("Add tile");
-                gtk_image_menu_item_set_image(
-                                GTK_IMAGE_MENU_ITEM(menu_tile), 
-                                gtk_image_new_from_stock(
-                                                "gtk-add", 
-                                                GTK_ICON_SIZE_MENU));
-                gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_tile);
-                g_signal_connect(menu_tile, "button-press-event",
-                                        (GCallback) on_popup_add_tile, NULL);
-        }
-
         
-        /* generate "add chain" menuitem */
-        if((t == T_LED_TILE))
+        /* decide about type of currently selected element */
+        switch(t)
         {
-                GtkWidget *menu_chain = gtk_image_menu_item_new_with_label("Add chain");                
-                gtk_image_menu_item_set_image(
-                                GTK_IMAGE_MENU_ITEM(menu_chain), 
-                                gtk_image_new_from_stock(
-                                                "gtk-add", 
-                                                GTK_ICON_SIZE_MENU));
-                gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_chain);
-                g_signal_connect(menu_chain, "button-press-event",
-                                        (GCallback) on_popup_add_chain, NULL);
+                case T_LED_HARDWARE:
+                {
+                        /* generate "add tile" menuitem */
+                        GtkWidget *add_tile = gtk_image_menu_item_new_with_label("Add tile");
+                        gtk_image_menu_item_set_image(
+                                        GTK_IMAGE_MENU_ITEM(add_tile), 
+                                        gtk_image_new_from_stock(
+                                                        "gtk-add", 
+                                                        GTK_ICON_SIZE_MENU));
+                        gtk_menu_shell_append(GTK_MENU_SHELL(menu), add_tile);
+                        g_signal_connect(add_tile, "button-press-event",
+                                                (GCallback) on_popup_add_tile, NULL);
+
+                        /* generate "remove hardware" menuitem */
+                        GtkWidget *remove_hw = gtk_image_menu_item_new_with_label("Remove hardware");
+                        gtk_image_menu_item_set_image(
+                                        GTK_IMAGE_MENU_ITEM(remove_hw), 
+                                        gtk_image_new_from_stock(
+                                                        "gtk-remove", 
+                                                        GTK_ICON_SIZE_MENU));
+                        gtk_menu_shell_append(GTK_MENU_SHELL(menu), remove_hw);
+                        g_signal_connect(remove_hw, "button-press-event",
+                                                (GCallback) on_popup_remove_hardware, NULL);
+
+                        /* generate "initialize/deinitialize" menuitem */
+
+                        /* generate "move up" menuitem */
+
+                        /* generate "move down" menuitem */
+
+                        /* generate "cut" menuitem */
+                        
+                        /* generate "copy" menuitem */
+                        
+                        /* generate "paste" menuitem */
+                        
+                        break;
+                }
+
+                case T_LED_TILE:
+                {
+                        /* generate "add chain" menuitem */
+                        GtkWidget *menu_chain = gtk_image_menu_item_new_with_label("Add chain");                
+                        gtk_image_menu_item_set_image(
+                                        GTK_IMAGE_MENU_ITEM(menu_chain), 
+                                        gtk_image_new_from_stock(
+                                                        "gtk-add", 
+                                                        GTK_ICON_SIZE_MENU));
+                        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_chain);
+                        g_signal_connect(menu_chain, "button-press-event",
+                                                (GCallback) on_popup_add_chain, NULL);
+
+                        /* generate "add tile" menuitem */
+                        GtkWidget *menu_tile = gtk_image_menu_item_new_with_label("Add tile");
+                        gtk_image_menu_item_set_image(
+                                        GTK_IMAGE_MENU_ITEM(menu_tile), 
+                                        gtk_image_new_from_stock(
+                                                        "gtk-add", 
+                                                        GTK_ICON_SIZE_MENU));
+                        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_tile);
+                        g_signal_connect(menu_tile, "button-press-event",
+                                                (GCallback) on_popup_add_tile, NULL);
+
+                        /* generate "remove tile" menuitem */
+
+                        /* generate "remove chain" menuitem */
+                        
+                        /* generate "move up" menuitem */
+
+                        /* generate "move down" menuitem */
+
+                        /* generate "cut" menuitem */
+                        
+                        /* generate "copy" menuitem */
+                        
+                        /* generate "paste" menuitem */
+                        
+                        break;
+                }
+
+                case T_LED_CHAIN:
+                {
+                        /* generate "remove chain" menuitem */
+
+                        /* generate "cut" menuitem */
+                        
+                        /* generate "copy" menuitem */
+                        
+                        /* generate "paste" menuitem */
+                        break;
+                }
+
+                default:
+                {
+                        NFT_LOG(L_ERROR, "Unknown element-type selected");
+                }
         }
 
         
