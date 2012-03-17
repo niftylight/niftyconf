@@ -519,12 +519,12 @@ gboolean on_popup_remove_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
                 return FALSE;
 
         /* get currently selected element */
-        NIFTYLED_TYPE t;
+        NIFTYLED_TYPE type;
         gpointer *element;
-        _tree_view_get_selection(&t, &element);
+        _tree_view_get_selection(&type, &element);
 
         /* works only if tile-element is selected */
-        if(t != T_LED_TILE)
+        if(type != T_LED_TILE)
                 return FALSE;
 
         /* get element */
@@ -553,12 +553,12 @@ gboolean on_popup_remove_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
                 return FALSE;
 
         /* get currently selected element */
-        NIFTYLED_TYPE t;
+        NIFTYLED_TYPE type;
         gpointer *element;
-        _tree_view_get_selection(&t, &element);
+        _tree_view_get_selection(&type, &element);
 
         /* works only if tile-element is selected */
-        if(t != T_LED_TILE)
+        if(type != T_LED_TILE)
                 return FALSE;
 
         /* get element */
@@ -567,7 +567,7 @@ gboolean on_popup_remove_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
         LedChain *c = led_tile_get_chain(t);
         
         /* unregister from gui */
-        chain_unregister(c);
+        chain_unregister(led_chain_get_privdata(c));
         led_settings_chain_unlink(current, c);
         led_chain_destroy(c);
                 
@@ -826,6 +826,15 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                                                 (GCallback) on_popup_add_tile, NULL);
 
                         /* generate "remove tile" menuitem */
+                        GtkWidget *remove_tile = gtk_image_menu_item_new_with_label("Remove tile");
+                        gtk_image_menu_item_set_image(
+                                        GTK_IMAGE_MENU_ITEM(remove_tile), 
+                                        gtk_image_new_from_stock(
+                                                        "gtk-remove", 
+                                                        GTK_ICON_SIZE_MENU));
+                        gtk_menu_shell_append(GTK_MENU_SHELL(menu), remove_tile);
+                        g_signal_connect(remove_tile, "button-press-event",
+                                                (GCallback) on_popup_remove_tile, NULL);
 
                         /* generate "remove chain" menuitem */
                         
