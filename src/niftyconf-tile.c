@@ -83,9 +83,9 @@ NiftyconfTile *tile_register(LedTile *t)
 {
         /* also allocate all children */
         LedTile *tile;
-        for(tile = led_tile_child_get(t);
+        for(tile = led_tile_get_child(t);
             tile;
-            tile = led_tile_sibling_get_next(tile))
+            tile = led_tile_get_next_sibling(tile))
         {
                 tile_register(tile);
         }
@@ -122,9 +122,9 @@ void tile_unregister(NiftyconfTile *t)
 
         /* free all children */
         LedTile *tile;
-        for(tile = led_tile_child_get(t->t);
+        for(tile = led_tile_get_child(t->t);
             tile;
-            tile = led_tile_sibling_get_next(tile))
+            tile = led_tile_get_next_sibling(tile))
         {
                 tile_unregister(led_tile_get_privdata(tile));
         }
