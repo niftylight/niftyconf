@@ -55,6 +55,7 @@ gboolean        setup_load(gchar *filename);
 void            setup_cleanup();
 
 /* model functions */
+LedSettings *   setup_get_current();
 
 
 

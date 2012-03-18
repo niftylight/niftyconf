@@ -46,7 +46,6 @@
 #include "niftyconf-ui.h"
 #include "niftyconf-log.h"
 #include "niftyconf-setup.h"
-#include "niftyconf-setup-props.h"
 #include "niftyconf-hardware.h"
 #include "niftyconf-tile.h"
 #include "niftyconf-chain.h"
@@ -174,8 +173,7 @@ int main (int argc, char *argv[])
                 g_error("Failed to initialize \"hardware\" module");
         if(!setup_init())
                 g_error("Failed to initialize \"setup\" module");
-        if(!setup_props_init())
-                g_error("Failed to initialize \"props\" module");
+
         
         
         /* build our ui */
@@ -183,9 +181,7 @@ int main (int argc, char *argv[])
         GtkBox *box_setup = GTK_BOX(gtk_builder_get_object(ui, "box_setup"));
         gtk_box_pack_start(box_setup, setup_get_widget(), TRUE, TRUE, 0);
         GtkBox *box_chain = GTK_BOX(gtk_builder_get_object(ui, "box_chain"));
-        gtk_box_pack_start(box_chain, chain_ledlist_get_widget(), TRUE, TRUE, 0);
-        GtkBox *box_setup_props = GTK_BOX(gtk_builder_get_object(ui, "box_setup_props"));
-        gtk_box_pack_start(box_setup_props, setup_props_get_widget(), FALSE, FALSE, 0);
+        gtk_box_pack_start(box_chain, chain_ledlist_get_widget(), TRUE, TRUE, 0);        
         menuitem_log_win = GTK_CHECK_MENU_ITEM(gtk_builder_get_object(ui, "menuitem_log_win"));
       
         

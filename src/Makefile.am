@@ -8,6 +8,8 @@ niftyconf_SOURCES = \
 	niftyconf-log.c \
 	niftyconf-setup.c \
 	niftyconf-setup-props.c \
+	niftyconf-setup-tree.c \
+	niftyconf-setup-tree-popup.c \
 	niftyconf-led.c \
 	niftyconf-chain.c \
 	niftyconf-tile.c \
