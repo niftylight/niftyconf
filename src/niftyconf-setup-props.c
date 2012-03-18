@@ -126,8 +126,8 @@ void setup_props_tile_show(NiftyconfTile *t)
                 LedTile *tile = tile_niftyled(t);
                 gtk_spin_button_set_value(spinbutton_tile_x, (gdouble) led_tile_get_x(tile));
                 gtk_spin_button_set_value(spinbutton_tile_y, (gdouble) led_tile_get_y(tile));
-                gtk_spin_button_set_value(spinbutton_tile_width, (gdouble) led_tile_get_width(tile));
-                gtk_spin_button_set_value(spinbutton_tile_height, (gdouble) led_tile_get_height(tile));
+                gtk_spin_button_set_value(spinbutton_tile_width, (gdouble) led_tile_get_transformed_width(tile));
+                gtk_spin_button_set_value(spinbutton_tile_height, (gdouble) led_tile_get_transformed_height(tile));
                 gtk_spin_button_set_value(spinbutton_tile_rotation, (gdouble) led_tile_get_rotation(tile)*180/M_PI);
                 gtk_spin_button_set_value(spinbutton_tile_pivot_x, (gdouble) led_tile_get_pivot_x(tile));
                 gtk_spin_button_set_value(spinbutton_tile_pivot_y, (gdouble) led_tile_get_pivot_y(tile));
@@ -335,7 +335,7 @@ void on_spinbutton_tile_rotation_changed(GtkSpinButton *s, gpointer u)
         led_tile_set_rotation(tile, (double) gtk_spin_button_get_value(s)*M_PI/180);
 
         /* refresh view */
-
+        setup_props_tile_show(current_tile);
 }
 
 
@@ -349,7 +349,7 @@ void on_spinbutton_tile_pivot_x_changed(GtkSpinButton *s, gpointer u)
         led_tile_set_pivot_x(tile, (double) gtk_spin_button_get_value(s));
 
         /* refresh view */
-
+        setup_props_tile_show(current_tile);
 }
 
 
@@ -363,7 +363,7 @@ void on_spinbutton_tile_pivot_y_changed(GtkSpinButton *s, gpointer u)
         led_tile_set_pivot_y(tile, (double) gtk_spin_button_get_value(s));
 
         /* refresh view */
-
+        setup_props_tile_show(current_tile);
 }
 
 
