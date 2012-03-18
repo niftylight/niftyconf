@@ -57,6 +57,8 @@ NiftyconfHardware *     hardware_register(LedHardware *h);
 void                    hardware_unregister(NiftyconfHardware *h);
 
 /* GUI functions */
+gboolean                hardware_tree_get_collapsed(NiftyconfHardware *h);
+void                    hardware_tree_set_collapsed(NiftyconfHardware *h, gboolean is_collapsed);
 
 /* model functions */
 LedHardware *           hardware_niftyled(NiftyconfHardware *h);

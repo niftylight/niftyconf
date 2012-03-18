@@ -52,6 +52,8 @@ struct _NiftyconfTile
 {
         /** niftyled descriptor */
         LedTile *t;
+        /** true if element tree is currently collapsed */
+        gboolean collapsed;
 };
 
 
@@ -63,6 +65,31 @@ struct _NiftyconfTile
 
 /******************************************************************************
  ******************************************************************************/
+/**
+ * getter for boolean value whether element 
+ * tree is currently collapsed
+ */
+gboolean tile_tree_get_collapsed(NiftyconfTile *t)
+{
+        if(!t)
+                NFT_LOG_NULL(FALSE);
+
+        return t->collapsed;
+}
+
+
+/**
+ * setter for boolean value whether element row in
+ * tree is currently collapsed
+ */
+void tile_tree_set_collapsed(NiftyconfTile *t, gboolean is_collapsed)
+{
+        if(!t)
+                NFT_LOG_NULL();
+
+        t->collapsed = is_collapsed;
+}
+
 
 /**
  * getter for libniftyled object
@@ -107,6 +134,9 @@ NiftyconfTile *tile_register(LedTile *t)
         /* save descriptor */
         n->t = t;
 
+        /* default hardware is collapsed */
+        n->collapsed = TRUE;
+        
         /* register descriptor as niftyled privdata */
         led_tile_set_privdata(t, n);
 }

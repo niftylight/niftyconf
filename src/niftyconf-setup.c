@@ -235,7 +235,7 @@ static void _tree_append_hardware(GtkTreeStore *s, LedHardware *h)
                            C_SETUP_TITLE, led_hardware_get_name(h), 
                            C_SETUP_ELEMENT, (gpointer) hardware,
                            -1);
-
+        
         /** append chain */
         _tree_append_chain(s, led_hardware_get_chain(h), &i);
 
@@ -288,6 +288,41 @@ static void _remove_hardware(NiftyconfHardware *hw)
         led_hardware_destroy(h);
 }
 
+/** either collapse or expand a row of the setup-tree */
+gboolean _element_set_collapse(GtkTreeModel *model, GtkTreePath *path,
+                               GtkTreeIter *iter, gpointer u)
+{  
+        /* get niftyled element */
+        gpointer *element;
+        NIFTYLED_TYPE t;
+        gtk_tree_model_get(model, iter, C_SETUP_TYPE, &t, C_SETUP_ELEMENT, &element,  -1);
+
+        gboolean collapsed = FALSE;
+        
+        switch(t)
+        {
+                case T_LED_HARDWARE:
+                {
+                        collapsed = hardware_tree_get_collapsed((NiftyconfHardware *) element);
+                        break;
+                }
+
+                case T_LED_TILE:
+                {
+                        collapsed = tile_tree_get_collapsed((NiftyconfTile *) element);
+                        break;
+                }
+        }
+
+        if(collapsed)
+                gtk_tree_view_collapse_row(tree_view, path);
+        else
+                gtk_tree_view_expand_row(tree_view, path, FALSE);                
+
+        
+        return FALSE;
+}
+
 /******************************************************************************
  ******************************************************************************/
 
@@ -306,6 +341,12 @@ void setup_tree_rebuild()
                 _tree_append_hardware(tree_store, h);
         }
 
+        /* show treeview */
+        gtk_widget_show(GTK_WIDGET(tree_view));
+
+        /* walk complete tree & collapse or expand element */
+        GtkTreeModel *model = gtk_tree_view_get_model(tree_view);
+        gtk_tree_model_foreach(model, _element_set_collapse, NULL);
 }
 
 
@@ -467,6 +508,60 @@ gboolean setup_init()
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
 
+
+/** user collapsed row */
+void on_setup_treeview_collapsed(GtkTreeView *tv, 
+                                 GtkTreeIter *i, GtkTreePath *path, gpointer u)
+{
+        GtkTreeModel *m = gtk_tree_view_get_model(tv);
+        gpointer *p;
+        NIFTYLED_TYPE t;
+        gtk_tree_model_get(m, i, C_SETUP_TYPE, &t, C_SETUP_ELEMENT, &p,  -1);
+
+        switch(t)
+        {
+                case T_LED_HARDWARE:
+                {
+                        hardware_tree_set_collapsed((NiftyconfHardware *) p, TRUE);
+                        break;
+                }
+
+                case T_LED_TILE:
+                {
+                        tile_tree_set_collapsed((NiftyconfTile *) p, TRUE);
+                        break;
+                }
+        }
+}
+
+
+/** user expanded row */
+void on_setup_treeview_expanded(GtkTreeView *tv, 
+                                 GtkTreeIter *i, GtkTreePath *path, gpointer u)
+{
+        GtkTreeModel *m;
+        if(!(m = gtk_tree_view_get_model(tv)))
+                return;
+        
+        gpointer *p;
+        NIFTYLED_TYPE t;
+        gtk_tree_model_get(m, i, C_SETUP_TYPE, &t, C_SETUP_ELEMENT, &p,  -1);
+
+        switch(t)
+        {
+                case T_LED_HARDWARE:
+                {
+                        hardware_tree_set_collapsed((NiftyconfHardware *) p, FALSE);
+                        break;
+                }
+
+                case T_LED_TILE:
+                {
+                        tile_tree_set_collapsed((NiftyconfTile *) p, FALSE);
+                        break;
+                }
+        } 
+}
 
 
 /** user selected another row */

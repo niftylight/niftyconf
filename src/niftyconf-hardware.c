@@ -51,6 +51,8 @@ struct _NiftyconfHardware
 {
         /** niftyled hardware descriptor */
         LedHardware *h;
+        /** true if element tree is currently collapsed */
+        gboolean collapsed;
 };
 
 
@@ -63,6 +65,32 @@ struct _NiftyconfHardware
 /******************************************************************************
  ******************************************************************************/
 
+/**
+ * getter for boolean value whether element row in
+ * tree is currently collapsed
+ */
+gboolean hardware_tree_get_collapsed(NiftyconfHardware *h)
+{
+        if(!h)
+                NFT_LOG_NULL(FALSE);
+
+        return h->collapsed;
+}
+
+
+/**
+ * setter for boolean value whether element row in
+ * tree is currently collapsed
+ */
+void hardware_tree_set_collapsed(NiftyconfHardware *h, gboolean is_collapsed)
+{
+        if(!h)
+                NFT_LOG_NULL();
+
+        h->collapsed = is_collapsed;
+}
+
+ 
 /**
  * getter for libniftyled object
  */
@@ -93,6 +121,9 @@ NiftyconfHardware *hardware_register(LedHardware *h)
         /* save LedHardware descriptor */
         n->h = h;
 
+        /* default hardware is collapsed */
+        n->collapsed = TRUE;
+        
         /* register Hardware descriptor as LedHardware privdata */
         led_hardware_set_privdata(h, n);
 }
