@@ -157,12 +157,15 @@
                   <object class="GtkSpinButton" id="spinbutton_led_x">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">X coordinate of LED relative to top-left corner of tile (or 0/0)</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_led_x</property>
+                    <property name="numeric">True</property>
+                    <signal name="value-changed" handler="on_spinbutton_led_x_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -173,12 +176,15 @@
                   <object class="GtkSpinButton" id="spinbutton_led_y">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Y coordinate of LED relative to top-left corner of tile (or 0/0)</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_led_y</property>
+                    <property name="numeric">True</property>
+                    <signal name="value-changed" handler="on_spinbutton_led_y_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -191,12 +197,15 @@
                   <object class="GtkSpinButton" id="spinbutton_led_component">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Component of this LED starting from 0 (e.g. if you use RGB and want to select green, component=1)</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_led_component</property>
+                    <property name="numeric">True</property>
+                    <signal name="value-changed" handler="on_spinbutton_led_component_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -209,12 +218,15 @@
                   <object class="GtkSpinButton" id="spinbutton_led_gain">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Hardware gain of this LED, typically adjust LED current (effect depends on the used hardware plugin)</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_led_gain</property>
+                    <property name="numeric">True</property>
+                    <signal name="value-changed" handler="on_spinbutton_led_gain_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -300,12 +312,15 @@
                   <object class="GtkSpinButton" id="spinbutton_chain_ledcount">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Amount of LEDs in this chain</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_chain_ledcount</property>
+                    <property name="numeric">True</property>
+                    <signal name="value-changed" handler="on_spinbutton_chain_ledcount_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -316,11 +331,13 @@
                   <object class="GtkEntry" id="entry_chain_format">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Pixelformat of this chain (e.g. RGB u8 - check http://gegl.org/babl for valid formats)</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
+                    <signal name="changed" handler="on_entry_chain_format_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -535,12 +552,15 @@
                   <object class="GtkSpinButton" id="spinbutton_tile_x">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">X offset of this tile relative to top-left corner of parent tile (or 0/0)</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_tile_x</property>
+                    <property name="numeric">True</property>
+                    <signal name="value-changed" handler="on_spinbutton_tile_x_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -551,12 +571,15 @@
                   <object class="GtkSpinButton" id="spinbutton_tile_y">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">X offset of this tile relative to top-left corner of parent tile (or 0/0)</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_tile_y</property>
+                    <property name="numeric">True</property>
+                    <signal name="value-changed" handler="on_spinbutton_tile_y_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -568,13 +591,17 @@
                 <child>
                   <object class="GtkSpinButton" id="spinbutton_tile_width">
                     <property name="visible">True</property>
+                    <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">current total width allocated by this tile</property>
+                    <property name="editable">False</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_tile_width</property>
+                    <property name="numeric">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -586,13 +613,17 @@
                 <child>
                   <object class="GtkSpinButton" id="spinbutton_tile_height">
                     <property name="visible">True</property>
+                    <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">current total height allocated by this tile</property>
+                    <property name="editable">False</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_tile_height</property>
+                    <property name="numeric">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -605,12 +636,15 @@
                   <object class="GtkSpinButton" id="spinbutton_tile_rotation">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Tile rotation in degrees (clockwise around pivot)</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_tile_rotation</property>
+                    <property name="numeric">True</property>
+                    <signal name="value-changed" handler="on_spinbutton_tile_rotation_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -623,12 +657,15 @@
                   <object class="GtkSpinButton" id="spinbutton_tile_pivot_x">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">X coordinate of rotation pivot (relative to top-left of tile)</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_tile_pivot_x</property>
+                    <property name="numeric">True</property>
+                    <signal name="value-changed" handler="on_spinbutton_tile_pivot_x_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -641,12 +678,15 @@
                   <object class="GtkSpinButton" id="spinbutton_tile_pivot_y">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Y coordinate of rotation pivot (relative to top-left of tile)</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_tile_pivot_y</property>
+                    <property name="numeric">True</property>
+                    <signal name="value-changed" handler="on_spinbutton_tile_pivot_y_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -736,11 +776,13 @@
                   <object class="GtkEntry" id="entry_hw_name">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Arbitrary name of this hardware-adapter instance</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
+                    <signal name="changed" handler="on_entry_hardware_name_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -751,11 +793,13 @@
                   <object class="GtkEntry" id="entry_hw_plugin">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">plugin used by this hardware-adapter instance</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
+                    <signal name="changed" handler="on_entry_hardware_plugin_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -768,11 +812,13 @@
                   <object class="GtkEntry" id="entry_hw_id">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Unique id of this hardware adapter instance</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
+                    <signal name="changed" handler="on_entry_hardware_id_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -785,12 +831,15 @@
                   <object class="GtkSpinButton" id="spinbutton_hw_stride">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">stride value of this hardware-adapter instance (s. docs)</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_hardware_stride</property>
+                    <property name="numeric">True</property>
+                    <signal name="value-changed" handler="on_spinbutton_hardware_stride_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>

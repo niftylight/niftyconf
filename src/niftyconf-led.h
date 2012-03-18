@@ -56,6 +56,8 @@ NiftyconfLed *  led_register(Led *l);
 void            led_unregister(NiftyconfLed *l);
 
 /* GUI functions */
+gboolean        led_get_highlighted(NiftyconfLed *l);
+void            led_set_highlighted(NiftyconfLed *l, gboolean is_highlighted);
 
 /* model functions */
 Led *           led_niftyled(NiftyconfLed *l);

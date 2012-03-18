@@ -58,7 +58,10 @@ void            tile_unregister(NiftyconfTile *t);
 
 /* GUI functions */
 gboolean        tile_tree_get_collapsed(NiftyconfTile *t);
+gboolean        tile_tree_get_highlighted(NiftyconfTile *t);
 void            tile_tree_set_collapsed(NiftyconfTile *t, gboolean is_collapsed);
+void            tile_tree_set_highlighted(NiftyconfTile *t, gboolean is_highlighted);
+
 
 /* model functions */
 LedTile *       tile_niftyled(NiftyconfTile *t);

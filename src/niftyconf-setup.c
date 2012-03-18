@@ -144,8 +144,7 @@ gboolean setup_load(gchar *filename)
         current = s;
 
         /* update ui */
-        setup_tree_clear();
-        setup_tree_rebuild();
+        setup_tree_refresh();
         
         
         /* redraw new setup */

@@ -54,6 +54,8 @@ struct _NiftyconfChain
 {
         /** niftyled descriptor */
         LedChain *c;
+        /** true if element is currently highlighted */
+        gboolean highlight;
 };
 
 
@@ -127,6 +129,26 @@ void chain_ledlist_clear()
                 return;
         
         gtk_list_store_clear(liststore);
+}
+
+
+/** getter for boolean value whether element is currently highlighted */
+gboolean chain_tree_get_highlighted(NiftyconfChain *c)
+{
+        if(!c)
+                NFT_LOG_NULL(FALSE);
+        
+        return c->highlight;
+}
+
+
+/* setter for boolean value whether element is currently highlighted */
+void chain_tree_set_highlighted(NiftyconfChain *c, gboolean is_highlighted)
+{
+        if(!c)
+                NFT_LOG_NULL();
+
+        c->highlight = is_highlighted;
 }
 
 

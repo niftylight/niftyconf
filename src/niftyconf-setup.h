@@ -44,6 +44,7 @@
 #ifndef _NIFTYCONF_SETUP_H
 #define _NIFTYCONF_SETUP_H
 
+#include <niftyled.h>
 
 
 /* GUI model functions */

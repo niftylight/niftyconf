@@ -52,6 +52,8 @@ struct _NiftyconfTile
 {
         /** niftyled descriptor */
         LedTile *t;
+        /** true if element is currently highlighted */
+        gboolean highlight;
         /** true if element tree is currently collapsed */
         gboolean collapsed;
 };
@@ -65,6 +67,27 @@ struct _NiftyconfTile
 
 /******************************************************************************
  ******************************************************************************/
+
+/** getter for boolean value whether element is currently highlighted */
+gboolean tile_tree_get_highlighted(NiftyconfTile *t)
+{
+        if(!t)
+                NFT_LOG_NULL(FALSE);
+        
+        return t->highlight;
+}
+
+
+/* setter for boolean value whether element is currently highlighted */
+void tile_tree_set_highlighted(NiftyconfTile *t, gboolean is_highlighted)
+{
+        if(!t)
+                NFT_LOG_NULL();
+
+        t->highlight = is_highlighted;
+}
+
+
 /**
  * getter for boolean value whether element 
  * tree is currently collapsed

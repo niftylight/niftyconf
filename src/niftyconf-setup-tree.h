@@ -44,6 +44,7 @@
 #ifndef _NIFTYCONF_SETUP_TREE_H
 #define _NIFTYCONF_SETUP_TREE_H
 
+#include <niftyled.h>
 
 
 /* GUI model functions */
@@ -51,8 +52,8 @@ gboolean        setup_tree_init();
 GtkWidget *     setup_tree_get_widget();
 
 /* GUI functions */
-void setup_tree_clear();
-void setup_tree_rebuild();
+void            setup_tree_clear();
+void            setup_tree_refresh();
 
 /* model functions */
 

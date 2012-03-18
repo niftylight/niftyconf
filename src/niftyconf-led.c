@@ -51,6 +51,8 @@ struct _NiftyconfLed
 {
         /** niftyled descriptor */
         Led *l;
+        /** true if element is currently highlighted */
+        gboolean highlight;
 };
 
 
@@ -65,6 +67,26 @@ struct _NiftyconfLed
 
 /******************************************************************************
  ******************************************************************************/
+
+/** getter for boolean value whether element is currently highlighted */
+gboolean led_get_highlighted(NiftyconfLed *l)
+{
+        if(!l)
+                NFT_LOG_NULL(FALSE);
+        
+        return l->highlight;
+}
+
+
+/* setter for boolean value whether element is currently highlighted */
+void led_set_highlighted(NiftyconfLed *l, gboolean is_highlighted)
+{
+        if(!l)
+                NFT_LOG_NULL();
+
+        l->highlight = is_highlighted;
+}
+
 
 /**
  * getter for libniftyled object

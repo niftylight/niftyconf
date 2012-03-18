@@ -60,6 +60,8 @@ GtkWidget *             chain_ledlist_get_widget();
 /* GUI functions */
 void                    chain_ledlist_rebuild(NiftyconfChain *c);
 void                    chain_ledlist_clear();
+void                    chain_tree_set_highlighted(NiftyconfChain *c, gboolean is_highlighted);
+gboolean                chain_tree_get_highlighted(NiftyconfChain *c);
 
 /* model functions */
 LedChain *              chain_niftyled(NiftyconfChain *c);
