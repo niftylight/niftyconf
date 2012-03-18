@@ -83,7 +83,7 @@ static GtkFileChooserDialog *open_filechooser;
 
 
 /** get last item if one or more elements are highlighted (or NULL) */
-static void _tree_view_get_selection(NIFTYLED_TYPE *t, gpointer **p)
+static void _tree_get_selection(NIFTYLED_TYPE *t, gpointer **p)
 {
         /* get current treeview selection */
         GtkTreeSelection *selection;
@@ -114,7 +114,7 @@ static void _tree_view_get_selection(NIFTYLED_TYPE *t, gpointer **p)
 
 
 /** function to process an element that is currently selected */
-static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, gpointer data)
+static void _tree_element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, gpointer data)
 {
         /* get element represented by this row */
         gpointer *element;
@@ -289,7 +289,7 @@ static void _remove_hardware(NiftyconfHardware *hw)
 }
 
 /** either collapse or expand a row of the setup-tree */
-gboolean _element_set_collapse(GtkTreeModel *model, GtkTreePath *path,
+gboolean _tree_element_set_collapse(GtkTreeModel *model, GtkTreePath *path,
                                GtkTreeIter *iter, gpointer u)
 {  
         /* get niftyled element */
@@ -346,7 +346,7 @@ void setup_tree_rebuild()
 
         /* walk complete tree & collapse or expand element */
         GtkTreeModel *model = gtk_tree_view_get_model(tree_view);
-        gtk_tree_model_foreach(model, _element_set_collapse, NULL);
+        gtk_tree_model_foreach(model, _tree_element_set_collapse, NULL);
 }
 
 
@@ -584,7 +584,7 @@ void on_setup_treeview_cursor_changed(GtkTreeView *tv, gpointer u)
         }
 
         /* process all selected elements */
-        gtk_tree_selection_selected_foreach(s, _element_selected, NULL);
+        gtk_tree_selection_selected_foreach(s, _tree_element_selected, NULL);
 
         //setup_redraw();
         //scene_redraw();
@@ -617,7 +617,7 @@ gboolean on_popup_remove_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
         /* get currently selected element */
         NIFTYLED_TYPE t;
         gpointer *element;
-        _tree_view_get_selection(&t, &element);
+        _tree_get_selection(&t, &element);
 
         /* works only if hardware-element is selected */
         if(t != T_LED_HARDWARE)
@@ -647,7 +647,7 @@ gboolean on_popup_remove_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
         /* get currently selected element */
         NIFTYLED_TYPE type;
         gpointer *element;
-        _tree_view_get_selection(&type, &element);
+        _tree_get_selection(&type, &element);
 
         /* works only if tile-element is selected */
         if(type != T_LED_TILE)
@@ -676,7 +676,7 @@ gboolean on_popup_remove_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
         /* get currently selected element */
         NIFTYLED_TYPE type;
         gpointer *element;
-        _tree_view_get_selection(&type, &element);
+        _tree_get_selection(&type, &element);
 
         /* works only if tile-element is selected */
         if(type != T_LED_TILE)
@@ -764,7 +764,7 @@ gboolean on_popup_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
         /* get currently selected element */
         NIFTYLED_TYPE t;
         gpointer *element;
-        _tree_view_get_selection(&t, &element);
+        _tree_get_selection(&t, &element);
         
         /* create new tile */
         LedTile *n;
@@ -828,7 +828,7 @@ gboolean on_popup_add_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
         /* get currently selected element */
         NIFTYLED_TYPE t;
         gpointer *element;
-        _tree_view_get_selection(&t, &element);
+        _tree_get_selection(&t, &element);
 
         /* can only add chains to tiles */
         if(t != T_LED_TILE)
@@ -865,7 +865,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
         /* get currently selected element from tree */
         NIFTYLED_TYPE t;
         gpointer *element;
-        _tree_view_get_selection(&t, &element);
+        _tree_get_selection(&t, &element);
 
         
         /* create new popup menu */
