@@ -54,8 +54,9 @@
 
 
 
+/** GtkBuilder for this module */
+static GtkBuilder *_ui;
 
-GtkCheckMenuItem *menuitem_log_win;
 
 /******************************************************************************
  ****************************** STATIC FUNCTIONS ******************************
@@ -140,7 +141,7 @@ static gboolean _parse_cmdline_args(int argc, char *argv[], gchar **setupfile)
 /** wrapper to acces widget */
 void niftyconf_menu_logwindow_set_active(gboolean active)
 {
-        gtk_check_menu_item_set_active(menuitem_log_win, active);
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(UI("menuitem_log_win")), active);
 }
 
 
@@ -177,17 +178,12 @@ int main (int argc, char *argv[])
         
         
         /* build our ui */
-        GtkBuilder *ui = ui_builder("niftyconf.ui");
-        GtkBox *box_setup = GTK_BOX(gtk_builder_get_object(ui, "box_setup"));
+        _ui = ui_builder("niftyconf.ui");
+        GtkBox *box_setup = GTK_BOX(gtk_builder_get_object(_ui, "box_setup"));
         gtk_box_pack_start(box_setup, setup_get_widget(), TRUE, TRUE, 0);
-        GtkBox *box_chain = GTK_BOX(gtk_builder_get_object(ui, "box_chain"));
+        GtkBox *box_chain = GTK_BOX(gtk_builder_get_object(_ui, "box_chain"));
         gtk_box_pack_start(box_chain, chain_ledlist_get_widget(), TRUE, TRUE, 0);        
-        menuitem_log_win = GTK_CHECK_MENU_ITEM(gtk_builder_get_object(ui, "menuitem_log_win"));
       
-        
-        /* free builder */
-        g_object_unref(ui);
-
 
         
         /* load setup file if any given from commandline */
