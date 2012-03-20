@@ -743,8 +743,8 @@ void on_setup_treeview_cursor_changed(GtkTreeView *tv, gpointer u)
 
 
 
-/** popup menu-entry selected */
-gboolean on_popup_remove_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
+/** menu-entry selected */
+gboolean on_menu_remove_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -761,8 +761,8 @@ gboolean on_popup_remove_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
 }
 
 
-/** popup menu-entry selected */
-gboolean on_popup_remove_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
+/** menu-entry selected */
+gboolean on_menu_remove_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -779,8 +779,8 @@ gboolean on_popup_remove_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
 }
 
 
-/** popup menu-entry selected */
-gboolean on_popup_remove_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
+/** menu-entry selected */
+gboolean on_menu_remove_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -797,8 +797,8 @@ gboolean on_popup_remove_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
 }
 
 
-/** popup menu-entry selected */
-gboolean on_popup_add_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
+/** menu-entry selected */
+gboolean on_menu_add_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -842,8 +842,8 @@ gboolean on_popup_add_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
 }
 
 
-/** popup menu-entry selected */
-gboolean on_popup_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
+/** menu-entry selected */
+gboolean on_menu_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -903,8 +903,8 @@ gboolean on_popup_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
 }
 
 
-/** popup menu-entry selected */
-gboolean on_popup_add_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
+/** menu-entry selected */
+gboolean on_menu_add_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -963,7 +963,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                                         GTK_ICON_SIZE_MENU));
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_hw);
         g_signal_connect(menu_hw, "button-press-event",
-                                        (GCallback) (on_popup_add_hardware), NULL);
+                                        (GCallback) (on_menu_add_hardware), NULL);
 
 
         
@@ -987,7 +987,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                                                         GTK_ICON_SIZE_MENU));
                         gtk_menu_shell_append(GTK_MENU_SHELL(menu), add_tile);
                         g_signal_connect(add_tile, "button-press-event",
-                                                (GCallback) on_popup_add_tile, NULL);
+                                                (GCallback) on_menu_add_tile, NULL);
 
                         /* generate "remove hardware" menuitem */
                         GtkWidget *remove_hw = gtk_image_menu_item_new_with_label("Remove hardware");
@@ -998,7 +998,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                                                         GTK_ICON_SIZE_MENU));
                         gtk_menu_shell_append(GTK_MENU_SHELL(menu), remove_hw);
                         g_signal_connect(remove_hw, "button-press-event",
-                                                (GCallback) on_popup_remove_hardware, NULL);
+                                                (GCallback) on_menu_remove_hardware, NULL);
 
                         /* generate "initialize/deinitialize hw" menuitem */
 
@@ -1026,7 +1026,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                                                         GTK_ICON_SIZE_MENU));
                         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_chain);
                         g_signal_connect(menu_chain, "button-press-event",
-                                                (GCallback) on_popup_add_chain, NULL);
+                                                (GCallback) on_menu_add_chain, NULL);
                         /* if tile already has chain, set widget unsensitive */
                         gtk_widget_set_sensitive(menu_chain, (gboolean) !led_tile_get_chain(tile_niftyled(current_tile)));
                         
@@ -1039,7 +1039,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                                                         GTK_ICON_SIZE_MENU));
                         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_tile);
                         g_signal_connect(menu_tile, "button-press-event",
-                                                (GCallback) on_popup_add_tile, NULL);
+                                                (GCallback) on_menu_add_tile, NULL);
 
                         /* generate "remove tile" menuitem */
                         GtkWidget *remove_tile = gtk_image_menu_item_new_with_label("Remove tile");
@@ -1050,7 +1050,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                                                         GTK_ICON_SIZE_MENU));
                         gtk_menu_shell_append(GTK_MENU_SHELL(menu), remove_tile);
                         g_signal_connect(remove_tile, "button-press-event",
-                                                (GCallback) on_popup_remove_tile, NULL);
+                                                (GCallback) on_menu_remove_tile, NULL);
 
                         /* generate "remove chain" menuitem */
                         GtkWidget *remove_chain = gtk_image_menu_item_new_with_label("Remove chain");
@@ -1061,7 +1061,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                                                         GTK_ICON_SIZE_MENU));
                         gtk_menu_shell_append(GTK_MENU_SHELL(menu), remove_chain);
                         g_signal_connect(remove_chain, "button-press-event",
-                                                (GCallback) on_popup_remove_chain, NULL);
+                                                (GCallback) on_menu_remove_chain, NULL);
                         LedTile *tile = tile_niftyled(current_tile);
                         gtk_widget_set_sensitive(remove_chain, 
                                         (gboolean) led_tile_get_chain(tile));
