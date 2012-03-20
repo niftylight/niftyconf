@@ -48,12 +48,11 @@
 #include "niftyconf-log.h"
 
 
-static GtkWindow *window;
-static GtkTextView *textview;
-static GtkComboBox *combobox;
-static GtkCheckButton *checkbutton_file;
-static GtkCheckButton *checkbutton_line;
-static GtkCheckButton *checkbutton_function;
+
+
+
+/** GtkBuilder for this module */
+static GtkBuilder *_ui;
 
 
 /******************************************************************************
@@ -79,13 +78,13 @@ static void _logger(void *userdata,
 	         nft_log_level_to_name(level));
 
 	/* include filename? */
-	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_file)))
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(UI("checkbutton_file"))))
 	{
 		strncat(s, file, 4096-strlen(s));
 	}
 
 	/* include line number? */
-	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_line)))
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(UI("checkbutton_line"))))
 	{
 		gchar *number;
 		if(!(number = alloca(64)))
@@ -99,7 +98,7 @@ static void _logger(void *userdata,
 	}
 
 	/* include function name? */
-	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_function)))
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(UI("checkbutton_function"))))
 	{
 		strncat(s, func, 4096-strlen(s));
 		strncat(s, "(): ", 4096-strlen(s));
@@ -126,7 +125,7 @@ static void _logger(void *userdata,
  */
 void log_show(gboolean visible)
 {
-        gtk_widget_set_visible(GTK_WIDGET(window), visible);        
+        gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);        
 }
 
 
@@ -135,35 +134,20 @@ void log_show(gboolean visible)
  */
 gboolean log_init()
 {
-        GtkBuilder *ui = ui_builder("niftyconf-log.ui");
+        _ui = ui_builder("niftyconf-log.ui");
 
-        /* get widgets */
-        if(!(window = GTK_WINDOW(gtk_builder_get_object(ui, "window"))))
-                return FALSE;
-        if(!(textview = GTK_TEXT_VIEW(gtk_builder_get_object(ui, "textview"))))
-                return FALSE;
-        if(!(combobox = GTK_COMBO_BOX(gtk_builder_get_object(ui, "combobox"))))
-                return FALSE;
-        if(!(checkbutton_file = GTK_CHECK_BUTTON(gtk_builder_get_object(ui, "checkbutton_file"))))
-                return FALSE;
-        if(!(checkbutton_line = GTK_CHECK_BUTTON(gtk_builder_get_object(ui, "checkbutton_line"))))
-                return FALSE;
-        if(!(checkbutton_function = GTK_CHECK_BUTTON(gtk_builder_get_object(ui, "checkbutton_function"))))
-                return FALSE;
-
-	
         /* initialize loglevel combobox */
         NftLoglevel i;        
         for(i = L_MAX+1; i<L_MIN-1; i++)
         {
-                gtk_combo_box_append_text(combobox, nft_log_level_to_name(i));                
+                gtk_combo_box_append_text(GTK_COMBO_BOX(UI("combobox")), nft_log_level_to_name(i));                
         }
 
         /* set combobox to current loglevel */
-        gtk_combo_box_set_active(combobox, (gint) nft_log_level_get()-1);
+        gtk_combo_box_set_active(GTK_COMBO_BOX(UI("combobox")), (gint) nft_log_level_get()-1);
 
         /* register our custom logger function */
-        nft_log_func_register(_logger, textview);
+        nft_log_func_register(_logger, UI("textview"));
 
         return TRUE;
 }
@@ -194,6 +178,6 @@ void on_log_combobox_changed(GtkComboBox *w, gpointer u)
 /** "clear" button pressed */
 void on_log_button_clicked(GtkButton *b, gpointer u)
 {
-	GtkTextBuffer *buf = gtk_text_view_get_buffer(textview);
+	GtkTextBuffer *buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(UI("textview")));
 	gtk_text_buffer_set_text(buf, "", -1);
 }
