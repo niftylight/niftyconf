@@ -64,16 +64,9 @@ typedef enum
 }SETUP_TREEVIEW_COLUMNS;
 
 
+
 /** GtkBuilder for this module */
 static GtkBuilder *_ui;
-/** menuitems */
-static GtkMenuItem *item_hardware_add;
-static GtkMenuItem *item_hardware_remove;
-static GtkMenuItem *item_tile_add;
-static GtkMenuItem *item_tile_remove;
-static GtkMenuItem *item_chain_add;
-static GtkMenuItem *item_chain_remove;
-
 
 /* type of currently selected element */
 NIFTYLED_TYPE current_type;
@@ -537,37 +530,6 @@ static void _do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer
         gtk_tree_model_get(m, &i, C_SETUP_TYPE, &t, C_SETUP_ELEMENT, &p,  -1);
 
         func(t, p);
-}
-
-/** @todo: eliminate. get last item if one or more elements are highlighted (or NULL) */
-static gboolean _tree_gt_selected_element(NIFTYLED_TYPE *t, gpointer **p)
-{
-        /* get current treeview selection */
-        GtkTreeSelection *selection;
-        selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(UI("treeview")));
-        
-        *t = 0;
-        *p = NULL;
-        
-        /* something selected? */
-        GList *selected;
-        GtkTreeModel *m;
-        if(!(selected = gtk_tree_selection_get_selected_rows(selection, &m)))
-                return FALSE;
-        
-        GtkTreePath *path = (GtkTreePath *) g_list_last(selected)->data;
-        GtkTreeIter i;
-        gtk_tree_model_get_iter(m, &i, path);
-        
-        /* get this element */
-        gtk_tree_model_get(m, &i, C_SETUP_TYPE, t, C_SETUP_ELEMENT, p,  -1);
-
-        
-        /* free list */
-        g_list_foreach(selected, (GFunc) gtk_tree_path_free, NULL);
-        g_list_free(selected);
-
-        return TRUE;
 }
 
 
