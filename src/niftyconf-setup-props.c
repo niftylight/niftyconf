@@ -50,35 +50,17 @@
 
 
 
+
+/** GtkBuilder for this module */
+static GtkBuilder *_ui;
+
+
 /* currently shown elements */
 static NiftyconfHardware *current_hw;
 static NiftyconfTile *current_tile;
 static NiftyconfChain *current_chain;
 static NiftyconfLed *current_led;
 
-/* widgets */
-static GtkBox   *       box_props;
-static GtkFrame *       frame_hardware;
-static GtkFrame *       frame_tile;
-static GtkFrame *       frame_chain;
-static GtkFrame *       frame_led;
-static GtkEntry *       entry_hw_name;
-static GtkEntry *       entry_hw_plugin;
-static GtkEntry *       entry_hw_id;
-static GtkSpinButton *  spinbutton_hw_stride;
-static GtkSpinButton *  spinbutton_tile_x;
-static GtkSpinButton *  spinbutton_tile_y;
-static GtkSpinButton *  spinbutton_tile_width;
-static GtkSpinButton *  spinbutton_tile_height;
-static GtkSpinButton *  spinbutton_tile_rotation;
-static GtkSpinButton *  spinbutton_tile_pivot_x;
-static GtkSpinButton *  spinbutton_tile_pivot_y;
-static GtkSpinButton *  spinbutton_led_x;
-static GtkSpinButton *  spinbutton_led_y;
-static GtkSpinButton *  spinbutton_led_component;
-static GtkSpinButton *  spinbutton_led_gain;
-static GtkSpinButton *  spinbutton_chain_ledcount;
-static GtkEntry *       entry_chain_format;
 
 /******************************************************************************
  ****************************** STATIC FUNCTIONS ******************************
@@ -94,7 +76,7 @@ static GtkEntry *       entry_chain_format;
  */
 GtkWidget *setup_props_get_widget()
 {
-        return GTK_WIDGET(box_props);
+        return GTK_WIDGET(UI("box_props"));
 }
 
 
@@ -106,13 +88,13 @@ void setup_props_hardware_show(NiftyconfHardware *h)
         if(h)
         {
                 LedHardware *hardware = hardware_niftyled(h);
-                gtk_entry_set_text(entry_hw_name, led_hardware_get_name(hardware));
-                gtk_entry_set_text(entry_hw_plugin, led_hardware_get_plugin_family(hardware));
-                gtk_entry_set_text(entry_hw_id, led_hardware_get_id(hardware));
-                gtk_spin_button_set_value(spinbutton_hw_stride, (gdouble) led_hardware_get_stride(hardware));
+                gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_name")), led_hardware_get_name(hardware));
+                gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_plugin")), led_hardware_get_plugin_family(hardware));
+                gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_id")), led_hardware_get_id(hardware));
+                gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_hw_stride")), (gdouble) led_hardware_get_stride(hardware));
         }
         
-        gtk_widget_show(GTK_WIDGET(frame_hardware));
+        gtk_widget_show(GTK_WIDGET(UI("frame_hardware")));
 }
 
 
@@ -124,16 +106,16 @@ void setup_props_tile_show(NiftyconfTile *t)
         if(t)
         {
                 LedTile *tile = tile_niftyled(t);
-                gtk_spin_button_set_value(spinbutton_tile_x, (gdouble) led_tile_get_x(tile));
-                gtk_spin_button_set_value(spinbutton_tile_y, (gdouble) led_tile_get_y(tile));
-                gtk_spin_button_set_value(spinbutton_tile_width, (gdouble) led_tile_get_transformed_width(tile));
-                gtk_spin_button_set_value(spinbutton_tile_height, (gdouble) led_tile_get_transformed_height(tile));
-                gtk_spin_button_set_value(spinbutton_tile_rotation, (gdouble) led_tile_get_rotation(tile)*180/M_PI);
-                gtk_spin_button_set_value(spinbutton_tile_pivot_x, (gdouble) led_tile_get_pivot_x(tile));
-                gtk_spin_button_set_value(spinbutton_tile_pivot_y, (gdouble) led_tile_get_pivot_y(tile));
+                gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_tile_x")), (gdouble) led_tile_get_x(tile));
+                gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_tile_y")), (gdouble) led_tile_get_y(tile));
+                gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_tile_width")), (gdouble) led_tile_get_transformed_width(tile));
+                gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_tile_height")), (gdouble) led_tile_get_transformed_height(tile));
+                gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_tile_rotation")), (gdouble) led_tile_get_rotation(tile)*180/M_PI);
+                gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_tile_pivot_x")), (gdouble) led_tile_get_pivot_x(tile));
+                gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_tile_pivot_y")), (gdouble) led_tile_get_pivot_y(tile));
         }
         
-        gtk_widget_show(GTK_WIDGET(frame_tile));
+        gtk_widget_show(GTK_WIDGET(UI("frame_tile")));
 }
 
 
@@ -145,11 +127,11 @@ void setup_props_chain_show(NiftyconfChain *c)
         if(c)
         {
                 LedChain *chain = chain_niftyled(c);
-                gtk_spin_button_set_value(spinbutton_chain_ledcount, (gdouble) led_chain_get_ledcount(chain));
-                gtk_entry_set_text(entry_chain_format, led_pixel_format_to_string(led_chain_get_format(chain)));
+                gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_chain_ledcount")), (gdouble) led_chain_get_ledcount(chain));
+                gtk_entry_set_text(GTK_ENTRY(UI("entry_chain_format")), led_pixel_format_to_string(led_chain_get_format(chain)));
         }
         
-        gtk_widget_show(GTK_WIDGET(frame_chain));
+        gtk_widget_show(GTK_WIDGET(UI("frame_chain")));
 }
 
 
@@ -161,23 +143,23 @@ void setup_props_led_show(NiftyconfLed *l)
         if(l)
         {
                 Led *led = led_niftyled(l);
-                gtk_spin_button_set_value(spinbutton_led_x, (gdouble) led_get_x(led));
-                gtk_spin_button_set_value(spinbutton_led_y, (gdouble) led_get_y(led));
-                gtk_spin_button_set_value(spinbutton_led_component, (gdouble) led_get_component(led));
-                gtk_spin_button_set_value(spinbutton_led_gain, (gdouble) led_get_gain(led)); 
+                gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_led_x")), (gdouble) led_get_x(led));
+                gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_led_y")), (gdouble) led_get_y(led));
+                gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_led_component")), (gdouble) led_get_component(led));
+                gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_led_gain")), (gdouble) led_get_gain(led)); 
         }
         
-        gtk_widget_show(GTK_WIDGET(frame_led));
+        gtk_widget_show(GTK_WIDGET(UI("frame_led")));
 }
 
 
 /** hide all props */
 void setup_props_hide()
 {
-        gtk_widget_hide(GTK_WIDGET(frame_hardware));
-        gtk_widget_hide(GTK_WIDGET(frame_tile));
-        gtk_widget_hide(GTK_WIDGET(frame_chain));
-        gtk_widget_hide(GTK_WIDGET(frame_led));
+        gtk_widget_hide(GTK_WIDGET(UI("frame_hardware")));
+        gtk_widget_hide(GTK_WIDGET(UI("frame_tile")));
+        gtk_widget_hide(GTK_WIDGET(UI("frame_chain")));
+        gtk_widget_hide(GTK_WIDGET(UI("frame_led")));
 }
 
 
@@ -186,56 +168,7 @@ void setup_props_hide()
  */
 gboolean setup_props_init()
 {
-        GtkBuilder *ui = ui_builder("niftyconf-setup-props.ui");
-
-        /* get widgets */
-        if(!(box_props = GTK_BOX(gtk_builder_get_object(ui, "box_props"))))
-                return FALSE;
-        if(!(frame_hardware = GTK_FRAME(gtk_builder_get_object(ui, "frame_hardware"))))
-                return FALSE;
-        if(!(frame_tile = GTK_FRAME(gtk_builder_get_object(ui, "frame_tile"))))
-                return FALSE;
-        if(!(frame_chain = GTK_FRAME(gtk_builder_get_object(ui, "frame_chain"))))
-                return FALSE;
-        if(!(frame_led = GTK_FRAME(gtk_builder_get_object(ui, "frame_led"))))
-                return FALSE;
-        if(!(entry_hw_name = GTK_ENTRY(gtk_builder_get_object(ui, "entry_hw_name"))))
-                return FALSE;
-        if(!(entry_hw_plugin = GTK_ENTRY(gtk_builder_get_object(ui, "entry_hw_plugin"))))
-                return FALSE;
-        if(!(entry_hw_id = GTK_ENTRY(gtk_builder_get_object(ui, "entry_hw_id"))))
-                return FALSE;
-        if(!(spinbutton_hw_stride = GTK_SPIN_BUTTON(gtk_builder_get_object(ui, "spinbutton_hw_stride"))))
-                return FALSE;
-        
-        if(!(spinbutton_tile_x = GTK_SPIN_BUTTON(gtk_builder_get_object(ui, "spinbutton_tile_x"))))
-                return FALSE;
-        if(!(spinbutton_tile_y = GTK_SPIN_BUTTON(gtk_builder_get_object(ui, "spinbutton_tile_y"))))
-                return FALSE;
-        if(!(spinbutton_tile_width = GTK_SPIN_BUTTON(gtk_builder_get_object(ui, "spinbutton_tile_width"))))
-                return FALSE;
-        if(!(spinbutton_tile_height = GTK_SPIN_BUTTON(gtk_builder_get_object(ui, "spinbutton_tile_height"))))
-                return FALSE;
-        if(!(spinbutton_tile_rotation = GTK_SPIN_BUTTON(gtk_builder_get_object(ui, "spinbutton_tile_rotation"))))
-                return FALSE;
-        if(!(spinbutton_tile_pivot_x = GTK_SPIN_BUTTON(gtk_builder_get_object(ui, "spinbutton_tile_pivot_x"))))
-                return FALSE;
-        if(!(spinbutton_tile_pivot_y = GTK_SPIN_BUTTON(gtk_builder_get_object(ui, "spinbutton_tile_pivot_y"))))
-                return FALSE;
-
-        if(!(spinbutton_led_x = GTK_SPIN_BUTTON(gtk_builder_get_object(ui, "spinbutton_led_x"))))
-                return FALSE;
-        if(!(spinbutton_led_y = GTK_SPIN_BUTTON(gtk_builder_get_object(ui, "spinbutton_led_y"))))
-                return FALSE;
-        if(!(spinbutton_led_component = GTK_SPIN_BUTTON(gtk_builder_get_object(ui, "spinbutton_led_component"))))
-                return FALSE;
-        if(!(spinbutton_led_gain = GTK_SPIN_BUTTON(gtk_builder_get_object(ui, "spinbutton_led_gain"))))
-                return FALSE;
-        
-        if(!(spinbutton_chain_ledcount = GTK_SPIN_BUTTON(gtk_builder_get_object(ui, "spinbutton_chain_ledcount"))))
-                return FALSE;
-        if(!(entry_chain_format = GTK_ENTRY(gtk_builder_get_object(ui, "entry_chain_format"))))
-                return FALSE;
+        _ui = ui_builder("niftyconf-setup-props.ui");
                 
         return TRUE;
 }
