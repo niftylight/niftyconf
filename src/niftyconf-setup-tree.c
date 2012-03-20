@@ -64,12 +64,16 @@ typedef enum
 }SETUP_TREEVIEW_COLUMNS;
 
 
-/** main box */
-static GtkBox *box;
-/** setup tree store */
-static GtkTreeStore *tree_store;
-/** setup tree-view */
-static GtkTreeView *tree_view;
+/** GtkBuilder for this module */
+static GtkBuilder *_ui;
+/** menuitems */
+static GtkMenuItem *item_hardware_add;
+static GtkMenuItem *item_hardware_remove;
+static GtkMenuItem *item_tile_add;
+static GtkMenuItem *item_tile_remove;
+static GtkMenuItem *item_chain_add;
+static GtkMenuItem *item_chain_remove;
+
 
 /* type of currently selected element */
 NIFTYLED_TYPE current_type;
@@ -265,9 +269,9 @@ gboolean _foreach_element_refresh_collapse(GtkTreeModel *model, GtkTreePath *pat
         }
 
         if(collapsed)
-                gtk_tree_view_collapse_row(tree_view, path);
+                gtk_tree_view_collapse_row(GTK_TREE_VIEW(UI("treeview")), path);
         else
-                gtk_tree_view_expand_row(tree_view, path, FALSE);                
+                gtk_tree_view_expand_row(GTK_TREE_VIEW(UI("treeview")), path, FALSE);                
 
         
         return FALSE;
@@ -309,7 +313,7 @@ gboolean _foreach_element_refresh_highlight(GtkTreeModel *model, GtkTreePath *pa
                 }
         }
 
-        GtkTreeSelection *s = gtk_tree_view_get_selection(tree_view);
+        GtkTreeSelection *s = gtk_tree_view_get_selection(GTK_TREE_VIEW(UI("treeview")));
         
         if(highlighted)
                 gtk_tree_selection_select_iter(s, iter);
@@ -467,7 +471,7 @@ static void _do_foreach_iter(GtkTreeModel *m, GtkTreeIter *i,
 static void _do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer *e))
 {
         /* get model */
-        GtkTreeModel *m = gtk_tree_view_get_model(tree_view);
+        GtkTreeModel *m = gtk_tree_view_get_model(GTK_TREE_VIEW(UI("treeview")));
         GtkTreeIter iter;
         gboolean run;
         gtk_tree_model_get_iter_root(m, &iter);
@@ -479,7 +483,7 @@ static void _do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer 
 {
         /* get current treeview selection */
         GtkTreeSelection *selection;
-        selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree_view));
+        selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(UI("treeview")));
 
         /* something selected? */
         GList *selected;
@@ -515,7 +519,7 @@ static void _do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer
 {
         /* get current treeview selection */
         GtkTreeSelection *selection;
-        selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree_view));
+        selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(UI("treeview")));
 
         /* something selected? */
         GList *selected;
@@ -540,7 +544,7 @@ static gboolean _tree_gt_selected_element(NIFTYLED_TYPE *t, gpointer **p)
 {
         /* get current treeview selection */
         GtkTreeSelection *selection;
-        selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree_view));
+        selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(UI("treeview")));
         
         *t = 0;
         *p = NULL;
@@ -577,16 +581,16 @@ static void _tree_build()
         LedHardware *h;
         for(h = led_settings_hardware_get_first(setup_get_current()); h; h = led_hardware_get_next_sibling(h))
         {         
-                _tree_append_hardware(tree_store, h);
+                _tree_append_hardware(GTK_TREE_STORE(UI("treestore")), h);
         }
 
         /* walk complete tree & collapse or expand element */
-        GtkTreeModel *m = gtk_tree_view_get_model(tree_view);
+        GtkTreeModel *m = gtk_tree_view_get_model(GTK_TREE_VIEW(UI("treeview")));
         gtk_tree_model_foreach(m, _foreach_element_refresh_collapse, NULL);
         gtk_tree_model_foreach(m, _foreach_element_refresh_highlight, NULL);
 
         /* show treeview */
-        gtk_widget_show(GTK_WIDGET(tree_view));
+        gtk_widget_show(GTK_WIDGET(UI("treeview")));
         
 }
 
@@ -598,10 +602,10 @@ static void _tree_build()
 /** clear setup tree */
 void setup_tree_clear()
 {
-        if(!tree_store)
+        if(!GTK_TREE_STORE(UI("treestore")))
                 return;
         
-        gtk_tree_store_clear(tree_store);
+        gtk_tree_store_clear(GTK_TREE_STORE(UI("treestore")));
 }
 
 
@@ -619,31 +623,32 @@ void setup_tree_refresh()
 /** getter for our widget */
 GtkWidget *setup_tree_get_widget()
 {
-        return GTK_WIDGET(box);
+        return GTK_WIDGET(UI("box"));
 }
 
 
 /** initialize setup tree module */
 gboolean  setup_tree_init()
 {
-        GtkBuilder *ui = ui_builder("niftyconf-setup-tree.ui");
+        if(!(_ui = ui_builder("niftyconf-setup-tree.ui")))
+                return FALSE;
         
         /* get widgets */
-        if(!(box = GTK_BOX(gtk_builder_get_object(ui, "box"))))
+        /*if(!(box = GTK_BOX(gtk_builder_get_object(ui, "box"))))
                 return FALSE;
         if(!(tree_store = GTK_TREE_STORE(gtk_builder_get_object(ui, "treestore"))))
                 return FALSE;
         if(!(tree_view = GTK_TREE_VIEW(gtk_builder_get_object(ui, "treeview"))))
-                return FALSE;
+                return FALSE;*/
         
         /* set selection mode for setup tree */
         gtk_tree_selection_set_mode(
-                gtk_tree_view_get_selection(tree_view), 
+                gtk_tree_view_get_selection(GTK_TREE_VIEW(UI("treeview"))), 
                 GTK_SELECTION_MULTIPLE);
 
         
         /* initialize setup treeview */
-        GtkTreeViewColumn *col = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(ui, "column_element"));
+        GtkTreeViewColumn *col = GTK_TREE_VIEW_COLUMN(UI("column_element"));
         GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
         gtk_tree_view_column_pack_start(col, renderer, TRUE);
         gtk_tree_view_column_add_attribute(col, renderer, "text", C_SETUP_TITLE);

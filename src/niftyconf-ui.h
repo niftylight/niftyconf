@@ -45,6 +45,9 @@
 #define _NIFTYCONF_UI_H
 
 
+/** helper macro to get object from GtkBuilder - "_ui" must be defined */
+#define UI(name) (gtk_builder_get_object(_ui, name))
+
 
 GtkBuilder *    ui_builder(gchar *file);
 
