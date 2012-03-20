@@ -489,7 +489,7 @@ static void _do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer 
 
         /* walk all selected rows */
         GList *cur;
-        for(cur = selected; cur; cur = g_list_next(cur))
+        for(cur = g_list_last(selected); cur; cur = g_list_previous(cur))
         {
                 GtkTreePath *path = (GtkTreePath *) cur->data;
                 GtkTreeIter i;
@@ -1027,7 +1027,9 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_chain);
                         g_signal_connect(menu_chain, "button-press-event",
                                                 (GCallback) on_popup_add_chain, NULL);
-
+                        /* if tile already has chain, set widget unsensitive */
+                        gtk_widget_set_sensitive(menu_chain, (gboolean) !led_tile_get_chain(tile_niftyled(current_tile)));
+                        
                         /* generate "add tile" menuitem */
                         GtkWidget *menu_tile = gtk_image_menu_item_new_with_label("Add tile");
                         gtk_image_menu_item_set_image(
