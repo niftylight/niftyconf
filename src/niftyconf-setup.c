@@ -52,13 +52,12 @@
 
 
 
+/** GtkBuilder for this module */
+static GtkBuilder *_ui;
 
 /** current niftyled settings context */
 static LedSettings *current;
-/** main container widget of this module */
-static GtkBox *box;
-/** "open" filechooser dialog */
-static GtkFileChooserDialog *open_filechooser;
+
 
 
 
@@ -86,7 +85,7 @@ LedSettings *setup_get_current()
  */
 GtkWidget *setup_get_widget()
 {
-        return GTK_WIDGET(box);
+        return GTK_WIDGET(UI("box"));
 }
 
 
@@ -187,7 +186,7 @@ void setup_cleanup()
  */
 gboolean setup_init()
 {
-        GtkBuilder *ui = ui_builder("niftyconf-setup.ui");
+        _ui = ui_builder("niftyconf-setup.ui");
 
         /* initialize tree module */
         if(!setup_tree_init())
@@ -195,20 +194,15 @@ gboolean setup_init()
         if(!setup_props_init())
                 return FALSE;
         
-        /* get widgets */
-        if(!(box = GTK_BOX(gtk_builder_get_object(ui, "box"))))
-                return FALSE;
-        if(!(open_filechooser = GTK_FILE_CHOOSER_DIALOG(gtk_builder_get_object(ui, "filechooserdialog"))))
-                return FALSE;
-
+        
         /* attach children */
-        GtkBox *box_tree = GTK_BOX(gtk_builder_get_object(ui, "box_tree"));
+        GtkBox *box_tree = GTK_BOX(gtk_builder_get_object(_ui, "box_tree"));
         gtk_box_pack_start(box_tree, setup_tree_get_widget(), TRUE, TRUE, 0);
-        GtkBox *box_props = GTK_BOX(gtk_builder_get_object(ui, "box_props"));
+        GtkBox *box_props = GTK_BOX(gtk_builder_get_object(_ui, "box_props"));
         gtk_box_pack_start(box_props, setup_props_get_widget(), FALSE, FALSE, 0);
         
         /* initialize file-filter to only show XML files in "open" filechooser dialog */
-        GtkFileFilter *filter = GTK_FILE_FILTER(gtk_builder_get_object(ui, "filefilter"));
+        GtkFileFilter *filter = GTK_FILE_FILTER(UI("filefilter"));
         gtk_file_filter_add_mime_type(filter, "application/xml");
         gtk_file_filter_add_mime_type(filter, "text/xml");
 
@@ -243,7 +237,7 @@ void on_setup_menuitem_new_activate(GtkMenuItem *i, gpointer d)
 /** menuitem "open" selected */
 void on_setup_menuitem_open_activate(GtkMenuItem *i, gpointer d)
 {
-        gtk_widget_show(GTK_WIDGET(open_filechooser));
+        gtk_widget_show(GTK_WIDGET(UI("filechooserdialog")));
 }
 
 
@@ -263,14 +257,14 @@ void on_setup_menuitem_save_as_activate(GtkMenuItem *i, gpointer d)
 /** "cancel" button in filechooser clicked */
 void on_setup_open_cancel_clicked(GtkButton *b, gpointer u)
 {
-        gtk_widget_hide(GTK_WIDGET(open_filechooser));
+        gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog")));
 }
 
 /** open file */
 void on_setup_open_clicked(GtkButton *b, gpointer u)
 {
         char *filename;
-        if(!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(open_filechooser))))
+        if(!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(UI("filechooserdialog")))))
                 return;
 
         if(!setup_load(filename))
@@ -279,5 +273,5 @@ void on_setup_open_clicked(GtkButton *b, gpointer u)
                 return;
         }
         
-        gtk_widget_hide(GTK_WIDGET(open_filechooser));
+        gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog")));
 }
