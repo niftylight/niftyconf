@@ -67,6 +67,19 @@ static NiftyconfLed *current_led;
  ******************************************************************************/
 
 
+static void _widget_set_error_background(GtkWidget *w, gboolean error)
+{
+        if(error)
+        {
+                GdkColor color;
+                gdk_color_parse("#f96b5f", &color);
+                gtk_widget_modify_base(w, GTK_STATE_NORMAL, &color);
+        }
+        else
+        {
+                gtk_widget_modify_base(w, GTK_STATE_NORMAL, NULL);
+        }
+}
 
 /******************************************************************************
  ******************************************************************************/
@@ -182,11 +195,12 @@ gboolean setup_props_init()
 void on_spinbutton_led_x_changed(GtkSpinButton *s, gpointer u)
 {
         /* get currently selected LED */
+        Led *l = led_niftyled(current_led);
 
-        /* set new value */
-        //led_set_x(led, (LedFrameCord) gtk_spin_button_get_value_as_int(s));
-        
-        /* refresh */
+        if(!led_set_x(l, (LedFrameCord) gtk_spin_button_get_value_as_int(s)))
+                _widget_set_error_background(GTK_WIDGET(s), TRUE);
+        else
+                _widget_set_error_background(GTK_WIDGET(s), FALSE);
 }
 
 
@@ -194,25 +208,38 @@ void on_spinbutton_led_x_changed(GtkSpinButton *s, gpointer u)
 void on_spinbutton_led_y_changed(GtkSpinButton *s, gpointer u)
 {
         /* get currently selected LED */
+        Led *l = led_niftyled(current_led);
 
-        /* set new value */
-        //led_set_y(led, (LedFrameCord) gtk_spin_button_get_value_as_int(s));
-        
-        /* refresh */
+        if(!led_set_y(l, (LedFrameCord) gtk_spin_button_get_value_as_int(s)))
+                _widget_set_error_background(GTK_WIDGET(s), TRUE);
+        else
+                _widget_set_error_background(GTK_WIDGET(s), FALSE);
 }
 
 
 /** spinbutton value changed */
 void on_spinbutton_led_component_changed(GtkSpinButton *s, gpointer u)
 {
-
+        /* get currently selected LED */
+        Led *l = led_niftyled(current_led);
+        
+        if(!led_set_component(l, (LedFrameComponent) gtk_spin_button_get_value_as_int(s)))
+                _widget_set_error_background(GTK_WIDGET(s), TRUE);
+        else
+                _widget_set_error_background(GTK_WIDGET(s), FALSE);
 }
 
 
 /** spinbutton value changed */
 void on_spinbutton_led_gain_changed(GtkSpinButton *s, gpointer u)
 {
+        /* get currently selected LED */
+        Led *l = led_niftyled(current_led);
 
+        if(!led_set_gain(l, (LedGain) gtk_spin_button_get_value_as_int(s)))
+                _widget_set_error_background(GTK_WIDGET(s), TRUE);
+        else
+                _widget_set_error_background(GTK_WIDGET(s), FALSE);
 }
 
 
@@ -226,20 +253,12 @@ void on_spinbutton_chain_ledcount_changed(GtkSpinButton *s, gpointer u)
                                 (LedCount) gtk_spin_button_get_value_as_int(s)))
         /* error background color */
         {
-                GdkColor color;
-                gdk_color_parse("#f96b5f", &color);
-                gtk_widget_modify_base(
-                        GTK_WIDGET(s), 
-                        GTK_STATE_NORMAL,
-                        &color);
+                _widget_set_error_background(GTK_WIDGET(s), TRUE);
         }
         /* normal background color */
         else
         {
-                gtk_widget_modify_base(
-                        GTK_WIDGET(s), 
-                        GTK_STATE_NORMAL,
-                        NULL);
+                _widget_set_error_background(GTK_WIDGET(s), FALSE);
         }
 }
 
@@ -254,20 +273,12 @@ void on_spinbutton_tile_x_changed(GtkSpinButton *s, gpointer u)
         if(!led_tile_set_x(tile, (LedFrameCord) gtk_spin_button_get_value_as_int(s)))
         /* error background color */
         {
-                GdkColor color;
-                gdk_color_parse("#f96b5f", &color);
-                gtk_widget_modify_base(
-                        GTK_WIDGET(s), 
-                        GTK_STATE_NORMAL,
-                        &color);
+                _widget_set_error_background(GTK_WIDGET(s), TRUE);
         }
         /* normal background color */
         else
         {
-                gtk_widget_modify_base(
-                        GTK_WIDGET(s), 
-                        GTK_STATE_NORMAL,
-                        NULL);
+                _widget_set_error_background(GTK_WIDGET(s), FALSE);
         }
 
         /* refresh view */
@@ -285,20 +296,12 @@ void on_spinbutton_tile_y_changed(GtkSpinButton *s, gpointer u)
         if(!led_tile_set_y(tile, (LedFrameCord) gtk_spin_button_get_value_as_int(s)))
         /* error background color */
         {
-                GdkColor color;
-                gdk_color_parse("#f96b5f", &color);
-                gtk_widget_modify_base(
-                        GTK_WIDGET(s), 
-                        GTK_STATE_NORMAL,
-                        &color);
+                _widget_set_error_background(GTK_WIDGET(s), TRUE);
         }
         /* normal background color */
         else
         {
-                gtk_widget_modify_base(
-                        GTK_WIDGET(s), 
-                        GTK_STATE_NORMAL,
-                        NULL);
+                _widget_set_error_background(GTK_WIDGET(s), FALSE);
         }
         
 
@@ -317,20 +320,12 @@ void on_spinbutton_tile_rotation_changed(GtkSpinButton *s, gpointer u)
         if(!led_tile_set_rotation(tile, (double) gtk_spin_button_get_value(s)*M_PI/180))
         /* error background color */
         {
-                GdkColor color;
-                gdk_color_parse("#f96b5f", &color);
-                gtk_widget_modify_base(
-                        GTK_WIDGET(s), 
-                        GTK_STATE_NORMAL,
-                        &color);
+                _widget_set_error_background(GTK_WIDGET(s), TRUE);
         }
         /* normal background color */
         else
         {
-                gtk_widget_modify_base(
-                        GTK_WIDGET(s), 
-                        GTK_STATE_NORMAL,
-                        NULL);
+                _widget_set_error_background(GTK_WIDGET(s), FALSE);
         }
 
         /* refresh view */
@@ -348,20 +343,12 @@ void on_spinbutton_tile_pivot_x_changed(GtkSpinButton *s, gpointer u)
         if(!led_tile_set_pivot_x(tile, (double) gtk_spin_button_get_value(s)))
         /* error background color */
         {
-                GdkColor color;
-                gdk_color_parse("#f96b5f", &color);
-                gtk_widget_modify_base(
-                        GTK_WIDGET(s), 
-                        GTK_STATE_NORMAL,
-                        &color);
+                _widget_set_error_background(GTK_WIDGET(s), TRUE);
         }
         /* normal background color */
         else
         {
-                gtk_widget_modify_base(
-                        GTK_WIDGET(s), 
-                        GTK_STATE_NORMAL,
-                        NULL);
+                _widget_set_error_background(GTK_WIDGET(s), FALSE);
         }
         
 
@@ -380,20 +367,12 @@ void on_spinbutton_tile_pivot_y_changed(GtkSpinButton *s, gpointer u)
         if(!led_tile_set_pivot_y(tile, (double) gtk_spin_button_get_value(s)))
         /* error background color */
         {
-                GdkColor color;
-                gdk_color_parse("#f96b5f", &color);
-                gtk_widget_modify_base(
-                        GTK_WIDGET(s), 
-                        GTK_STATE_NORMAL,
-                        &color);
+                _widget_set_error_background(GTK_WIDGET(s), TRUE);
         }
         /* normal background color */
         else
         {
-                gtk_widget_modify_base(
-                        GTK_WIDGET(s), 
-                        GTK_STATE_NORMAL,
-                        NULL);
+                _widget_set_error_background(GTK_WIDGET(s), FALSE);
         }
 
         /* refresh view */
@@ -411,20 +390,12 @@ void on_entry_hardware_name_changed(GtkEditable *e, gpointer u)
         if(!led_hardware_set_name(h, gtk_entry_get_text(GTK_ENTRY(e))))
         /* error background color */
         {
-                GdkColor color;
-                gdk_color_parse("#f96b5f", &color);
-                gtk_widget_modify_base(
-                        GTK_WIDGET(e), 
-                        GTK_STATE_NORMAL,
-                        &color);
+                _widget_set_error_background(GTK_WIDGET(e), TRUE);
         }
         /* normal background color */
         else
         {
-                gtk_widget_modify_base(
-                        GTK_WIDGET(e), 
-                        GTK_STATE_NORMAL,
-                        NULL);
+                _widget_set_error_background(GTK_WIDGET(e), FALSE);
         }
 
         /* refresh view */
@@ -443,20 +414,12 @@ void on_entry_hardware_id_changed(GtkEditable *e, gpointer u)
         if(!led_hardware_set_id(h, gtk_entry_get_text(GTK_ENTRY(e))))
         /* error background color */
         {
-                GdkColor color;
-                gdk_color_parse("#f96b5f", &color);
-                gtk_widget_modify_base(
-                        GTK_WIDGET(e), 
-                        GTK_STATE_NORMAL,
-                        &color);
+                _widget_set_error_background(GTK_WIDGET(e), TRUE);
         }
         /* normal background color */
         else
         {
-                gtk_widget_modify_base(
-                        GTK_WIDGET(e), 
-                        GTK_STATE_NORMAL,
-                        NULL);
+                _widget_set_error_background(GTK_WIDGET(e), FALSE);
         }
 
         /* refresh view */
@@ -474,20 +437,12 @@ void on_spinbutton_hardware_stride_changed(GtkSpinButton *s, gpointer u)
         if(!led_hardware_set_stride(h, (LedCount) gtk_spin_button_get_value_as_int(s)))
         /* error background color */
         {
-                GdkColor color;
-                gdk_color_parse("#f96b5f", &color);
-                gtk_widget_modify_base(
-                        GTK_WIDGET(s), 
-                        GTK_STATE_NORMAL,
-                        &color);
+                _widget_set_error_background(GTK_WIDGET(s), TRUE);
         }
         /* normal background color */
         else
         {
-                gtk_widget_modify_base(
-                        GTK_WIDGET(s), 
-                        GTK_STATE_NORMAL,
-                        NULL);
+                _widget_set_error_background(GTK_WIDGET(s), FALSE);
         }
         
         
