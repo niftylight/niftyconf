@@ -219,14 +219,28 @@ void on_spinbutton_led_gain_changed(GtkSpinButton *s, gpointer u)
 /** spinbutton value changed */
 void on_spinbutton_chain_ledcount_changed(GtkSpinButton *s, gpointer u)
 {
+        /* get current tile */
+        LedChain *chain = chain_niftyled(current_chain);
 
-}
-
-
-/** entry text changed */
-void on_entry_chain_format_changed(GtkEditable *e, gpointer u)
-{
-
+        if(!led_chain_set_ledcount(chain,
+                                (LedCount) gtk_spin_button_get_value_as_int(s)))
+        /* error background color */
+        {
+                GdkColor color;
+                gdk_color_parse("#f96b5f", &color);
+                gtk_widget_modify_base(
+                        GTK_WIDGET(s), 
+                        GTK_STATE_NORMAL,
+                        &color);
+        }
+        /* normal background color */
+        else
+        {
+                gtk_widget_modify_base(
+                        GTK_WIDGET(s), 
+                        GTK_STATE_NORMAL,
+                        NULL);
+        }
 }
 
 
@@ -237,7 +251,24 @@ void on_spinbutton_tile_x_changed(GtkSpinButton *s, gpointer u)
         LedTile *tile = tile_niftyled(current_tile);
         
         /* set new value */
-        led_tile_set_x(tile, (LedFrameCord) gtk_spin_button_get_value_as_int(s));
+        if(!led_tile_set_x(tile, (LedFrameCord) gtk_spin_button_get_value_as_int(s)))
+        /* error background color */
+        {
+                GdkColor color;
+                gdk_color_parse("#f96b5f", &color);
+                gtk_widget_modify_base(
+                        GTK_WIDGET(s), 
+                        GTK_STATE_NORMAL,
+                        &color);
+        }
+        /* normal background color */
+        else
+        {
+                gtk_widget_modify_base(
+                        GTK_WIDGET(s), 
+                        GTK_STATE_NORMAL,
+                        NULL);
+        }
 
         /* refresh view */
 
@@ -251,7 +282,25 @@ void on_spinbutton_tile_y_changed(GtkSpinButton *s, gpointer u)
         LedTile *tile = tile_niftyled(current_tile);
         
         /* set new value */
-        led_tile_set_y(tile, (LedFrameCord) gtk_spin_button_get_value_as_int(s));
+        if(!led_tile_set_y(tile, (LedFrameCord) gtk_spin_button_get_value_as_int(s)))
+        /* error background color */
+        {
+                GdkColor color;
+                gdk_color_parse("#f96b5f", &color);
+                gtk_widget_modify_base(
+                        GTK_WIDGET(s), 
+                        GTK_STATE_NORMAL,
+                        &color);
+        }
+        /* normal background color */
+        else
+        {
+                gtk_widget_modify_base(
+                        GTK_WIDGET(s), 
+                        GTK_STATE_NORMAL,
+                        NULL);
+        }
+        
 
         /* refresh view */
 
@@ -265,7 +314,24 @@ void on_spinbutton_tile_rotation_changed(GtkSpinButton *s, gpointer u)
         LedTile *tile = tile_niftyled(current_tile);
         
         /* set new value */
-        led_tile_set_rotation(tile, (double) gtk_spin_button_get_value(s)*M_PI/180);
+        if(!led_tile_set_rotation(tile, (double) gtk_spin_button_get_value(s)*M_PI/180))
+        /* error background color */
+        {
+                GdkColor color;
+                gdk_color_parse("#f96b5f", &color);
+                gtk_widget_modify_base(
+                        GTK_WIDGET(s), 
+                        GTK_STATE_NORMAL,
+                        &color);
+        }
+        /* normal background color */
+        else
+        {
+                gtk_widget_modify_base(
+                        GTK_WIDGET(s), 
+                        GTK_STATE_NORMAL,
+                        NULL);
+        }
 
         /* refresh view */
         setup_props_tile_show(current_tile);
@@ -279,7 +345,25 @@ void on_spinbutton_tile_pivot_x_changed(GtkSpinButton *s, gpointer u)
         LedTile *tile = tile_niftyled(current_tile);
         
         /* set new value */
-        led_tile_set_pivot_x(tile, (double) gtk_spin_button_get_value(s));
+        if(!led_tile_set_pivot_x(tile, (double) gtk_spin_button_get_value(s)))
+        /* error background color */
+        {
+                GdkColor color;
+                gdk_color_parse("#f96b5f", &color);
+                gtk_widget_modify_base(
+                        GTK_WIDGET(s), 
+                        GTK_STATE_NORMAL,
+                        &color);
+        }
+        /* normal background color */
+        else
+        {
+                gtk_widget_modify_base(
+                        GTK_WIDGET(s), 
+                        GTK_STATE_NORMAL,
+                        NULL);
+        }
+        
 
         /* refresh view */
         setup_props_tile_show(current_tile);
@@ -293,7 +377,24 @@ void on_spinbutton_tile_pivot_y_changed(GtkSpinButton *s, gpointer u)
         LedTile *tile = tile_niftyled(current_tile);
         
         /* set new value */
-        led_tile_set_pivot_y(tile, (double) gtk_spin_button_get_value(s));
+        if(!led_tile_set_pivot_y(tile, (double) gtk_spin_button_get_value(s)))
+        /* error background color */
+        {
+                GdkColor color;
+                gdk_color_parse("#f96b5f", &color);
+                gtk_widget_modify_base(
+                        GTK_WIDGET(s), 
+                        GTK_STATE_NORMAL,
+                        &color);
+        }
+        /* normal background color */
+        else
+        {
+                gtk_widget_modify_base(
+                        GTK_WIDGET(s), 
+                        GTK_STATE_NORMAL,
+                        NULL);
+        }
 
         /* refresh view */
         setup_props_tile_show(current_tile);
