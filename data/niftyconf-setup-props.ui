@@ -792,14 +792,15 @@
                 <child>
                   <object class="GtkEntry" id="entry_hw_plugin">
                     <property name="visible">True</property>
+                    <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">plugin used by this hardware-adapter instance</property>
+                    <property name="editable">False</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
-                    <signal name="changed" handler="on_entry_hardware_plugin_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>

@@ -307,7 +307,24 @@ void on_entry_hardware_name_changed(GtkEditable *e, gpointer u)
         LedHardware *h = hardware_niftyled(current_hw);
 
         /* set value */
-        led_hardware_set_name(h, gtk_entry_get_text(GTK_ENTRY(e)));
+        if(!led_hardware_set_name(h, gtk_entry_get_text(GTK_ENTRY(e))))
+        /* error background color */
+        {
+                GdkColor color;
+                gdk_color_parse("#ff0000", &color);
+                gtk_widget_modify_bg(
+                        GTK_WIDGET(e), 
+                        GTK_STATE_NORMAL | GTK_STATE_PRELIGHT | GTK_STATE_ACTIVE,
+                        &color);
+        }
+        /* normal background color */
+        else
+        {
+                gtk_widget_modify_bg(
+                        GTK_WIDGET(e), 
+                        GTK_STATE_NORMAL | GTK_STATE_PRELIGHT | GTK_STATE_ACTIVE,
+                        NULL);
+        }
 
         /* refresh view */
         setup_tree_refresh();
@@ -316,15 +333,32 @@ void on_entry_hardware_name_changed(GtkEditable *e, gpointer u)
 
 
 /** entry text changed */
-void on_entry_hardware_plugin_changed(GtkEditable *e, gpointer u)
-{
-
-}
-
-
-/** entry text changed */
 void on_entry_hardware_id_changed(GtkEditable *e, gpointer u)
 {
+        /* get currently selected hardware */
+        LedHardware *h = hardware_niftyled(current_hw);
+
+        /* set value */
+        if(!led_hardware_set_id(h, gtk_entry_get_text(GTK_ENTRY(e))))
+        /* error background color */
+        {
+                GdkColor color;
+                gdk_color_parse("#ff0000", &color);
+                gtk_widget_modify_bg(
+                        GTK_WIDGET(e), 
+                        GTK_STATE_NORMAL | GTK_STATE_PRELIGHT | GTK_STATE_ACTIVE,
+                        &color);
+        }
+        /* normal background color */
+        else
+        {
+                gtk_widget_modify_bg(
+                        GTK_WIDGET(e), 
+                        GTK_STATE_NORMAL | GTK_STATE_PRELIGHT | GTK_STATE_ACTIVE,
+                        NULL);
+        }
+
+        /* refresh view */
 
 }
 
@@ -332,5 +366,29 @@ void on_entry_hardware_id_changed(GtkEditable *e, gpointer u)
 /** spinbutton value changed */
 void on_spinbutton_hardware_stride_changed(GtkSpinButton *s, gpointer u)
 {
+        /* get currently selected hardware */
+        LedHardware *h = hardware_niftyled(current_hw);
+
+        /* set value */
+        if(!led_hardware_set_stride(h, (LedCount) gtk_spin_button_get_value_as_int(s)))
+        /* error background color */
+        {
+                GdkColor color;
+                gdk_color_parse("#ff0000", &color);
+                gtk_widget_modify_bg(
+                        GTK_WIDGET(s), 
+                        GTK_STATE_NORMAL | GTK_STATE_PRELIGHT | GTK_STATE_ACTIVE,
+                        &color);
+        }
+        /* normal background color */
+        else
+        {
+                gtk_widget_modify_bg(
+                        GTK_WIDGET(s), 
+                        GTK_STATE_NORMAL | GTK_STATE_PRELIGHT | GTK_STATE_ACTIVE,
+                        NULL);
+        }
+
+        /* refresh view */
 
 }
