@@ -311,18 +311,18 @@ void on_entry_hardware_name_changed(GtkEditable *e, gpointer u)
         /* error background color */
         {
                 GdkColor color;
-                gdk_color_parse("#ff0000", &color);
-                gtk_widget_modify_bg(
+                gdk_color_parse("#f96b5f", &color);
+                gtk_widget_modify_base(
                         GTK_WIDGET(e), 
-                        GTK_STATE_NORMAL | GTK_STATE_PRELIGHT | GTK_STATE_ACTIVE,
+                        GTK_STATE_NORMAL,
                         &color);
         }
         /* normal background color */
         else
         {
-                gtk_widget_modify_bg(
+                gtk_widget_modify_base(
                         GTK_WIDGET(e), 
-                        GTK_STATE_NORMAL | GTK_STATE_PRELIGHT | GTK_STATE_ACTIVE,
+                        GTK_STATE_NORMAL,
                         NULL);
         }
 
@@ -343,18 +343,18 @@ void on_entry_hardware_id_changed(GtkEditable *e, gpointer u)
         /* error background color */
         {
                 GdkColor color;
-                gdk_color_parse("#ff0000", &color);
-                gtk_widget_modify_bg(
+                gdk_color_parse("#f96b5f", &color);
+                gtk_widget_modify_base(
                         GTK_WIDGET(e), 
-                        GTK_STATE_NORMAL | GTK_STATE_PRELIGHT | GTK_STATE_ACTIVE,
+                        GTK_STATE_NORMAL,
                         &color);
         }
         /* normal background color */
         else
         {
-                gtk_widget_modify_bg(
+                gtk_widget_modify_base(
                         GTK_WIDGET(e), 
-                        GTK_STATE_NORMAL | GTK_STATE_PRELIGHT | GTK_STATE_ACTIVE,
+                        GTK_STATE_NORMAL,
                         NULL);
         }
 
@@ -374,21 +374,23 @@ void on_spinbutton_hardware_stride_changed(GtkSpinButton *s, gpointer u)
         /* error background color */
         {
                 GdkColor color;
-                gdk_color_parse("#ff0000", &color);
-                gtk_widget_modify_bg(
+                gdk_color_parse("#f96b5f", &color);
+                gtk_widget_modify_base(
                         GTK_WIDGET(s), 
-                        GTK_STATE_NORMAL | GTK_STATE_PRELIGHT | GTK_STATE_ACTIVE,
+                        GTK_STATE_NORMAL,
                         &color);
         }
         /* normal background color */
         else
         {
-                gtk_widget_modify_bg(
+                gtk_widget_modify_base(
                         GTK_WIDGET(s), 
-                        GTK_STATE_NORMAL | GTK_STATE_PRELIGHT | GTK_STATE_ACTIVE,
+                        GTK_STATE_NORMAL,
                         NULL);
         }
-
+        
+        
         /* refresh view */
 
+        
 }
