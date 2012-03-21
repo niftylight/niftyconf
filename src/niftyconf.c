@@ -46,6 +46,7 @@
 #include "niftyconf-ui.h"
 #include "niftyconf-log.h"
 #include "niftyconf-setup.h"
+#include "niftyconf-setup-tree.h"
 #include "niftyconf-hardware.h"
 #include "niftyconf-tile.h"
 #include "niftyconf-chain.h"
@@ -138,11 +139,56 @@ static gboolean _parse_cmdline_args(int argc, char *argv[], gchar **setupfile)
 /******************************************************************************
  ******************************************************************************/
 
-/** wrapper to acces widget */
+/** wrapper to access widget */
 void niftyconf_menu_logwindow_set_active(gboolean active)
 {
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(UI("menuitem_log_win")), active);
 }
+
+
+/** wrapper to access widget */
+void niftyconf_menu_hardware_add_set_sensitive(gboolean active)
+{
+        gtk_widget_set_sensitive(GTK_WIDGET(UI("item_hardware_add")), active);
+}
+
+
+/** wrapper to access widget */
+void niftyconf_menu_hardware_remove_set_sensitive(gboolean active)
+{
+        gtk_widget_set_sensitive(GTK_WIDGET(UI("item_hardware_remove")), active);
+}
+
+
+/** wrapper to access widget */
+void niftyconf_menu_tile_add_set_sensitive(gboolean active)
+{
+        gtk_widget_set_sensitive(GTK_WIDGET(UI("item_tile_add")), active);
+}
+
+
+/** wrapper to access widget */
+void niftyconf_menu_tile_remove_set_sensitive(gboolean active)
+{
+        gtk_widget_set_sensitive(GTK_WIDGET(UI("item_tile_remove")), active);
+}
+
+
+/** wrapper to access widget */
+void niftyconf_menu_chain_add_set_sensitive(gboolean active)
+{
+        gtk_widget_set_sensitive(GTK_WIDGET(UI("item_chain_add")), active);
+}
+
+
+/** wrapper to access widget */
+void niftyconf_menu_chain_remove_set_sensitive(gboolean active)
+{
+        gtk_widget_set_sensitive(GTK_WIDGET(UI("item_chain_remove")), active);
+}
+
+
+
 
 
 int main (int argc, char *argv[])
@@ -231,4 +277,138 @@ void on_niftyconf_menu_quit_activate(GtkMenuItem *i, gpointer d)
 void on_niftyconf_menu_log_window_activate(GtkWidget *i, gpointer u)
 {       
         log_show(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(i)));
+}
+
+/** menu-entry selected */
+void on_niftyconf_menu_add_hardware_activate(GtkWidget *i, gpointer u)
+{
+        setup_new_hardware("Unnamed", "dummy");
+
+        /** @todo refresh our menu */
+        
+        /* refresh tree */
+        setup_tree_refresh();
+}
+
+
+/** menu-entry selected */
+void on_niftyconf_menu_add_tile_activate(GtkWidget *i, gpointer u)
+{
+        NIFTYLED_TYPE t;
+        gpointer *e;
+        setup_tree_get_last_selected_element(&t, &e);
+
+        
+        /* different possible element types */
+        switch(t)
+        {
+                /* currently selected element is a hardware-node */
+                case T_LED_HARDWARE:
+                {
+                        setup_new_tile_of_hardware((NiftyconfHardware *) e);
+                        break;
+                }
+
+                /* currently selected element is a tile-node */
+                case T_LED_TILE:
+                {
+                        setup_new_tile_of_tile((NiftyconfTile *) e);
+                        break;
+                }
+        }
+
+        /** @todo refresh our menu */
+        
+        /* refresh tree */
+        setup_tree_refresh();
+}
+
+
+/** menu-entry selected */
+void on_niftyconf_menu_add_chain_activate(GtkWidget *i, gpointer u)
+{
+        NIFTYLED_TYPE t;
+        gpointer *e;
+        setup_tree_get_last_selected_element(&t, &e);
+        
+        /* can only add chains to tiles */
+        if(t != T_LED_TILE)
+                return;
+
+        /* add new chain */
+        setup_new_chain_of_tile((NiftyconfTile *) e, 0, "RGB u8");
+
+        /** @todo refresh our menu */
+        
+        /* refresh tree */
+        setup_tree_refresh();
+}
+
+
+/** wrapper for do_* functions */
+static void _foreach_remove_hardware(NIFTYLED_TYPE t, gpointer *e)
+{
+        if(t != T_LED_HARDWARE)
+                return;
+
+        setup_destroy_hardware((NiftyconfHardware *) e);
+}
+
+
+/** menu-entry selected */
+void on_niftyconf_menu_remove_hardware_activate(GtkWidget *i, gpointer u)
+{
+        /* remove all currently selected elements */
+        setup_tree_do_foreach_selected_element(_foreach_remove_hardware);
+
+        /** @todo refresh our menu */
+        
+        /* refresh tree */
+        setup_tree_refresh();
+}
+
+
+/** wrapper for do_* functions */
+static void _foreach_remove_tile(NIFTYLED_TYPE t, gpointer *e)
+{
+        if(t != T_LED_TILE)
+                return;
+
+        setup_destroy_tile((NiftyconfTile *) e);
+}
+
+
+/** menu-entry selected */
+void on_niftyconf_menu_remove_tile_activate(GtkWidget *i, gpointer u)
+{
+        /* remove all currently selected elements */
+        setup_tree_do_foreach_selected_element(_foreach_remove_tile);
+
+        /** @todo refresh our menu */
+        /* refresh tree */
+        setup_tree_refresh();
+}
+
+
+/** wrapper for do_* functions */
+static void _foreach_remove_chain(NIFTYLED_TYPE type, gpointer *e)
+{
+        /* works only if tile-element is selected */
+        if(type != T_LED_TILE)
+                return;
+
+        setup_destroy_chain_of_tile((NiftyconfTile *) e);
+}
+
+
+/** menu-entry selected */
+void on_niftyconf_menu_remove_chain_activate(GtkWidget *i, gpointer u)
+{
+        /* remove all currently selected elements */
+        setup_tree_do_foreach_selected_element(_foreach_remove_chain);
+
+        /** @todo refresh our menu */
+        
+        /* refresh tree */
+        setup_tree_refresh();
 }

@@ -125,8 +125,11 @@ LedHardware *hardware_niftyled(NiftyconfHardware *h)
 }
 
 
+
+
+
 /**
- * allocate new hardware element
+ * allocate new hardware element for GUI
  */
 NiftyconfHardware *hardware_register(LedHardware *h)
 {

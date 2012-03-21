@@ -44,6 +44,7 @@
 
 #include <niftyled.h>
 #include <gtk/gtk.h>
+#include "niftyconf.h"
 #include "niftyconf-ui.h"
 #include "niftyconf-setup.h"
 #include "niftyconf-setup-props.h"
@@ -82,7 +83,7 @@ static NiftyconfChain *current_chain;
  ******************************************************************************/
 
 
-/** append chain element to setup-tree */
+/** helper to append element to treeview */
 static void _tree_append_chain(GtkTreeStore *s, LedChain *c, GtkTreeIter *parent)
 {
         NiftyconfChain *chain = led_chain_get_privdata(c);
@@ -96,7 +97,7 @@ static void _tree_append_chain(GtkTreeStore *s, LedChain *c, GtkTreeIter *parent
 }
 
 
-/** append tile element to setup-tree */
+/** helper to append element to treeview */
 static void _tree_append_tile(GtkTreeStore *s, LedTile *t, GtkTreeIter *parent)
 {
         NiftyconfTile *tile = led_tile_get_privdata(t);
@@ -127,7 +128,7 @@ static void _tree_append_tile(GtkTreeStore *s, LedTile *t, GtkTreeIter *parent)
 }
 
 
-/** append hardware element to setup-tree */
+/** helper to append element to treeview */
 static void _tree_append_hardware(GtkTreeStore *s, LedHardware *h)
 {
         NiftyconfHardware *hardware = led_hardware_get_privdata(h);
@@ -153,50 +154,13 @@ static void _tree_append_hardware(GtkTreeStore *s, LedHardware *h)
 }
 
 
-/** remove chain from current setup */
-static void _remove_chain(NiftyconfChain *c)
-{
-        LedChain *chain = chain_niftyled(c);
-        chain_unregister(c);
-        led_settings_chain_unlink(setup_get_current(), chain);
-        led_chain_destroy(chain);
-}
-
-/** remove tile from current setup */
-static void _remove_tile(NiftyconfTile *tile)
-{
-        if(!tile)
-                NFT_LOG_NULL();
-        
-        LedTile *t = tile_niftyled(tile);
-        
-        /* unregister from gui */
-        tile_unregister(tile);
-        /* unregister from settings */
-        led_settings_tile_unlink(setup_get_current(), t);
-        /* destroy with all children */
-        led_tile_destroy(t);
-}
-
-/** remove hardware from current setup */
-static void _remove_hardware(NiftyconfHardware *hw)
-{
-        LedHardware *h = hardware_niftyled(hw);
-        
-        /* unregister hardware */
-        hardware_unregister(hw);
-        led_settings_hardware_unlink(setup_get_current(), h);
-        led_hardware_destroy(h);
-}
-
-
 /** wrapper for do_* functions */
 static void _foreach_remove_hardware(NIFTYLED_TYPE t, gpointer *e)
 {
         if(t != T_LED_HARDWARE)
                 return;
 
-        _remove_hardware((NiftyconfHardware *) e);
+        setup_destroy_hardware((NiftyconfHardware *) e);
 }
 
 
@@ -206,7 +170,7 @@ static void _foreach_remove_tile(NIFTYLED_TYPE t, gpointer *e)
         if(t != T_LED_TILE)
                 return;
 
-        _remove_tile((NiftyconfTile *) e);
+        setup_destroy_tile((NiftyconfTile *) e);
 }
 
 
@@ -217,21 +181,7 @@ static void _foreach_remove_chain(NIFTYLED_TYPE type, gpointer *e)
         if(type != T_LED_TILE)
                 return;
 
-        /* get niftyled tile */
-        NiftyconfTile *tile = (NiftyconfTile *) e;
-        LedTile *t = tile_niftyled(tile);
-        
-        /* if this tile has no chain, silently succeed */
-        LedChain *c;
-        if(!(c = led_tile_get_chain(t)))
-                return;
-
-        /* unregister from tile */
-        led_tile_set_chain(t, NULL);
-        
-        /* unregister from gui */
-        NiftyconfChain *chain = led_chain_get_privdata(c);
-        _remove_chain(chain);
+        setup_destroy_chain_of_tile((NiftyconfTile *) e);
 }
 
 
@@ -327,9 +277,19 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer *e)
                 /* hardware selected */
                 case T_LED_HARDWARE:
                 {
+                        /* enable hardware related menus */
+                        niftyconf_menu_hardware_remove_set_sensitive(TRUE);
+                        niftyconf_menu_tile_add_set_sensitive(TRUE);
+                                
+                        /* disable non-hardware related menus */
+                        niftyconf_menu_tile_remove_set_sensitive(FALSE);
+                        niftyconf_menu_chain_add_set_sensitive(FALSE);
+                        niftyconf_menu_chain_remove_set_sensitive(FALSE);
+                        
                         /* highlight hardware */
                         hardware_tree_set_highlighted((NiftyconfHardware *) e, TRUE);
 
+                        /* show hardware properties */
                         setup_props_hardware_show((NiftyconfHardware *) e);
                         
                         /* redraw everything */
@@ -343,6 +303,22 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer *e)
                 /* tile element selected */
                 case T_LED_TILE:
                 {
+                        /* enable tile related menus */
+                        niftyconf_menu_tile_remove_set_sensitive(TRUE);
+                        niftyconf_menu_tile_add_set_sensitive(TRUE);
+                                               
+                        /* disable non-tile related menus */
+                        niftyconf_menu_hardware_remove_set_sensitive(FALSE);
+                        niftyconf_menu_chain_add_set_sensitive(
+                                                (gboolean) !led_tile_get_chain(
+                                                        tile_niftyled(
+                                                        (NiftyconfTile *) e)));
+                        niftyconf_menu_chain_remove_set_sensitive(
+                                                (gboolean) led_tile_get_chain(
+                                                        tile_niftyled(
+                                                        (NiftyconfTile *) e)));
+                        
+                        
                         /* highlight tile */
                         tile_tree_set_highlighted((NiftyconfTile *) e, TRUE);
                         
@@ -360,6 +336,13 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer *e)
                 /* chain element selected */
                 case T_LED_CHAIN:
                 {
+                        /* disable non-chain related menus */
+                        niftyconf_menu_hardware_remove_set_sensitive(FALSE);
+                        niftyconf_menu_tile_add_set_sensitive(FALSE);
+                        niftyconf_menu_tile_remove_set_sensitive(FALSE);
+                        niftyconf_menu_chain_add_set_sensitive(FALSE);
+                        niftyconf_menu_chain_remove_set_sensitive(FALSE);
+                                                
                         /* highlight chain */
                         chain_tree_set_highlighted((NiftyconfChain *) e, TRUE);
                         
@@ -460,8 +443,34 @@ static void _do_foreach_iter(GtkTreeModel *m, GtkTreeIter *i,
         }while(gtk_tree_model_iter_next(m, i));
 }
 
+/** build setup-tree according to current setup */
+static void _tree_build()
+{
+        /**
+         * add every hardware-node (+ children) 
+         * to the setup-treeview 
+         */
+        LedHardware *h;
+        for(h = led_settings_hardware_get_first(setup_get_current()); h; h = led_hardware_get_next_sibling(h))
+        {         
+                _tree_append_hardware(GTK_TREE_STORE(UI("treestore")), h);
+        }
+
+        /* walk complete tree & collapse or expand element */
+        GtkTreeModel *m = gtk_tree_view_get_model(GTK_TREE_VIEW(UI("treeview")));
+        gtk_tree_model_foreach(m, _foreach_element_refresh_collapse, NULL);
+        gtk_tree_model_foreach(m, _foreach_element_refresh_highlight, NULL);
+
+        /* show treeview */
+        gtk_widget_show(GTK_WIDGET(UI("treeview")));
+        
+}
+
+/******************************************************************************
+ ******************************************************************************/
+
 /** run function on every tree-element */
-static void _do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer *e))
+void setup_tree_do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer *e))
 {
         /* get model */
         GtkTreeModel *m = gtk_tree_view_get_model(GTK_TREE_VIEW(UI("treeview")));
@@ -472,7 +481,7 @@ static void _do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer *e))
 }
 
 /** run function on every selected tree-element (multiple selections) */
-static void _do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer *element))
+void setup_tree_do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer *element))
 {
         /* get current treeview selection */
         GtkTreeSelection *selection;
@@ -508,7 +517,7 @@ static void _do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer 
 
 
 /** run function on last selected element */
-static void _do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer *element))
+void setup_tree_do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer *element))
 {
         /* get current treeview selection */
         GtkTreeSelection *selection;
@@ -533,32 +542,31 @@ static void _do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer
 }
 
 
-/** build setup-tree according to current setup */
-static void _tree_build()
+/** get last of currently selected elements */
+void setup_tree_get_last_selected_element(NIFTYLED_TYPE *t, gpointer **element)
 {
-        /**
-         * add every hardware-node (+ children) 
-         * to the setup-treeview 
-         */
-        LedHardware *h;
-        for(h = led_settings_hardware_get_first(setup_get_current()); h; h = led_hardware_get_next_sibling(h))
-        {         
-                _tree_append_hardware(GTK_TREE_STORE(UI("treestore")), h);
-        }
+        /* get current treeview selection */
+        GtkTreeSelection *selection;
+        selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(UI("treeview")));
 
-        /* walk complete tree & collapse or expand element */
-        GtkTreeModel *m = gtk_tree_view_get_model(GTK_TREE_VIEW(UI("treeview")));
-        gtk_tree_model_foreach(m, _foreach_element_refresh_collapse, NULL);
-        gtk_tree_model_foreach(m, _foreach_element_refresh_highlight, NULL);
-
-        /* show treeview */
-        gtk_widget_show(GTK_WIDGET(UI("treeview")));
+        /* something selected? */
+        GList *selected;
+        GtkTreeModel *m;
+        if(!(selected = gtk_tree_selection_get_selected_rows(selection, &m)))
+                return;
         
+        GtkTreePath *path = (GtkTreePath *) g_list_last(selected)->data;
+        GtkTreeIter i;
+        gtk_tree_model_get_iter(m, &i, path);
+        
+        /* get this element */
+        NIFTYLED_TYPE type;
+        gpointer *pointer;
+        gtk_tree_model_get(m, &i, C_SETUP_TYPE, &type, C_SETUP_ELEMENT, &pointer,  -1);
+
+        *t = type;
+        *element = pointer;
 }
-
-/******************************************************************************
- ******************************************************************************/
-
 
 
 /** clear setup tree */
@@ -594,15 +602,7 @@ gboolean  setup_tree_init()
 {
         if(!(_ui = ui_builder("niftyconf-setup-tree.ui")))
                 return FALSE;
-        
-        /* get widgets */
-        /*if(!(box = GTK_BOX(gtk_builder_get_object(ui, "box"))))
-                return FALSE;
-        if(!(tree_store = GTK_TREE_STORE(gtk_builder_get_object(ui, "treestore"))))
-                return FALSE;
-        if(!(tree_view = GTK_TREE_VIEW(gtk_builder_get_object(ui, "treeview"))))
-                return FALSE;*/
-        
+                
         /* set selection mode for setup tree */
         gtk_tree_selection_set_mode(
                 gtk_tree_view_get_selection(GTK_TREE_VIEW(UI("treeview"))), 
@@ -615,7 +615,6 @@ gboolean  setup_tree_init()
         gtk_tree_view_column_pack_start(col, renderer, TRUE);
         gtk_tree_view_column_add_attribute(col, renderer, "text", C_SETUP_TITLE);
 
-        //g_object_unref(ui);
         
         return TRUE;
 }
@@ -694,13 +693,13 @@ void on_setup_treeview_cursor_changed(GtkTreeView *tv, gpointer u)
 
         
         /* unhighlight all rows */
-        _do_foreach_element(_foreach_unhighlight_element);
+        setup_tree_do_foreach_element(_foreach_unhighlight_element);
         
         /* set currently active element */
-        _do_for_last_selected_element(_foreach_set_current_element);
+        setup_tree_do_for_last_selected_element(_foreach_set_current_element);
         
         /* process all selected elements */
-        _do_foreach_selected_element(_foreach_element_selected);
+        setup_tree_do_foreach_selected_element(_foreach_element_selected);
         
 
         //setup_redraw();
@@ -711,14 +710,14 @@ void on_setup_treeview_cursor_changed(GtkTreeView *tv, gpointer u)
 
 
 /** menu-entry selected */
-gboolean on_menu_remove_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
+gboolean on_popup_remove_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
                 return FALSE;
 
         /* remove all currently selected elements */
-        _do_foreach_selected_element(_foreach_remove_hardware);
+        setup_tree_do_foreach_selected_element(_foreach_remove_hardware);
         
         /* refresh tree */
         setup_tree_refresh();
@@ -729,14 +728,14 @@ gboolean on_menu_remove_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
 
 
 /** menu-entry selected */
-gboolean on_menu_remove_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
+gboolean on_popup_remove_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
                 return FALSE;
 
         /* remove all currently selected elements */
-        _do_foreach_selected_element(_foreach_remove_tile);
+        setup_tree_do_foreach_selected_element(_foreach_remove_tile);
                                
         /* refresh tree */
         setup_tree_refresh();
@@ -747,14 +746,14 @@ gboolean on_menu_remove_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
 
 
 /** menu-entry selected */
-gboolean on_menu_remove_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
+gboolean on_popup_remove_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
                 return FALSE;
 
         /* remove all currently selected elements */
-        _do_foreach_selected_element(_foreach_remove_chain);
+        setup_tree_do_foreach_selected_element(_foreach_remove_chain);
                         
         /* refresh tree */
         setup_tree_refresh();
@@ -765,65 +764,32 @@ gboolean on_menu_remove_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
 
 
 /** menu-entry selected */
-gboolean on_menu_add_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
+gboolean on_popup_add_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
                 return FALSE;
 
-                                
-        /* create new niftyled hardware */
-        LedHardware *h;
-        if(!(h = led_hardware_new("Unnamed", "dummy")))
-        {
-                NFT_LOG(L_ERROR, "Failed to add new dummy-hardware");
-                return FALSE;
-        }
-        
-        /* register hardware to gui */
-        NiftyconfHardware *hardware;
-        if(!(hardware = hardware_register(h)))
-        {
-                NFT_LOG(L_ERROR, "Failed to register hardware to GUI");
-                led_hardware_destroy(h);
-                return FALSE;
-        }
-
-        /* append to end of setup */
-        LedHardware *last;
-        for(last = led_settings_hardware_get_first(setup_get_current());
-            led_hardware_get_next_sibling(last);
-            last = led_hardware_get_next_sibling(last));
-
-        led_hardware_set_sibling(last, h);
-
-        /* create config */
-        if(!led_settings_create_from_hardware(setup_get_current(), h))
-                return FALSE;
+        gboolean r = setup_new_hardware("Unnamed", "dummy");
         
         /* refresh tree */
         setup_tree_refresh();
 
-        return TRUE;
-        
+        return r;
 }
 
 
 /** menu-entry selected */
-gboolean on_menu_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
+gboolean on_popup_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
                 return FALSE;
 
-        /* set currently active element */
-        _do_for_last_selected_element(_foreach_set_current_element);
         
-        /* create new tile */
-        LedTile *n;
-        if(!(n = led_tile_new()))
-                return FALSE;
-
+        /* set currently active element */
+        setup_tree_do_for_last_selected_element(_foreach_set_current_element);
+        
         
         /* different possible element types */
         switch(current_type)
@@ -831,37 +797,18 @@ gboolean on_menu_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
                 /* currently selected element is a hardware-node */
                 case T_LED_HARDWARE:
                 {
-                        /* get last tile of this hardware */
-                        LedHardware *h = hardware_niftyled((NiftyconfHardware *) current_hw);
-                        
-                        /* does hw already have a tile? */
-                        LedTile *tile;
-                        if(!(tile = led_hardware_get_tile(h)))
-                        {
-                                led_hardware_set_tile(h, n);
-                        }
-                        else
-                        {
-                                led_tile_append_sibling(tile, n);
-                        }
+                        setup_new_tile_of_hardware(current_hw);
                         break;
                 }
 
                 /* currently selected element is a tile-node */
                 case T_LED_TILE:
                 {
-                        LedTile *tile = tile_niftyled(current_tile);
-                        led_tile_append_child(tile, n);
+                        setup_new_tile_of_tile(current_tile);
                         break;
                 }
         }
 
-        /* register new tile to gui */
-        tile_register(n);
-
-        /* create config */
-        if(!led_settings_create_from_tile(setup_get_current(), n))
-                return FALSE;
         
         /* refresh tree */
         setup_tree_refresh();
@@ -871,34 +818,21 @@ gboolean on_menu_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
 
 
 /** menu-entry selected */
-gboolean on_menu_add_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
+gboolean on_popup_add_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
                 return FALSE;
         
         /* set currently active element */
-        _do_for_last_selected_element(_foreach_set_current_element);
+        setup_tree_do_for_last_selected_element(_foreach_set_current_element);
 
         /* can only add chains to tiles */
         if(current_type != T_LED_TILE)
                 return FALSE;
-        
-        /** create new chain @todo select format */
-        LedChain *n;
-        if(!(n = led_chain_new(0, "RGB u8")))
-                return FALSE;
-        
-        /* attach chain to tile */
-        LedTile *tile = tile_niftyled(current_tile);
-        led_tile_set_chain(tile, n);
 
-        /* create config */
-        if(!led_settings_create_from_chain(setup_get_current(), n))
-                return FALSE;
-        
-        /* register chain to gui */
-        chain_register(n);
+        /* add new chain */
+        setup_new_chain_of_tile(current_tile, 0, "RGB u8");
         
         /* refresh tree */
         setup_tree_refresh();
@@ -912,7 +846,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
 
         /* set currently active element */
-        _do_for_last_selected_element(_foreach_set_current_element);
+        setup_tree_do_for_last_selected_element(_foreach_set_current_element);
 
         
         /* create new popup menu */
@@ -930,7 +864,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                                         GTK_ICON_SIZE_MENU));
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_hw);
         g_signal_connect(menu_hw, "button-press-event",
-                                        (GCallback) (on_menu_add_hardware), NULL);
+                                        (GCallback) (on_popup_add_hardware), NULL);
 
 
         
@@ -954,7 +888,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                                                         GTK_ICON_SIZE_MENU));
                         gtk_menu_shell_append(GTK_MENU_SHELL(menu), add_tile);
                         g_signal_connect(add_tile, "button-press-event",
-                                                (GCallback) on_menu_add_tile, NULL);
+                                                (GCallback) on_popup_add_tile, NULL);
 
                         /* generate "remove hardware" menuitem */
                         GtkWidget *remove_hw = gtk_image_menu_item_new_with_label("Remove hardware");
@@ -965,7 +899,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                                                         GTK_ICON_SIZE_MENU));
                         gtk_menu_shell_append(GTK_MENU_SHELL(menu), remove_hw);
                         g_signal_connect(remove_hw, "button-press-event",
-                                                (GCallback) on_menu_remove_hardware, NULL);
+                                                (GCallback) on_popup_remove_hardware, NULL);
 
                         /* generate "initialize/deinitialize hw" menuitem */
 
@@ -993,7 +927,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                                                         GTK_ICON_SIZE_MENU));
                         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_chain);
                         g_signal_connect(menu_chain, "button-press-event",
-                                                (GCallback) on_menu_add_chain, NULL);
+                                                (GCallback) on_popup_add_chain, NULL);
                         /* if tile already has chain, set widget unsensitive */
                         gtk_widget_set_sensitive(menu_chain, (gboolean) !led_tile_get_chain(tile_niftyled(current_tile)));
                         
@@ -1006,7 +940,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                                                         GTK_ICON_SIZE_MENU));
                         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_tile);
                         g_signal_connect(menu_tile, "button-press-event",
-                                                (GCallback) on_menu_add_tile, NULL);
+                                                (GCallback) on_popup_add_tile, NULL);
 
                         /* generate "remove tile" menuitem */
                         GtkWidget *remove_tile = gtk_image_menu_item_new_with_label("Remove tile");
@@ -1017,7 +951,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                                                         GTK_ICON_SIZE_MENU));
                         gtk_menu_shell_append(GTK_MENU_SHELL(menu), remove_tile);
                         g_signal_connect(remove_tile, "button-press-event",
-                                                (GCallback) on_menu_remove_tile, NULL);
+                                                (GCallback) on_popup_remove_tile, NULL);
 
                         /* generate "remove chain" menuitem */
                         GtkWidget *remove_chain = gtk_image_menu_item_new_with_label("Remove chain");
@@ -1028,7 +962,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                                                         GTK_ICON_SIZE_MENU));
                         gtk_menu_shell_append(GTK_MENU_SHELL(menu), remove_chain);
                         g_signal_connect(remove_chain, "button-press-event",
-                                                (GCallback) on_menu_remove_chain, NULL);
+                                                (GCallback) on_popup_remove_chain, NULL);
                         LedTile *tile = tile_niftyled(current_tile);
                         gtk_widget_set_sensitive(remove_chain, 
                                         (gboolean) led_tile_get_chain(tile));

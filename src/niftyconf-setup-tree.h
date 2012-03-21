@@ -54,6 +54,10 @@ GtkWidget *     setup_tree_get_widget();
 /* GUI functions */
 void            setup_tree_clear();
 void            setup_tree_refresh();
+void            setup_tree_do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer *e));
+void            setup_tree_do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer *element));
+void            setup_tree_do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer *element));
+void            setup_tree_get_last_selected_element(NIFTYLED_TYPE *t, gpointer **element);
 
 /* model functions */
 

@@ -80,18 +80,179 @@ LedSettings *setup_get_current()
 }
 
 
-/**
- * getter for tree widget
- */
+/** getter for tree widget */
 GtkWidget *setup_get_widget()
 {
         return GTK_WIDGET(UI("box"));
 }
 
 
-/**
- * load new setup from XML file definition 
- */
+/** create new hardware element in setup */
+gboolean setup_new_hardware(const char *name, const char *family)
+{
+        /* create new niftyled hardware */
+        LedHardware *h;
+        if(!(h = led_hardware_new(name, family)))
+        {
+                NFT_LOG(L_ERROR, "Failed to add new dummy-hardware");
+                return FALSE;
+        }
+        
+        /* register hardware to gui */
+        NiftyconfHardware *hardware;
+        if(!(hardware = hardware_register(h)))
+        {
+                NFT_LOG(L_ERROR, "Failed to register hardware to GUI");
+                led_hardware_destroy(h);
+                return FALSE;
+        }
+
+        /* append to end of setup */
+        led_hardware_append_sibling(
+                led_settings_hardware_get_first(setup_get_current()), h);
+        
+        /* create config */
+        if(!led_settings_create_from_hardware(setup_get_current(), h))
+                return FALSE;
+        
+
+        return TRUE;
+
+}
+
+
+/** remove hardware from current setup */
+void setup_destroy_hardware(NiftyconfHardware *hw)
+{
+        LedHardware *h = hardware_niftyled(hw);
+        
+        /* unregister hardware */
+        hardware_unregister(hw);
+        led_settings_hardware_unlink(setup_get_current(), h);
+        led_hardware_destroy(h);
+}
+
+
+/** create new chain for tile */
+gboolean setup_new_chain_of_tile(NiftyconfTile *parent, 
+                                  LedCount length, 
+                                  const char *pixelformat)
+{
+        /** create new chain @todo select format */
+        LedChain *n;
+        if(!(n = led_chain_new(length, pixelformat)))
+                return FALSE;
+        
+        /* attach chain to tile */
+        LedTile *tile = tile_niftyled(parent);
+        led_tile_set_chain(tile, n);
+
+        /* create config */
+        if(!led_settings_create_from_chain(setup_get_current(), n))
+                return FALSE;
+        
+        /* register chain to gui */
+        chain_register(n);
+
+        return TRUE;
+}
+
+
+/** remove chain from current setup */
+void setup_destroy_chain_of_tile(NiftyconfTile *tile)
+{
+        /* get niftyled tile */
+        LedTile *t = tile_niftyled(tile);
+        
+        /* if this tile has no chain, silently succeed */
+        LedChain *c;
+        if(!(c = led_tile_get_chain(t)))
+                return;
+
+        /* unregister from tile */
+        led_tile_set_chain(t, NULL);
+        
+        /* unregister from gui */
+        NiftyconfChain *chain = led_chain_get_privdata(c);
+        chain_unregister(chain);
+        led_settings_chain_unlink(setup_get_current(), c);
+        led_chain_destroy(c);
+}
+
+
+/** create new tile for hardware parent */
+gboolean setup_new_tile_of_hardware(NiftyconfHardware *parent)
+{
+        /* create new tile */
+        LedTile *n;
+        if(!(n = led_tile_new()))
+                return FALSE;
+
+        /* get last tile of this hardware */
+        LedHardware *h = hardware_niftyled(parent);
+        
+        /* does hw already have a tile? */
+        LedTile *tile;
+        if(!(tile = led_hardware_get_tile(h)))
+        {
+                led_hardware_set_tile(h, n);
+        }
+        else
+        {
+                led_tile_append_sibling(tile, n);
+        }
+
+        /* register new tile to gui */
+        tile_register(n);
+
+        /* create config */
+        if(!led_settings_create_from_tile(setup_get_current(), n))
+                return FALSE;
+        
+        return TRUE;
+}
+
+
+/** create new tile for tile parent */
+gboolean setup_new_tile_of_tile(NiftyconfTile *parent)
+{
+        /* create new tile */
+        LedTile *n;
+        if(!(n = led_tile_new()))
+                return FALSE;
+
+        LedTile *tile = tile_niftyled(parent);
+        led_tile_append_child(tile, n);
+
+        /* register new tile to gui */
+        tile_register(n);
+
+        /* create config */
+        if(!led_settings_create_from_tile(setup_get_current(), n))
+                return FALSE;
+        
+        return TRUE;
+}
+
+
+/** remove tile from current setup */
+void setup_destroy_tile(NiftyconfTile *tile)
+{
+        if(!tile)
+                NFT_LOG_NULL();
+        
+        LedTile *t = tile_niftyled(tile);
+        
+        /* unregister from gui */
+        tile_unregister(tile);
+        /* unregister from settings */
+        led_settings_tile_unlink(setup_get_current(), t);
+        /* destroy with all children */
+        led_tile_destroy(t);
+}
+
+
+/** load new setup from XML file definition */
 gboolean setup_load(gchar *filename)
 {
         /* load new setup */
@@ -153,9 +314,7 @@ gboolean setup_load(gchar *filename)
 }
 
 
-/** 
- * cleanup previously loaded setup 
- */
+/** cleanup previously loaded setup */
 void setup_cleanup()
 {
         /* free all hardware nodes */
@@ -181,9 +340,7 @@ void setup_cleanup()
 }
 
 
-/**
- * initialize setup module
- */
+/** initialize setup module */
 gboolean setup_init()
 {
         _ui = ui_builder("niftyconf-setup.ui");

@@ -45,7 +45,18 @@
 #define _NIFTYCONF_H
 
 
+/* GUI model functions */
+
+/* GUI functions */
 void niftyconf_menu_logwindow_set_active(gboolean active);
+void niftyconf_menu_hardware_add_set_sensitive(gboolean active);
+void niftyconf_menu_hardware_remove_set_sensitive(gboolean active);
+void niftyconf_menu_tile_add_set_sensitive(gboolean active);
+void niftyconf_menu_tile_remove_set_sensitive(gboolean active);
+void niftyconf_menu_chain_add_set_sensitive(gboolean active);
+void niftyconf_menu_chain_remove_set_sensitive(gboolean active);
+
+/* model functions */
 
 
 #endif /* _NIFTYCONF_H */

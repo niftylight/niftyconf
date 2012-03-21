@@ -45,6 +45,10 @@
 #define _NIFTYCONF_SETUP_H
 
 #include <niftyled.h>
+#include "niftyconf-tile.h"
+#include "niftyconf-chain.h"
+#include "niftyconf-hardware.h"
+
 
 
 /* GUI model functions */
@@ -57,6 +61,16 @@ void            setup_cleanup();
 
 /* model functions */
 LedSettings *   setup_get_current();
+void            setup_destroy_hardware(NiftyconfHardware *hw);
+void            setup_destroy_chain_of_tile(NiftyconfTile *tile);
+void            setup_destroy_tile(NiftyconfTile *tile);
+gboolean        setup_new_hardware(const char *name, const char *family);
+gboolean        setup_new_chain_of_tile(NiftyconfTile *parent, 
+                                  LedCount length, 
+                                  const char *pixelformat);
+gboolean        setup_new_tile_of_hardware(NiftyconfHardware *parent);
+gboolean        setup_new_tile_of_tile(NiftyconfTile *parent);
+
 
 
 
