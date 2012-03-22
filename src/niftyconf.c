@@ -45,6 +45,7 @@
 #include <niftyled.h>
 #include "niftyconf-ui.h"
 #include "niftyconf-log.h"
+#include "niftyconf-clipboard.h"
 #include "niftyconf-setup.h"
 #include "niftyconf-setup-tree.h"
 #include "niftyconf-hardware.h"
@@ -220,7 +221,8 @@ int main (int argc, char *argv[])
                 g_error("Failed to initialize \"hardware\" module");
         if(!setup_init())
                 g_error("Failed to initialize \"setup\" module");
-
+        if(!clipboard_init())
+                g_error("Failed to initialize \"clipboard\" module");
         
         
         /* build our ui */

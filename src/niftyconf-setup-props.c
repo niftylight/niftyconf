@@ -176,9 +176,7 @@ void setup_props_hide()
 }
 
 
-/**
- * initialize led module
- */
+/** initialize led module */
 gboolean setup_props_init()
 {
         _ui = ui_builder("niftyconf-setup-props.ui");

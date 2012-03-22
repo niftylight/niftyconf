@@ -6,9 +6,11 @@ niftyconf_SOURCES = \
 	niftyconf.c \
 	niftyconf-ui.c \
 	niftyconf-log.c \
+	niftyconf-info-hardware.c \
 	niftyconf-setup.c \
 	niftyconf-setup-props.c \
 	niftyconf-setup-tree.c \
+	niftyconf-clipboard.c \
 	niftyconf-led.c \
 	niftyconf-chain.c \
 	niftyconf-tile.c \
