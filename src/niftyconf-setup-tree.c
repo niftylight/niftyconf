@@ -71,7 +71,7 @@ typedef enum
 static GtkBuilder *_ui;
 
 /* type of currently selected element */
-NIFTYLED_TYPE current_type;
+static NIFTYLED_TYPE current_type;
 /* currently selected element */
 static NiftyconfHardware *current_hw;
 static NiftyconfTile *current_tile;

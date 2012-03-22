@@ -104,6 +104,7 @@ void setup_props_hardware_show(NiftyconfHardware *h)
                 gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_name")), led_hardware_get_name(hardware));
                 gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_plugin")), led_hardware_get_plugin_family(hardware));
                 gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_id")), led_hardware_get_id(hardware));
+                gtk_widget_set_tooltip_text(GTK_WIDGET(UI("entry_hw_id")), led_hardware_get_plugin_id_example(hardware));
                 gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_hw_stride")), (gdouble) led_hardware_get_stride(hardware));
         }
         
