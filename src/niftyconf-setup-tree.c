@@ -50,6 +50,7 @@
 #include "niftyconf-setup-props.h"
 #include "niftyconf-setup-tree.h"
 #include "niftyconf-setup-ledlist.h"
+#include "niftyconf-info-hardware.h"
 
 
 
@@ -401,6 +402,9 @@ static void _foreach_set_current_element(NIFTYLED_TYPE t, gpointer *e)
                 case T_LED_HARDWARE:
                 {
                         current_hw = (NiftyconfHardware *) e;
+
+                        /* refresh info view */
+                        info_hardware_set(current_hw);
                         break;
                 }
 
@@ -842,6 +846,20 @@ gboolean on_popup_add_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
 }
 
 
+/** menu-entry selected */
+gboolean on_popup_info_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
+{
+        /* only handle button-press events */
+        if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
+                return FALSE;
+        
+        info_hardware_set_visible(TRUE);
+                
+        return TRUE;
+}
+
+
+
 /** create & show setup-tree popup menu */
 static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
@@ -913,7 +931,17 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                         /* generate "copy" menuitem */
                         
                         /* generate "paste" menuitem */
-                        
+
+                        /* generate "info" menuitem */
+                        GtkWidget *info_hw = gtk_image_menu_item_new_with_label("Info");
+                        gtk_image_menu_item_set_image(
+                                        GTK_IMAGE_MENU_ITEM(info_hw), 
+                                        gtk_image_new_from_stock(
+                                                        "gtk-info", 
+                                                        GTK_ICON_SIZE_MENU));
+                        gtk_menu_shell_append(GTK_MENU_SHELL(menu), info_hw);
+                        g_signal_connect(info_hw, "button-press-event",
+                                                (GCallback) on_popup_info_hardware, NULL);
                         break;
                 }
 

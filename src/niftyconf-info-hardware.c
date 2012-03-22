@@ -42,6 +42,18 @@
  */
 
 #include <gtk/gtk.h>
+#include "niftyconf-ui.h"
+#include "niftyconf-hardware.h"
+
+
+
+
+/** GtkBuilder for this module */
+static GtkBuilder *_ui;
+
+
+
+
 
 
 /******************************************************************************
@@ -53,7 +65,56 @@
 /******************************************************************************
  ******************************************************************************/
 
+/** set info */
+void info_hardware_set(NiftyconfHardware *hardware)
+{
+        LedHardware *h = hardware_niftyled(hardware);
+
+        gtk_link_button_set_uri(GTK_LINK_BUTTON(UI("linkbutton_family")),
+                                led_hardware_get_plugin_url(h));
+        gtk_button_set_label(GTK_BUTTON(UI("linkbutton_family")),
+                                led_hardware_get_plugin_family(h));
+        gtk_label_set_text(GTK_LABEL(UI("label_description")),
+                                led_hardware_get_plugin_description(h));
+        gtk_label_set_text(GTK_LABEL(UI("label_author")),
+                                led_hardware_get_plugin_author(h));
+        gtk_label_set_text(GTK_LABEL(UI("label_license")),
+                                led_hardware_get_plugin_license(h));
+        gchar version[64];
+        g_snprintf(version, sizeof(version), "v%d.%d.%d",
+                        led_hardware_get_plugin_version_major(h),
+                        led_hardware_get_plugin_version_minor(h),
+                        led_hardware_get_plugin_version_micro(h));
+        gtk_label_set_text(GTK_LABEL(UI("label_version")), version);
+}
+
+
+/** show/hide window */
+void info_hardware_set_visible(gboolean visible)
+{
+        gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);
+        gtk_widget_show(GTK_WIDGET(UI("window")));
+}
+
+
+/** initialize setup tree module */
+gboolean  info_hardware_init()
+{
+        if(!(_ui = ui_builder("niftyconf-info-hardware.ui")))
+                return FALSE;
+        
+        return TRUE;
+}
+
 
 /******************************************************************************
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
+
+/** close main window */
+gboolean on_info_hardware_window_delete_event(GtkWidget *w, GdkEvent *e)
+{
+        gtk_widget_set_visible(w, FALSE);
+        return TRUE;
+}
+

@@ -43,16 +43,17 @@
 
 #include <gtk/gtk.h>
 #include <niftyled.h>
+#include "niftyconf-hardware.h"
+#include "niftyconf-tile.h"
+#include "niftyconf-chain.h"
+#include "niftyconf-led.h"
 #include "niftyconf-ui.h"
 #include "niftyconf-log.h"
 #include "niftyconf-clipboard.h"
 #include "niftyconf-setup.h"
 #include "niftyconf-setup-tree.h"
 #include "niftyconf-setup-ledlist.h"
-#include "niftyconf-hardware.h"
-#include "niftyconf-tile.h"
-#include "niftyconf-chain.h"
-#include "niftyconf-led.h"
+#include "niftyconf-info-hardware.h"
 #include "config.h"
 
 
@@ -220,6 +221,8 @@ int main (int argc, char *argv[])
                 g_error("Failed to initialize \"tile\" module");
         if(!hardware_init())
                 g_error("Failed to initialize \"hardware\" module");
+        if(!info_hardware_init())
+                g_error("Failed to initialize \"info-hardware\" module");
         if(!setup_init())
                 g_error("Failed to initialize \"setup\" module");
         if(!clipboard_init())

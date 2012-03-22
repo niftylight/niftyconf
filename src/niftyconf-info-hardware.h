@@ -44,6 +44,7 @@
 #ifndef _NIFTYCONF_INFO_HARDWARE_H
 #define _NIFTYCONF_INFO_HARDWARE_H
 
+#include "niftyconf-hardware.h"
 
 
 /* GUI model functions */
@@ -51,6 +52,9 @@ gboolean                info_hardware_init();
 
 
 /* GUI functions */
+void                    info_hardware_set(NiftyconfHardware *hardware);
+void                    info_hardware_set_visible(gboolean visible);
+
 
 /* model functions */
 
