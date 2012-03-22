@@ -49,6 +49,7 @@
 #include "niftyconf-setup.h"
 #include "niftyconf-setup-props.h"
 #include "niftyconf-setup-tree.h"
+#include "niftyconf-setup-ledlist.h"
 
 
 
@@ -296,7 +297,7 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer *e)
                         //setup_redraw();
                         
                         /* clear led-list */
-                        chain_ledlist_clear();
+                        setup_ledlist_clear();
                         break;
                 }
 
@@ -329,7 +330,7 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer *e)
                         //setup_redraw();
 
                         /* clear led-list */
-                        chain_ledlist_clear();
+                        setup_ledlist_clear();
                         break;
                 }
 
@@ -352,7 +353,7 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer *e)
                         //setup_redraw();
                         
                         /* display led-list */
-                        chain_ledlist_rebuild((NiftyconfChain *) e);
+                        setup_ledlist_refresh((NiftyconfChain *) e);
                         
                         break;
                 }

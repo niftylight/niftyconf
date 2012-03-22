@@ -46,6 +46,7 @@
 #include "niftyconf-setup.h"
 #include "niftyconf-setup-props.h"
 #include "niftyconf-setup-tree.h"
+#include "niftyconf-setup-ledlist.h"
 #include "niftyconf-hardware.h"
 #include "niftyconf-ui.h"
 
@@ -346,6 +347,8 @@ gboolean setup_init()
         _ui = ui_builder("niftyconf-setup.ui");
 
         /* initialize tree module */
+        if(!setup_ledlist_init())
+                return FALSE;
         if(!setup_tree_init())
                 return FALSE;
         if(!setup_props_init())

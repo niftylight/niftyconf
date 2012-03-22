@@ -48,6 +48,7 @@
 #include "niftyconf-clipboard.h"
 #include "niftyconf-setup.h"
 #include "niftyconf-setup-tree.h"
+#include "niftyconf-setup-ledlist.h"
 #include "niftyconf-hardware.h"
 #include "niftyconf-tile.h"
 #include "niftyconf-chain.h"
@@ -230,7 +231,7 @@ int main (int argc, char *argv[])
         GtkBox *box_setup = GTK_BOX(gtk_builder_get_object(_ui, "box_setup"));
         gtk_box_pack_start(box_setup, setup_get_widget(), TRUE, TRUE, 0);
         GtkBox *box_chain = GTK_BOX(gtk_builder_get_object(_ui, "box_chain"));
-        gtk_box_pack_start(box_chain, chain_ledlist_get_widget(), TRUE, TRUE, 0);        
+        gtk_box_pack_start(box_chain, setup_ledlist_get_widget(), TRUE, TRUE, 0);
       
 
         

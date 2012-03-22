@@ -41,29 +41,24 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _NIFTYCONF_CHAIN_H
-#define _NIFTYCONF_CHAIN_H
+#ifndef _NIFTYCONF_SETUP_LEDLIST_H
+#define _NIFTYCONF_SETUP_LEDLIST_H
 
-#include <niftyled.h>
-
-
-typedef struct _NiftyconfChain NiftyconfChain;
+#include "niftyconf-chain.h"
 
 
 
 /* GUI model functions */
-gboolean                chain_init();
-NiftyconfChain *        chain_register(LedChain *c);
-void                    chain_unregister(NiftyconfChain *c);
+gboolean                setup_ledlist_init();
+GtkWidget *             setup_ledlist_get_widget();
 
 
 /* GUI functions */
-void                    chain_tree_set_highlighted(NiftyconfChain *c, gboolean is_highlighted);
-gboolean                chain_tree_get_highlighted(NiftyconfChain *c);
+void                    setup_ledlist_refresh(NiftyconfChain *c);
+void                    setup_ledlist_clear();
 
 /* model functions */
-LedChain *              chain_niftyled(NiftyconfChain *c);
 
 
 
-#endif /* _NIFTYCONF_CHAIN_H */
+#endif /* _NIFTYCONF_SETUP_LEDLIST_H */

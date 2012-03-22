@@ -59,20 +59,8 @@ struct _NiftyconfChain
 };
 
 
-/* columns for our listview */
-typedef enum
-{
-        /* (gint) NIFTYLED_TYPE of element */
-        C_CHAIN_LED = 0,
-        /* (gpointer) to NiftyconfLed descriptor */
-        C_CHAIN_ELEMENT,
-        NUM_CHAIN_COLS,
-}CHAIN_LISTVIEW_COLUMNS;
 
 
-
-static GtkBox *         box_chain;
-static GtkListStore *   liststore;
 
 
 /******************************************************************************
@@ -80,56 +68,15 @@ static GtkListStore *   liststore;
  ******************************************************************************/
 
 
-/** function to process an element that is currently selected */
-static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, gpointer data)
-{
-        /* get element represented by this row */
-        gpointer *element;
-        LedCount n;
-        gtk_tree_model_get(m, i, C_CHAIN_LED, &n, C_CHAIN_ELEMENT, &element,  -1);
-        NiftyconfLed *l = (NiftyconfLed *) element;
 
-        setup_props_hide();
-        setup_props_led_show(l);
-}
 
 
 /******************************************************************************
  ******************************************************************************/
-/**
- * rebuild list
- */
-void chain_ledlist_rebuild(NiftyconfChain *c)
-{
-        if(!c)
-                return;
-        LedCount i;
-        for(i = 0;
-            i < led_chain_get_ledcount(c->c);
-            i++)
-        {         
-                Led *led = led_chain_get_nth(c->c, i);
-                GtkTreeIter iter;
-                gtk_list_store_append(liststore, &iter);
-                gtk_list_store_set(liststore, &iter,
-                                  C_CHAIN_LED, i,
-                                  C_CHAIN_ELEMENT, led_get_privdata(led),
-                                  -1);
-        }
-
-}
 
 
-/**
- * clear list
- */
-void chain_ledlist_clear()
-{
-        if(!liststore)
-                return;
-        
-        gtk_list_store_clear(liststore);
-}
+
+
 
 
 /** getter for boolean value whether element is currently highlighted */
@@ -149,15 +96,6 @@ void chain_tree_set_highlighted(NiftyconfChain *c, gboolean is_highlighted)
                 NFT_LOG_NULL();
 
         c->highlight = is_highlighted;
-}
-
-
-/**
- * getter for list widget
- */
-GtkWidget *chain_ledlist_get_widget()
-{
-        return GTK_WIDGET(box_chain);
 }
 
 
@@ -225,26 +163,6 @@ void chain_unregister(NiftyconfChain *c)
  */
 gboolean chain_init()
 {
-        GtkBuilder *ui = ui_builder("niftyconf-chain.ui");
-
-        /* get widgets */
-        if(!(box_chain = GTK_BOX(gtk_builder_get_object(ui, "box_chain"))))
-                return FALSE;
-        if(!(liststore = GTK_LIST_STORE(gtk_builder_get_object(ui, "liststore"))))
-                return FALSE;
-
-        /* set selection mode for tree */
-        GtkTreeView *tree = GTK_TREE_VIEW(gtk_builder_get_object(ui, "treeview"));       
-        gtk_tree_selection_set_mode(
-                gtk_tree_view_get_selection(tree), 
-                GTK_SELECTION_MULTIPLE);
-        
-        /* initialize setup treeview */
-        GtkTreeViewColumn *col = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(ui, "column_led"));
-        GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-        gtk_tree_view_column_pack_start(col, renderer, TRUE);
-        gtk_tree_view_column_add_attribute(col, renderer, "text", C_CHAIN_LED);
-        
         return TRUE;
 }
 
@@ -254,28 +172,3 @@ gboolean chain_init()
  ******************************************************************************/
 
 
-/**
- * user selected another row
- */
-void on_chain_treeview_cursor_changed(GtkTreeView *tv, gpointer u)
-{
-        GtkTreeModel *m = gtk_tree_view_get_model(tv);
-        
-        /* unhighlight all elements */
-        //GtkTreeIter i;
-        //gtk_tree_model_get_iter_root(m, &i);
-        //_walk_tree(&i, _unhighlight_element);
-
-        /* get current selection */
-        GtkTreeSelection *s;
-        if(!(s = gtk_tree_view_get_selection(tv)))
-        {
-                return;
-        }
-
-        /* process all selected elements */
-        gtk_tree_selection_selected_foreach(s, _element_selected, NULL);
-
-        //setup_redraw();
-        //scene_redraw();
-}
