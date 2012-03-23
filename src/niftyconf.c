@@ -145,7 +145,7 @@ static gboolean _parse_cmdline_args(int argc, char *argv[], gchar **setupfile)
 /** wrapper to access widget */
 void niftyconf_menu_logwindow_set_active(gboolean active)
 {
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(UI("menuitem_log_win")), active);
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(UI("item_log_win")), active);
 }
 
 

@@ -35,6 +35,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <accelerator key="n" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <signal name="activate" handler="on_setup_menuitem_new_activate" swapped="no"/>
                       </object>
                     </child>
@@ -46,6 +47,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <accelerator key="o" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <signal name="activate" handler="on_setup_menuitem_open_activate" swapped="no"/>
                       </object>
                     </child>
@@ -57,6 +59,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <accelerator key="s" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <signal name="activate" handler="on_setup_menuitem_save_activate" swapped="no"/>
                       </object>
                     </child>
@@ -68,6 +71,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <accelerator key="s" signal="activate" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
                         <signal name="activate" handler="on_setup_menuitem_save_as_activate" swapped="no"/>
                       </object>
                     </child>
@@ -86,6 +90,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <signal name="activate" handler="on_niftyconf_menu_quit_activate" swapped="no"/>
                       </object>
                     </child>
@@ -123,6 +128,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="use_stock">True</property>
+                                <accelerator key="1" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                                 <signal name="activate" handler="on_niftyconf_menu_add_hardware_activate" swapped="no"/>
                               </object>
                             </child>
@@ -135,6 +141,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="use_stock">True</property>
+                                <accelerator key="1" signal="activate" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
                                 <signal name="activate" handler="on_niftyconf_menu_remove_hardware_activate" swapped="no"/>
                               </object>
                             </child>
@@ -162,6 +169,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="use_stock">True</property>
+                                <accelerator key="2" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                                 <signal name="activate" handler="on_niftyconf_menu_add_tile_activate" swapped="no"/>
                               </object>
                             </child>
@@ -174,6 +182,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="use_stock">True</property>
+                                <accelerator key="2" signal="activate" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
                                 <signal name="activate" handler="on_niftyconf_menu_remove_tile_activate" swapped="no"/>
                               </object>
                             </child>
@@ -201,6 +210,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="use_stock">True</property>
+                                <accelerator key="3" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                                 <signal name="activate" handler="on_niftyconf_menu_add_chain_activate" swapped="no"/>
                               </object>
                             </child>
@@ -213,6 +223,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="use_stock">True</property>
+                                <accelerator key="3" signal="activate" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
                                 <signal name="activate" handler="on_niftyconf_menu_remove_chain_activate" swapped="no"/>
                               </object>
                             </child>
@@ -237,6 +248,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <accelerator key="x" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -247,6 +259,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <accelerator key="c" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -257,16 +270,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkImageMenuItem" id="item_edit_delete">
-                        <property name="label">gtk-delete</property>
-                        <property name="use_action_appearance">False</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
+                        <accelerator key="v" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                   </object>
