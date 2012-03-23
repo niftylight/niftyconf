@@ -162,7 +162,9 @@ void hardware_unregister(NiftyconfHardware *h)
         if(!h)
                 return;
 
-        led_hardware_set_privdata(h->h, NULL);
+        if(h->h)
+                led_hardware_set_privdata(h->h, NULL);
+        
         free(h);
 }
 

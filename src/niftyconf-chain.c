@@ -99,9 +99,7 @@ void chain_tree_set_highlighted(NiftyconfChain *c, gboolean is_highlighted)
 }
 
 
-/**
- * getter for libniftyled object
- */
+/** getter for libniftyled object */
 LedChain *chain_niftyled(NiftyconfChain *c)
 {
         if(!c)
@@ -111,9 +109,36 @@ LedChain *chain_niftyled(NiftyconfChain *c)
 }
 
 
-/**
- * allocate new element
- */
+/** unregister all LEDs of a chain */
+void chain_unregister_leds(NiftyconfChain *c)
+{
+        if(!c)
+                NFT_LOG_NULL();
+        
+        /* free all LEDs of chain */
+        if(c->c)
+        {
+                LedCount i;
+                for(i = 0; i < led_chain_get_ledcount(c->c); i++)
+                {
+                        led_unregister(led_get_privdata(led_chain_get_nth(c->c, i)));
+                }
+        }
+}
+
+/** register all LEDs of a chain */
+void chain_register_leds(NiftyconfChain *c)
+{
+        /* allocate all LEDs of chain */
+        LedCount i;
+        for(i = 0; i < led_chain_get_ledcount(c->c); i++)
+        {
+                led_register(led_chain_get_nth(c->c, i));
+        }
+}
+
+
+/** allocate new element */
 NiftyconfChain *chain_register(LedChain *c)
 {
         NiftyconfChain *n;
@@ -129,38 +154,24 @@ NiftyconfChain *chain_register(LedChain *c)
         /* register descriptor as niftyled privdata */
         led_chain_set_privdata(c, n);
 
-        /* allocate all LEDs of chain */
-        LedCount i;
-        for(i = 0; i < led_chain_get_ledcount(c); i++)
-        {
-                led_register(led_chain_get_nth(c, i));
-        }
+        chain_register_leds(n);
 }
 
 
-/**
- * free element
- */
+/** free element */
 void chain_unregister(NiftyconfChain *c)
 {
         if(!c)
                 return;
 
-        /* free all LEDs of chain */
-        LedCount i;
-        for(i = 0; i < led_chain_get_ledcount(c->c); i++)
-        {
-                led_unregister(led_get_privdata(led_chain_get_nth(c->c, i)));
-        }
-        
+        chain_unregister_leds(c);
         led_chain_set_privdata(c->c, NULL);
+
         free(c);
 }
 
 
-/**
- * initialize chain module
- */
+/** initialize chain module */
 gboolean chain_init()
 {
         return TRUE;

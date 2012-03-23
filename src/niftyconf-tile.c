@@ -173,16 +173,20 @@ void tile_unregister(NiftyconfTile *t)
         if(!t)
                 return;
 
-        /* free all children */
-        LedTile *tile;
-        for(tile = led_tile_get_child(t->t);
-            tile;
-            tile = led_tile_get_next_sibling(tile))
+        if(t->t)
         {
-                tile_unregister(led_tile_get_privdata(tile));
+                /* free all children */
+                LedTile *tile;
+                for(tile = led_tile_get_child(t->t);
+                    tile;
+                    tile = led_tile_get_next_sibling(tile))
+                {
+                        tile_unregister(led_tile_get_privdata(tile));
+                }
+                
+                led_tile_set_privdata(t->t, NULL);
         }
         
-        led_tile_set_privdata(t->t, NULL);
         free(t);
 }
 

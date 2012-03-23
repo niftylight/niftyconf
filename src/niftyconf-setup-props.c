@@ -47,6 +47,7 @@
 #include "niftyconf-setup.h"
 #include "niftyconf-setup-tree.h"
 #include "niftyconf-setup-props.h"
+#include "niftyconf-setup-ledlist.h"
 
 
 
@@ -248,17 +249,37 @@ void on_spinbutton_chain_ledcount_changed(GtkSpinButton *s, gpointer u)
         /* get current tile */
         LedChain *chain = chain_niftyled(current_chain);
 
-        if(!led_chain_set_ledcount(chain,
-                                (LedCount) gtk_spin_button_get_value_as_int(s)))
+        /* get new ledcount */
+        LedCount ledcount = (LedCount) gtk_spin_button_get_value_as_int(s);
+        
+        /* ledcount changed? */
+        if(led_chain_get_ledcount(chain) == ledcount)
+                return;
+
+        /* remove all current LEDs */
+        setup_ledlist_clear();
+        
+        /* unregister all LEDs from chain */
+        chain_unregister_leds(current_chain);
+
+        /* set new ledcount */
+        if(!led_chain_set_ledcount(chain, ledcount))
         /* error background color */
         {
                 _widget_set_error_background(GTK_WIDGET(s), TRUE);
+                return;
         }
         /* normal background color */
         else
         {
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
         }
+
+        /* re-register (less or more) LEDs in chain */
+        chain_register_leds(current_chain);
+                
+        /* refresh view */
+        setup_ledlist_refresh(current_chain);
 }
 
 

@@ -87,22 +87,10 @@ static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, g
 }
 
 
-
-/******************************************************************************
- ******************************************************************************/
-
-/** getter for list widget */
-GtkWidget *setup_ledlist_get_widget()
+/** build list of Leds */
+static void _build(NiftyconfChain *c)
 {
-        return GTK_WIDGET(UI("box"));
-}
-
-
-/** rebuild list */
-void setup_ledlist_refresh(NiftyconfChain *c)
-{
-        if(!c)
-                return;
+        /* rebuild */
         LedCount i;
         for(i = 0;
             i < led_chain_get_ledcount(chain_niftyled(c));
@@ -117,6 +105,16 @@ void setup_ledlist_refresh(NiftyconfChain *c)
                                   -1);
         }
 
+        gtk_widget_show(GTK_WIDGET(UI("treeview")));
+}
+
+/******************************************************************************
+ ******************************************************************************/
+
+/** getter for list widget */
+GtkWidget *setup_ledlist_get_widget()
+{
+        return GTK_WIDGET(UI("box"));
 }
 
 
@@ -125,6 +123,23 @@ void setup_ledlist_clear()
 {        
         gtk_list_store_clear(GTK_LIST_STORE(UI("liststore")));
 }
+
+
+/** rebuild list */
+void setup_ledlist_refresh(NiftyconfChain *c)
+{
+        if(!c)
+                return;
+
+        /* clear ledlist */
+        setup_ledlist_clear();
+
+        _build(c);
+
+}
+
+
+
 
 
 /** initialize this module */

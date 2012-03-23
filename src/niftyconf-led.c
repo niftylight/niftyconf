@@ -128,7 +128,9 @@ void led_unregister(NiftyconfLed *l)
         if(!l)
                 return;
 
-        led_set_privdata(l->l, NULL);
+        if(l->l)
+                led_set_privdata(l->l, NULL);
+        
         free(l);
 }
 

@@ -55,11 +55,14 @@ typedef struct _NiftyconfChain NiftyconfChain;
 gboolean                chain_init();
 NiftyconfChain *        chain_register(LedChain *c);
 void                    chain_unregister(NiftyconfChain *c);
+void                    chain_register_leds(NiftyconfChain *c);
+void                    chain_unregister_leds(NiftyconfChain *c);
 
 
 /* GUI functions */
 void                    chain_tree_set_highlighted(NiftyconfChain *c, gboolean is_highlighted);
 gboolean                chain_tree_get_highlighted(NiftyconfChain *c);
+
 
 /* model functions */
 LedChain *              chain_niftyled(NiftyconfChain *c);
