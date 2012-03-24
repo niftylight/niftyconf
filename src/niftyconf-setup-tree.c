@@ -451,6 +451,13 @@ static void _do_foreach_iter(GtkTreeModel *m, GtkTreeIter *i,
 /** build setup-tree according to current setup */
 static void _tree_build()
 {
+        /* get model */
+        GtkTreeModel *m = gtk_tree_view_get_model(GTK_TREE_VIEW(UI("treeview")));
+        g_object_ref(m);
+
+        /* detach model from view */
+        gtk_tree_view_set_model(GTK_TREE_VIEW(UI("treeview")), NULL);
+        
         /**
          * add every hardware-node (+ children) 
          * to the setup-treeview 
@@ -461,13 +468,13 @@ static void _tree_build()
                 _tree_append_hardware(GTK_TREE_STORE(UI("treestore")), h);
         }
 
+        /* re attach model to view */
+        gtk_tree_view_set_model(GTK_TREE_VIEW(UI("treeview")), m); /* Re-attach model to view */
+        g_object_unref(m);
+
         /* walk complete tree & collapse or expand element */
-        GtkTreeModel *m = gtk_tree_view_get_model(GTK_TREE_VIEW(UI("treeview")));
         gtk_tree_model_foreach(m, _foreach_element_refresh_collapse, NULL);
         gtk_tree_model_foreach(m, _foreach_element_refresh_highlight, NULL);
-
-        /* show treeview */
-        gtk_widget_show(GTK_WIDGET(UI("treeview")));
         
 }
 
