@@ -43,6 +43,9 @@
 
 #include <niftyled.h>
 #include <gtk/gtk.h>
+#include "niftyconf-hardware.h"
+#include "niftyconf-tile.h"
+#include "niftyconf-chain.h"
 
 
 /** our clipboard */
@@ -60,7 +63,25 @@ static void _get_func(GtkClipboard *c,
                         GtkSelectionData *s,
                         guint info, gpointer u)
 {
-        
+        /*GdkAtom target = gtk_selection_data_get_target(selection_data);
+        if(gtk_targets_include_text(&target, 1)) 
+        {
+                char *str;
+                gsize len;
+
+                str = convert_file_list_to_string(clipboard_info, TRUE, &len);
+                gtk_selection_data_set_text(selection_data, str, len);
+                g_free(str);
+        }
+        else if(target == copied_files_atom) 
+        {
+                char *str;
+                gsize len;
+
+                str = convert_file_list_to_string(clipboard_info, FALSE, &len);
+                gtk_selection_data_set(selection_data, copied_files_atom, 8, str, len);
+                g_free(str);
+        }*/
 }
 
 /* clipboard_clear_func - dummy clear_func for gtk_clipboard_set_with_data () */
@@ -75,22 +96,66 @@ static void _clear_func(GtkClipboard *c, gpointer u)
  ******************************************************************************/
 
 
-/** initialize led module */
-gboolean clipboard_init()
+/** cut hardware */
+void clipboard_cut_or_copy_hardware(NiftyconfHardware *h, gboolean cut)
 {
-        if(!(_clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD)))
-                return FALSE;
-
         GtkTargetEntry targets[] =
         {
               {"NIFTYCONF_SELECTION", 0, 0}
         };
-
-        /*gtk_clipboard_set_with_data(_clipboard,
+        
+        gtk_clipboard_set_with_data(_clipboard,
                                         targets, 
                                         G_N_ELEMENTS(targets),
                                         _get_func,
-					_clear_func, NULL);*/
+					_clear_func, NULL);
+}
+
+
+/** cut tile */
+void clipboard_cut_or_copy_tile(NiftyconfTile *t, gboolean cut)
+{
+
+}
+
+
+/** cut chain */
+void clipboard_cut_or_copy_chain(NiftyconfChain *c, gboolean cut)
+{
+
+}
+
+
+/** paste hardware */
+void clipboard_paste_hardware(NiftyconfHardware *h, gboolean cut)
+{
+
+}
+
+
+/** paste tile */
+void clipboard_paste_tile(NiftyconfTile *t)
+{
+
+}
+
+
+/** paste chain */
+void clipboard_paste_chain(NiftyconfChain *c)
+{
+
+}
+
+
+/** initialize this module */
+gboolean clipboard_init()
+{
+        if(!(_clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD)))
+                return FALSE;
+          
+
+
+        
         return TRUE;
 }
 
