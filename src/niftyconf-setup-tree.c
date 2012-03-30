@@ -51,6 +51,7 @@
 #include "niftyconf-setup-tree.h"
 #include "niftyconf-setup-ledlist.h"
 #include "niftyconf-info-hardware.h"
+#include "niftyconf-clipboard.h"
 
 
 
@@ -184,6 +185,13 @@ static void _foreach_remove_chain(NIFTYLED_TYPE type, gpointer *e)
                 return;
 
         setup_destroy_chain_of_tile((NiftyconfTile *) e);
+}
+
+
+/** wrapper for do_* functions */
+static void _foreach_copy_element(NIFTYLED_TYPE type, gpointer *e)
+{
+        clipboard_cut_or_copy_element(type, e, FALSE);
 }
 
 
@@ -557,6 +565,9 @@ void setup_tree_do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpoin
 /** get last of currently selected elements */
 void setup_tree_get_last_selected_element(NIFTYLED_TYPE *t, gpointer **element)
 {
+        *t = T_LED_INVALID;
+        *element = NULL;
+        
         /* get current treeview selection */
         GtkTreeSelection *selection;
         selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(UI("treeview")));
@@ -867,6 +878,33 @@ gboolean on_popup_info_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
 
 
 
+/** menu-entry selected */
+gboolean on_popup_copy_element(GtkWidget *w, GdkEventButton *e, gpointer u)
+{
+        /* only handle button-press events */
+        if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
+                return FALSE;
+
+        /* copy all selected elements */
+        setup_tree_do_for_last_selected_element(_foreach_copy_element);
+        
+        return TRUE;
+}
+
+
+/** menu-entry selected */
+gboolean on_popup_paste_element(GtkWidget *w, GdkEventButton *e, gpointer u)
+{
+        NIFTYLED_TYPE t;
+        gpointer *element;
+        setup_tree_get_last_selected_element(&t, &element);
+        
+        clipboard_paste_element(t, element);
+        
+        return TRUE;
+}
+
+
 /** create & show setup-tree popup menu */
 static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
@@ -880,19 +918,104 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
         g_signal_connect(menu, "deactivate", 
                          G_CALLBACK (gtk_widget_destroy), NULL);
 
+        /* generate "cut" menuitem */
         
-        /* always generate "add hardware" menuitem (will be added toplevel only) */
-        GtkWidget *menu_hw = gtk_image_menu_item_new_with_label("Add hardware");        
+        /* generate "copy" menuitem */
+        GtkWidget *copy_menu = gtk_image_menu_item_new_with_label("Copy");
         gtk_image_menu_item_set_image(
-                        GTK_IMAGE_MENU_ITEM(menu_hw), 
+                        GTK_IMAGE_MENU_ITEM(copy_menu), 
+                        gtk_image_new_from_stock(
+                                        "gtk-copy", 
+                                        GTK_ICON_SIZE_MENU));
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), copy_menu);
+        g_signal_connect(copy_menu, "button-press-event",
+                                (GCallback) on_popup_copy_element, NULL);
+        
+        /* generate "paste" menuitem */
+        GtkWidget *paste_menu = gtk_image_menu_item_new_with_label("Paste");
+        gtk_image_menu_item_set_image(
+                        GTK_IMAGE_MENU_ITEM(paste_menu), 
+                        gtk_image_new_from_stock(
+                                        "gtk-paste", 
+                                        GTK_ICON_SIZE_MENU));
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), paste_menu);
+        g_signal_connect(paste_menu, "button-press-event",
+                                (GCallback) on_popup_paste_element, NULL);
+        
+        /* generate "add hardware" menuitem (will be added toplevel only) */
+        GtkWidget *add_hw = gtk_image_menu_item_new_with_label("Add hardware");        
+        gtk_image_menu_item_set_image(
+                        GTK_IMAGE_MENU_ITEM(add_hw), 
                         gtk_image_new_from_stock(
                                         "gtk-add", 
                                         GTK_ICON_SIZE_MENU));
-        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_hw);
-        g_signal_connect(menu_hw, "button-press-event",
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), add_hw);
+        g_signal_connect(add_hw, "button-press-event",
                                         (GCallback) (on_popup_add_hardware), NULL);
 
+        /* generate "add tile" menuitem */
+        GtkWidget *add_tile = gtk_image_menu_item_new_with_label("Add tile");
+        gtk_image_menu_item_set_image(
+                        GTK_IMAGE_MENU_ITEM(add_tile), 
+                        gtk_image_new_from_stock(
+                                        "gtk-add", 
+                                        GTK_ICON_SIZE_MENU));
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), add_tile);
+        g_signal_connect(add_tile, "button-press-event",
+                                (GCallback) on_popup_add_tile, NULL);
 
+        /* generate "add chain" menuitem */
+        GtkWidget *add_chain = gtk_image_menu_item_new_with_label("Add chain");                
+        gtk_image_menu_item_set_image(
+                        GTK_IMAGE_MENU_ITEM(add_chain), 
+                        gtk_image_new_from_stock(
+                                        "gtk-add", 
+                                        GTK_ICON_SIZE_MENU));
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), add_chain);
+        g_signal_connect(add_chain, "button-press-event",
+                                (GCallback) on_popup_add_chain, NULL);
+        
+        /* generate "remove hardware" menuitem */
+        GtkWidget *remove_hw = gtk_image_menu_item_new_with_label("Remove hardware");
+        gtk_image_menu_item_set_image(
+                        GTK_IMAGE_MENU_ITEM(remove_hw), 
+                        gtk_image_new_from_stock(
+                                        "gtk-remove", 
+                                        GTK_ICON_SIZE_MENU));
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), remove_hw);
+        g_signal_connect(remove_hw, "button-press-event",
+                                (GCallback) on_popup_remove_hardware, NULL);
+
+        /* generate "remove tile" menuitem */
+        GtkWidget *remove_tile = gtk_image_menu_item_new_with_label("Remove tile");
+        gtk_image_menu_item_set_image(
+                        GTK_IMAGE_MENU_ITEM(remove_tile), 
+                        gtk_image_new_from_stock(
+                                        "gtk-remove", 
+                                        GTK_ICON_SIZE_MENU));
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), remove_tile);
+        g_signal_connect(remove_tile, "button-press-event",
+                                (GCallback) on_popup_remove_tile, NULL);
+
+        /* generate "remove chain" menuitem */
+        GtkWidget *remove_chain = gtk_image_menu_item_new_with_label("Remove chain");
+        gtk_image_menu_item_set_image(
+                        GTK_IMAGE_MENU_ITEM(remove_chain), 
+                        gtk_image_new_from_stock(
+                                        "gtk-remove", 
+                                        GTK_ICON_SIZE_MENU));
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), remove_chain);
+        g_signal_connect(remove_chain, "button-press-event",
+                                (GCallback) on_popup_remove_chain, NULL);
+
+        
+        /* generate "move up" menuitem */
+
+        /* generate "move down" menuitem */
+
+        
+
+        
         
         /* decide about type of currently selected element */
         switch(current_type)
@@ -900,47 +1023,28 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                 /* nothing selected */
                 case 0:
                 {
+                        /* disable unneeded menus */
+                        gtk_widget_set_sensitive(remove_hw, FALSE);
+                        gtk_widget_set_sensitive(add_chain, FALSE);
+                        gtk_widget_set_sensitive(remove_chain, FALSE);
+                        gtk_widget_set_sensitive(add_tile, FALSE);
+                        gtk_widget_set_sensitive(remove_tile, FALSE);
+                        gtk_widget_set_sensitive(copy_menu, FALSE);
                         break;
                 }
                         
                 case T_LED_HARDWARE:
                 {
-                        /* generate "add tile" menuitem */
-                        GtkWidget *add_tile = gtk_image_menu_item_new_with_label("Add tile");
-                        gtk_image_menu_item_set_image(
-                                        GTK_IMAGE_MENU_ITEM(add_tile), 
-                                        gtk_image_new_from_stock(
-                                                        "gtk-add", 
-                                                        GTK_ICON_SIZE_MENU));
-                        gtk_menu_shell_append(GTK_MENU_SHELL(menu), add_tile);
-                        g_signal_connect(add_tile, "button-press-event",
-                                                (GCallback) on_popup_add_tile, NULL);
-
-                        /* generate "remove hardware" menuitem */
-                        GtkWidget *remove_hw = gtk_image_menu_item_new_with_label("Remove hardware");
-                        gtk_image_menu_item_set_image(
-                                        GTK_IMAGE_MENU_ITEM(remove_hw), 
-                                        gtk_image_new_from_stock(
-                                                        "gtk-remove", 
-                                                        GTK_ICON_SIZE_MENU));
-                        gtk_menu_shell_append(GTK_MENU_SHELL(menu), remove_hw);
-                        g_signal_connect(remove_hw, "button-press-event",
-                                                (GCallback) on_popup_remove_hardware, NULL);
-
+                        /* disable unneeded menus */
+                        gtk_widget_set_sensitive(add_chain, FALSE);
+                        gtk_widget_set_sensitive(remove_chain, FALSE);
+                        gtk_widget_set_sensitive(remove_tile, FALSE);
+                        
                         /* generate "initialize/deinitialize hw" menuitem */
 
-                        /* generate "move up" menuitem */
-
-                        /* generate "move down" menuitem */
-
-                        /* generate "cut" menuitem */
                         
-                        /* generate "copy" menuitem */
-                        
-                        /* generate "paste" menuitem */
-
                         /* generate "info" menuitem */
-                        GtkWidget *info_hw = gtk_image_menu_item_new_with_label("Info");
+                        GtkWidget *info_hw = gtk_image_menu_item_new_with_label("Plugin info");
                         gtk_image_menu_item_set_image(
                                         GTK_IMAGE_MENU_ITEM(info_hw), 
                                         gtk_image_new_from_stock(
@@ -954,82 +1058,40 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
 
                 case T_LED_TILE:
                 {
-                        /* generate "add chain" menuitem */
-                        GtkWidget *menu_chain = gtk_image_menu_item_new_with_label("Add chain");                
-                        gtk_image_menu_item_set_image(
-                                        GTK_IMAGE_MENU_ITEM(menu_chain), 
-                                        gtk_image_new_from_stock(
-                                                        "gtk-add", 
-                                                        GTK_ICON_SIZE_MENU));
-                        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_chain);
-                        g_signal_connect(menu_chain, "button-press-event",
-                                                (GCallback) on_popup_add_chain, NULL);
-                        /* if tile already has chain, set widget unsensitive */
-                        gtk_widget_set_sensitive(menu_chain, (gboolean) !led_tile_get_chain(tile_niftyled(current_tile)));
+                        /* disable unneeded menus */
+                        gtk_widget_set_sensitive(remove_hw, FALSE);
                         
-                        /* generate "add tile" menuitem */
-                        GtkWidget *menu_tile = gtk_image_menu_item_new_with_label("Add tile");
-                        gtk_image_menu_item_set_image(
-                                        GTK_IMAGE_MENU_ITEM(menu_tile), 
-                                        gtk_image_new_from_stock(
-                                                        "gtk-add", 
-                                                        GTK_ICON_SIZE_MENU));
-                        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_tile);
-                        g_signal_connect(menu_tile, "button-press-event",
-                                                (GCallback) on_popup_add_tile, NULL);
-
-                        /* generate "remove tile" menuitem */
-                        GtkWidget *remove_tile = gtk_image_menu_item_new_with_label("Remove tile");
-                        gtk_image_menu_item_set_image(
-                                        GTK_IMAGE_MENU_ITEM(remove_tile), 
-                                        gtk_image_new_from_stock(
-                                                        "gtk-remove", 
-                                                        GTK_ICON_SIZE_MENU));
-                        gtk_menu_shell_append(GTK_MENU_SHELL(menu), remove_tile);
-                        g_signal_connect(remove_tile, "button-press-event",
-                                                (GCallback) on_popup_remove_tile, NULL);
-
-                        /* generate "remove chain" menuitem */
-                        GtkWidget *remove_chain = gtk_image_menu_item_new_with_label("Remove chain");
-                        gtk_image_menu_item_set_image(
-                                        GTK_IMAGE_MENU_ITEM(remove_chain), 
-                                        gtk_image_new_from_stock(
-                                                        "gtk-remove", 
-                                                        GTK_ICON_SIZE_MENU));
-                        gtk_menu_shell_append(GTK_MENU_SHELL(menu), remove_chain);
-                        g_signal_connect(remove_chain, "button-press-event",
-                                                (GCallback) on_popup_remove_chain, NULL);
+                        /* if tile has no chain, enable "add" menu */
+                        gtk_widget_set_sensitive(add_chain, (gboolean) !led_tile_get_chain(tile_niftyled(current_tile)));
+                        
+                        /* tile has a chain, enable "remove" menu */
                         LedTile *tile = tile_niftyled(current_tile);
                         gtk_widget_set_sensitive(remove_chain, 
                                         (gboolean) led_tile_get_chain(tile));
-                        
-                        /* generate "move up" menuitem */
-
-                        /* generate "move down" menuitem */
-
-                        /* generate "cut" menuitem */
-                        
-                        /* generate "copy" menuitem */
-                        
-                        /* generate "paste" menuitem */
-                        
+                                                
                         break;
                 }
 
                 case T_LED_CHAIN:
-                {
-                        /* generate "remove chain" menuitem */
-
-                        /* generate "cut" menuitem */
-                        
-                        /* generate "copy" menuitem */
-                        
-                        /* generate "paste" menuitem */
+                {          
+                        /* disable unneeded menus */
+                        gtk_widget_set_sensitive(remove_hw, FALSE);
+                        gtk_widget_set_sensitive(add_chain, FALSE);
+                        gtk_widget_set_sensitive(remove_chain, FALSE);
+                        gtk_widget_set_sensitive(add_tile, FALSE);
+                        gtk_widget_set_sensitive(remove_tile, FALSE);
                         break;
                 }
 
                 default:
                 {
+                        /* disable unneeded menus */
+                        gtk_widget_set_sensitive(remove_hw, FALSE);
+                        gtk_widget_set_sensitive(add_chain, FALSE);
+                        gtk_widget_set_sensitive(remove_chain, FALSE);
+                        gtk_widget_set_sensitive(add_tile, FALSE);
+                        gtk_widget_set_sensitive(remove_tile, FALSE);
+                        
                         NFT_LOG(L_ERROR, "Unknown element-type selected (%d)", current_type);
                 }
         }

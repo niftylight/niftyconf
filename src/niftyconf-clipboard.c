@@ -43,13 +43,28 @@
 
 #include <niftyled.h>
 #include <gtk/gtk.h>
+#include "niftyconf-setup.h"
 #include "niftyconf-hardware.h"
 #include "niftyconf-tile.h"
 #include "niftyconf-chain.h"
 
 
+/**
+ * This is simple & generic. 
+ * For every setup-element we copy the XML representation to
+ * the clipboard. If we cut, the element is removed from the setup and destroyed.
+ * Upon paste, the XML data is parsed again and, if valid, a new element is created
+ * to be inserted as child of the currently selected element (LedHardware 
+ * elements will always be added to the toplevel of the setup)
+ *
+ * @todo make this ready for proper multi-select copy of tree elements
+ */
+                                                        
+
 /** our clipboard */
-GtkClipboard *_clipboard;
+static GtkClipboard *_clipboard;
+
+
 
 
 
@@ -59,10 +74,25 @@ GtkClipboard *_clipboard;
  ******************************************************************************/
 
 /* clipboard_get_func - dummy get_func for gtk_clipboard_set_with_data () */
-static void _get_func(GtkClipboard *c,
+static void _get_hw_func(GtkClipboard *c,
                         GtkSelectionData *s,
                         guint info, gpointer u)
 {
+        NiftyconfHardware *h = (NiftyconfHardware *) u;
+
+        GdkAtom target = gtk_selection_data_get_target(s);
+
+        /* request text-form? */
+        if(gtk_targets_include_text(&target, 1)) 
+        {
+
+        }
+        /* deliver hardware pointer */
+        else
+        {
+
+        }
+        
         /*GdkAtom target = gtk_selection_data_get_target(selection_data);
         if(gtk_targets_include_text(&target, 1)) 
         {
@@ -85,10 +115,12 @@ static void _get_func(GtkClipboard *c,
 }
 
 /* clipboard_clear_func - dummy clear_func for gtk_clipboard_set_with_data () */
-static void _clear_func(GtkClipboard *c, gpointer u)
+static void _clear_hw_func(GtkClipboard *c, gpointer u)
 {
-        
+        NiftyconfHardware *h = (NiftyconfHardware *) u;
 }
+
+
 
 
 
@@ -96,65 +128,126 @@ static void _clear_func(GtkClipboard *c, gpointer u)
  ******************************************************************************/
 
 
-/** cut hardware */
-void clipboard_cut_or_copy_hardware(NiftyconfHardware *h, gboolean cut)
+
+
+/** cut/copy to buffer */
+void clipboard_cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 {
-        GtkTargetEntry targets[] =
-        {
-              {"NIFTYCONF_SELECTION", 0, 0}
-        };
+        const char *xml = NULL;
         
-        gtk_clipboard_set_with_data(_clipboard,
-                                        targets, 
-                                        G_N_ELEMENTS(targets),
-                                        _get_func,
-					_clear_func, NULL);
+        switch(t)
+        {
+                case T_LED_HARDWARE:
+                {
+                        LedHardware *h = hardware_niftyled((NiftyconfHardware *) e);
+                        xml = led_settings_hardware_dump_xml(setup_get_current(), h);
+                        break;
+                }
+
+                case T_LED_TILE:
+                {
+                        LedTile *t = tile_niftyled((NiftyconfTile *) e);
+                        xml = led_settings_tile_dump_xml(setup_get_current(), t);
+                        break;
+                }
+
+                case T_LED_CHAIN:
+                {
+                        LedChain *c = chain_niftyled((NiftyconfChain *) e);
+                        xml = led_settings_chain_dump_xml(setup_get_current(), c);
+                        break;
+                }
+        }
+
+        if(!xml)
+                return;
+
+        /* set the clipboard text */
+        gtk_clipboard_set_text(_clipboard, xml, -1);
+
+        /* store the clipboard text */
+        gtk_clipboard_store(_clipboard);
+
+        NFT_LOG(L_VERY_NOISY, "%s", xml);
+        
+        free((void *) xml);
 }
 
 
-/** cut tile */
-void clipboard_cut_or_copy_tile(NiftyconfTile *t, gboolean cut)
+/** paste element from clipboard */
+void clipboard_paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 {
+        gchar *xml;
+        if(!(xml = gtk_clipboard_wait_for_text(_clipboard)))
+        {
+                NFT_LOG(L_ERROR, "recieved NULL from clipboard");
+                return;
+        }
 
-}
+        switch(led_settings_node_get_type(xml))
+        {
+                case T_LED_HARDWARE:
+                {
+                        printf("-> hardware\n");
+                        break;
+                }
 
+                case T_LED_TILE:
+                {
+                        switch(parent_t)
+                        {
+                                /* paste tile to hardware */
+                                case T_LED_HARDWARE:
+                                {
+                                        printf("-> tile -> hw\n");
+                                        break;
+                                }
 
-/** cut chain */
-void clipboard_cut_or_copy_chain(NiftyconfChain *c, gboolean cut)
-{
+                                /* paste tile to tile */
+                                case T_LED_TILE:
+                                {
+                                        printf("-> tile -> tile\n");
+                                        break;
+                                }
 
-}
+                                default:
+                                        break;
+                        }
+                        
+                        break;
+                }
 
+                case T_LED_CHAIN:
+                {
+                        switch(parent_t)
+                        {
+                                /** paste chain to tile */
+                                case T_LED_TILE:
+                                {
+                                        printf("-> chain -> tile\n");
+                                        break;
+                                }
 
-/** paste hardware */
-void clipboard_paste_hardware(NiftyconfHardware *h, gboolean cut)
-{
-
-}
-
-
-/** paste tile */
-void clipboard_paste_tile(NiftyconfTile *t)
-{
-
-}
-
-
-/** paste chain */
-void clipboard_paste_chain(NiftyconfChain *c)
-{
-
+                                default:
+                                        break;
+                        }
+                        
+                        break;
+                }
+        }
+        
 }
 
 
 /** initialize this module */
 gboolean clipboard_init()
 {
+        /* get clipboard */
         if(!(_clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD)))
                 return FALSE;
-          
 
-
+        /* initialize clipboard */
+        gtk_clipboard_set_can_store(_clipboard, NULL, 0);
         
         return TRUE;
 }

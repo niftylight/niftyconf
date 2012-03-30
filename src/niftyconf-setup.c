@@ -122,6 +122,7 @@ gboolean setup_new_hardware(const char *name, const char *family)
 }
 
 
+
 /** remove hardware from current setup */
 void setup_destroy_hardware(NiftyconfHardware *hw)
 {

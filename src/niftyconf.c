@@ -418,3 +418,36 @@ void on_niftyconf_menu_remove_chain_activate(GtkWidget *i, gpointer u)
         /* refresh tree */
         setup_tree_refresh();
 }
+
+
+/** menu-entry selected */
+void on_niftyconf_menu_cut_activate(GtkWidget *i, gpointer u)
+{
+
+}
+
+
+/** wrapper for do_* functions */
+static void _foreach_copy_element(NIFTYLED_TYPE type, gpointer *e)
+{
+        clipboard_cut_or_copy_element(type, e, FALSE);
+}
+
+
+/** menu-entry selected */
+void on_niftyconf_menu_copy_activate(GtkWidget *i, gpointer u)
+{
+        /* copy all selected elements */
+        setup_tree_do_for_last_selected_element(_foreach_copy_element);
+}
+
+
+/** menu-entry selected */
+void on_niftyconf_menu_paste_activate(GtkWidget *i, gpointer u)
+{
+        NIFTYLED_TYPE t;
+        gpointer *element;
+        setup_tree_get_last_selected_element(&t, &element);
+        
+        clipboard_paste_element(t, element);
+}

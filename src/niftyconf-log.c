@@ -66,21 +66,32 @@ static void _logger(void *userdata,
                     const char * func, 
                     int line, const char * msg)
 {
+        /* output this at current loglevel? */
 	NftLoglevel lcur = nft_log_level_get();
-    if (lcur > level)
-		return;
+        if (lcur > level)
+                return;
 
+        /* calc size */
+        size_t size = 64;
+        if(file)
+                size += strlen(file);
+        if(func)
+                size += strlen(func);
+        if(msg)
+                size += strlen(msg);
+        
 	gchar *s;
-	if(!(s = alloca(4096)))
+	if(!(s = alloca(size)))
 		return;
 
-	snprintf(s, 4096, "(%s) ", 
+	snprintf(s, size, "(%s) ", 
 	         nft_log_level_to_name(level));
 
 	/* include filename? */
-	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(UI("checkbutton_file"))))
+	if(file && gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(UI("checkbutton_file"))))
 	{
-		strncat(s, file, 4096-strlen(s));
+                
+                strncat(s, file, (size-strlen(s) > 0 ? size-strlen(s) : 0));
 	}
 
 	/* include line number? */
@@ -90,22 +101,22 @@ static void _logger(void *userdata,
 		if(!(number = alloca(64)))
 			return;
 		snprintf(number, 64, ":%d ", line);
-		strncat(s, number, 4096-strlen(s));
+		strncat(s, number, (size-strlen(s) > 0 ? size-strlen(s) : 0));
 	}
 	else
 	{
-		strncat(s, " ", 4096-strlen(s));
+		strncat(s, " ", (size-strlen(s) > 0 ? size-strlen(s) : 0));
 	}
 
 	/* include function name? */
-	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(UI("checkbutton_function"))))
+	if(func && gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(UI("checkbutton_function"))))
 	{
-		strncat(s, func, 4096-strlen(s));
-		strncat(s, "(): ", 4096-strlen(s));
+		strncat(s, func, (size-strlen(s) > 0 ? size-strlen(s) : 0));
+		strncat(s, "(): ", (size-strlen(s) > 0 ? size-strlen(s) : 0));
 	}
 
-	strncat(s, msg, 4096-strlen(s));
-	strncat(s, "\n", 4096-strlen(s));
+	strncat(s, msg, (size-strlen(s) > 0 ? size-strlen(s) : 0));
+	strncat(s, "\n", (size-strlen(s) > 0 ? size-strlen(s) : 0));
 	
 	GtkTextView *tv = GTK_TEXT_VIEW(userdata);
 	GtkTextBuffer *buf = gtk_text_view_get_buffer(tv);

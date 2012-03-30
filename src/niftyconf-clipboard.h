@@ -48,16 +48,8 @@
 
 /* GUI model functions */
 gboolean        clipboard_init();
-void            clipboard_cut_hardware(NiftyconfHardware *h);
-void            clipboard_cut_tile(NiftyconfTile *t);
-void            clipboard_cut_chain(NiftyconfChain *c);
-void            clipboard_copy_hardware(NiftyconfHardware *h);
-void            clipboard_copy_tile(NiftyconfTile *t);
-void            clipboard_copy_chain(NiftyconfChain *c);
-void            clipboard_paste_hardware(NiftyconfHardware *h);
-void            clipboard_paste_tile(NiftyconfTile *t);
-void            clipboard_paste_chain(NiftyconfChain *c);
-
+void            clipboard_cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut);
+void            clipboard_paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element);
 
 /* GUI functions */
 
