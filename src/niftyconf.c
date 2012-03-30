@@ -420,10 +420,18 @@ void on_niftyconf_menu_remove_chain_activate(GtkWidget *i, gpointer u)
 }
 
 
+/** wrapper for do_* functions */
+static void _foreach_cut_element(NIFTYLED_TYPE type, gpointer *e)
+{
+        clipboard_cut_or_copy_element(type, e, TRUE);
+}
+
+
 /** menu-entry selected */
 void on_niftyconf_menu_cut_activate(GtkWidget *i, gpointer u)
 {
-
+        /* copy all selected elements */
+        setup_tree_do_for_last_selected_element(_foreach_cut_element);
 }
 
 

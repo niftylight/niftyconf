@@ -44,6 +44,7 @@
 #include <niftyled.h>
 #include <gtk/gtk.h>
 #include "niftyconf-setup.h"
+#include "niftyconf-setup-tree.h"
 #include "niftyconf-hardware.h"
 #include "niftyconf-tile.h"
 #include "niftyconf-chain.h"
@@ -141,6 +142,14 @@ void clipboard_cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
                 {
                         LedHardware *h = hardware_niftyled((NiftyconfHardware *) e);
                         xml = led_settings_hardware_dump_xml(setup_get_current(), h);
+
+                        /* remove element? */
+                        if(cut)
+                        {
+                                hardware_unregister((NiftyconfHardware *) e);
+                                led_hardware_destroy(h);
+                                setup_tree_refresh();
+                        }
                         break;
                 }
 
@@ -148,6 +157,15 @@ void clipboard_cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
                 {
                         LedTile *t = tile_niftyled((NiftyconfTile *) e);
                         xml = led_settings_tile_dump_xml(setup_get_current(), t);
+
+                        /* remove element? */
+                        if(cut)
+                        {
+                                tile_unregister((NiftyconfTile *) e);
+                                led_tile_destroy(t);
+                                setup_tree_refresh();
+                        }
+                        
                         break;
                 }
 
@@ -155,6 +173,18 @@ void clipboard_cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
                 {
                         LedChain *c = chain_niftyled((NiftyconfChain *) e);
                         xml = led_settings_chain_dump_xml(setup_get_current(), c);
+
+                        /* don't cut from hardware elements */
+                        if(led_chain_parent_is_hardware(c))
+                                break;
+                        
+                        /* remove element? */
+                        if(cut)
+                        {
+                                chain_unregister((NiftyconfChain *) e);
+                                led_chain_destroy(c);
+                                setup_tree_refresh();
+                        }
                         break;
                 }
         }

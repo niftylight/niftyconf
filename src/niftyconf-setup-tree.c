@@ -195,6 +195,13 @@ static void _foreach_copy_element(NIFTYLED_TYPE type, gpointer *e)
 }
 
 
+/** wrapper for do_* functions */
+static void _foreach_cut_element(NIFTYLED_TYPE type, gpointer *e)
+{
+        clipboard_cut_or_copy_element(type, e, TRUE);
+}
+
+
 /** either collapse or expand a row of the setup-tree */
 gboolean _foreach_element_refresh_collapse(GtkTreeModel *model, GtkTreePath *path,
                                GtkTreeIter *iter, gpointer u)
@@ -879,6 +886,20 @@ gboolean on_popup_info_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
 
 
 /** menu-entry selected */
+gboolean on_popup_cut_element(GtkWidget *w, GdkEventButton *e, gpointer u)
+{
+        /* only handle button-press events */
+        if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
+                return FALSE;
+
+        /* copy all selected elements */
+        setup_tree_do_for_last_selected_element(_foreach_cut_element);
+        
+        return TRUE;
+}
+
+
+/** menu-entry selected */
 gboolean on_popup_copy_element(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
@@ -919,6 +940,15 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                          G_CALLBACK (gtk_widget_destroy), NULL);
 
         /* generate "cut" menuitem */
+        GtkWidget *cut_menu = gtk_image_menu_item_new_with_label("Cut");
+        gtk_image_menu_item_set_image(
+                        GTK_IMAGE_MENU_ITEM(cut_menu), 
+                        gtk_image_new_from_stock(
+                                        "gtk-cut", 
+                                        GTK_ICON_SIZE_MENU));
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), cut_menu);
+        g_signal_connect(cut_menu, "button-press-event",
+                                (GCallback) on_popup_cut_element, NULL);
         
         /* generate "copy" menuitem */
         GtkWidget *copy_menu = gtk_image_menu_item_new_with_label("Copy");
