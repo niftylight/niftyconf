@@ -110,6 +110,7 @@ fi
 # ---------------
 WARNING_CFLAGS="-Wall -Wreturn-type -Wswitch -Wuninitialized -Wparentheses -Wpointer-arith -Winline"
 CFLAGS="-std=c99 -D_BSD_SOURCE $CFLAGS"
+AC_SUBST(WARNING_CFLAGS)
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
 
@@ -132,7 +133,7 @@ Configure summary:
         Version.....................:  niftyconf_version
         Build.......................:  niftyconf_datestamp
 	Compiler....................:  ${CC}
-	Compiler Flags..............:  ${CFLAGS} ${WARNING_CFLAGS}
-	Linker Flags................:  ${LDFLAGS}
+	Compiler Flags..............:  ${CFLAGS} ${WARNING_CFLAGS} ${NIFTYCONF_CFLAGS}
+	Linker Flags................:  ${LDFLAGS} ${NIFTYCONF_LIBS}
 	Prefix......................:  ${prefix}
 "
