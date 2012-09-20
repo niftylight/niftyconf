@@ -135,7 +135,7 @@ NiftyconfTile *tile_register(LedTile *t)
         LedTile *tile;
         for(tile = led_tile_get_child(t);
             tile;
-            tile = led_tile_get_next_sibling(tile))
+            tile = led_tile_list_get_next(tile))
         {
                 tile_register(tile);
         }
@@ -162,6 +162,8 @@ NiftyconfTile *tile_register(LedTile *t)
         
         /* register descriptor as niftyled privdata */
         led_tile_set_privdata(t, n);
+
+	return n;
 }
 
 
@@ -179,7 +181,7 @@ void tile_unregister(NiftyconfTile *t)
                 LedTile *tile;
                 for(tile = led_tile_get_child(t->t);
                     tile;
-                    tile = led_tile_get_next_sibling(tile))
+                    tile = led_tile_list_get_next(tile))
                 {
                         tile_unregister(led_tile_get_privdata(tile));
                 }

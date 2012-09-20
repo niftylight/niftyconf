@@ -71,20 +71,20 @@ void info_hardware_set(NiftyconfHardware *hardware)
         LedHardware *h = hardware_niftyled(hardware);
 
         gtk_link_button_set_uri(GTK_LINK_BUTTON(UI("linkbutton_family")),
-                                led_hardware_get_plugin_url(h));
+                                led_hardware_plugin_get_url(h));
         gtk_button_set_label(GTK_BUTTON(UI("linkbutton_family")),
-                                led_hardware_get_plugin_family(h));
+                                led_hardware_plugin_get_family(h));
         gtk_label_set_text(GTK_LABEL(UI("label_description")),
-                                led_hardware_get_plugin_description(h));
+                                led_hardware_plugin_get_description(h));
         gtk_label_set_text(GTK_LABEL(UI("label_author")),
-                                led_hardware_get_plugin_author(h));
+                                led_hardware_plugin_get_author(h));
         gtk_label_set_text(GTK_LABEL(UI("label_license")),
-                                led_hardware_get_plugin_license(h));
+                                led_hardware_plugin_get_license(h));
         gchar version[64];
         g_snprintf(version, sizeof(version), "v%d.%d.%d",
-                        led_hardware_get_plugin_version_major(h),
-                        led_hardware_get_plugin_version_minor(h),
-                        led_hardware_get_plugin_version_micro(h));
+                        led_hardware_plugin_get_version_major(h),
+                        led_hardware_plugin_get_version_minor(h),
+                        led_hardware_plugin_get_version_micro(h));
         gtk_label_set_text(GTK_LABEL(UI("label_version")), version);
 }
 
@@ -117,4 +117,3 @@ gboolean on_info_hardware_window_delete_event(GtkWidget *w, GdkEvent *e)
         gtk_widget_set_visible(w, FALSE);
         return TRUE;
 }
-

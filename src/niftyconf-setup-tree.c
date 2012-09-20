@@ -93,7 +93,7 @@ static void _tree_append_chain(GtkTreeStore *s, LedChain *c, GtkTreeIter *parent
         GtkTreeIter i;
         gtk_tree_store_append(s, &i, parent);
         gtk_tree_store_set(s, &i,
-                           C_SETUP_TYPE, T_LED_CHAIN,
+                           C_SETUP_TYPE, LED_CHAIN_T,
                            C_SETUP_TITLE, "chain", 
                            C_SETUP_ELEMENT, (gpointer) chain,
                            -1);
@@ -107,7 +107,7 @@ static void _tree_append_tile(GtkTreeStore *s, LedTile *t, GtkTreeIter *parent)
         GtkTreeIter i;
         gtk_tree_store_append(s, &i, parent);
         gtk_tree_store_set(s, &i,
-                           C_SETUP_TYPE, T_LED_TILE,
+                           C_SETUP_TYPE, LED_TILE_T,
                            C_SETUP_TITLE, "tile", 
                            C_SETUP_ELEMENT, (gpointer) tile,
                            -1);
@@ -123,7 +123,7 @@ static void _tree_append_tile(GtkTreeStore *s, LedTile *t, GtkTreeIter *parent)
         LedTile *child;
         for(child = led_tile_get_child(t);
             child;
-            child = led_tile_get_next_sibling(child))
+            child = led_tile_list_get_next(child))
         {
                 _tree_append_tile(s, child, &i);
         }
@@ -138,7 +138,7 @@ static void _tree_append_hardware(GtkTreeStore *s, LedHardware *h)
         GtkTreeIter i;
         gtk_tree_store_append(s, &i, NULL);
         gtk_tree_store_set(s, &i,
-                           C_SETUP_TYPE, T_LED_HARDWARE,
+                           C_SETUP_TYPE, LED_HARDWARE_T,
                            C_SETUP_TITLE, led_hardware_get_name(h), 
                            C_SETUP_ELEMENT, (gpointer) hardware,
                            -1);
@@ -150,7 +150,7 @@ static void _tree_append_hardware(GtkTreeStore *s, LedHardware *h)
         LedTile *t;
         for(t = led_hardware_get_tile(h);
             t;
-            t = led_tile_get_next_sibling(t))
+            t = led_tile_list_get_next(t))
         {
                 _tree_append_tile(s, t, &i);
         }
@@ -160,7 +160,7 @@ static void _tree_append_hardware(GtkTreeStore *s, LedHardware *h)
 /** wrapper for do_* functions */
 static void _foreach_remove_hardware(NIFTYLED_TYPE t, gpointer *e)
 {
-        if(t != T_LED_HARDWARE)
+        if(t != LED_HARDWARE_T)
                 return;
 
         setup_destroy_hardware((NiftyconfHardware *) e);
@@ -170,7 +170,7 @@ static void _foreach_remove_hardware(NIFTYLED_TYPE t, gpointer *e)
 /** wrapper for do_* functions */
 static void _foreach_remove_tile(NIFTYLED_TYPE t, gpointer *e)
 {
-        if(t != T_LED_TILE)
+        if(t != LED_TILE_T)
                 return;
 
         setup_destroy_tile((NiftyconfTile *) e);
@@ -181,7 +181,7 @@ static void _foreach_remove_tile(NIFTYLED_TYPE t, gpointer *e)
 static void _foreach_remove_chain(NIFTYLED_TYPE type, gpointer *e)
 {
         /* works only if tile-element is selected */
-        if(type != T_LED_TILE)
+        if(type != LED_TILE_T)
                 return;
 
         setup_destroy_chain_of_tile((NiftyconfTile *) e);
@@ -215,13 +215,13 @@ gboolean _foreach_element_refresh_collapse(GtkTreeModel *model, GtkTreePath *pat
         
         switch(t)
         {
-                case T_LED_HARDWARE:
+                case LED_HARDWARE_T:
                 {
                         collapsed = hardware_tree_get_collapsed((NiftyconfHardware *) element);
                         break;
                 }
 
-                case T_LED_TILE:
+                case LED_TILE_T:
                 {
                         collapsed = tile_tree_get_collapsed((NiftyconfTile *) element);
                         break;
@@ -251,21 +251,21 @@ gboolean _foreach_element_refresh_highlight(GtkTreeModel *model, GtkTreePath *pa
 
         switch(t)
         {
-                case T_LED_HARDWARE:
+                case LED_HARDWARE_T:
                 {
                         highlighted = hardware_tree_get_highlighted(
                                                 (NiftyconfHardware *) element);
                         break;
                 }
 
-                case T_LED_TILE:
+                case LED_TILE_T:
                 {
                         highlighted = tile_tree_get_highlighted(
                                                 (NiftyconfTile *) element);
                         break;
                 }
 
-                case T_LED_CHAIN:
+                case LED_CHAIN_T:
                 {
                         highlighted = chain_tree_get_highlighted(
                                                 (NiftyconfChain *) element);
@@ -292,7 +292,7 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer *e)
         switch(t)
         {
                 /* hardware selected */
-                case T_LED_HARDWARE:
+                case LED_HARDWARE_T:
                 {
                         /* enable hardware related menus */
                         niftyconf_menu_hardware_remove_set_sensitive(TRUE);
@@ -318,7 +318,7 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer *e)
                 }
 
                 /* tile element selected */
-                case T_LED_TILE:
+                case LED_TILE_T:
                 {
                         /* enable tile related menus */
                         niftyconf_menu_tile_remove_set_sensitive(TRUE);
@@ -351,7 +351,7 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer *e)
                 }
 
                 /* chain element selected */
-                case T_LED_CHAIN:
+                case LED_CHAIN_T:
                 {
                         /* disable non-chain related menus */
                         niftyconf_menu_hardware_remove_set_sensitive(FALSE);
@@ -387,19 +387,19 @@ static void _foreach_unhighlight_element(NIFTYLED_TYPE t, gpointer *e)
 {
         switch(t)
         {
-                case T_LED_HARDWARE:
+                case LED_HARDWARE_T:
                 {
                         hardware_tree_set_highlighted((NiftyconfHardware *) e, FALSE);
                         break;
                 }
 
-                case T_LED_TILE:
+                case LED_TILE_T:
                 {
                         tile_tree_set_highlighted((NiftyconfTile *) e, FALSE);
                         break;
                 }
 
-                case T_LED_CHAIN:
+                case LED_CHAIN_T:
                 {
                         chain_tree_set_highlighted((NiftyconfChain *) e, FALSE);
                         break;
@@ -414,7 +414,7 @@ static void _foreach_set_current_element(NIFTYLED_TYPE t, gpointer *e)
 {
         switch(t)
         {
-                case T_LED_HARDWARE:
+                case LED_HARDWARE_T:
                 {
                         current_hw = (NiftyconfHardware *) e;
 
@@ -423,13 +423,13 @@ static void _foreach_set_current_element(NIFTYLED_TYPE t, gpointer *e)
                         break;
                 }
 
-                case T_LED_TILE:
+                case LED_TILE_T:
                 {
                         current_tile = (NiftyconfTile *) e;
                         break;
                 }
 
-                case T_LED_CHAIN:
+                case LED_CHAIN_T:
                 {
                         current_chain = (NiftyconfChain *) e;
                         break;
@@ -478,7 +478,7 @@ static void _tree_build()
          * to the setup-treeview 
          */
         LedHardware *h;
-        for(h = led_settings_hardware_get_first(setup_get_current()); h; h = led_hardware_get_next_sibling(h))
+        for(h = led_setup_get_hardware(setup_get_current()); h; h = led_hardware_list_get_next(h))
         {         
                 _tree_append_hardware(GTK_TREE_STORE(UI("treestore")), h);
         }
@@ -572,7 +572,7 @@ void setup_tree_do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpoin
 /** get last of currently selected elements */
 void setup_tree_get_last_selected_element(NIFTYLED_TYPE *t, gpointer **element)
 {
-        *t = T_LED_INVALID;
+        *t = LED_INVALID_T;
         *element = NULL;
         
         /* get current treeview selection */
@@ -665,13 +665,13 @@ void on_setup_treeview_collapsed(GtkTreeView *tv,
 
         switch(t)
         {
-                case T_LED_HARDWARE:
+                case LED_HARDWARE_T:
                 {
                         hardware_tree_set_collapsed((NiftyconfHardware *) p, TRUE);
                         break;
                 }
 
-                case T_LED_TILE:
+                case LED_TILE_T:
                 {
                         tile_tree_set_collapsed((NiftyconfTile *) p, TRUE);
                         break;
@@ -694,13 +694,13 @@ void on_setup_treeview_expanded(GtkTreeView *tv,
 
         switch(t)
         {
-                case T_LED_HARDWARE:
+                case LED_HARDWARE_T:
                 {
                         hardware_tree_set_collapsed((NiftyconfHardware *) p, FALSE);
                         break;
                 }
 
-                case T_LED_TILE:
+                case LED_TILE_T:
                 {
                         tile_tree_set_collapsed((NiftyconfTile *) p, FALSE);
                         break;
@@ -825,14 +825,14 @@ gboolean on_popup_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
         switch(current_type)
         {
                 /* currently selected element is a hardware-node */
-                case T_LED_HARDWARE:
+                case LED_HARDWARE_T:
                 {
                         setup_new_tile_of_hardware(current_hw);
                         break;
                 }
 
                 /* currently selected element is a tile-node */
-                case T_LED_TILE:
+                case LED_TILE_T:
                 {
                         setup_new_tile_of_tile(current_tile);
                         break;
@@ -858,7 +858,7 @@ gboolean on_popup_add_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
         setup_tree_do_for_last_selected_element(_foreach_set_current_element);
 
         /* can only add chains to tiles */
-        if(current_type != T_LED_TILE)
+        if(current_type != LED_TILE_T)
                 return FALSE;
 
         /* add new chain */
@@ -1050,20 +1050,8 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
         /* decide about type of currently selected element */
         switch(current_type)
         {
-                /* nothing selected */
-                case 0:
-                {
-                        /* disable unneeded menus */
-                        gtk_widget_set_sensitive(remove_hw, FALSE);
-                        gtk_widget_set_sensitive(add_chain, FALSE);
-                        gtk_widget_set_sensitive(remove_chain, FALSE);
-                        gtk_widget_set_sensitive(add_tile, FALSE);
-                        gtk_widget_set_sensitive(remove_tile, FALSE);
-                        gtk_widget_set_sensitive(copy_menu, FALSE);
-                        break;
-                }
                         
-                case T_LED_HARDWARE:
+                case LED_HARDWARE_T:
                 {
                         /* disable unneeded menus */
                         gtk_widget_set_sensitive(add_chain, FALSE);
@@ -1086,7 +1074,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                         break;
                 }
 
-                case T_LED_TILE:
+                case LED_TILE_T:
                 {
                         /* disable unneeded menus */
                         gtk_widget_set_sensitive(remove_hw, FALSE);
@@ -1102,7 +1090,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                         break;
                 }
 
-                case T_LED_CHAIN:
+                case LED_CHAIN_T:
                 {          
                         /* disable unneeded menus */
                         gtk_widget_set_sensitive(remove_hw, FALSE);
@@ -1122,7 +1110,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                         gtk_widget_set_sensitive(add_tile, FALSE);
                         gtk_widget_set_sensitive(remove_tile, FALSE);
                         
-                        NFT_LOG(L_ERROR, "Unknown element-type selected (%d)", current_type);
+                        //NFT_LOG(L_ERROR, "Unknown element-type selected (%d)", current_type);
                 }
         }
 
@@ -1179,5 +1167,3 @@ gboolean on_setup_treeview_popup(GtkWidget *t, gpointer u)
         _tree_popup_menu(GTK_WIDGET(t), NULL, u);
         return TRUE;
 }
-
-

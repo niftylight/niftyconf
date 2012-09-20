@@ -85,7 +85,7 @@ static void _logger(void *userdata,
 		return;
 
 	snprintf(s, size, "(%s) ", 
-	         nft_log_level_to_name(level));
+	         nft_log_level_to_string(level));
 
 	/* include filename? */
 	if(file && gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(UI("checkbutton_file"))))
@@ -151,7 +151,7 @@ gboolean log_init()
         NftLoglevel i;        
         for(i = L_MAX+1; i<L_MIN-1; i++)
         {
-                gtk_combo_box_append_text(GTK_COMBO_BOX(UI("combobox")), nft_log_level_to_name(i));                
+                gtk_combo_box_append_text(GTK_COMBO_BOX(UI("combobox")), nft_log_level_to_string(i));                
         }
 
         /* set combobox to current loglevel */
@@ -183,7 +183,7 @@ void on_log_combobox_changed(GtkComboBox *w, gpointer u)
 	
 	if(!nft_log_level_set(l))
 		g_warning("Failed to set loglevel: \"%s\" (%d)",
-		          nft_log_level_to_name(l), (gint) l);
+		          nft_log_level_to_string(l), (gint) l);
 }
 
 /** "clear" button pressed */

@@ -55,10 +55,10 @@
 
 /** GtkBuilder for this module */
 static GtkBuilder *_ui;
-
 /** current niftyled settings context */
-static LedSettings *current;
-
+static LedPrefs *_prefs;
+/** current niftyled setup */
+static LedSetup *_setup;
 
 
 
@@ -75,9 +75,9 @@ static LedSettings *current;
  ******************************************************************************/
 
 /** getter for current settings */
-LedSettings *setup_get_current()
+LedSetup *setup_get_current()
 {
-        return current;
+        return _setup;
 }
 
 
@@ -109,12 +109,12 @@ gboolean setup_new_hardware(const char *name, const char *family)
         }
 
         /* append to end of setup */
-        led_hardware_append_sibling(
-                led_settings_hardware_get_first(setup_get_current()), h);
+        led_hardware_list_append(
+                led_setup_get_hardware(setup_get_current()), h);
         
         /* create config */
-        if(!led_settings_create_from_hardware(setup_get_current(), h))
-                return FALSE;
+        /*if(!led_setup_create_from_hardware(setup_get_current(), h))
+                return FALSE;*/
         
 
         return TRUE;
@@ -130,7 +130,7 @@ void setup_destroy_hardware(NiftyconfHardware *hw)
         
         /* unregister hardware */
         hardware_unregister(hw);
-        led_settings_hardware_unlink(setup_get_current(), h);
+        //led_settings_hardware_unlink(setup_get_current(), h);
         led_hardware_destroy(h);
 }
 
@@ -150,8 +150,8 @@ gboolean setup_new_chain_of_tile(NiftyconfTile *parent,
         led_tile_set_chain(tile, n);
 
         /* create config */
-        if(!led_settings_create_from_chain(setup_get_current(), n))
-                return FALSE;
+        //if(!led_settings_create_from_chain(setup_get_current(), n))
+        //        return FALSE;
         
         /* register chain to gui */
         chain_register(n);
@@ -177,7 +177,7 @@ void setup_destroy_chain_of_tile(NiftyconfTile *tile)
         /* unregister from gui */
         NiftyconfChain *chain = led_chain_get_privdata(c);
         chain_unregister(chain);
-        led_settings_chain_unlink(setup_get_current(), c);
+        //led_settings_chain_unlink(setup_get_current(), c);
         led_chain_destroy(c);
 }
 
@@ -201,15 +201,15 @@ gboolean setup_new_tile_of_hardware(NiftyconfHardware *parent)
         }
         else
         {
-                led_tile_append_sibling(tile, n);
+                led_tile_list_append(tile, n);
         }
 
         /* register new tile to gui */
         tile_register(n);
 
         /* create config */
-        if(!led_settings_create_from_tile(setup_get_current(), n))
-                return FALSE;
+        //if(!led_settings_create_from_tile(setup_get_current(), n))
+        //        return FALSE;
         
         return TRUE;
 }
@@ -230,8 +230,8 @@ gboolean setup_new_tile_of_tile(NiftyconfTile *parent)
         tile_register(n);
 
         /* create config */
-        if(!led_settings_create_from_tile(setup_get_current(), n))
-                return FALSE;
+        //if(!led_settings_create_from_tile(setup_get_current(), n))
+        //        return FALSE;
         
         return TRUE;
 }
@@ -248,7 +248,7 @@ void setup_destroy_tile(NiftyconfTile *tile)
         /* unregister from gui */
         tile_unregister(tile);
         /* unregister from settings */
-        led_settings_tile_unlink(setup_get_current(), t);
+        //led_settings_tile_unlink(setup_get_current(), t);
         /* destroy with all children */
         led_tile_destroy(t);
 }
@@ -257,22 +257,26 @@ void setup_destroy_tile(NiftyconfTile *tile)
 /** load new setup from XML file definition */
 gboolean setup_load(gchar *filename)
 {
-        /* load new setup */
-        LedSettings *s;
-        if(!(s = led_settings_load(filename)))
+        /* load file */
+	LedPrefsNode *n;
+	if(!(n = led_prefs_node_from_file(_prefs, filename)))
+		return FALSE;
+		
+        LedSetup *s;
+        if(!(s = led_prefs_setup_from_node(_prefs, n)))
                 return FALSE;
 
         
         /* cleanup previously loaded setup */
-        if(current)
+        if(_setup)
                 setup_cleanup();
 
         /* initialize our element descriptor and set as
            privdata in niftyled model */
         LedHardware *h;
-        for(h = led_settings_hardware_get_first(s); 
+        for(h = led_setup_get_hardware(s); 
             h; 
-            h = led_hardware_get_next_sibling(h))
+            h = led_hardware_list_get_next(h))
         {
                 /* create new hardware element */
                 if(!hardware_register(h))
@@ -292,7 +296,7 @@ gboolean setup_load(gchar *filename)
                 LedTile *t;
                 for(t = led_hardware_get_tile(h);
                     t;
-                    t = led_tile_get_next_sibling(t))
+                    t = led_tile_list_get_next(t))
                 {
                         if(!tile_register(t))
                         {
@@ -303,7 +307,7 @@ gboolean setup_load(gchar *filename)
         }
         
         /* save new settings */
-        current = s;
+        _setup = s;
 
         /* update ui */
         setup_tree_refresh();
@@ -321,14 +325,14 @@ void setup_cleanup()
 {
         /* free all hardware nodes */
         LedHardware *h;
-        for(h = led_settings_hardware_get_first(current);
+        for(h = led_setup_get_hardware(_setup);
             h;
-            h = led_hardware_get_next_sibling(h))
+            h = led_hardware_list_get_next(h))
         {
                 LedTile *t;
                 for(t = led_hardware_get_tile(h);
                     t;
-                    t = led_tile_get_next_sibling(t))
+                    t = led_tile_list_get_next(t))
                 {
                         tile_unregister(led_tile_get_privdata(t));
                 }
@@ -337,8 +341,10 @@ void setup_cleanup()
                 hardware_unregister(led_hardware_get_privdata(h));
         }
         
-        led_settings_destroy(current);
+        led_setup_destroy(_setup);
         setup_tree_clear();
+
+	led_prefs_deinit(_prefs);
 }
 
 
@@ -347,6 +353,10 @@ gboolean setup_init()
 {
         _ui = ui_builder("niftyconf-setup.ui");
 
+	/* initialize preference context */
+	if(!(_prefs = led_prefs_init()))
+		return FALSE;
+	   
         /* initialize tree module */
         if(!setup_ledlist_init())
                 return FALSE;
@@ -382,8 +392,8 @@ gboolean setup_init()
 /** menuitem "new" selected */
 void on_setup_menuitem_new_activate(GtkMenuItem *i, gpointer d)
 {
-        LedSettings *s;
-        if(!(s = led_settings_new()))
+        LedSetup *s;
+        if(!(s = led_setup_new()))
         {
                 NFT_LOG(L_ERROR, "Failed to create new settings descriptor.");
                 return;
@@ -392,7 +402,7 @@ void on_setup_menuitem_new_activate(GtkMenuItem *i, gpointer d)
         setup_cleanup();
 
         /* save new settings */
-        current = s;
+        _setup = s;
 }
 
 /** menuitem "open" selected */

@@ -75,7 +75,7 @@ static char *_loglevels()
         NftLoglevel i;        
         for(i = L_MAX+1; i<L_MIN-1; i++)
         {
-                strcat(s, nft_log_level_to_name(i));
+                strcat(s, nft_log_level_to_string(i));
                 if(i<L_MIN-2)
                         strncat(s, ", ", sizeof(s));
         }
@@ -119,7 +119,7 @@ static gboolean _parse_cmdline_args(int argc, char *argv[], gchar **setupfile)
         /* set loglevel */
         if(loglevel)
         {
-                NftLoglevel lev = nft_log_level_from_name(loglevel);
+                NftLoglevel lev = nft_log_level_from_string(loglevel);
                 if(lev == L_INVALID)
                 {
                         g_error("Invalid loglevel: %s", loglevel);
@@ -309,14 +309,14 @@ void on_niftyconf_menu_add_tile_activate(GtkWidget *i, gpointer u)
         switch(t)
         {
                 /* currently selected element is a hardware-node */
-                case T_LED_HARDWARE:
+                case LED_HARDWARE_T:
                 {
                         setup_new_tile_of_hardware((NiftyconfHardware *) e);
                         break;
                 }
 
                 /* currently selected element is a tile-node */
-                case T_LED_TILE:
+                case LED_TILE_T:
                 {
                         setup_new_tile_of_tile((NiftyconfTile *) e);
                         break;
@@ -338,7 +338,7 @@ void on_niftyconf_menu_add_chain_activate(GtkWidget *i, gpointer u)
         setup_tree_get_last_selected_element(&t, &e);
         
         /* can only add chains to tiles */
-        if(t != T_LED_TILE)
+        if(t != LED_TILE_T)
                 return;
 
         /* add new chain */
@@ -354,7 +354,7 @@ void on_niftyconf_menu_add_chain_activate(GtkWidget *i, gpointer u)
 /** wrapper for do_* functions */
 static void _foreach_remove_hardware(NIFTYLED_TYPE t, gpointer *e)
 {
-        if(t != T_LED_HARDWARE)
+        if(t != LED_HARDWARE_T)
                 return;
 
         setup_destroy_hardware((NiftyconfHardware *) e);
@@ -377,7 +377,7 @@ void on_niftyconf_menu_remove_hardware_activate(GtkWidget *i, gpointer u)
 /** wrapper for do_* functions */
 static void _foreach_remove_tile(NIFTYLED_TYPE t, gpointer *e)
 {
-        if(t != T_LED_TILE)
+        if(t != LED_TILE_T)
                 return;
 
         setup_destroy_tile((NiftyconfTile *) e);
@@ -400,7 +400,7 @@ void on_niftyconf_menu_remove_tile_activate(GtkWidget *i, gpointer u)
 static void _foreach_remove_chain(NIFTYLED_TYPE type, gpointer *e)
 {
         /* works only if tile-element is selected */
-        if(type != T_LED_TILE)
+        if(type != LED_TILE_T)
                 return;
 
         setup_destroy_chain_of_tile((NiftyconfTile *) e);

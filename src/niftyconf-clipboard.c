@@ -134,137 +134,137 @@ static void _clear_hw_func(GtkClipboard *c, gpointer u)
 /** cut/copy to buffer */
 void clipboard_cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 {
-        const char *xml = NULL;
+        //~ const char *xml = NULL;
         
-        switch(t)
-        {
-                case T_LED_HARDWARE:
-                {
-                        LedHardware *h = hardware_niftyled((NiftyconfHardware *) e);
-                        xml = led_settings_hardware_dump_xml(setup_get_current(), h);
+        //~ switch(t)
+        //~ {
+                //~ case T_LED_HARDWARE:
+                //~ {
+                        //~ LedHardware *h = hardware_niftyled((NiftyconfHardware *) e);
+                        //~ xml = led_settings_hardware_dump_xml(setup_get_current(), h);
 
-                        /* remove element? */
-                        if(cut)
-                        {
-                                hardware_unregister((NiftyconfHardware *) e);
-                                led_hardware_destroy(h);
-                                setup_tree_refresh();
-                        }
-                        break;
-                }
+                        //~ /* remove element? */
+                        //~ if(cut)
+                        //~ {
+                                //~ hardware_unregister((NiftyconfHardware *) e);
+                                //~ led_hardware_destroy(h);
+                                //~ setup_tree_refresh();
+                        //~ }
+                        //~ break;
+                //~ }
 
-                case T_LED_TILE:
-                {
-                        LedTile *t = tile_niftyled((NiftyconfTile *) e);
-                        xml = led_settings_tile_dump_xml(setup_get_current(), t);
+                //~ case T_LED_TILE:
+                //~ {
+                        //~ LedTile *t = tile_niftyled((NiftyconfTile *) e);
+                        //~ xml = led_settings_tile_dump_xml(setup_get_current(), t);
 
-                        /* remove element? */
-                        if(cut)
-                        {
-                                tile_unregister((NiftyconfTile *) e);
-                                led_tile_destroy(t);
-                                setup_tree_refresh();
-                        }
+                        //~ /* remove element? */
+                        //~ if(cut)
+                        //~ {
+                                //~ tile_unregister((NiftyconfTile *) e);
+                                //~ led_tile_destroy(t);
+                                //~ setup_tree_refresh();
+                        //~ }
                         
-                        break;
-                }
+                        //~ break;
+                //~ }
 
-                case T_LED_CHAIN:
-                {
-                        LedChain *c = chain_niftyled((NiftyconfChain *) e);
-                        xml = led_settings_chain_dump_xml(setup_get_current(), c);
+                //~ case T_LED_CHAIN:
+                //~ {
+                        //~ LedChain *c = chain_niftyled((NiftyconfChain *) e);
+                        //~ xml = led_settings_chain_dump_xml(setup_get_current(), c);
 
-                        /* don't cut from hardware elements */
-                        if(led_chain_parent_is_hardware(c))
-                                break;
+                        //~ /* don't cut from hardware elements */
+                        //~ if(led_chain_parent_is_hardware(c))
+                                //~ break;
                         
-                        /* remove element? */
-                        if(cut)
-                        {
-                                chain_unregister((NiftyconfChain *) e);
-                                led_chain_destroy(c);
-                                setup_tree_refresh();
-                        }
-                        break;
-                }
-        }
+                        //~ /* remove element? */
+                        //~ if(cut)
+                        //~ {
+                                //~ chain_unregister((NiftyconfChain *) e);
+                                //~ led_chain_destroy(c);
+                                //~ setup_tree_refresh();
+                        //~ }
+                        //~ break;
+                //~ }
+        //~ }
 
-        if(!xml)
-                return;
+        //~ if(!xml)
+                //~ return;
 
-        /* set the clipboard text */
-        gtk_clipboard_set_text(_clipboard, xml, -1);
+        //~ /* set the clipboard text */
+        //~ gtk_clipboard_set_text(_clipboard, xml, -1);
 
-        /* store the clipboard text */
-        gtk_clipboard_store(_clipboard);
+        //~ /* store the clipboard text */
+        //~ gtk_clipboard_store(_clipboard);
 
-        NFT_LOG(L_VERY_NOISY, "%s", xml);
+        //~ NFT_LOG(L_VERY_NOISY, "%s", xml);
         
-        free((void *) xml);
+        //~ free((void *) xml);
 }
 
 
 /** paste element from clipboard */
 void clipboard_paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 {
-        gchar *xml;
-        if(!(xml = gtk_clipboard_wait_for_text(_clipboard)))
-        {
-                NFT_LOG(L_ERROR, "recieved NULL from clipboard");
-                return;
-        }
+        //~ gchar *xml;
+        //~ if(!(xml = gtk_clipboard_wait_for_text(_clipboard)))
+        //~ {
+                //~ NFT_LOG(L_ERROR, "recieved NULL from clipboard");
+                //~ return;
+        //~ }
 
-        switch(led_settings_node_get_type(xml))
-        {
-                case T_LED_HARDWARE:
-                {
-                        printf("-> hardware\n");
-                        break;
-                }
+        //~ switch(led_settings_node_get_type(xml))
+        //~ {
+                //~ case T_LED_HARDWARE:
+                //~ {
+                        //~ printf("-> hardware\n");
+                        //~ break;
+                //~ }
 
-                case T_LED_TILE:
-                {
-                        switch(parent_t)
-                        {
-                                /* paste tile to hardware */
-                                case T_LED_HARDWARE:
-                                {
-                                        printf("-> tile -> hw\n");
-                                        break;
-                                }
+                //~ case T_LED_TILE:
+                //~ {
+                        //~ switch(parent_t)
+                        //~ {
+                                //~ /* paste tile to hardware */
+                                //~ case T_LED_HARDWARE:
+                                //~ {
+                                        //~ printf("-> tile -> hw\n");
+                                        //~ break;
+                                //~ }
 
-                                /* paste tile to tile */
-                                case T_LED_TILE:
-                                {
-                                        printf("-> tile -> tile\n");
-                                        break;
-                                }
+                                //~ /* paste tile to tile */
+                                //~ case T_LED_TILE:
+                                //~ {
+                                        //~ printf("-> tile -> tile\n");
+                                        //~ break;
+                                //~ }
 
-                                default:
-                                        break;
-                        }
+                                //~ default:
+                                        //~ break;
+                        //~ }
                         
-                        break;
-                }
+                        //~ break;
+                //~ }
 
-                case T_LED_CHAIN:
-                {
-                        switch(parent_t)
-                        {
-                                /** paste chain to tile */
-                                case T_LED_TILE:
-                                {
-                                        printf("-> chain -> tile\n");
-                                        break;
-                                }
+                //~ case T_LED_CHAIN:
+                //~ {
+                        //~ switch(parent_t)
+                        //~ {
+                                //~ /** paste chain to tile */
+                                //~ case T_LED_TILE:
+                                //~ {
+                                        //~ printf("-> chain -> tile\n");
+                                        //~ break;
+                                //~ }
 
-                                default:
-                                        break;
-                        }
+                                //~ default:
+                                        //~ break;
+                        //~ }
                         
-                        break;
-                }
-        }
+                        //~ break;
+                //~ }
+        //~ }
         
 }
 
@@ -286,4 +286,3 @@ gboolean clipboard_init()
 /******************************************************************************
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
-

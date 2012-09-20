@@ -151,6 +151,8 @@ NiftyconfHardware *hardware_register(LedHardware *h)
         
         /* register Hardware descriptor as LedHardware privdata */
         led_hardware_set_privdata(h, n);
+
+	return n;
 }
 
 

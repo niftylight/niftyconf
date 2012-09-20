@@ -117,6 +117,8 @@ NiftyconfLed *led_register(Led *l)
 
         /* register descriptor as niftyled privdata */
         led_set_privdata(l, n);
+
+	return n;
 }
 
 
