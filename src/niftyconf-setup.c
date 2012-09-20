@@ -436,11 +436,14 @@ void on_setup_open_clicked(GtkButton *b, gpointer u)
 {
         char *filename;
         if(!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(UI("filechooserdialog")))))
+	{
+		log_alert_show("No filename?");
                 return;
-
+	}
+	
         if(!setup_load(filename))
         {
-                /* @TODO display error dialog */
+                log_alert_show("Error while loading file");
                 return;
         }
         

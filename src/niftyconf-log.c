@@ -132,6 +132,20 @@ static void _logger(void *userdata,
  ******************************************************************************/
 
 /**
+ * show alert/error message
+ *
+ * @param message printable text that will be presented to the user
+ */
+void log_alert_show(char *message)
+{
+	/* set message */
+	gtk_label_set_text(GTK_LABEL(UI("alert_label")), message);
+	
+	/* show dialog */
+	gtk_widget_set_visible(GTK_WIDGET(UI("alert_dialog")), TRUE);
+}
+
+/**
  * show/hide log window
  */
 void log_show(gboolean visible)
@@ -191,4 +205,10 @@ void on_log_button_clicked(GtkButton *b, gpointer u)
 {
 	GtkTextBuffer *buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(UI("textview")));
 	gtk_text_buffer_set_text(buf, "", -1);
+}
+
+/** "dismiss" button in alert-dialog clicked */
+void on_alert_dismiss_button_clicked(GtkButton *b, gpointer u)
+{
+	gtk_widget_set_visible(GTK_WIDGET(UI("alert_dialog")), FALSE);
 }

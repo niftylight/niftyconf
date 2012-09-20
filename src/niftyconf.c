@@ -342,7 +342,7 @@ void on_niftyconf_menu_add_chain_activate(GtkWidget *i, gpointer u)
                 return;
 
         /* add new chain */
-        setup_new_chain_of_tile((NiftyconfTile *) e, 0, "RGB u8");
+        setup_new_chain_of_tile((NiftyconfTile *) e, 3, "RGB u8");
 
         /** @todo refresh our menu */
         
