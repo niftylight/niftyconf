@@ -49,6 +49,7 @@
 #include "niftyconf-setup-ledlist.h"
 #include "niftyconf-hardware.h"
 #include "niftyconf-ui.h"
+#include "niftyconf-log.h"
 
 
 
@@ -108,9 +109,18 @@ gboolean setup_new_hardware(const char *name, const char *family)
                 return FALSE;
         }
 
-        /* append to end of setup */
-        led_hardware_list_append(
-                led_setup_get_hardware(setup_get_current()), h);
+	/* get last hardware node */
+	LedHardware *last = led_setup_get_hardware(setup_get_current());
+	if(!last)
+	{
+		/* first hardware in setup */
+		led_setup_set_hardware(setup_get_current(), h);
+	}
+	else
+	{
+		/* append to end of setup */
+		led_hardware_list_append(last, h);
+	}
         
         /* create config */
         /*if(!led_setup_create_from_hardware(setup_get_current(), h))
@@ -377,7 +387,9 @@ gboolean setup_init()
         gtk_file_filter_add_mime_type(filter, "application/xml");
         gtk_file_filter_add_mime_type(filter, "text/xml");
 
-        
+        /* start with fresh empty setup */
+	_setup = led_setup_new();
+	
         //g_object_unref(ui);
         
         return TRUE;
