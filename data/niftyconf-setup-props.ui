@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="2.24"/>
-  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkAdjustment" id="adjustment_chain_ledcount">
     <property name="upper">65535</property>
     <property name="step_increment">1</property>
@@ -71,9 +70,12 @@
   <object class="GtkHBox" id="box_props">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="hexpand">True</property>
+    <property name="vexpand">True</property>
     <child>
       <object class="GtkFrame" id="frame_led">
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
@@ -93,57 +95,70 @@
                   <object class="GtkLabel" id="label19">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">X:</property>
                   </object>
+                  <packing>
+                    <property name="x_options">GTK_FILL</property>
+                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label20">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Y:</property>
                   </object>
                   <packing>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label21">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Component:</property>
                   </object>
                   <packing>
                     <property name="top_attach">2</property>
                     <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label22">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Gain:</property>
                   </object>
                   <packing>
                     <property name="top_attach">3</property>
                     <property name="bottom_attach">4</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label23">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
                     <property name="label" translatable="yes">px</property>
                   </object>
                   <packing>
                     <property name="left_attach">2</property>
                     <property name="right_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label24">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
                     <property name="label" translatable="yes">px</property>
                   </object>
                   <packing>
@@ -151,6 +166,7 @@
                     <property name="right_attach">3</property>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
@@ -158,11 +174,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">X coordinate of LED relative to top-left corner of tile (or 0/0)</property>
+                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_led_x</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_led_x_changed" swapped="no"/>
@@ -177,11 +192,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Y coordinate of LED relative to top-left corner of tile (or 0/0)</property>
+                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_led_y</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_led_y_changed" swapped="no"/>
@@ -198,11 +212,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Component of this LED starting from 0 (e.g. if you use RGB and want to select green, component=1)</property>
+                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_led_component</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_led_component_changed" swapped="no"/>
@@ -219,11 +232,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Hardware gain of this LED, typically adjust LED current (effect depends on the used hardware plugin)</property>
+                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_led_gain</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_led_gain_changed" swapped="no"/>
@@ -255,8 +267,8 @@
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">False</property>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
         <property name="padding">3</property>
         <property name="position">0</property>
       </packing>
@@ -264,6 +276,7 @@
     <child>
       <object class="GtkFrame" id="frame_chain">
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
@@ -283,29 +296,37 @@
                   <object class="GtkLabel" id="label17">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Ledcount:</property>
                   </object>
+                  <packing>
+                    <property name="x_options">GTK_FILL</property>
+                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label18">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Format:</property>
                   </object>
                   <packing>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label25">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
                     <property name="label" translatable="yes">LEDs</property>
                   </object>
                   <packing>
                     <property name="left_attach">2</property>
                     <property name="right_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
@@ -313,11 +334,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Amount of LEDs in this chain</property>
+                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_chain_ledcount</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_chain_ledcount_changed" swapped="no"/>
@@ -330,15 +350,13 @@
                 <child>
                   <object class="GtkEntry" id="entry_chain_format">
                     <property name="visible">True</property>
-                    <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Pixelformat of this chain (e.g. RGB u8 - check http://gegl.org/babl for valid formats)</property>
+                    <property name="hexpand">True</property>
                     <property name="editable">False</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -364,14 +382,15 @@
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">False</property>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
         <property name="position">1</property>
       </packing>
     </child>
     <child>
       <object class="GtkFrame" id="frame_tile">
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
@@ -391,90 +410,109 @@
                   <object class="GtkLabel" id="label10">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">X:</property>
                   </object>
+                  <packing>
+                    <property name="x_options">GTK_FILL</property>
+                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label11">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Y:</property>
                   </object>
                   <packing>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label12">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Width:</property>
                   </object>
                   <packing>
                     <property name="top_attach">2</property>
                     <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label13">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Height:</property>
                   </object>
                   <packing>
                     <property name="top_attach">3</property>
                     <property name="bottom_attach">4</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label14">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Rotation:</property>
                   </object>
                   <packing>
                     <property name="top_attach">4</property>
                     <property name="bottom_attach">5</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label15">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Pivot X:</property>
                   </object>
                   <packing>
                     <property name="top_attach">5</property>
                     <property name="bottom_attach">6</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label16">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Pivot Y:</property>
                   </object>
                   <packing>
                     <property name="top_attach">6</property>
                     <property name="bottom_attach">7</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label26">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
                     <property name="label" translatable="yes">px</property>
                   </object>
                   <packing>
                     <property name="left_attach">2</property>
                     <property name="right_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label27">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
                     <property name="label" translatable="yes">px</property>
                   </object>
                   <packing>
@@ -482,12 +520,14 @@
                     <property name="right_attach">3</property>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label28">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
                     <property name="label" translatable="yes">px</property>
                   </object>
                   <packing>
@@ -495,12 +535,14 @@
                     <property name="right_attach">3</property>
                     <property name="top_attach">2</property>
                     <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label29">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
                     <property name="label" translatable="yes">px</property>
                   </object>
                   <packing>
@@ -508,12 +550,14 @@
                     <property name="right_attach">3</property>
                     <property name="top_attach">3</property>
                     <property name="bottom_attach">4</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label30">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
                     <property name="label" translatable="yes">px</property>
                   </object>
                   <packing>
@@ -521,12 +565,14 @@
                     <property name="right_attach">3</property>
                     <property name="top_attach">5</property>
                     <property name="bottom_attach">6</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label31">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
                     <property name="label" translatable="yes">px</property>
                   </object>
                   <packing>
@@ -534,12 +580,14 @@
                     <property name="right_attach">3</property>
                     <property name="top_attach">6</property>
                     <property name="bottom_attach">7</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label32">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
                     <property name="label" translatable="yes">°</property>
                   </object>
                   <packing>
@@ -547,6 +595,7 @@
                     <property name="right_attach">3</property>
                     <property name="top_attach">4</property>
                     <property name="bottom_attach">5</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
@@ -554,11 +603,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">X offset of this tile relative to top-left corner of parent tile (or 0/0)</property>
+                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_tile_x</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_tile_x_changed" swapped="no"/>
@@ -573,11 +621,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">X offset of this tile relative to top-left corner of parent tile (or 0/0)</property>
+                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_tile_y</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_tile_y_changed" swapped="no"/>
@@ -595,12 +642,11 @@
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">current total width allocated by this tile</property>
+                    <property name="hexpand">True</property>
                     <property name="editable">False</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_tile_width</property>
                     <property name="numeric">True</property>
                   </object>
@@ -617,12 +663,11 @@
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">current total height allocated by this tile</property>
+                    <property name="hexpand">True</property>
                     <property name="editable">False</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_tile_height</property>
                     <property name="numeric">True</property>
                   </object>
@@ -638,11 +683,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Tile rotation in degrees (clockwise around pivot)</property>
+                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_tile_rotation</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_tile_rotation_changed" swapped="no"/>
@@ -659,11 +703,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">X coordinate of rotation pivot (relative to top-left of tile)</property>
+                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_tile_pivot_x</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_tile_pivot_x_changed" swapped="no"/>
@@ -680,11 +723,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Y coordinate of rotation pivot (relative to top-left of tile)</property>
+                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_tile_pivot_y</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_tile_pivot_y_changed" swapped="no"/>
@@ -710,14 +752,15 @@
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">False</property>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
         <property name="position">2</property>
       </packing>
     </child>
     <child>
       <object class="GtkFrame" id="frame_hardware">
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
@@ -737,40 +780,50 @@
                   <object class="GtkLabel" id="label5">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Name:</property>
                   </object>
+                  <packing>
+                    <property name="x_options">GTK_FILL</property>
+                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label6">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Plugin:</property>
                   </object>
                   <packing>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label7">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">ID:</property>
                   </object>
                   <packing>
                     <property name="top_attach">2</property>
                     <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label8">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Stride:</property>
                   </object>
                   <packing>
                     <property name="top_attach">3</property>
                     <property name="bottom_attach">4</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
@@ -778,11 +831,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Arbitrary name of this hardware-adapter instance</property>
+                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                     <signal name="changed" handler="on_entry_hardware_name_changed" swapped="no"/>
                   </object>
                   <packing>
@@ -796,12 +848,11 @@
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">plugin used by this hardware-adapter instance</property>
+                    <property name="hexpand">True</property>
                     <property name="editable">False</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -815,11 +866,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Unique id of this hardware adapter instance</property>
+                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                     <signal name="changed" handler="on_entry_hardware_id_changed" swapped="no"/>
                   </object>
                   <packing>
@@ -834,11 +884,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">stride value of this hardware-adapter instance (s. docs)</property>
+                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment_hardware_stride</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_hardware_stride_changed" swapped="no"/>
@@ -854,6 +903,7 @@
                   <object class="GtkLabel" id="label9">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
                     <property name="label" translatable="yes">LEDs</property>
                   </object>
                   <packing>
@@ -861,6 +911,7 @@
                     <property name="right_attach">3</property>
                     <property name="top_attach">3</property>
                     <property name="bottom_attach">4</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
@@ -886,8 +937,8 @@
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">False</property>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
         <property name="position">3</property>
       </packing>
     </child>
