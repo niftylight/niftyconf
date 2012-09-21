@@ -537,3 +537,25 @@ void on_add_hardware_cancel_clicked(GtkButton *b, gpointer u)
 {
 	setup_show_add_hardware_window(false);
 }
+
+/** add hardware "pixelformat" changed */
+void on_hardware_add_pixelformat_comboboxtext_changed(GtkComboBox *w, gpointer u)
+{
+	LedPixelFormat *f;
+	if(!(f = led_pixel_format_from_string(gtk_combo_box_get_active_text(w))))
+	{
+		/* invalid pixel format? */
+		gtk_widget_set_sensitive(GTK_WIDGET(UI("hardware_add_ledcount_spinbutton")), false);
+		return;
+	}
+
+	gtk_widget_set_sensitive(GTK_WIDGET(UI("hardware_add_ledcount_spinbutton")), true);
+
+	/* set minimum for "ledcount" spinbutton according to format */
+	size_t minimum = led_pixel_format_get_n_components(f);
+	gtk_adjustment_set_lower(GTK_ADJUSTMENT(UI("hardware_add_ledcount_adjustment")), (gdouble) minimum);
+	if(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(UI("hardware_add_ledcount_spinbutton"))) < minimum)
+	{
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("hardware_add_ledcount_spinbutton")), (gdouble) minimum);
+	}
+}

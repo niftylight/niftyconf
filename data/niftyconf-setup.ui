@@ -300,6 +300,7 @@
               <object class="GtkComboBoxText" id="hardware_add_pixelformat_comboboxtext">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <signal name="changed" handler="on_hardware_add_pixelformat_comboboxtext_changed" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
