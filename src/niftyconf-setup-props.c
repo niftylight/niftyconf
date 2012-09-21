@@ -141,9 +141,12 @@ void setup_props_chain_show(NiftyconfChain *c)
         
         if(c)
         {
-                LedChain *chain = chain_niftyled(c);
-                gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_chain_ledcount")), (gdouble) led_chain_get_ledcount(chain));
+                LedChain *chain = chain_niftyled(c);               
                 gtk_entry_set_text(GTK_ENTRY(UI("entry_chain_format")), led_pixel_format_to_string(led_chain_get_format(chain)));
+		/* set minimum for "ledcount" spinbutton according to format */
+		size_t minimum = led_pixel_format_get_n_components(led_chain_get_format(chain));
+		gtk_adjustment_set_lower(GTK_ADJUSTMENT(UI("adjustment_chain_ledcount")), (gdouble) minimum);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_chain_ledcount")), (gdouble) led_chain_get_ledcount(chain));
         }
         
         gtk_widget_show(GTK_WIDGET(UI("frame_chain")));
