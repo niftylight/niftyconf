@@ -73,9 +73,13 @@ GtkBuilder *ui_builder(gchar *file)
         {
                 /* try to load from source dir */
                 gchar *s2 = g_build_filename("./data", file, NULL);
-                if(gtk_builder_add_from_file(ui, s2, NULL) == 0)
+
+		GError *error = NULL;
+                if(gtk_builder_add_from_file(ui, s2, &error) == 0)
                 {
-                        g_error("Failed to add UI from \"%s\" or \"%s\"", s, s2);
+                        g_error("Failed to add UI from \"%s\" or \"%s\": %s", 
+                                	s, s2, error->message);
+			g_error_free(error);
                         g_free(s2);
                         g_free(s);
                         return NULL;
