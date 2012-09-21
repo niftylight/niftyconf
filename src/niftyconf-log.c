@@ -138,6 +138,12 @@ static void _logger(void *userdata,
  */
 void log_alert_show(char *message)
 {
+	if(!message)
+	{
+		gtk_widget_set_visible(GTK_WIDGET(UI("alert_dialog")), FALSE);
+		return;
+	}
+	
 	/* set message */
 	gtk_label_set_text(GTK_LABEL(UI("alert_label")), message);
 	
@@ -165,7 +171,7 @@ gboolean log_init()
         NftLoglevel i;        
         for(i = L_MAX+1; i<L_MIN-1; i++)
         {
-                gtk_combo_box_append_text(GTK_COMBO_BOX(UI("combobox")), nft_log_level_to_string(i));                
+                gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(UI("combobox")), nft_log_level_to_string(i));                
         }
 
         /* set combobox to current loglevel */
@@ -185,9 +191,16 @@ gboolean log_init()
 /** close main window */
 gboolean on_log_window_delete_event(GtkWidget *w, GdkEvent *e)
 {
-        gtk_widget_hide(w);
+        log_show(false);
         niftyconf_menu_logwindow_set_active(FALSE);
         return TRUE;
+}
+
+/** close alert dialog */
+gboolean on_alert_dialog_delete_event(GtkWidget *w, GdkEvent *e)
+{
+	log_alert_show(NULL);
+	return TRUE;
 }
 
 /** loglevel changed */

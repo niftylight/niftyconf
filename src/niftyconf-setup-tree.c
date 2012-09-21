@@ -226,6 +226,11 @@ gboolean _foreach_element_refresh_collapse(GtkTreeModel *model, GtkTreePath *pat
                         collapsed = tile_tree_get_collapsed((NiftyconfTile *) element);
                         break;
                 }
+
+		default:
+		{
+			break;
+		}
         }
 
         if(collapsed)
@@ -271,6 +276,11 @@ gboolean _foreach_element_refresh_highlight(GtkTreeModel *model, GtkTreePath *pa
                                                 (NiftyconfChain *) element);
                         break;
                 }
+
+		default:
+		{
+			break;
+		}
         }
 
         GtkTreeSelection *s = gtk_tree_view_get_selection(GTK_TREE_VIEW(UI("treeview")));
@@ -404,6 +414,11 @@ static void _foreach_unhighlight_element(NIFTYLED_TYPE t, gpointer *e)
                         chain_tree_set_highlighted((NiftyconfChain *) e, FALSE);
                         break;
                 }
+
+		default:
+		{
+			break;
+		}
         }
 
 }
@@ -434,6 +449,11 @@ static void _foreach_set_current_element(NIFTYLED_TYPE t, gpointer *e)
                         current_chain = (NiftyconfChain *) e;
                         break;
                 }
+
+		default:
+		{
+			break;
+		}
         }
 
         current_type = t;
@@ -502,8 +522,7 @@ void setup_tree_do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer *e))
         /* get model */
         GtkTreeModel *m = gtk_tree_view_get_model(GTK_TREE_VIEW(UI("treeview")));
         GtkTreeIter iter;
-        gboolean run;
-        gtk_tree_model_get_iter_root(m, &iter);
+        gtk_tree_model_iter_nth_child(m, &iter, NULL, 0);
         _do_foreach_iter(m, &iter, func);
 }
 
@@ -676,6 +695,11 @@ void on_setup_treeview_collapsed(GtkTreeView *tv,
                         tile_tree_set_collapsed((NiftyconfTile *) p, TRUE);
                         break;
                 }
+
+		default:
+		{
+			break;
+		}
         }
 }
 
@@ -705,6 +729,11 @@ void on_setup_treeview_expanded(GtkTreeView *tv,
                         tile_tree_set_collapsed((NiftyconfTile *) p, FALSE);
                         break;
                 }
+
+		default:
+		{
+			break;
+		}
         } 
 }
 
@@ -800,12 +829,10 @@ gboolean on_popup_add_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
                 return FALSE;
 
-        gboolean r = setup_new_hardware("Unnamed", "dummy");
+	/* show "add hardware" window */
+        setup_show_add_hardware_window(true);
         
-        /* refresh tree */
-        setup_tree_refresh();
-
-        return r;
+        return TRUE;
 }
 
 
@@ -837,6 +864,11 @@ gboolean on_popup_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
                         setup_new_tile_of_tile(current_tile);
                         break;
                 }
+
+		default:
+		{
+			break;
+		}
         }
 
         

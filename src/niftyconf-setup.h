@@ -60,18 +60,20 @@ gboolean        setup_load(gchar *filename);
 void            setup_cleanup();
 
 /* model functions */
-LedSetup *   	setup_get_current();
-void            setup_destroy_hardware(NiftyconfHardware *hw);
-void            setup_destroy_chain_of_tile(NiftyconfTile *tile);
-void            setup_destroy_tile(NiftyconfTile *tile);
-gboolean        setup_new_hardware(const char *name, const char *family);
-gboolean        setup_new_chain_of_tile(NiftyconfTile *parent, 
+LedSetup *   		setup_get_current();
+void            	setup_destroy_hardware(NiftyconfHardware *hw);
+void            	setup_destroy_chain_of_tile(NiftyconfTile *tile);
+void            	setup_destroy_tile(NiftyconfTile *tile);
+NiftyconfHardware *	setup_new_hardware(const char *name, const char *family, 
+                                      const char *id, LedCount ledcount, 
+                                      const char *pixelformat);
+gboolean        	setup_new_chain_of_tile(NiftyconfTile *parent, 
                                   LedCount length, 
                                   const char *pixelformat);
-gboolean        setup_new_tile_of_hardware(NiftyconfHardware *parent);
-gboolean        setup_new_tile_of_tile(NiftyconfTile *parent);
+gboolean        	setup_new_tile_of_hardware(NiftyconfHardware *parent);
+gboolean        	setup_new_tile_of_tile(NiftyconfTile *parent);
 
-
+void 			setup_show_add_hardware_window(bool visible);
 
 
 #endif /* _NIFTYCONF_SETUP_H */

@@ -171,7 +171,7 @@ gboolean setup_ledlist_init()
  */
 void on_setup_ledlist_cursor_changed(GtkTreeView *tv, gpointer u)
 {
-        GtkTreeModel *m = gtk_tree_view_get_model(tv);
+        //GtkTreeModel *m = gtk_tree_view_get_model(tv);
         
         /* unhighlight all elements */
         //GtkTreeIter i;

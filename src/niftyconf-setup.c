@@ -88,27 +88,48 @@ GtkWidget *setup_get_widget()
         return GTK_WIDGET(UI("box"));
 }
 
+/** show "add hardware" window */
+void setup_show_add_hardware_window(bool visible)
+{	
+	/* show window */
+	gtk_widget_set_visible(GTK_WIDGET(UI("hardware_add_window")), visible);
+}
 
 /** create new hardware element in setup */
-gboolean setup_new_hardware(const char *name, const char *family)
+NiftyconfHardware *setup_new_hardware(const char *name, const char *family, 
+                                      const char *id, LedCount ledcount, 
+                                      const char *pixelformat)
 {
         /* create new niftyled hardware */
         LedHardware *h;
         if(!(h = led_hardware_new(name, family)))
         {
-                NFT_LOG(L_ERROR, "Failed to add new dummy-hardware");
+                log_alert_show("Failed to create new hardware");
                 return FALSE;
         }
-        
+
+	/* try to initialize hardware */
+	if(!led_hardware_init(h, id, ledcount, pixelformat))
+	{
+		log_alert_show("Failed to initialize new hardware. Not connected?");
+	}
+	
         /* register hardware to gui */
         NiftyconfHardware *hardware;
         if(!(hardware = hardware_register(h)))
         {
-                NFT_LOG(L_ERROR, "Failed to register hardware to GUI");
+                log_alert_show("Failed to register hardware to GUI");
                 led_hardware_destroy(h);
                 return FALSE;
         }
 
+	/* register chain of hardware to gui */
+	LedChain *chain;
+	if((chain = led_hardware_get_chain(h)))
+	{
+		chain_register(chain);
+	}
+	
 	/* get last hardware node */
 	LedHardware *last = led_setup_get_hardware(setup_get_current());
 	if(!last)
@@ -127,7 +148,7 @@ gboolean setup_new_hardware(const char *name, const char *family)
                 return FALSE;*/
         
 
-        return TRUE;
+        return hardware;
 
 }
 
@@ -140,6 +161,11 @@ void setup_destroy_hardware(NiftyconfHardware *hw)
         
         /* unregister hardware */
         hardware_unregister(hw);
+
+	/* remove hardware from setup? */
+	if(led_setup_get_hardware(_setup) == h)
+		led_setup_set_hardware(_setup, NULL);
+	
         //led_settings_hardware_unlink(setup_get_current(), h);
         led_hardware_destroy(h);
 }
@@ -387,9 +413,30 @@ gboolean setup_init()
         gtk_file_filter_add_mime_type(filter, "application/xml");
         gtk_file_filter_add_mime_type(filter, "text/xml");
 
+	/* build "plugin" combobox for "add hardware" dialog */
+	unsigned int p;
+	for(p = 0; p < led_hardware_plugin_total_count(); p++)
+	{
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(UI("hardware_add_plugin_combobox")), 
+		                               led_hardware_plugin_get_family_by_n(p));
+	}
+	gtk_combo_box_set_active(GTK_COMBO_BOX(UI("hardware_add_plugin_combobox")), 0);
+
+	/* initialize pixel-format module */
+	led_pixel_format_new();
+	
+	/* build "pixelformat" combobox for "add hardware" dialog */
+	size_t f;
+	for(f = led_pixel_format_get_n_formats(); f > 0; f--)
+	{
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(UI("hardware_add_pixelformat_comboboxtext")),
+		                               led_pixel_format_to_string(led_pixel_format_get_nth(f-1)));
+	}
+	gtk_combo_box_set_active(GTK_COMBO_BOX(UI("hardware_add_pixelformat_comboboxtext")), 0);
+	
         /* start with fresh empty setup */
 	_setup = led_setup_new();
-	
+
         //g_object_unref(ui);
         
         return TRUE;
@@ -460,4 +507,33 @@ void on_setup_open_clicked(GtkButton *b, gpointer u)
         }
         
         gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog")));
+}
+
+/** add hardware "add" clicked */
+void on_add_hardware_add_clicked(GtkButton *b, gpointer u)
+{
+	/* add new hardware */
+	NiftyconfHardware *h;
+        if(!(h = setup_new_hardware(
+                  gtk_entry_get_text(GTK_ENTRY(UI("hardware_add_name_entry"))),
+                  gtk_combo_box_get_active_text(GTK_COMBO_BOX(UI("hardware_add_plugin_combobox"))),
+		  gtk_entry_get_text(GTK_ENTRY(UI("hardware_add_id_entry"))),
+                  gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(UI("hardware_add_ledcount_spinbutton"))),
+                  gtk_combo_box_get_active_text(GTK_COMBO_BOX(UI("hardware_add_pixelformat_comboboxtext"))))))
+		return;
+		
+	/* hide window */
+	setup_show_add_hardware_window(false);
+	
+        /** @todo refresh our menu */
+        
+	/* refresh tree */
+        setup_tree_refresh();
+
+}
+
+/** add hardware "cancel" clicked */
+void on_add_hardware_cancel_clicked(GtkButton *b, gpointer u)
+{
+	setup_show_add_hardware_window(false);
 }

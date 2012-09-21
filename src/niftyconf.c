@@ -197,10 +197,12 @@ void niftyconf_menu_chain_remove_set_sensitive(gboolean active)
 int main (int argc, char *argv[])
 {
         /* initialize GTK stuff */
-        gtk_set_locale();
+        //gtk_set_locale();
         gtk_init (&argc, &argv);
-        
 
+	/* check version */
+	NFT_LED_CHECK_VERSION;
+	
         /* set default loglevel */
         nft_log_level_set(L_INFO);
 
@@ -288,14 +290,11 @@ void on_niftyconf_menu_log_window_activate(GtkWidget *i, gpointer u)
 /** menu-entry selected */
 void on_niftyconf_menu_add_hardware_activate(GtkWidget *i, gpointer u)
 {
-        setup_new_hardware("Unnamed", "dummy");
-
-        /** @todo refresh our menu */
-        
-        /* refresh tree */
-        setup_tree_refresh();
+	/* rebuild plugin combobox */
+	//gtk_combo_box_
+	/* show "add hardware" dialog */
+	setup_show_add_hardware_window(true);
 }
-
 
 /** menu-entry selected */
 void on_niftyconf_menu_add_tile_activate(GtkWidget *i, gpointer u)
@@ -321,6 +320,11 @@ void on_niftyconf_menu_add_tile_activate(GtkWidget *i, gpointer u)
                         setup_new_tile_of_tile((NiftyconfTile *) e);
                         break;
                 }
+
+		default:
+		{
+			break;
+		}
         }
 
         /** @todo refresh our menu */
