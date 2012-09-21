@@ -61,6 +61,7 @@ void            setup_cleanup();
 
 /* model functions */
 LedSetup *   		setup_get_current();
+LedPrefs *		setup_get_prefs();
 void            	setup_destroy_hardware(NiftyconfHardware *hw);
 void            	setup_destroy_chain_of_tile(NiftyconfTile *tile);
 void            	setup_destroy_tile(NiftyconfTile *tile);

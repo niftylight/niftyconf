@@ -75,10 +75,17 @@ static LedSetup *_setup;
 /******************************************************************************
  ******************************************************************************/
 
-/** getter for current settings */
+/** getter for current setup */
 LedSetup *setup_get_current()
 {
         return _setup;
+}
+
+
+/** getter for current preference context */
+LedPrefs *setup_get_prefs()
+{
+	return _prefs;
 }
 
 

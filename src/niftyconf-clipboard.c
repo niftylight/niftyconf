@@ -207,13 +207,50 @@ void clipboard_cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 /** paste element from clipboard */
 void clipboard_paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 {
-        //~ gchar *xml;
-        //~ if(!(xml = gtk_clipboard_wait_for_text(_clipboard)))
-        //~ {
-                //~ NFT_LOG(L_ERROR, "recieved NULL from clipboard");
-                //~ return;
-        //~ }
+	/* get XML data from clipboard */
+        gchar *xml;
+        if(!(xml = gtk_clipboard_wait_for_text(_clipboard)))
+        {
+                NFT_LOG(L_ERROR, "received NULL from clipboard");
+                return;
+        }
 
+	/* parse buffer to LedPrefsNode */
+	LedPrefsNode *n;
+	if(!(n = led_prefs_node_from_buffer(setup_get_prefs(), xml, strlen(xml))))
+	{
+		NFT_LOG(L_ERROR, "failed to parse XML from clipboard");
+		return;
+	}
+
+	/* hardware node? */
+	if(led_prefs_is_hardware_node(n))
+	{
+
+	}
+
+	/* tile node? */
+	else if(led_prefs_is_tile_node(n))
+	{
+
+	}
+
+	/* chain node? */
+	else if(led_prefs_is_chain_node(n))
+	{
+
+	}
+
+	/* led node? */
+	else if(led_prefs_is_led_node(n))
+	{
+
+	}
+
+	/* unknown node? */
+	else
+		goto cpe_exit;
+	
         //~ switch(led_settings_node_get_type(xml))
         //~ {
                 //~ case T_LED_HARDWARE:
@@ -265,7 +302,9 @@ void clipboard_paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
                         //~ break;
                 //~ }
         //~ }
-        
+
+cpe_exit:
+	led_prefs_node_free(n);
 }
 
 

@@ -618,6 +618,36 @@ void setup_tree_get_last_selected_element(NIFTYLED_TYPE *t, gpointer **element)
 }
 
 
+/** get first of currently selected elements */
+void setup_tree_get_first_selected_element(NIFTYLED_TYPE *t, gpointer **element)
+{
+	*t = LED_INVALID_T;
+	*element = NULL;
+
+	/* get current treeview selection */
+        GtkTreeSelection *selection;
+        selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(UI("treeview")));
+
+        /* something selected? */
+        GList *selected;
+        GtkTreeModel *m;
+        if(!(selected = gtk_tree_selection_get_selected_rows(selection, &m)))
+                return;
+        
+        GtkTreePath *path = (GtkTreePath *) g_list_last(selected)->data;
+        GtkTreeIter i;
+        gtk_tree_model_get_iter(m, &i, path);
+        
+        /* get this element */
+        NIFTYLED_TYPE type;
+        gpointer *pointer;
+        gtk_tree_model_get(m, &i, C_SETUP_TYPE, &type, C_SETUP_ELEMENT, &pointer,  0);
+
+        *t = type;
+        *element = pointer;
+}
+
+
 /** clear setup tree */
 void setup_tree_clear()
 {

@@ -139,6 +139,66 @@ static gboolean _parse_cmdline_args(int argc, char *argv[], gchar **setupfile)
         return TRUE;
 }
  
+/** cut currently selected element to clipboard */
+static NftResult _cut_current_element_to_clipboard()
+{
+	/* get currently selected element */
+	NIFTYLED_TYPE t;
+        gpointer *e;
+        setup_tree_get_first_selected_element(&t, &e);
+
+	if(t == LED_INVALID_T)
+	{
+		NFT_LOG(L_DEBUG, "could not get first selected element from tree (nothing selected?)");
+		return NFT_FAILURE;
+	}
+	
+	clipboard_cut_or_copy_element(t, e, TRUE);
+
+	return NFT_SUCCESS;
+}
+
+
+/** copy currently selected element to clipboard */
+static NftResult _copy_current_element_to_clipboard()
+{
+	/* get currently selected element */
+	NIFTYLED_TYPE t;
+        gpointer *e;
+        setup_tree_get_first_selected_element(&t, &e);
+
+	if(t == LED_INVALID_T)
+	{
+		NFT_LOG(L_DEBUG, "could not get first selected element from tree (nothing selected?)");
+		return NFT_FAILURE;
+	}
+	
+	clipboard_cut_or_copy_element(t, e, FALSE);
+	
+	return NFT_SUCCESS;
+}
+
+
+/** paste element in clipboard after currently (or end of rootlist) */
+static NftResult _paste_current_element_from_clipboard()
+{
+	/* get currently selected element */
+	NIFTYLED_TYPE t;
+        gpointer *e;
+        setup_tree_get_first_selected_element(&t, &e);
+
+	if(t == LED_INVALID_T)
+	{
+		NFT_LOG(L_DEBUG, "could not get first selected element from tree (nothing selected?)");
+		return NFT_FAILURE;
+	}
+	
+        clipboard_paste_element(t, e);
+	return NFT_SUCCESS;
+}
+
+
+
 /******************************************************************************
  ******************************************************************************/
 
@@ -424,42 +484,23 @@ void on_niftyconf_menu_remove_chain_activate(GtkWidget *i, gpointer u)
 }
 
 
-/** wrapper for do_* functions */
-static void _foreach_cut_element(NIFTYLED_TYPE type, gpointer *e)
-{
-        clipboard_cut_or_copy_element(type, e, TRUE);
-}
-
 
 /** menu-entry selected */
 void on_niftyconf_menu_cut_activate(GtkWidget *i, gpointer u)
 {
-        /* copy all selected elements */
-        setup_tree_do_for_last_selected_element(_foreach_cut_element);
-}
-
-
-/** wrapper for do_* functions */
-static void _foreach_copy_element(NIFTYLED_TYPE type, gpointer *e)
-{
-        clipboard_cut_or_copy_element(type, e, FALSE);
+        _cut_current_element_to_clipboard();
 }
 
 
 /** menu-entry selected */
 void on_niftyconf_menu_copy_activate(GtkWidget *i, gpointer u)
 {
-        /* copy all selected elements */
-        setup_tree_do_for_last_selected_element(_foreach_copy_element);
+	_copy_current_element_to_clipboard();
 }
 
 
 /** menu-entry selected */
 void on_niftyconf_menu_paste_activate(GtkWidget *i, gpointer u)
 {
-        NIFTYLED_TYPE t;
-        gpointer *element;
-        setup_tree_get_last_selected_element(&t, &element);
-        
-        clipboard_paste_element(t, element);
+	_paste_current_element_from_clipboard();
 }
