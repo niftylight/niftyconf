@@ -69,9 +69,9 @@ PKG_CHECK_MODULES(NIFTYCONF,
 [
         gtk+-2.0 >= 2.2
         gmodule-2.0 
-        gconf-2.0 
         niftyled >= $NIFTYLED_REQUIRED
 ])
+
 AC_SUBST(NIFTYCONF_CFLAGS)
 AC_SUBST(NIFTYCONF_LIBS)
 
