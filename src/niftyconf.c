@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -71,8 +71,8 @@ static GtkBuilder *_ui;
 static char *_loglevels()
 {
         static char s[1024];
-        
-        NftLoglevel i;        
+
+        NftLoglevel i;
         for(i = L_MAX+1; i<L_MIN-1; i++)
         {
                 strcat(s, nft_log_level_to_string(i));
@@ -125,76 +125,18 @@ static gboolean _parse_cmdline_args(int argc, char *argv[], gchar **setupfile)
                         g_error("Invalid loglevel: %s", loglevel);
                         return FALSE;
                 }
-                
+
                 if(!nft_log_level_set(lev))
                 {
-                        g_error("Failed to set loglevel: %s (%d)", 
+                        g_error("Failed to set loglevel: %s (%d)",
                                 loglevel, lev);
                         return FALSE;
                 }
-        
-                
+
+
         }
-        
+
         return TRUE;
-}
- 
-/** cut currently selected element to clipboard */
-static NftResult _cut_current_element_to_clipboard()
-{
-	/* get currently selected element */
-	NIFTYLED_TYPE t;
-        gpointer *e;
-        setup_tree_get_first_selected_element(&t, &e);
-
-	if(t == LED_INVALID_T)
-	{
-		NFT_LOG(L_DEBUG, "could not get first selected element from tree (nothing selected?)");
-		return NFT_FAILURE;
-	}
-	
-	clipboard_cut_or_copy_element(t, e, TRUE);
-
-	return NFT_SUCCESS;
-}
-
-
-/** copy currently selected element to clipboard */
-static NftResult _copy_current_element_to_clipboard()
-{
-	/* get currently selected element */
-	NIFTYLED_TYPE t;
-        gpointer *e;
-        setup_tree_get_first_selected_element(&t, &e);
-
-	if(t == LED_INVALID_T)
-	{
-		NFT_LOG(L_DEBUG, "could not get first selected element from tree (nothing selected?)");
-		return NFT_FAILURE;
-	}
-	
-	clipboard_cut_or_copy_element(t, e, FALSE);
-	
-	return NFT_SUCCESS;
-}
-
-
-/** paste element in clipboard after currently (or end of rootlist) */
-static NftResult _paste_current_element_from_clipboard()
-{
-	/* get currently selected element */
-	NIFTYLED_TYPE t;
-        gpointer *e;
-        setup_tree_get_first_selected_element(&t, &e);
-
-	if(t == LED_INVALID_T)
-	{
-		NFT_LOG(L_DEBUG, "could not get first selected element from tree (nothing selected?)");
-		return NFT_FAILURE;
-	}
-	
-        clipboard_paste_element(t, e);
-	return NFT_SUCCESS;
 }
 
 
@@ -262,11 +204,11 @@ int main (int argc, char *argv[])
 
 	/* check version */
 	NFT_LED_CHECK_VERSION;
-	
+
         /* set default loglevel */
         nft_log_level_set(L_INFO);
 
-        
+
         /* parse commandline arguments */
         static gchar *setupfile;
         if(!_parse_cmdline_args(argc, argv, &setupfile))
@@ -289,23 +231,23 @@ int main (int argc, char *argv[])
                 g_error("Failed to initialize \"setup\" module");
         if(!clipboard_init())
                 g_error("Failed to initialize \"clipboard\" module");
-        
-        
+
+
         /* build our ui */
         _ui = ui_builder("niftyconf.ui");
         GtkBox *box_setup = GTK_BOX(gtk_builder_get_object(_ui, "box_setup"));
         gtk_box_pack_start(box_setup, setup_get_widget(), TRUE, TRUE, 0);
         GtkBox *box_chain = GTK_BOX(gtk_builder_get_object(_ui, "box_chain"));
         gtk_box_pack_start(box_chain, setup_ledlist_get_widget(), TRUE, TRUE, 0);
-      
 
-        
+
+
         /* load setup file if any given from commandline */
         if(setupfile)
         {
                 if(!setup_load(setupfile))
                 {
-                        g_warning("Failed to initialize setup from \"%s\"", 
+                        g_warning("Failed to initialize setup from \"%s\"",
                                   setupfile);
                         return -1;
                 }
@@ -313,11 +255,11 @@ int main (int argc, char *argv[])
         }
 
 
-        
+
         /* main loop... */
         gtk_main();
 
-        
+
         return 0;
 }
 
@@ -343,7 +285,7 @@ void on_niftyconf_menu_quit_activate(GtkMenuItem *i, gpointer d)
 
 /** menuitem "show log-window" toggled */
 void on_niftyconf_menu_log_window_activate(GtkWidget *i, gpointer u)
-{       
+{
         log_show(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(i)));
 }
 
@@ -363,7 +305,7 @@ void on_niftyconf_menu_add_tile_activate(GtkWidget *i, gpointer u)
         gpointer *e;
         setup_tree_get_last_selected_element(&t, &e);
 
-        
+
         /* different possible element types */
         switch(t)
         {
@@ -388,7 +330,7 @@ void on_niftyconf_menu_add_tile_activate(GtkWidget *i, gpointer u)
         }
 
         /** @todo refresh our menu */
-        
+
         /* refresh tree */
         setup_tree_refresh();
 }
@@ -400,7 +342,7 @@ void on_niftyconf_menu_add_chain_activate(GtkWidget *i, gpointer u)
         NIFTYLED_TYPE t;
         gpointer *e;
         setup_tree_get_last_selected_element(&t, &e);
-        
+
         /* can only add chains to tiles */
         if(t != LED_TILE_T)
                 return;
@@ -409,7 +351,7 @@ void on_niftyconf_menu_add_chain_activate(GtkWidget *i, gpointer u)
         setup_new_chain_of_tile((NiftyconfTile *) e, 3, "RGB u8");
 
         /** @todo refresh our menu */
-        
+
         /* refresh tree */
         setup_tree_refresh();
 }
@@ -432,7 +374,7 @@ void on_niftyconf_menu_remove_hardware_activate(GtkWidget *i, gpointer u)
         setup_tree_do_foreach_selected_element(_foreach_remove_hardware);
 
         /** @todo refresh our menu */
-        
+
         /* refresh tree */
         setup_tree_refresh();
 }
@@ -478,7 +420,7 @@ void on_niftyconf_menu_remove_chain_activate(GtkWidget *i, gpointer u)
         setup_tree_do_foreach_selected_element(_foreach_remove_chain);
 
         /** @todo refresh our menu */
-        
+
         /* refresh tree */
         setup_tree_refresh();
 }
@@ -488,19 +430,19 @@ void on_niftyconf_menu_remove_chain_activate(GtkWidget *i, gpointer u)
 /** menu-entry selected */
 void on_niftyconf_menu_cut_activate(GtkWidget *i, gpointer u)
 {
-        _cut_current_element_to_clipboard();
+        clipboard_cut_current_element();
 }
 
 
 /** menu-entry selected */
 void on_niftyconf_menu_copy_activate(GtkWidget *i, gpointer u)
 {
-	_copy_current_element_to_clipboard();
+	clipboard_copy_current_element();
 }
 
 
 /** menu-entry selected */
 void on_niftyconf_menu_paste_activate(GtkWidget *i, gpointer u)
 {
-	_paste_current_element_from_clipboard();
+	clipboard_paste_current_element();
 }

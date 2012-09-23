@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -47,9 +47,11 @@
 
 
 /* GUI model functions */
-gboolean        clipboard_init();
-void            clipboard_cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut);
-void            clipboard_paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element);
+gboolean         clipboard_init();
+NftResult 		clipboard_cut_current_element();
+NftResult 		clipboard_copy_current_element();
+NftResult 		clipboard_paste_current_element();
+
 
 /* GUI functions */
 

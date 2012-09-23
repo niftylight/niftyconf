@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -51,16 +51,16 @@
 
 
 /**
- * This is simple & generic. 
+ * This is simple & generic.
  * For every setup-element we copy the XML representation to
  * the clipboard. If we cut, the element is removed from the setup and destroyed.
  * Upon paste, the XML data is parsed again and, if valid, a new element is created
- * to be inserted as child of the currently selected element (LedHardware 
+ * to be inserted as child of the currently selected element (LedHardware
  * elements will always be added to the toplevel of the setup)
  *
  * @todo make this ready for proper multi-select copy of tree elements
  */
-                                                        
+
 
 /** our clipboard */
 static GtkClipboard *_clipboard;
@@ -84,7 +84,7 @@ static void _get_hw_func(GtkClipboard *c,
         GdkAtom target = gtk_selection_data_get_target(s);
 
         /* request text-form? */
-        if(gtk_targets_include_text(&target, 1)) 
+        if(gtk_targets_include_text(&target, 1))
         {
 
         }
@@ -93,9 +93,9 @@ static void _get_hw_func(GtkClipboard *c,
         {
 
         }
-        
+
         /*GdkAtom target = gtk_selection_data_get_target(selection_data);
-        if(gtk_targets_include_text(&target, 1)) 
+        if(gtk_targets_include_text(&target, 1))
         {
                 char *str;
                 gsize len;
@@ -104,7 +104,7 @@ static void _get_hw_func(GtkClipboard *c,
                 gtk_selection_data_set_text(selection_data, str, len);
                 g_free(str);
         }
-        else if(target == copied_files_atom) 
+        else if(target == copied_files_atom)
         {
                 char *str;
                 gsize len;
@@ -125,17 +125,13 @@ static void _clear_hw_func(GtkClipboard *c, gpointer u)
 
 
 
-/******************************************************************************
- ******************************************************************************/
-
-
-
-
 /** cut/copy to buffer */
-void clipboard_cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
+static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 {
+	NFT_LOG(L_DEBUG, cut ? "Cutting element..." : "Copying element...");
+
         //~ const char *xml = NULL;
-        
+
         //~ switch(t)
         //~ {
                 //~ case T_LED_HARDWARE:
@@ -165,7 +161,7 @@ void clipboard_cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
                                 //~ led_tile_destroy(t);
                                 //~ setup_tree_refresh();
                         //~ }
-                        
+
                         //~ break;
                 //~ }
 
@@ -177,7 +173,7 @@ void clipboard_cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
                         //~ /* don't cut from hardware elements */
                         //~ if(led_chain_parent_is_hardware(c))
                                 //~ break;
-                        
+
                         //~ /* remove element? */
                         //~ if(cut)
                         //~ {
@@ -199,13 +195,13 @@ void clipboard_cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
         //~ gtk_clipboard_store(_clipboard);
 
         //~ NFT_LOG(L_VERY_NOISY, "%s", xml);
-        
+
         //~ free((void *) xml);
 }
 
 
 /** paste element from clipboard */
-void clipboard_paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
+static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 {
 	/* get XML data from clipboard */
         gchar *xml;
@@ -250,7 +246,7 @@ void clipboard_paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 	/* unknown node? */
 	else
 		goto cpe_exit;
-	
+
         //~ switch(led_settings_node_get_type(xml))
         //~ {
                 //~ case T_LED_HARDWARE:
@@ -280,7 +276,7 @@ void clipboard_paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
                                 //~ default:
                                         //~ break;
                         //~ }
-                        
+
                         //~ break;
                 //~ }
 
@@ -298,13 +294,75 @@ void clipboard_paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
                                 //~ default:
                                         //~ break;
                         //~ }
-                        
+
                         //~ break;
                 //~ }
         //~ }
 
 cpe_exit:
 	led_prefs_node_free(n);
+}
+
+
+/******************************************************************************
+ ******************************************************************************/
+
+/** cut currently selected element to clipboard */
+NftResult clipboard_cut_current_element()
+{
+	/* get currently selected element */
+	NIFTYLED_TYPE t;
+        gpointer *e;
+        setup_tree_get_first_selected_element(&t, &e);
+
+	if(t == LED_INVALID_T)
+	{
+		NFT_LOG(L_DEBUG, "could not get first selected element from tree (nothing selected?)");
+		return NFT_FAILURE;
+	}
+
+	_cut_or_copy_element(t, e, TRUE);
+
+	return NFT_SUCCESS;
+}
+
+
+/** copy currently selected element to clipboard */
+NftResult clipboard_copy_current_element()
+{
+	/* get currently selected element */
+	NIFTYLED_TYPE t;
+        gpointer *e;
+        setup_tree_get_first_selected_element(&t, &e);
+
+	if(t == LED_INVALID_T)
+	{
+		NFT_LOG(L_DEBUG, "could not get first selected element from tree (nothing selected?)");
+		return NFT_FAILURE;
+	}
+
+	_cut_or_copy_element(t, e, FALSE);
+
+	return NFT_SUCCESS;
+}
+
+
+/** paste element in clipboard after currently (or end of rootlist) */
+NftResult clipboard_paste_current_element()
+{
+	/* get currently selected element */
+	NIFTYLED_TYPE t;
+        gpointer *e;
+        setup_tree_get_first_selected_element(&t, &e);
+
+	if(t == LED_INVALID_T)
+	{
+		NFT_LOG(L_DEBUG, "could not get first selected element from tree (nothing selected?)");
+		return NFT_FAILURE;
+	}
+
+        _paste_element(t, e);
+	return NFT_SUCCESS;
 }
 
 
@@ -317,7 +375,7 @@ gboolean clipboard_init()
 
         /* initialize clipboard */
         gtk_clipboard_set_can_store(_clipboard, NULL, 0);
-        
+
         return TRUE;
 }
 
