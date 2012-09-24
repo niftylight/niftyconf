@@ -58,6 +58,7 @@ GtkWidget *     setup_get_widget();
 /* GUI functions */
 gboolean        setup_load(gchar *filename);
 void            setup_cleanup();
+void 		setup_deinit();
 
 /* model functions */
 LedSetup *   		setup_get_current();

@@ -386,8 +386,7 @@ void setup_cleanup()
         
         led_setup_destroy(_setup);
         setup_tree_clear();
-
-	led_prefs_deinit(_prefs);
+	_setup = NULL;
 }
 
 
@@ -449,6 +448,15 @@ gboolean setup_init()
         return TRUE;
 }
 
+
+
+/** deinitialize setup module */
+void setup_deinit()
+{
+	setup_cleanup();
+	led_prefs_deinit(_prefs);
+	_prefs = NULL;
+}
 
 /******************************************************************************
  ***************************** CALLBACKS **************************************

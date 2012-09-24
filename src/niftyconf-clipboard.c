@@ -48,6 +48,8 @@
 #include "niftyconf-hardware.h"
 #include "niftyconf-tile.h"
 #include "niftyconf-chain.h"
+#include "niftyconf-led.h"
+
 
 
 /**
@@ -130,73 +132,97 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 {
 	NFT_LOG(L_DEBUG, cut ? "Cutting element..." : "Copying element...");
 
-        //~ const char *xml = NULL;
+	const char *xml = NULL;
+        
+        switch(t)
+        {
+                case LED_HARDWARE_T:
+                {
+                        LedHardware *h = hardware_niftyled((NiftyconfHardware *) e);
+			LedPrefsNode *n = led_prefs_hardware_to_node(setup_get_prefs(), h);
+                        xml = led_prefs_node_to_buffer(setup_get_prefs(), n);
+			led_prefs_node_free(n);
+			
+                        /* remove element? */
+                        if(cut)
+                        {
+				setup_destroy_hardware((NiftyconfHardware *) e);
+                                setup_tree_refresh();
+                        }
+                        break;
+                }
 
-        //~ switch(t)
-        //~ {
-                //~ case T_LED_HARDWARE:
-                //~ {
-                        //~ LedHardware *h = hardware_niftyled((NiftyconfHardware *) e);
-                        //~ xml = led_settings_hardware_dump_xml(setup_get_current(), h);
+                case LED_TILE_T:
+                {
+                        LedTile *t = tile_niftyled((NiftyconfTile *) e);
+			LedPrefsNode *n = led_prefs_tile_to_node(setup_get_prefs(), t);
+                        xml = led_prefs_node_to_buffer(setup_get_prefs(), n);
+			led_prefs_node_free(n);
+			
+                        /* remove element? */
+                        if(cut)
+                        {
+				setup_destroy_tile((NiftyconfTile *) e);
+                                setup_tree_refresh();
+                        }
+                        break;
+                }
 
-                        //~ /* remove element? */
-                        //~ if(cut)
-                        //~ {
-                                //~ hardware_unregister((NiftyconfHardware *) e);
-                                //~ led_hardware_destroy(h);
-                                //~ setup_tree_refresh();
-                        //~ }
-                        //~ break;
-                //~ }
+                case LED_CHAIN_T:
+                {
+                        LedChain *c = chain_niftyled((NiftyconfChain *) e);
+			LedPrefsNode *n = led_prefs_chain_to_node(setup_get_prefs(), c);
+                        xml = led_prefs_node_to_buffer(setup_get_prefs(), n);
+			led_prefs_node_free(n);
+			
+                        /* don't cut from hardware elements */
+                        if(led_chain_parent_is_hardware(c))
+                                break;
+                        
+                        /* remove element? */
+                        if(cut)
+                        {
+				setup_destroy_chain_of_tile((NiftyconfChain *) e);
+                                setup_tree_refresh();
+                        }
+                        break;
+                }
 
-                //~ case T_LED_TILE:
-                //~ {
-                        //~ LedTile *t = tile_niftyled((NiftyconfTile *) e);
-                        //~ xml = led_settings_tile_dump_xml(setup_get_current(), t);
+		case LED_T:
+		{
+			Led *l = led_niftyled((NiftyconfLed *) e);
+			LedPrefsNode *n = led_prefs_led_to_node(setup_get_prefs(), l);
+			xml = led_prefs_node_to_buffer(setup_get_prefs(), n);
+			led_prefs_node_free(n);
 
-                        //~ /* remove element? */
-                        //~ if(cut)
-                        //~ {
-                                //~ tile_unregister((NiftyconfTile *) e);
-                                //~ led_tile_destroy(t);
-                                //~ setup_tree_refresh();
-                        //~ }
+			/* remove element? */
+			if(cut)
+			{
+				NFT_TODO();
+				//led_unregister((NiftyconfLed *) e);
+				//setup_tree_refresh();
+			}
+		}
+			
+		default:
+		{
+			NFT_LOG(L_ERROR, "Attempt to cut/copy unknown element. This shouldn't happen?!");
+		}
+        }
+	
+   
+        if(!xml)
+                return;
 
-                        //~ break;
-                //~ }
+        /* set the clipboard text */
+        gtk_clipboard_set_text(_clipboard, xml, -1);
 
-                //~ case T_LED_CHAIN:
-                //~ {
-                        //~ LedChain *c = chain_niftyled((NiftyconfChain *) e);
-                        //~ xml = led_settings_chain_dump_xml(setup_get_current(), c);
+        /* store the clipboard text */
+        gtk_clipboard_store(_clipboard);
 
-                        //~ /* don't cut from hardware elements */
-                        //~ if(led_chain_parent_is_hardware(c))
-                                //~ break;
-
-                        //~ /* remove element? */
-                        //~ if(cut)
-                        //~ {
-                                //~ chain_unregister((NiftyconfChain *) e);
-                                //~ led_chain_destroy(c);
-                                //~ setup_tree_refresh();
-                        //~ }
-                        //~ break;
-                //~ }
-        //~ }
-
-        //~ if(!xml)
-                //~ return;
-
-        //~ /* set the clipboard text */
-        //~ gtk_clipboard_set_text(_clipboard, xml, -1);
-
-        //~ /* store the clipboard text */
-        //~ gtk_clipboard_store(_clipboard);
-
-        //~ NFT_LOG(L_VERY_NOISY, "%s", xml);
-
-        //~ free((void *) xml);
+        NFT_LOG(L_VERY_NOISY, "%s", xml);
+        
+        free((void *) xml);
 }
 
 

@@ -271,7 +271,7 @@ int main (int argc, char *argv[])
 /** close main window */
 gboolean on_niftyconf_window_delete_event(GtkWidget *w, GdkEvent *e)
 {
-        setup_cleanup();
+        setup_deinit();
         gtk_main_quit();
         return FALSE;
 }
