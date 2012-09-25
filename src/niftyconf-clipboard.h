@@ -47,10 +47,10 @@
 
 
 /* GUI model functions */
-gboolean         clipboard_init();
-NftResult 		clipboard_cut_current_element();
-NftResult 		clipboard_copy_current_element();
-NftResult 		clipboard_paste_current_element();
+gboolean	clipboard_init();
+NftResult 	clipboard_cut_current_selection();
+NftResult 	clipboard_copy_current_selection();
+NftResult 	clipboard_paste_current_selection();
 
 
 /* GUI functions */
@@ -61,4 +61,3 @@ NftResult 		clipboard_paste_current_element();
 
 
 #endif /* _NIFTYCONF_CLIPBOARD_H */
-

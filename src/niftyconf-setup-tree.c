@@ -940,7 +940,7 @@ gboolean on_popup_cut_element(GtkWidget *w, GdkEventButton *e, gpointer u)
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
                 return FALSE;
 
-	clipboard_cut_current_element();
+	clipboard_cut_current_selection();
 
         return TRUE;
 }
@@ -953,7 +953,7 @@ gboolean on_popup_copy_element(GtkWidget *w, GdkEventButton *e, gpointer u)
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
                 return FALSE;
 
-        clipboard_copy_current_element();
+        clipboard_copy_current_selection();
 
         return TRUE;
 }
@@ -966,7 +966,7 @@ gboolean on_popup_paste_element(GtkWidget *w, GdkEventButton *e, gpointer u)
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
                 return FALSE;
 
-        clipboard_paste_current_element();
+        clipboard_paste_current_selection();
 
         return TRUE;
 }

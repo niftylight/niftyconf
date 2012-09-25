@@ -182,7 +182,10 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
                         /* remove element? */
                         if(cut)
                         {
-				setup_destroy_chain_of_tile((NiftyconfChain *) e);
+				/* get parent tile of this chain */
+				LedTile *t = led_chain_get_parent_tile(c);
+				NiftyconfTile *tile = led_tile_get_privdata(t);
+				setup_destroy_chain_of_tile(tile);
                                 setup_tree_refresh();
                         }
                         break;
@@ -233,7 +236,7 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
         gchar *xml;
         if(!(xml = gtk_clipboard_wait_for_text(_clipboard)))
         {
-                NFT_LOG(L_ERROR, "received NULL from clipboard");
+                NFT_LOG(L_ERROR, "received NULL from clipboard?");
                 return;
         }
 
@@ -334,7 +337,7 @@ cpe_exit:
  ******************************************************************************/
 
 /** cut currently selected element to clipboard */
-NftResult clipboard_cut_current_element()
+NftResult clipboard_cut_current_selection()
 {
 	/* get currently selected element */
 	NIFTYLED_TYPE t;
@@ -354,7 +357,7 @@ NftResult clipboard_cut_current_element()
 
 
 /** copy currently selected element to clipboard */
-NftResult clipboard_copy_current_element()
+NftResult clipboard_copy_current_selection()
 {
 	/* get currently selected element */
 	NIFTYLED_TYPE t;
@@ -374,7 +377,7 @@ NftResult clipboard_copy_current_element()
 
 
 /** paste element in clipboard after currently (or end of rootlist) */
-NftResult clipboard_paste_current_element()
+NftResult clipboard_paste_current_selection()
 {
 	/* get currently selected element */
 	NIFTYLED_TYPE t;

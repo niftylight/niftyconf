@@ -430,19 +430,19 @@ void on_niftyconf_menu_remove_chain_activate(GtkWidget *i, gpointer u)
 /** menu-entry selected */
 void on_niftyconf_menu_cut_activate(GtkWidget *i, gpointer u)
 {
-        clipboard_cut_current_element();
+        clipboard_cut_current_selection();
 }
 
 
 /** menu-entry selected */
 void on_niftyconf_menu_copy_activate(GtkWidget *i, gpointer u)
 {
-	clipboard_copy_current_element();
+	clipboard_copy_current_selection();
 }
 
 
 /** menu-entry selected */
 void on_niftyconf_menu_paste_activate(GtkWidget *i, gpointer u)
 {
-	clipboard_paste_current_element();
+	clipboard_paste_current_selection();
 }
