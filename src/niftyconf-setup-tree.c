@@ -1146,7 +1146,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                         gtk_widget_set_sensitive(remove_tile, FALSE);
                         break;
                 }
-
+			
                 default:
                 {
                         /* disable unneeded menus */

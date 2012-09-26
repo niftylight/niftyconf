@@ -222,17 +222,67 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 	/* tile node? */
 	else if(led_prefs_is_tile_node(n))
 	{
+ 		switch(parent_t)
+		{
+			/* paste tile to hardware */
+			case LED_HARDWARE_T:
+			{
+				/* create tile from prefs node */
+				LedTile *t;
+				if(!(t = led_prefs_tile_from_node(setup_get_prefs(), n)))
+				{
+					log_alert_show("Failed to parse Tile node from clipboard buffer");
+					return;
+				}
+				
+				/* parent hardware element */
+				LedHardware *h;
+				if(!(h = hardware_niftyled((NiftyconfHardware *) parent_element)))
+				{
+					log_alert_show("Failed to get Hardware node to paste to");
+					return;
+				}
 
+				/* does parent hardware already have a tile? */
+				LedTile *pt;
+				if((pt = led_hardware_get_tile(h)))
+				{
+					if(!led_tile_list_append_head(pt, t))
+					{
+						log_alert_show("Failed to append tile to parent Hardware list of tiles");
+						return;
+					}
+				}
+				/* parent hardware doesn't have a tile, yet */
+				else
+				{
+					if(!led_hardware_set_tile(h, t))
+					{
+						log_alert_show("Failed to set tile to parent Hardware");
+						return;
+					}
+				}
+				
+				break;
+			}
+
+			/* paste tile to tile */
+			case LED_TILE_T:
+			{
+				printf("-> tile -> tile\n");
+				break;
+			}
+
+			default:
+			{
+				log_alert_show("Tile nodes can only be pasted to Hardware or other Tile nodes");
+				break;
+			}
+		}
 	}
 
 	/* chain node? */
 	else if(led_prefs_is_chain_node(n))
-	{
-
-	}
-
-	/* led node? */
-	else if(led_prefs_is_led_node(n))
 	{
 
 	}
@@ -246,33 +296,10 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 	
         //~ switch(led_settings_node_get_type(xml))
         //~ {
-                //~ case T_LED_HARDWARE:
-                //~ {
-                        //~ printf("-> hardware\n");
-                        //~ break;
-                //~ }
-
+               
                 //~ case T_LED_TILE:
                 //~ {
-                        //~ switch(parent_t)
-                        //~ {
-                                //~ /* paste tile to hardware */
-                                //~ case T_LED_HARDWARE:
-                                //~ {
-                                        //~ printf("-> tile -> hw\n");
-                                        //~ break;
-                                //~ }
-
-                                //~ /* paste tile to tile */
-                                //~ case T_LED_TILE:
-                                //~ {
-                                        //~ printf("-> tile -> tile\n");
-                                        //~ break;
-                                //~ }
-
-                                //~ default:
-                                        //~ break;
-                        //~ }
+                       
 
                         //~ break;
                 //~ }
