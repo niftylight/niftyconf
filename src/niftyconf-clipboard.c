@@ -49,6 +49,7 @@
 #include "niftyconf-tile.h"
 #include "niftyconf-chain.h"
 #include "niftyconf-led.h"
+#include "niftyconf-log.h"
 
 
 
@@ -75,56 +76,6 @@ static GtkClipboard *_clipboard;
 /******************************************************************************
  ****************************** STATIC FUNCTIONS ******************************
  ******************************************************************************/
-
-/* clipboard_get_func - dummy get_func for gtk_clipboard_set_with_data () */
-static void _get_hw_func(GtkClipboard *c,
-                        GtkSelectionData *s,
-                        guint info, gpointer u)
-{
-        NiftyconfHardware *h = (NiftyconfHardware *) u;
-
-        GdkAtom target = gtk_selection_data_get_target(s);
-
-        /* request text-form? */
-        if(gtk_targets_include_text(&target, 1))
-        {
-
-        }
-        /* deliver hardware pointer */
-        else
-        {
-
-        }
-
-        /*GdkAtom target = gtk_selection_data_get_target(selection_data);
-        if(gtk_targets_include_text(&target, 1))
-        {
-                char *str;
-                gsize len;
-
-                str = convert_file_list_to_string(clipboard_info, TRUE, &len);
-                gtk_selection_data_set_text(selection_data, str, len);
-                g_free(str);
-        }
-        else if(target == copied_files_atom)
-        {
-                char *str;
-                gsize len;
-
-                str = convert_file_list_to_string(clipboard_info, FALSE, &len);
-                gtk_selection_data_set(selection_data, copied_files_atom, 8, str, len);
-                g_free(str);
-        }*/
-}
-
-/* clipboard_clear_func - dummy clear_func for gtk_clipboard_set_with_data () */
-static void _clear_hw_func(GtkClipboard *c, gpointer u)
-{
-        NiftyconfHardware *h = (NiftyconfHardware *) u;
-}
-
-
-
 
 
 /** cut/copy to buffer */
@@ -251,7 +202,21 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 	/* hardware node? */
 	if(led_prefs_is_hardware_node(n))
 	{
-
+		/* create hardware from prefs node */
+		LedHardware *h;
+		if(!(h = led_prefs_hardware_from_node(setup_get_prefs(), n)))
+		{
+			log_alert_show("Failed to parse Hardware node from clipboard buffer");
+			return;
+		}
+		
+		/* hardware nodes will always be pasted top-level, no matter
+		   what is currently selected */
+		if(!hardware_new(h))
+		{
+			log_alert_show("Failed to paste Hardware node");
+			return;
+		}
 	}
 
 	/* tile node? */
@@ -276,6 +241,9 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 	else
 		goto cpe_exit;
 
+	/* refresh whole tree view */
+	setup_tree_refresh();
+	
         //~ switch(led_settings_node_get_type(xml))
         //~ {
                 //~ case T_LED_HARDWARE:

@@ -121,42 +121,9 @@ NiftyconfHardware *setup_new_hardware(const char *name, const char *family,
 		log_alert_show("Failed to initialize new hardware. Not connected?");
 	}
 	
-        /* register hardware to gui */
-        NiftyconfHardware *hardware;
-        if(!(hardware = hardware_register(h)))
-        {
-                log_alert_show("Failed to register hardware to GUI");
-                led_hardware_destroy(h);
-                return FALSE;
-        }
-
-	/* register chain of hardware to gui */
-	LedChain *chain;
-	if((chain = led_hardware_get_chain(h)))
-	{
-		chain_register(chain);
-	}
-	
-	/* get last hardware node */
-	LedHardware *last = led_setup_get_hardware(setup_get_current());
-	if(!last)
-	{
-		/* first hardware in setup */
-		led_setup_set_hardware(setup_get_current(), h);
-	}
-	else
-	{
-		/* append to end of setup */
-		led_hardware_list_append(last, h);
-	}
+	/* add hardware to model */
+	return hardware_new(h);
         
-        /* create config */
-        /*if(!led_setup_create_from_hardware(setup_get_current(), h))
-                return FALSE;*/
-        
-
-        return hardware;
-
 }
 
 
@@ -166,7 +133,7 @@ void setup_destroy_hardware(NiftyconfHardware *hw)
         LedHardware *h = hardware_niftyled(hw);
         
         /* unregister hardware */
-        hardware_unregister(hw);
+        hardware_unregister_from_gui(hw);
 
 	/* remove hardware from setup? */
 	if(led_setup_get_hardware(_setup) == h)
@@ -196,7 +163,7 @@ gboolean setup_new_chain_of_tile(NiftyconfTile *parent,
         //        return FALSE;
         
         /* register chain to gui */
-        chain_register(n);
+        chain_register_to_gui(n);
 
         return TRUE;
 }
@@ -218,7 +185,7 @@ void setup_destroy_chain_of_tile(NiftyconfTile *tile)
         
         /* unregister from gui */
         NiftyconfChain *chain = led_chain_get_privdata(c);
-        chain_unregister(chain);
+        chain_unregister_from_gui(chain);
         //led_settings_chain_unlink(setup_get_current(), c);
         led_chain_destroy(c);
 }
@@ -247,7 +214,7 @@ gboolean setup_new_tile_of_hardware(NiftyconfHardware *parent)
         }
 
         /* register new tile to gui */
-        tile_register(n);
+        tile_register_to_gui(n);
 
         /* create config */
         //if(!led_settings_create_from_tile(setup_get_current(), n))
@@ -269,7 +236,7 @@ gboolean setup_new_tile_of_tile(NiftyconfTile *parent)
         led_tile_append_child(tile, n);
 
         /* register new tile to gui */
-        tile_register(n);
+        tile_register_to_gui(n);
 
         /* create config */
         //if(!led_settings_create_from_tile(setup_get_current(), n))
@@ -288,7 +255,7 @@ void setup_destroy_tile(NiftyconfTile *tile)
         LedTile *t = tile_niftyled(tile);
         
         /* unregister from gui */
-        tile_unregister(tile);
+        tile_unregister_from_gui(tile);
         /* unregister from settings */
         //led_settings_tile_unlink(setup_get_current(), t);
         /* destroy with all children */
@@ -321,14 +288,14 @@ gboolean setup_load(gchar *filename)
             h = led_hardware_list_get_next(h))
         {
                 /* create new hardware element */
-                if(!hardware_register(h))
+                if(!hardware_register_to_gui(h))
                 {
                         g_warning("failed to allocate new hardware element");
                         return FALSE;
                 }
 
                 /* create chain of this hardware */
-                if(!chain_register(led_hardware_get_chain(h)))
+                if(!chain_register_to_gui(led_hardware_get_chain(h)))
                 {
                         g_warning("failed to allocate new chain element");
                         return FALSE;
@@ -340,7 +307,7 @@ gboolean setup_load(gchar *filename)
                     t;
                     t = led_tile_list_get_next(t))
                 {
-                        if(!tile_register(t))
+                        if(!tile_register_to_gui(t))
                         {
                                 g_warning("failed to allocate new tile element");
                                 return FALSE;
@@ -376,11 +343,11 @@ void setup_cleanup()
                     t;
                     t = led_tile_list_get_next(t))
                 {
-                        tile_unregister(led_tile_get_privdata(t));
+                        tile_unregister_from_gui(led_tile_get_privdata(t));
                 }
                 
-                chain_unregister(led_chain_get_privdata(led_hardware_get_chain(h)));
-                hardware_unregister(led_hardware_get_privdata(h));
+                chain_unregister_from_gui(led_chain_get_privdata(led_hardware_get_chain(h)));
+                hardware_unregister_from_gui(led_hardware_get_privdata(h));
         }
         
         led_setup_destroy(_setup);

@@ -53,10 +53,10 @@ typedef struct _NiftyconfChain NiftyconfChain;
 
 /* GUI model functions */
 gboolean                chain_init();
-NiftyconfChain *        chain_register(LedChain *c);
-void                    chain_unregister(NiftyconfChain *c);
-void                    chain_register_leds(NiftyconfChain *c);
-void                    chain_unregister_leds(NiftyconfChain *c);
+NiftyconfChain *        chain_register_to_gui(LedChain *c);
+void                    chain_unregister_from_gui(NiftyconfChain *c);
+void                    chain_register_leds_to_gui(NiftyconfChain *c);
+void                    chain_unregister_leds_from_gui(NiftyconfChain *c);
 
 
 /* GUI functions */

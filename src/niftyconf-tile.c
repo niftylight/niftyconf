@@ -129,7 +129,7 @@ LedTile *tile_niftyled(NiftyconfTile *t)
 /**
  * allocate new element
  */
-NiftyconfTile *tile_register(LedTile *t)
+NiftyconfTile *tile_register_to_gui(LedTile *t)
 {
         /* also allocate all children */
         LedTile *tile;
@@ -137,14 +137,14 @@ NiftyconfTile *tile_register(LedTile *t)
             tile;
             tile = led_tile_list_get_next(tile))
         {
-                tile_register(tile);
+                tile_register_to_gui(tile);
         }
 
         /* allocate chain if this tile has one */
         LedChain *c;
         if((c = led_tile_get_chain(t)))
         {
-                chain_register(c);
+                chain_register_to_gui(c);
         }
         
         NiftyconfTile *n;
@@ -170,7 +170,7 @@ NiftyconfTile *tile_register(LedTile *t)
 /**
  * free element
  */
-void tile_unregister(NiftyconfTile *t)
+void tile_unregister_from_gui(NiftyconfTile *t)
 {
         if(!t)
                 return;
@@ -183,7 +183,7 @@ void tile_unregister(NiftyconfTile *t)
                     tile;
                     tile = led_tile_list_get_next(tile))
                 {
-                        tile_unregister(led_tile_get_privdata(tile));
+                        tile_unregister_from_gui(led_tile_get_privdata(tile));
                 }
                 
                 led_tile_set_privdata(t->t, NULL);

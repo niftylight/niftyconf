@@ -110,7 +110,7 @@ LedChain *chain_niftyled(NiftyconfChain *c)
 
 
 /** unregister all LEDs of a chain */
-void chain_unregister_leds(NiftyconfChain *c)
+void chain_unregister_leds_from_gui(NiftyconfChain *c)
 {
         if(!c)
                 NFT_LOG_NULL();
@@ -121,25 +121,25 @@ void chain_unregister_leds(NiftyconfChain *c)
                 LedCount i;
                 for(i = 0; i < led_chain_get_ledcount(c->c); i++)
                 {
-                        led_unregister(led_get_privdata(led_chain_get_nth(c->c, i)));
+                        led_unregister_from_gui(led_get_privdata(led_chain_get_nth(c->c, i)));
                 }
         }
 }
 
 /** register all LEDs of a chain */
-void chain_register_leds(NiftyconfChain *c)
+void chain_register_leds_to_gui(NiftyconfChain *c)
 {
         /* allocate all LEDs of chain */
         LedCount i;
         for(i = 0; i < led_chain_get_ledcount(c->c); i++)
         {
-                led_register(led_chain_get_nth(c->c, i));
+                led_register_to_gui(led_chain_get_nth(c->c, i));
         }
 }
 
 
 /** allocate new element */
-NiftyconfChain *chain_register(LedChain *c)
+NiftyconfChain *chain_register_to_gui(LedChain *c)
 {
         NiftyconfChain *n;
         if(!(n = calloc(1, sizeof(NiftyconfChain))))
@@ -154,19 +154,19 @@ NiftyconfChain *chain_register(LedChain *c)
         /* register descriptor as niftyled privdata */
         led_chain_set_privdata(c, n);
 
-        chain_register_leds(n);
+        chain_register_leds_to_gui(n);
 
 	return n;
 }
 
 
 /** free element */
-void chain_unregister(NiftyconfChain *c)
+void chain_unregister_from_gui(NiftyconfChain *c)
 {
         if(!c)
                 return;
 
-        chain_unregister_leds(c);
+        chain_unregister_leds_from_gui(c);
         led_chain_set_privdata(c->c, NULL);
 
         free(c);

@@ -263,7 +263,7 @@ void on_spinbutton_chain_ledcount_changed(GtkSpinButton *s, gpointer u)
         setup_ledlist_clear();
         
         /* unregister all LEDs from chain */
-        chain_unregister_leds(current_chain);
+        chain_unregister_leds_from_gui(current_chain);
 
         /* set new ledcount */
         if(!led_chain_set_ledcount(chain, ledcount))
@@ -279,7 +279,7 @@ void on_spinbutton_chain_ledcount_changed(GtkSpinButton *s, gpointer u)
         }
 
         /* re-register (less or more) LEDs in chain */
-        chain_register_leds(current_chain);
+        chain_register_leds_to_gui(current_chain);
                 
         /* refresh view */
         setup_ledlist_refresh(current_chain);

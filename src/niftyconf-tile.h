@@ -53,8 +53,8 @@ typedef struct _NiftyconfTile NiftyconfTile;
 
 /* GUI model functions */
 gboolean        tile_init();
-NiftyconfTile * tile_register(LedTile *t);
-void            tile_unregister(NiftyconfTile *t);
+NiftyconfTile * tile_register_to_gui(LedTile *t);
+void            tile_unregister_from_gui(NiftyconfTile *t);
 
 /* GUI functions */
 gboolean        tile_tree_get_collapsed(NiftyconfTile *t);

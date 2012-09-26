@@ -43,6 +43,9 @@
 
 #include <gtk/gtk.h>
 #include "niftyconf-hardware.h"
+#include "niftyconf-chain.h"
+#include "niftyconf-setup.h"
+#include "niftyconf-log.h"
 
 
 
@@ -131,7 +134,7 @@ LedHardware *hardware_niftyled(NiftyconfHardware *h)
 /**
  * allocate new hardware element for GUI
  */
-NiftyconfHardware *hardware_register(LedHardware *h)
+NiftyconfHardware *hardware_register_to_gui(LedHardware *h)
 {
         NiftyconfHardware *n;
         if(!(n = calloc(1, sizeof(NiftyconfHardware))))
@@ -159,7 +162,7 @@ NiftyconfHardware *hardware_register(LedHardware *h)
 /**
  * free hardware element
  */
-void hardware_unregister(NiftyconfHardware *h)
+void hardware_unregister_from_gui(NiftyconfHardware *h)
 {
         if(!h)
                 return;
@@ -168,6 +171,44 @@ void hardware_unregister(NiftyconfHardware *h)
                 led_hardware_set_privdata(h->h, NULL);
         
         free(h);
+}
+
+
+/**
+ * add hardware to model
+ */
+NiftyconfHardware *hardware_new(LedHardware *h)
+{	
+        /* register hardware to gui */
+        NiftyconfHardware *hardware;
+        if(!(hardware = hardware_register_to_gui(h)))
+        {
+                log_alert_show("Failed to register hardware to GUI");
+                led_hardware_destroy(h);
+                return NULL;
+        }
+
+	/* register chain of hardware to gui */
+	LedChain *chain;
+	if((chain = led_hardware_get_chain(h)))
+	{
+		chain_register_to_gui(chain);
+	}
+	
+	/* get last hardware node */
+	LedHardware *last = led_setup_get_hardware(setup_get_current());
+	if(!last)
+	{
+		/* first hardware in setup */
+		led_setup_set_hardware(setup_get_current(), h);
+	}
+	else
+	{
+		/* append to end of setup */
+		led_hardware_list_append(last, h);
+	}
+
+	return hardware;
 }
 
 

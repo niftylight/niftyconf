@@ -103,7 +103,7 @@ Led *led_niftyled(NiftyconfLed *l)
 /**
  * allocate new element
  */
-NiftyconfLed *led_register(Led *l)
+NiftyconfLed *led_register_to_gui(Led *l)
 {
         NiftyconfLed *n;
         if(!(n = calloc(1, sizeof(NiftyconfLed))))
@@ -125,7 +125,7 @@ NiftyconfLed *led_register(Led *l)
 /**
  * free element
  */
-void led_unregister(NiftyconfLed *l)
+void led_unregister_from_gui(NiftyconfLed *l)
 {
         if(!l)
                 return;
