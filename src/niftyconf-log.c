@@ -159,6 +159,24 @@ void log_show(gboolean visible)
         gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);        
 }
 
+/** 
+ * build a string with valid loglevels 
+ */
+const char *log_loglevels()
+{
+        static char s[1024];
+
+        NftLoglevel i;
+        for(i = L_MAX+1; i<L_MIN-1; i++)
+        {
+                strcat(s, nft_log_level_to_string(i));
+                if(i<L_MIN-2)
+                        strncat(s, ", ", sizeof(s));
+        }
+
+        return (const char *) s;
+}
+
 
 /**
  * initialize module
@@ -191,8 +209,8 @@ gboolean log_init()
 /** close main window */
 gboolean on_log_window_delete_event(GtkWidget *w, GdkEvent *e)
 {
-        log_show(false);
-        niftyconf_menu_logwindow_set_active(FALSE);
+        log_show(FALSE);
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(niftyconf_ui("item_log_win")), FALSE);
         return TRUE;
 }
 

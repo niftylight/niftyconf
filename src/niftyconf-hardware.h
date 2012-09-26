@@ -54,8 +54,12 @@ typedef struct _NiftyconfHardware NiftyconfHardware;
 /* GUI model functions */
 gboolean                hardware_init();
 NiftyconfHardware *     hardware_register_to_gui(LedHardware *h);
+NiftyconfHardware *	hardware_register_to_gui_and_niftyled(LedHardware *h);
 void                    hardware_unregister_from_gui(NiftyconfHardware *h);
-NiftyconfHardware *	hardware_new(LedHardware *h);
+NiftyconfHardware *	hardware_new(const char *name, const char *family, 
+                                      const char *id, LedCount ledcount, 
+                                      const char *pixelformat);
+void            	hardware_destroy(NiftyconfHardware *hw);
 
 /* GUI functions */
 gboolean                hardware_tree_get_highlighted(NiftyconfHardware *h);

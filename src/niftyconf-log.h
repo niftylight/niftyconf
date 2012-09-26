@@ -46,6 +46,7 @@
 
 
 gboolean 	log_init();
+const char *	log_loglevels();
 void            log_show(gboolean visible);
 void		log_alert_show(char *message);
 

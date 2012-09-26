@@ -75,6 +75,12 @@ static LedSetup *_setup;
 /******************************************************************************
  ******************************************************************************/
 
+/** getter for GtkBuilder of this module */
+GObject *setup_ui(const char *n)
+{
+	return UI(n);
+}
+
 /** getter for current setup */
 LedSetup *setup_get_current()
 {
@@ -93,173 +99,6 @@ LedPrefs *setup_get_prefs()
 GtkWidget *setup_get_widget()
 {
         return GTK_WIDGET(UI("box"));
-}
-
-/** show "add hardware" window */
-void setup_show_add_hardware_window(bool visible)
-{	
-	/* show window */
-	gtk_widget_set_visible(GTK_WIDGET(UI("hardware_add_window")), visible);
-}
-
-/** create new hardware element in setup */
-NiftyconfHardware *setup_new_hardware(const char *name, const char *family, 
-                                      const char *id, LedCount ledcount, 
-                                      const char *pixelformat)
-{
-        /* create new niftyled hardware */
-        LedHardware *h;
-        if(!(h = led_hardware_new(name, family)))
-        {
-                log_alert_show("Failed to create new hardware");
-                return FALSE;
-        }
-
-	/* try to initialize hardware */
-	if(!led_hardware_init(h, id, ledcount, pixelformat))
-	{
-		log_alert_show("Failed to initialize new hardware. Not connected?");
-	}
-	
-	/* add hardware to model */
-	return hardware_new(h);
-        
-}
-
-
-/** remove hardware from current setup */
-void setup_destroy_hardware(NiftyconfHardware *hw)
-{
-        LedHardware *h = hardware_niftyled(hw);
-        
-        /* unregister hardware */
-        hardware_unregister_from_gui(hw);
-
-	/* remove hardware from setup? */
-	if(led_setup_get_hardware(_setup) == h)
-		led_setup_set_hardware(_setup, NULL);
-	
-        //led_settings_hardware_unlink(setup_get_current(), h);
-        led_hardware_destroy(h);
-}
-
-
-/** create new chain for tile */
-gboolean setup_new_chain_of_tile(NiftyconfTile *parent, 
-                                  LedCount length, 
-                                  const char *pixelformat)
-{
-        /** create new chain @todo select format */
-        LedChain *n;
-        if(!(n = led_chain_new(length, pixelformat)))
-                return FALSE;
-        
-        /* attach chain to tile */
-        LedTile *tile = tile_niftyled(parent);
-        led_tile_set_chain(tile, n);
-
-        /* create config */
-        //if(!led_settings_create_from_chain(setup_get_current(), n))
-        //        return FALSE;
-        
-        /* register chain to gui */
-        chain_register_to_gui(n);
-
-        return TRUE;
-}
-
-
-/** remove chain from current setup */
-void setup_destroy_chain_of_tile(NiftyconfTile *tile)
-{
-        /* get niftyled tile */
-        LedTile *t = tile_niftyled(tile);
-        
-        /* if this tile has no chain, silently succeed */
-        LedChain *c;
-        if(!(c = led_tile_get_chain(t)))
-                return;
-
-        /* unregister from tile */
-        led_tile_set_chain(t, NULL);
-        
-        /* unregister from gui */
-        NiftyconfChain *chain = led_chain_get_privdata(c);
-        chain_unregister_from_gui(chain);
-        //led_settings_chain_unlink(setup_get_current(), c);
-        led_chain_destroy(c);
-}
-
-
-/** create new tile for hardware parent */
-gboolean setup_new_tile_of_hardware(NiftyconfHardware *parent)
-{
-        /* create new tile */
-        LedTile *n;
-        if(!(n = led_tile_new()))
-                return FALSE;
-
-        /* get last tile of this hardware */
-        LedHardware *h = hardware_niftyled(parent);
-        
-        /* does hw already have a tile? */
-        LedTile *tile;
-        if(!(tile = led_hardware_get_tile(h)))
-        {
-                led_hardware_set_tile(h, n);
-        }
-        else
-        {
-                led_tile_list_append_head(tile, n);
-        }
-
-        /* register new tile to gui */
-        tile_register_to_gui(n);
-
-        /* create config */
-        //if(!led_settings_create_from_tile(setup_get_current(), n))
-        //        return FALSE;
-        
-        return TRUE;
-}
-
-
-/** create new tile for tile parent */
-gboolean setup_new_tile_of_tile(NiftyconfTile *parent)
-{
-        /* create new tile */
-        LedTile *n;
-        if(!(n = led_tile_new()))
-                return FALSE;
-
-        LedTile *tile = tile_niftyled(parent);
-        led_tile_append_child(tile, n);
-
-        /* register new tile to gui */
-        tile_register_to_gui(n);
-
-        /* create config */
-        //if(!led_settings_create_from_tile(setup_get_current(), n))
-        //        return FALSE;
-        
-        return TRUE;
-}
-
-
-/** remove tile from current setup */
-void setup_destroy_tile(NiftyconfTile *tile)
-{
-        if(!tile)
-                NFT_LOG_NULL();
-        
-        LedTile *t = tile_niftyled(tile);
-        
-        /* unregister from gui */
-        tile_unregister_from_gui(tile);
-        /* unregister from settings */
-        //led_settings_tile_unlink(setup_get_current(), t);
-        /* destroy with all children */
-        led_tile_destroy(t);
 }
 
 
@@ -495,7 +334,7 @@ void on_add_hardware_add_clicked(GtkButton *b, gpointer u)
 {
 	/* add new hardware */
 	NiftyconfHardware *h;
-        if(!(h = setup_new_hardware(
+        if(!(h = hardware_new(
                   gtk_entry_get_text(GTK_ENTRY(UI("hardware_add_name_entry"))),
                   gtk_combo_box_get_active_text(GTK_COMBO_BOX(UI("hardware_add_plugin_combobox"))),
 		  gtk_entry_get_text(GTK_ENTRY(UI("hardware_add_id_entry"))),
@@ -504,7 +343,7 @@ void on_add_hardware_add_clicked(GtkButton *b, gpointer u)
 		return;
 		
 	/* hide window */
-	setup_show_add_hardware_window(false);
+	gtk_widget_set_visible(GTK_WIDGET(setup_ui("hardware_add_window")), FALSE);
 	
         /** @todo refresh our menu */
         
@@ -516,7 +355,7 @@ void on_add_hardware_add_clicked(GtkButton *b, gpointer u)
 /** add hardware "cancel" clicked */
 void on_add_hardware_cancel_clicked(GtkButton *b, gpointer u)
 {
-	setup_show_add_hardware_window(false);
+	gtk_widget_set_visible(GTK_WIDGET(setup_ui("hardware_add_window")), FALSE);
 }
 
 /** add hardware "pixelformat" changed */

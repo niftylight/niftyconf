@@ -45,6 +45,7 @@
 #define _NIFTYCONF_TILE_H
 
 #include <niftyled.h>
+#include "niftyconf-hardware.h"
 
 
 typedef struct _NiftyconfTile NiftyconfTile;
@@ -55,6 +56,10 @@ typedef struct _NiftyconfTile NiftyconfTile;
 gboolean        tile_init();
 NiftyconfTile * tile_register_to_gui(LedTile *t);
 void            tile_unregister_from_gui(NiftyconfTile *t);
+gboolean       	tile_of_hardware_new(NiftyconfHardware *parent);
+gboolean       	tile_of_tile_new(NiftyconfTile *parent);
+void           	tile_destroy(NiftyconfTile *tile);
+
 
 /* GUI functions */
 gboolean        tile_tree_get_collapsed(NiftyconfTile *t);

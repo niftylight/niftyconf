@@ -45,7 +45,7 @@
 #define _NIFTYCONF_CHAIN_H
 
 #include <niftyled.h>
-
+#include "niftyconf-tile.h"
 
 typedef struct _NiftyconfChain NiftyconfChain;
 
@@ -57,6 +57,10 @@ NiftyconfChain *        chain_register_to_gui(LedChain *c);
 void                    chain_unregister_from_gui(NiftyconfChain *c);
 void                    chain_register_leds_to_gui(NiftyconfChain *c);
 void                    chain_unregister_leds_from_gui(NiftyconfChain *c);
+gboolean        	chain_of_tile_new(NiftyconfTile *parent, 
+                                  LedCount length, 
+                                  const char *pixelformat);
+void            	chain_of_tile_destroy(NiftyconfTile *tile);
 
 
 /* GUI functions */

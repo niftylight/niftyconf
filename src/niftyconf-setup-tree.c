@@ -163,7 +163,7 @@ static void _foreach_remove_hardware(NIFTYLED_TYPE t, gpointer *e)
         if(t != LED_HARDWARE_T)
                 return;
 
-        setup_destroy_hardware((NiftyconfHardware *) e);
+        hardware_destroy((NiftyconfHardware *) e);
 }
 
 
@@ -173,7 +173,7 @@ static void _foreach_remove_tile(NIFTYLED_TYPE t, gpointer *e)
         if(t != LED_TILE_T)
                 return;
 
-        setup_destroy_tile((NiftyconfTile *) e);
+        tile_destroy((NiftyconfTile *) e);
 }
 
 
@@ -184,7 +184,7 @@ static void _foreach_remove_chain(NIFTYLED_TYPE type, gpointer *e)
         if(type != LED_TILE_T)
                 return;
 
-        setup_destroy_chain_of_tile((NiftyconfTile *) e);
+        chain_of_tile_destroy((NiftyconfTile *) e);
 }
 
 
@@ -291,13 +291,13 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer *e)
                 case LED_HARDWARE_T:
                 {
                         /* enable hardware related menus */
-                        niftyconf_menu_hardware_remove_set_sensitive(TRUE);
-                        niftyconf_menu_tile_add_set_sensitive(TRUE);
+			gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_hardware_remove")), TRUE);
+                        gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_tile_add")), TRUE);
 
                         /* disable non-hardware related menus */
-                        niftyconf_menu_tile_remove_set_sensitive(FALSE);
-                        niftyconf_menu_chain_add_set_sensitive(FALSE);
-                        niftyconf_menu_chain_remove_set_sensitive(FALSE);
+			gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_tile_remove")), FALSE);                        
+                        gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_chain_add")), FALSE);
+                        gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_chain_remove")), FALSE);
 
                         /* highlight hardware */
                         hardware_tree_set_highlighted((NiftyconfHardware *) e, TRUE);
@@ -317,19 +317,18 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer *e)
                 case LED_TILE_T:
                 {
                         /* enable tile related menus */
-                        niftyconf_menu_tile_remove_set_sensitive(TRUE);
-                        niftyconf_menu_tile_add_set_sensitive(TRUE);
+			gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_tile_remove")), TRUE);
+                        gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_tile_add")), TRUE);
 
                         /* disable non-tile related menus */
-                        niftyconf_menu_hardware_remove_set_sensitive(FALSE);
-                        niftyconf_menu_chain_add_set_sensitive(
-                                                (gboolean) !led_tile_get_chain(
+			gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_hardware_remove")), FALSE);                        
+			gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_chain_add")), (gboolean) !led_tile_get_chain(
                                                         tile_niftyled(
                                                         (NiftyconfTile *) e)));
-                        niftyconf_menu_chain_remove_set_sensitive(
-                                                (gboolean) led_tile_get_chain(
+                        gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_chain_remove")), (gboolean) led_tile_get_chain(
                                                         tile_niftyled(
                                                         (NiftyconfTile *) e)));
+                        
 
 
                         /* highlight tile */
@@ -350,11 +349,11 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer *e)
                 case LED_CHAIN_T:
                 {
                         /* disable non-chain related menus */
-                        niftyconf_menu_hardware_remove_set_sensitive(FALSE);
-                        niftyconf_menu_tile_add_set_sensitive(FALSE);
-                        niftyconf_menu_tile_remove_set_sensitive(FALSE);
-                        niftyconf_menu_chain_add_set_sensitive(FALSE);
-                        niftyconf_menu_chain_remove_set_sensitive(FALSE);
+			gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_hardware_remove")), FALSE);
+			gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_tile_add")), FALSE);			
+			gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_tile_remove")), FALSE);                        
+                        gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_chain_add")), FALSE);
+                        gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_chain_remove")), FALSE);
 
                         /* highlight chain */
                         chain_tree_set_highlighted((NiftyconfChain *) e, TRUE);
@@ -846,7 +845,7 @@ gboolean on_popup_add_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
                 return FALSE;
 
 	/* show "add hardware" window */
-        setup_show_add_hardware_window(true);
+        gtk_widget_set_visible(GTK_WIDGET(setup_ui("hardware_add_window")), TRUE);
 
         return TRUE;
 }
@@ -870,14 +869,14 @@ gboolean on_popup_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
                 /* currently selected element is a hardware-node */
                 case LED_HARDWARE_T:
                 {
-                        setup_new_tile_of_hardware(current_hw);
+                        tile_of_hardware_new(current_hw);
                         break;
                 }
 
                 /* currently selected element is a tile-node */
                 case LED_TILE_T:
                 {
-                        setup_new_tile_of_tile(current_tile);
+                        tile_of_tile_new(current_tile);
                         break;
                 }
 
@@ -910,7 +909,7 @@ gboolean on_popup_add_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
                 return FALSE;
 
         /* add new chain */
-        setup_new_chain_of_tile(current_tile, 0, "RGB u8");
+       chain_of_tile_new(current_tile, 0, "RGB u8");
 
         /* refresh tree */
         setup_tree_refresh();

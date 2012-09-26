@@ -173,6 +173,53 @@ void chain_unregister_from_gui(NiftyconfChain *c)
 }
 
 
+/** create new chain for tile */
+gboolean chain_of_tile_new(NiftyconfTile *parent, 
+                                  LedCount length, 
+                                  const char *pixelformat)
+{
+        /** create new chain @todo select format */
+        LedChain *n;
+        if(!(n = led_chain_new(length, pixelformat)))
+                return FALSE;
+        
+        /* attach chain to tile */
+        LedTile *tile = tile_niftyled(parent);
+        led_tile_set_chain(tile, n);
+
+        /* create config */
+        //if(!led_settings_create_from_chain(setup_get_current(), n))
+        //        return FALSE;
+        
+        /* register chain to gui */
+        chain_register_to_gui(n);
+
+        return TRUE;
+}
+
+
+/** remove chain from current setup */
+void chain_of_tile_destroy(NiftyconfTile *tile)
+{
+        /* get niftyled tile */
+        LedTile *t = tile_niftyled(tile);
+        
+        /* if this tile has no chain, silently succeed */
+        LedChain *c;
+        if(!(c = led_tile_get_chain(t)))
+                return;
+
+        /* unregister from tile */
+        led_tile_set_chain(t, NULL);
+        
+        /* unregister from gui */
+        NiftyconfChain *chain = led_chain_get_privdata(c);
+        chain_unregister_from_gui(chain);
+        //led_settings_chain_unlink(setup_get_current(), c);
+        led_chain_destroy(c);
+}
+
+
 /** initialize chain module */
 gboolean chain_init()
 {

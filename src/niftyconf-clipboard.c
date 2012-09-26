@@ -97,7 +97,7 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
                         /* remove element? */
                         if(cut)
                         {
-				setup_destroy_hardware((NiftyconfHardware *) e);
+				hardware_destroy((NiftyconfHardware *) e);
                                 setup_tree_refresh();
                         }
                         break;
@@ -113,7 +113,7 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
                         /* remove element? */
                         if(cut)
                         {
-				setup_destroy_tile((NiftyconfTile *) e);
+				tile_destroy((NiftyconfTile *) e);
                                 setup_tree_refresh();
                         }
                         break;
@@ -136,7 +136,7 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 				/* get parent tile of this chain */
 				LedTile *t = led_chain_get_parent_tile(c);
 				NiftyconfTile *tile = led_tile_get_privdata(t);
-				setup_destroy_chain_of_tile(tile);
+				chain_of_tile_destroy(tile);
                                 setup_tree_refresh();
                         }
                         break;
@@ -212,7 +212,7 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 		
 		/* hardware nodes will always be pasted top-level, no matter
 		   what is currently selected */
-		if(!hardware_new(h))
+		if(!hardware_register_to_gui_and_niftyled(h))
 		{
 			log_alert_show("Failed to paste Hardware node");
 			goto cpe_exit;

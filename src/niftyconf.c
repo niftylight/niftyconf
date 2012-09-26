@@ -58,7 +58,7 @@
 
 
 
-/** GtkBuilder for this module */
+/** GtkBuilder for this module (check data/ directory) */
 static GtkBuilder *_ui;
 
 
@@ -67,27 +67,13 @@ static GtkBuilder *_ui;
  ******************************************************************************/
 
 
-/** build a string with valid loglevels */
-static char *_loglevels()
-{
-        static char s[1024];
 
-        NftLoglevel i;
-        for(i = L_MAX+1; i<L_MIN-1; i++)
-        {
-                strcat(s, nft_log_level_to_string(i));
-                if(i<L_MIN-2)
-                        strncat(s, ", ", sizeof(s));
-        }
-
-        return s;
-}
 
 /** parse commandline arguments */
 static gboolean _parse_cmdline_args(int argc, char *argv[], gchar **setupfile)
 {
         static gchar loglevelmsg[1024];
-        g_snprintf(loglevelmsg, sizeof(loglevelmsg), "define loglevel (%s)", _loglevels());
+        g_snprintf(loglevelmsg, sizeof(loglevelmsg), "define loglevel (%s)", log_loglevels());
         static gchar *loglevel;
         static gchar *sf;
         static GOptionEntry entries[] =
@@ -144,52 +130,10 @@ static gboolean _parse_cmdline_args(int argc, char *argv[], gchar **setupfile)
 /******************************************************************************
  ******************************************************************************/
 
-/** wrapper to access widget */
-void niftyconf_menu_logwindow_set_active(gboolean active)
+/** getter for GtkBuilder of this module */
+GObject *niftyconf_ui(const char *n)
 {
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(UI("item_log_win")), active);
-}
-
-
-/** wrapper to access widget */
-void niftyconf_menu_hardware_add_set_sensitive(gboolean active)
-{
-        gtk_widget_set_sensitive(GTK_WIDGET(UI("item_hardware_add")), active);
-}
-
-
-/** wrapper to access widget */
-void niftyconf_menu_hardware_remove_set_sensitive(gboolean active)
-{
-        gtk_widget_set_sensitive(GTK_WIDGET(UI("item_hardware_remove")), active);
-}
-
-
-/** wrapper to access widget */
-void niftyconf_menu_tile_add_set_sensitive(gboolean active)
-{
-        gtk_widget_set_sensitive(GTK_WIDGET(UI("item_tile_add")), active);
-}
-
-
-/** wrapper to access widget */
-void niftyconf_menu_tile_remove_set_sensitive(gboolean active)
-{
-        gtk_widget_set_sensitive(GTK_WIDGET(UI("item_tile_remove")), active);
-}
-
-
-/** wrapper to access widget */
-void niftyconf_menu_chain_add_set_sensitive(gboolean active)
-{
-        gtk_widget_set_sensitive(GTK_WIDGET(UI("item_chain_add")), active);
-}
-
-
-/** wrapper to access widget */
-void niftyconf_menu_chain_remove_set_sensitive(gboolean active)
-{
-        gtk_widget_set_sensitive(GTK_WIDGET(UI("item_chain_remove")), active);
+	return UI(n);
 }
 
 
@@ -279,7 +223,7 @@ gboolean on_niftyconf_window_delete_event(GtkWidget *w, GdkEvent *e)
 /** menuitem "quit" selected */
 void on_niftyconf_menu_quit_activate(GtkMenuItem *i, gpointer d)
 {
-        setup_cleanup();
+        setup_deinit();
         gtk_main_quit();
 }
 
@@ -295,7 +239,7 @@ void on_niftyconf_menu_add_hardware_activate(GtkWidget *i, gpointer u)
 	/* rebuild plugin combobox */
 	//gtk_combo_box_
 	/* show "add hardware" dialog */
-	setup_show_add_hardware_window(true);
+	gtk_widget_set_visible(GTK_WIDGET(setup_ui("hardware_add_window")), TRUE);
 }
 
 /** menu-entry selected */
@@ -312,14 +256,14 @@ void on_niftyconf_menu_add_tile_activate(GtkWidget *i, gpointer u)
                 /* currently selected element is a hardware-node */
                 case LED_HARDWARE_T:
                 {
-                        setup_new_tile_of_hardware((NiftyconfHardware *) e);
+                        tile_of_hardware_new((NiftyconfHardware *) e);
                         break;
                 }
 
                 /* currently selected element is a tile-node */
                 case LED_TILE_T:
                 {
-                        setup_new_tile_of_tile((NiftyconfTile *) e);
+                        tile_of_tile_new((NiftyconfTile *) e);
                         break;
                 }
 
@@ -348,7 +292,7 @@ void on_niftyconf_menu_add_chain_activate(GtkWidget *i, gpointer u)
                 return;
 
         /* add new chain */
-        setup_new_chain_of_tile((NiftyconfTile *) e, 3, "RGB u8");
+       chain_of_tile_new((NiftyconfTile *) e, 3, "RGB u8");
 
         /** @todo refresh our menu */
 
@@ -363,7 +307,7 @@ static void _foreach_remove_hardware(NIFTYLED_TYPE t, gpointer *e)
         if(t != LED_HARDWARE_T)
                 return;
 
-        setup_destroy_hardware((NiftyconfHardware *) e);
+        hardware_destroy((NiftyconfHardware *) e);
 }
 
 
@@ -386,7 +330,7 @@ static void _foreach_remove_tile(NIFTYLED_TYPE t, gpointer *e)
         if(t != LED_TILE_T)
                 return;
 
-        setup_destroy_tile((NiftyconfTile *) e);
+        tile_destroy((NiftyconfTile *) e);
 }
 
 
@@ -409,7 +353,7 @@ static void _foreach_remove_chain(NIFTYLED_TYPE type, gpointer *e)
         if(type != LED_TILE_T)
                 return;
 
-        setup_destroy_chain_of_tile((NiftyconfTile *) e);
+        chain_of_tile_destroy((NiftyconfTile *) e);
 }
 
 

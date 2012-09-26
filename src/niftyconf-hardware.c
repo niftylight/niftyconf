@@ -177,7 +177,7 @@ void hardware_unregister_from_gui(NiftyconfHardware *h)
 /**
  * add hardware to model
  */
-NiftyconfHardware *hardware_new(LedHardware *h)
+NiftyconfHardware *hardware_register_to_gui_and_niftyled(LedHardware *h)
 {	
         /* register hardware to gui */
         NiftyconfHardware *hardware;
@@ -209,6 +209,52 @@ NiftyconfHardware *hardware_new(LedHardware *h)
 	}
 
 	return hardware;
+}
+
+
+/** 
+ * create new hardware element in setup 
+ */
+NiftyconfHardware *hardware_new(const char *name, const char *family, 
+                                      const char *id, LedCount ledcount, 
+                                      const char *pixelformat)
+{
+        /* create new niftyled hardware */
+        LedHardware *h;
+        if(!(h = led_hardware_new(name, family)))
+        {
+                log_alert_show("Failed to create new hardware");
+                return FALSE;
+        }
+
+	/* try to initialize hardware */
+	if(!led_hardware_init(h, id, ledcount, pixelformat))
+	{
+		log_alert_show("Failed to initialize new hardware. Not connected?");
+	}
+	
+	/* add hardware to model */
+	return hardware_register_to_gui_and_niftyled(h);
+        
+}
+
+
+/** 
+ * remove hardware from current setup 
+ */
+void hardware_destroy(NiftyconfHardware *hw)
+{
+        LedHardware *h = hardware_niftyled(hw);
+        
+        /* unregister hardware */
+        hardware_unregister_from_gui(hw);
+
+	/* remove hardware from setup? */
+	if(led_setup_get_hardware(setup_get_current()) == h)
+		led_setup_set_hardware(setup_get_current(), NULL);
+	
+        //led_settings_hardware_unlink(setup_get_current(), h);
+        led_hardware_destroy(h);
 }
 
 
