@@ -210,7 +210,7 @@ gboolean setup_new_tile_of_hardware(NiftyconfHardware *parent)
         }
         else
         {
-                led_tile_list_append(tile, n);
+                led_tile_list_append_head(tile, n);
         }
 
         /* register new tile to gui */

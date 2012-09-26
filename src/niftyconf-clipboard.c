@@ -207,7 +207,7 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 		if(!(h = led_prefs_hardware_from_node(setup_get_prefs(), n)))
 		{
 			log_alert_show("Failed to parse Hardware node from clipboard buffer");
-			return;
+			goto cpe_exit;
 		}
 		
 		/* hardware nodes will always be pasted top-level, no matter
@@ -215,32 +215,33 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 		if(!hardware_new(h))
 		{
 			log_alert_show("Failed to paste Hardware node");
-			return;
+			goto cpe_exit;
 		}
 	}
 
 	/* tile node? */
 	else if(led_prefs_is_tile_node(n))
 	{
- 		switch(parent_t)
+		/* create tile from prefs node */
+		LedTile *t;
+		if(!(t = led_prefs_tile_from_node(setup_get_prefs(), n)))
 		{
+			log_alert_show("Failed to parse Tile node from clipboard buffer");
+			goto cpe_exit;
+		}
+		
+ 		switch(parent_t)
+		{		
 			/* paste tile to hardware */
 			case LED_HARDWARE_T:
-			{
-				/* create tile from prefs node */
-				LedTile *t;
-				if(!(t = led_prefs_tile_from_node(setup_get_prefs(), n)))
-				{
-					log_alert_show("Failed to parse Tile node from clipboard buffer");
-					return;
-				}
-				
+			{				
 				/* parent hardware element */
 				LedHardware *h;
 				if(!(h = hardware_niftyled((NiftyconfHardware *) parent_element)))
 				{
 					log_alert_show("Failed to get Hardware node to paste to");
-					return;
+					led_tile_destroy(t);
+					goto cpe_exit;
 				}
 
 				/* does parent hardware already have a tile? */
@@ -249,8 +250,9 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 				{
 					if(!led_tile_list_append_head(pt, t))
 					{
-						log_alert_show("Failed to append tile to parent Hardware list of tiles");
-						return;
+						log_alert_show("Failed to append Tile to parent Hardware list of tiles");
+						led_tile_destroy(t);
+						goto cpe_exit;
 					}
 				}
 				/* parent hardware doesn't have a tile, yet */
@@ -258,24 +260,43 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 				{
 					if(!led_hardware_set_tile(h, t))
 					{
-						log_alert_show("Failed to set tile to parent Hardware");
-						return;
+						log_alert_show("Failed to set Tile to parent Hardware");
+						led_tile_destroy(t);
+						goto cpe_exit;
 					}
 				}
-				
+
 				break;
 			}
 
 			/* paste tile to tile */
 			case LED_TILE_T:
 			{
-				printf("-> tile -> tile\n");
+				/* parent tile element */
+				LedTile *pt;
+				if(!(pt = tile_niftyled((NiftyconfTile *) parent_element)))
+				{
+					log_alert_show("Failed to get Tile node to paste to");
+					led_tile_destroy(t);
+					goto cpe_exit;
+				}
+
+				/* append new tile to parent */
+				if(!led_tile_append_child(pt, t))
+				{
+					log_alert_show("Failed to append Tile to parent Tile");
+					led_tile_destroy(t);
+					goto cpe_exit;
+				}
 				break;
 			}
 
 			default:
 			{
-				log_alert_show("Tile nodes can only be pasted to Hardware or other Tile nodes");
+				log_alert_show("Tile nodes can only be pasted to Hardware or other Tiles");
+
+				/* destroy created tile */
+				led_tile_destroy(t);
 				break;
 			}
 		}
@@ -284,7 +305,60 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 	/* chain node? */
 	else if(led_prefs_is_chain_node(n))
 	{
+		switch(parent_t)
+		{
+			case LED_TILE_T:
+			{
+				/* parent tile element */
+				LedTile *pt;
+				if(!(pt = tile_niftyled((NiftyconfTile *) parent_element)))
+				{
+					log_alert_show("Failed to get Tile node to paste to");
+					goto cpe_exit;
+				}
 
+				/* does tile already have a chain? */
+				if(led_tile_get_chain(pt))
+				{
+					log_alert_show("Selected Ttile already has a Chain. Please remove that Chain first.");
+					goto cpe_exit;
+				}
+				
+				/* create chain from prefs node */
+				LedChain *c;
+				if(!(c = led_prefs_chain_from_node(setup_get_prefs(), n)))
+				{
+					log_alert_show("Failed to parse Chain node from clipboard buffer");
+					goto cpe_exit;
+				}
+
+				/* register new chain to GUI */
+				NiftyconfChain *chain;
+				if(!(chain = chain_register_to_gui(c)))
+				{
+					log_alert_show("Failed to register new Chain to GUI model");
+					led_chain_destroy(c);
+					goto cpe_exit;
+				}
+				
+				/* set chain to parent tile */
+				if(!(led_tile_set_chain(pt, c)))
+				{
+					log_alert_show("Failed to attach Chain to selected Tile");
+					chain_unregister_from_gui(chain);
+					led_chain_destroy(c);
+					goto cpe_exit;
+				}
+				
+				break;
+			}
+				
+			default:
+			{
+				log_alert_show("Chains can only be pasted into Tiles");
+				break;
+			}
+		}
 	}
 
 	/* unknown node? */
