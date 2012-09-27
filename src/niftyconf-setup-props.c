@@ -358,7 +358,7 @@ G_MODULE_EXPORT void on_spinbutton_tile_rotation_changed(GtkSpinButton *s, gpoin
         LedTile *tile = tile_niftyled(current_tile);
         
         /* set new value */
-        if(!led_tile_set_rotation(tile, (double) gtk_spin_button_get_value(s)*M_PI/180))
+        if(!led_tile_set_rotation(tile, (gtk_spin_button_get_value(s)*M_PI)/180))
         /* error background color */
         {
                 _widget_set_error_background(GTK_WIDGET(s), TRUE);
@@ -381,7 +381,7 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_x_changed(GtkSpinButton *s, gpoint
         LedTile *tile = tile_niftyled(current_tile);
         
         /* set new value */
-        if(!led_tile_set_pivot_x(tile, (double) gtk_spin_button_get_value(s)))
+        if(!led_tile_set_pivot_x(tile, gtk_spin_button_get_value(s)))
         /* error background color */
         {
                 _widget_set_error_background(GTK_WIDGET(s), TRUE);
@@ -405,7 +405,7 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_y_changed(GtkSpinButton *s, gpoint
         LedTile *tile = tile_niftyled(current_tile);
         
         /* set new value */
-        if(!led_tile_set_pivot_y(tile, (double) gtk_spin_button_get_value(s)))
+        if(!led_tile_set_pivot_y(tile, gtk_spin_button_get_value(s)))
         /* error background color */
         {
                 _widget_set_error_background(GTK_WIDGET(s), TRUE);
