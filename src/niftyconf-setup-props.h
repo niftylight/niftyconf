@@ -56,6 +56,7 @@ void		setup_props_deinit();
 GtkWidget *     setup_props_get_widget();
 
 /* GUI functions */
+void 		setup_props_hardware_initialized_image(gboolean is_initialized);
 void            setup_props_hardware_show(NiftyconfHardware *h);
 void            setup_props_tile_show(NiftyconfTile *t);
 void            setup_props_chain_show(NiftyconfChain *c);

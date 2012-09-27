@@ -44,6 +44,7 @@
 #include <math.h>
 #include <gtk/gtk.h>
 #include "niftyconf-ui.h"
+#include "niftyconf-log.h"
 #include "niftyconf-setup.h"
 #include "niftyconf-setup-tree.h"
 #include "niftyconf-setup-props.h"
@@ -107,6 +108,8 @@ void setup_props_hardware_show(NiftyconfHardware *h)
                 gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_id")), led_hardware_get_id(hardware));
                 gtk_widget_set_tooltip_text(GTK_WIDGET(UI("entry_hw_id")), led_hardware_plugin_get_id_example(hardware));
                 gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_hw_stride")), (gdouble) led_hardware_get_stride(hardware));
+		/* set button to right toggled state */
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(UI("togglebutton_initialized")), led_hardware_is_initialized(hardware));
         }
         
         gtk_widget_show(GTK_WIDGET(UI("frame_hardware")));
@@ -194,6 +197,14 @@ gboolean setup_props_init()
 void setup_props_deinit()
 {
 	g_object_unref(_ui);
+}
+
+/** show "hardware initialized" image */
+void setup_props_hardware_initialized_image(gboolean is_initialized)
+{
+	/* show correct image */
+	gtk_widget_set_visible(GTK_WIDGET(UI("image_initialized")), is_initialized);
+	gtk_widget_set_visible(GTK_WIDGET(UI("image_deinitialized")), !is_initialized);	
 }
 
 
@@ -479,4 +490,39 @@ G_MODULE_EXPORT void on_spinbutton_hardware_stride_changed(GtkSpinButton *s, gpo
         /* refresh view */
 
         
+}
+
+
+/** togglebutton toggled */
+G_MODULE_EXPORT void on_togglebutton_hardware_init_toggled(GtkToggleButton *b, gpointer u)
+{
+	LedHardware *h = hardware_niftyled(current_hw);
+	
+	/* initialize */
+	if(gtk_toggle_button_get_active(b))
+	{
+		/* initialize hardware */
+		LedChain *c = led_hardware_get_chain(h);
+		const gchar *id = gtk_entry_get_text(GTK_ENTRY(UI("entry_hw_id")));
+		LedCount ledcount = led_chain_get_ledcount(c);
+		const char *pixelformat = led_pixel_format_to_string(led_chain_get_format(c));
+		
+		if(!(led_hardware_init(h, id, ledcount, pixelformat)))
+		{
+			log_alert_show("Failed to initialize hardware.");
+			return;
+		}
+		
+		/* show correct image */
+		setup_props_hardware_initialized_image(TRUE);
+	}
+	/* deinitialize */
+	else
+	{
+		/* deinitialize hardware */
+		led_hardware_deinit(h);
+		
+		/* show correct image */
+		setup_props_hardware_initialized_image(FALSE);
+	}
 }
