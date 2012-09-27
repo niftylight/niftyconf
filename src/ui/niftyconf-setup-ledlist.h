@@ -41,31 +41,25 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _NIFTYCONF_SETUP_H
-#define _NIFTYCONF_SETUP_H
+#ifndef _NIFTYCONF_SETUP_LEDLIST_H
+#define _NIFTYCONF_SETUP_LEDLIST_H
 
-#include <niftyled.h>
-#include "niftyconf-tile.h"
-#include "niftyconf-chain.h"
-#include "niftyconf-hardware.h"
+#include "elements/niftyconf-chain.h"
 
 
 
 /* GUI model functions */
-gboolean        	setup_init();
-GtkWidget *     	setup_get_widget();
+gboolean                setup_ledlist_init();
+void			setup_ledlist_deinit();
+GtkWidget *             setup_ledlist_get_widget();
+
 
 /* GUI functions */
-gboolean        	setup_load(gchar *filename);
-void            	setup_cleanup();
-void 			setup_deinit();
-GObject *		setup_ui(const char *n);
+void                    setup_ledlist_refresh(NiftyconfChain *c);
+void                    setup_ledlist_clear();
 
 /* model functions */
-LedSetup *   		setup_get_current();
-LedPrefs *		setup_get_prefs();
 
 
 
-
-#endif /* _NIFTYCONF_SETUP_H */
+#endif /* _NIFTYCONF_SETUP_LEDLIST_H */

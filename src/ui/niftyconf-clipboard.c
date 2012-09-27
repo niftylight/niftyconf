@@ -43,13 +43,14 @@
 
 #include <niftyled.h>
 #include <gtk/gtk.h>
-#include "niftyconf-setup.h"
-#include "niftyconf-setup-tree.h"
-#include "niftyconf-hardware.h"
-#include "niftyconf-tile.h"
-#include "niftyconf-chain.h"
-#include "niftyconf-led.h"
-#include "niftyconf-log.h"
+#include "ui/niftyconf-setup.h"
+#include "ui/niftyconf-setup-tree.h"
+#include "ui/niftyconf-log.h"
+#include "elements/niftyconf-hardware.h"
+#include "elements/niftyconf-tile.h"
+#include "elements/niftyconf-chain.h"
+#include "elements/niftyconf-led.h"
+
 
 
 

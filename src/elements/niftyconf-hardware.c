@@ -42,10 +42,10 @@
  */
 
 #include <gtk/gtk.h>
-#include "niftyconf-hardware.h"
-#include "niftyconf-chain.h"
-#include "niftyconf-setup.h"
-#include "niftyconf-log.h"
+#include "elements/niftyconf-hardware.h"
+#include "elements/niftyconf-chain.h"
+#include "ui/niftyconf-setup.h"
+#include "ui/niftyconf-log.h"
 
 
 

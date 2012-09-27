@@ -42,10 +42,11 @@
  */
 
 #include <gtk/gtk.h>
-#include "niftyconf-ui.h"
-#include "niftyconf-led.h"
-#include "niftyconf-chain.h"
-#include "niftyconf-setup-props.h"
+#include "ui/niftyconf-ui.h"
+#include "ui/niftyconf-setup-props.h"
+#include "elements/niftyconf-led.h"
+#include "elements/niftyconf-chain.h"
+
 
 
 

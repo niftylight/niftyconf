@@ -4,18 +4,18 @@ bin_PROGRAMS = \
 
 niftyconf_SOURCES = \
 	niftyconf.c \
-	niftyconf-ui.c \
-	niftyconf-log.c \
-	niftyconf-clipboard.c \
-	niftyconf-info-hardware.c \
-	niftyconf-setup.c \
-	niftyconf-setup-props.c \
-	niftyconf-setup-tree.c \
-	niftyconf-setup-ledlist.c \
-	niftyconf-led.c \
-	niftyconf-chain.c \
-	niftyconf-tile.c \
-	niftyconf-hardware.c
+	ui/niftyconf-ui.c \
+	ui/niftyconf-log.c \
+	ui/niftyconf-clipboard.c \
+	ui/niftyconf-info-hardware.c \
+	ui/niftyconf-setup-props.c \
+	ui/niftyconf-setup-tree.c \
+	ui/niftyconf-setup-ledlist.c \
+	ui/niftyconf-setup.c \
+	elements/niftyconf-led.c \
+	elements/niftyconf-chain.c \
+	elements/niftyconf-tile.c \
+	elements/niftyconf-hardware.c
 
 
 niftyconf_INCLUDES = \

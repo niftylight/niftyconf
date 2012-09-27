@@ -43,7 +43,7 @@
 
 #include <gtk/gtk.h>
 #include "niftyconf-ui.h"
-#include "niftyconf-hardware.h"
+#include "elements/niftyconf-hardware.h"
 
 
 
