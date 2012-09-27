@@ -515,6 +515,9 @@ G_MODULE_EXPORT void on_togglebutton_hardware_init_toggled(GtkToggleButton *b, g
 		
 		/* show correct image */
 		setup_props_hardware_initialized_image(TRUE);
+
+		/* update ID (it might have changed) */
+		gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_id")), led_hardware_get_id(h));
 	}
 	/* deinitialize */
 	else
