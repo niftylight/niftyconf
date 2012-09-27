@@ -101,8 +101,50 @@ GtkWidget *setup_get_widget()
         return GTK_WIDGET(UI("box"));
 }
 
+/** save setup to file */
+gboolean setup_save(gchar *filename)
+{
+	LedSetup *s;
+	if(!(s = setup_get_current()))
+	{
+		log_alert_show("There is no setup to save, yet");
+		return FALSE;
+	}
 
-/** load new setup from XML file definition */
+		
+	if(!filename)
+	{
+		/* try to get current filename */
+		if(!(filename = (gchar *) led_prefs_current_filename(setup_get_prefs())))
+		{
+			/* show "save-as" dialog */
+			gtk_widget_show(GTK_WIDGET(UI("filechooserdialog_save")));
+			return FALSE;
+		}
+	}
+
+	NFT_LOG(L_INFO, "Saving setup to \"%s\"", filename);
+
+	/* create prefs-node from current setup */
+	LedPrefsNode *n;
+	if(!(n = led_prefs_setup_to_node(setup_get_prefs(), s)))
+	{
+		log_alert_show("Failed to create preferences from current setup.");
+		return FALSE;
+	}
+	
+	/* save */
+	if(!led_prefs_node_to_file(setup_get_prefs(), n, filename))
+	{
+		log_alert_show("Failed to save preferences to \"%s\"", filename);
+		return FALSE;
+	}
+
+	/* all went ok */
+	return TRUE;
+}
+
+/** load new setup from file */
 gboolean setup_load(gchar *filename)
 {
         /* load file */
@@ -306,27 +348,62 @@ G_MODULE_EXPORT void on_setup_menuitem_open_activate(GtkMenuItem *i, gpointer d)
 /** menuitem "save" selected */
 G_MODULE_EXPORT void on_setup_menuitem_save_activate(GtkMenuItem *i, gpointer d)
 {
-        
+        if(!setup_save(NULL))
+        {
+                NFT_LOG(L_ERROR, "Error while saving current setup.");
+                return;
+        }
 }
 
 
 /** menuitem "save as" selected */
 G_MODULE_EXPORT void on_setup_menuitem_save_as_activate(GtkMenuItem *i, gpointer d)
 {
-        
+	gtk_widget_show(GTK_WIDGET(UI("filechooserdialog_save")));
 }
+
+
+/** "save" button in filechooser clicked */
+G_MODULE_EXPORT void on_setup_save_save_clicked(GtkButton *b, gpointer u)
+{
+        char *filename;
+        if(!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(UI("filechooserdialog_save")))))
+	{
+		NFT_LOG(L_ERROR, "No filename received from dialog.");
+                return;
+	}
+	
+        if(!setup_save(filename))
+        {
+                NFT_LOG(L_ERROR, "Error while saving file \"%s\"", filename);
+                goto osssc_exit;
+        }
+        
+        gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_save")));
+
+osssc_exit:
+	g_free(filename);
+}
+
+
+/** "cancel" button in filechooser clicked */
+G_MODULE_EXPORT void on_setup_save_cancel_clicked(GtkButton *b, gpointer u)
+{
+	gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_save")));
+}
+
 
 /** "cancel" button in filechooser clicked */
 G_MODULE_EXPORT void on_setup_open_cancel_clicked(GtkButton *b, gpointer u)
 {
-        gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog")));
+        gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_load")));
 }
 
-/** open file */
+/** "open" button in filechooser clicked */
 G_MODULE_EXPORT void on_setup_open_clicked(GtkButton *b, gpointer u)
 {
         char *filename;
-        if(!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(UI("filechooserdialog")))))
+        if(!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(UI("filechooserdialog_load")))))
 	{
 		log_alert_show("No filename given?");
                 return;
@@ -335,10 +412,13 @@ G_MODULE_EXPORT void on_setup_open_clicked(GtkButton *b, gpointer u)
         if(!setup_load(filename))
         {
                 log_alert_show("Error while loading file \"%s\"", filename);
-                return;
+                goto osoc_exit;
         }
         
-        gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog")));
+        gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_load")));
+
+osoc_exit:
+	g_free(filename);
 }
 
 /** add hardware "add" clicked */
