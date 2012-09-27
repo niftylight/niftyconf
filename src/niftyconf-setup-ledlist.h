@@ -50,6 +50,7 @@
 
 /* GUI model functions */
 gboolean                setup_ledlist_init();
+void			setup_ledlist_deinit();
 GtkWidget *             setup_ledlist_get_widget();
 
 

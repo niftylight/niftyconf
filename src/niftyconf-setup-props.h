@@ -52,6 +52,7 @@
 
 /* GUI model functions */
 gboolean        setup_props_init();
+void		setup_props_deinit();
 GtkWidget *     setup_props_get_widget();
 
 /* GUI functions */

@@ -52,6 +52,7 @@ typedef struct _NiftyconfLed NiftyconfLed;
 
 /* GUI model functions */
 gboolean        led_init();
+void		led_deinit();
 NiftyconfLed *  led_register_to_gui(Led *l);
 void            led_unregister_from_gui(NiftyconfLed *l);
 

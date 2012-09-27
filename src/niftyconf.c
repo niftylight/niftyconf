@@ -140,6 +140,8 @@ GObject *niftyconf_ui(const char *n)
 
 
 
+
+/******************************************************************************/
 int main (int argc, char *argv[])
 {
         /* initialize GTK stuff */
@@ -203,7 +205,17 @@ int main (int argc, char *argv[])
         /* main loop... */
         gtk_main();
 
+	g_object_unref(_ui);
+	
+	clipboard_deinit();
+	setup_deinit();
+	info_hardware_deinit();
+	hardware_deinit();
+	tile_deinit();
+	led_deinit();
+	log_deinit();
 
+		
         return 0;
 }
 
@@ -213,28 +225,26 @@ int main (int argc, char *argv[])
  ******************************************************************************/
 
 /** close main window */
-gboolean on_niftyconf_window_delete_event(GtkWidget *w, GdkEvent *e)
+G_MODULE_EXPORT gboolean on_niftyconf_window_delete_event(GtkWidget *w, GdkEvent *e)
 {
-        setup_deinit();
-        gtk_main_quit();
+	gtk_main_quit();
         return FALSE;
 }
 
 /** menuitem "quit" selected */
-void on_niftyconf_menu_quit_activate(GtkMenuItem *i, gpointer d)
+G_MODULE_EXPORT void on_niftyconf_menu_quit_activate(GtkMenuItem *i, gpointer d)
 {
-        setup_deinit();
         gtk_main_quit();
 }
 
 /** menuitem "show log-window" toggled */
-void on_niftyconf_menu_log_window_activate(GtkWidget *i, gpointer u)
+G_MODULE_EXPORT void on_niftyconf_menu_log_window_activate(GtkWidget *i, gpointer u)
 {
         log_show(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(i)));
 }
 
 /** menu-entry selected */
-void on_niftyconf_menu_add_hardware_activate(GtkWidget *i, gpointer u)
+G_MODULE_EXPORT void on_niftyconf_menu_add_hardware_activate(GtkWidget *i, gpointer u)
 {
 	/* rebuild plugin combobox */
 	//gtk_combo_box_
@@ -243,7 +253,7 @@ void on_niftyconf_menu_add_hardware_activate(GtkWidget *i, gpointer u)
 }
 
 /** menu-entry selected */
-void on_niftyconf_menu_add_tile_activate(GtkWidget *i, gpointer u)
+G_MODULE_EXPORT void on_niftyconf_menu_add_tile_activate(GtkWidget *i, gpointer u)
 {
         NIFTYLED_TYPE t;
         gpointer *e;
@@ -281,7 +291,7 @@ void on_niftyconf_menu_add_tile_activate(GtkWidget *i, gpointer u)
 
 
 /** menu-entry selected */
-void on_niftyconf_menu_add_chain_activate(GtkWidget *i, gpointer u)
+G_MODULE_EXPORT void on_niftyconf_menu_add_chain_activate(GtkWidget *i, gpointer u)
 {
         NIFTYLED_TYPE t;
         gpointer *e;
@@ -312,7 +322,7 @@ static void _foreach_remove_hardware(NIFTYLED_TYPE t, gpointer *e)
 
 
 /** menu-entry selected */
-void on_niftyconf_menu_remove_hardware_activate(GtkWidget *i, gpointer u)
+G_MODULE_EXPORT void on_niftyconf_menu_remove_hardware_activate(GtkWidget *i, gpointer u)
 {
         /* remove all currently selected elements */
         setup_tree_do_foreach_selected_element(_foreach_remove_hardware);
@@ -335,7 +345,7 @@ static void _foreach_remove_tile(NIFTYLED_TYPE t, gpointer *e)
 
 
 /** menu-entry selected */
-void on_niftyconf_menu_remove_tile_activate(GtkWidget *i, gpointer u)
+G_MODULE_EXPORT void on_niftyconf_menu_remove_tile_activate(GtkWidget *i, gpointer u)
 {
         /* remove all currently selected elements */
         setup_tree_do_foreach_selected_element(_foreach_remove_tile);
@@ -358,7 +368,7 @@ static void _foreach_remove_chain(NIFTYLED_TYPE type, gpointer *e)
 
 
 /** menu-entry selected */
-void on_niftyconf_menu_remove_chain_activate(GtkWidget *i, gpointer u)
+G_MODULE_EXPORT void on_niftyconf_menu_remove_chain_activate(GtkWidget *i, gpointer u)
 {
         /* remove all currently selected elements */
         setup_tree_do_foreach_selected_element(_foreach_remove_chain);
@@ -372,21 +382,21 @@ void on_niftyconf_menu_remove_chain_activate(GtkWidget *i, gpointer u)
 
 
 /** menu-entry selected */
-void on_niftyconf_menu_cut_activate(GtkWidget *i, gpointer u)
+G_MODULE_EXPORT void on_niftyconf_menu_cut_activate(GtkWidget *i, gpointer u)
 {
         clipboard_cut_current_selection();
 }
 
 
 /** menu-entry selected */
-void on_niftyconf_menu_copy_activate(GtkWidget *i, gpointer u)
+G_MODULE_EXPORT void on_niftyconf_menu_copy_activate(GtkWidget *i, gpointer u)
 {
 	clipboard_copy_current_selection();
 }
 
 
 /** menu-entry selected */
-void on_niftyconf_menu_paste_activate(GtkWidget *i, gpointer u)
+G_MODULE_EXPORT void on_niftyconf_menu_paste_activate(GtkWidget *i, gpointer u)
 {
 	clipboard_paste_current_selection();
 }

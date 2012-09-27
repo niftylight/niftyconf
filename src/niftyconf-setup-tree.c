@@ -684,12 +684,18 @@ gboolean  setup_tree_init()
 }
 
 
+/** deinitialize this module */
+void setup_tree_deinit()
+{
+	g_object_unref(_ui);
+}
+
 
 /******************************************************************************
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
 /** user collapsed tree row */
-void on_setup_treeview_collapsed(GtkTreeView *tv,
+G_MODULE_EXPORT void on_setup_treeview_collapsed(GtkTreeView *tv,
                                  GtkTreeIter *i, GtkTreePath *path, gpointer u)
 {
         GtkTreeModel *m = gtk_tree_view_get_model(tv);
@@ -720,7 +726,7 @@ void on_setup_treeview_collapsed(GtkTreeView *tv,
 
 
 /** user expanded tree row */
-void on_setup_treeview_expanded(GtkTreeView *tv,
+G_MODULE_EXPORT void on_setup_treeview_expanded(GtkTreeView *tv,
                                  GtkTreeIter *i, GtkTreePath *path, gpointer u)
 {
         GtkTreeModel *m;
@@ -754,7 +760,7 @@ void on_setup_treeview_expanded(GtkTreeView *tv,
 
 
 /** user selected another row */
-void on_setup_treeview_cursor_changed(GtkTreeView *tv, gpointer u)
+G_MODULE_EXPORT void on_setup_treeview_cursor_changed(GtkTreeView *tv, gpointer u)
 {
 
         /* nothing selected? */
@@ -784,7 +790,7 @@ void on_setup_treeview_cursor_changed(GtkTreeView *tv, gpointer u)
 
 
 /** menu-entry selected */
-gboolean on_popup_remove_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
+G_MODULE_EXPORT gboolean on_popup_remove_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -802,7 +808,7 @@ gboolean on_popup_remove_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
 
 
 /** menu-entry selected */
-gboolean on_popup_remove_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
+G_MODULE_EXPORT gboolean on_popup_remove_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -820,7 +826,7 @@ gboolean on_popup_remove_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
 
 
 /** menu-entry selected */
-gboolean on_popup_remove_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
+G_MODULE_EXPORT gboolean on_popup_remove_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -838,7 +844,7 @@ gboolean on_popup_remove_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
 
 
 /** menu-entry selected */
-gboolean on_popup_add_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
+G_MODULE_EXPORT gboolean on_popup_add_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -852,7 +858,7 @@ gboolean on_popup_add_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
 
 
 /** menu-entry selected */
-gboolean on_popup_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
+G_MODULE_EXPORT gboolean on_popup_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -895,7 +901,7 @@ gboolean on_popup_add_tile(GtkWidget *w, GdkEventButton *e, gpointer u)
 
 
 /** menu-entry selected */
-gboolean on_popup_add_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
+G_MODULE_EXPORT gboolean on_popup_add_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -919,7 +925,7 @@ gboolean on_popup_add_chain(GtkWidget *w, GdkEventButton *e, gpointer u)
 
 
 /** menu-entry selected */
-gboolean on_popup_info_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
+G_MODULE_EXPORT gboolean on_popup_info_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -933,7 +939,7 @@ gboolean on_popup_info_hardware(GtkWidget *w, GdkEventButton *e, gpointer u)
 
 
 /** menu-entry selected */
-gboolean on_popup_cut_element(GtkWidget *w, GdkEventButton *e, gpointer u)
+G_MODULE_EXPORT gboolean on_popup_cut_element(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -946,7 +952,7 @@ gboolean on_popup_cut_element(GtkWidget *w, GdkEventButton *e, gpointer u)
 
 
 /** menu-entry selected */
-gboolean on_popup_copy_element(GtkWidget *w, GdkEventButton *e, gpointer u)
+G_MODULE_EXPORT gboolean on_popup_copy_element(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -959,7 +965,7 @@ gboolean on_popup_copy_element(GtkWidget *w, GdkEventButton *e, gpointer u)
 
 
 /** menu-entry selected */
-gboolean on_popup_paste_element(GtkWidget *w, GdkEventButton *e, gpointer u)
+G_MODULE_EXPORT gboolean on_popup_paste_element(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -1185,7 +1191,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
 
 
 /** mouseclick over element-tree */
-gboolean on_setup_treeview_button_pressed(GtkTreeView *t, GdkEventButton *e, gpointer u)
+G_MODULE_EXPORT gboolean on_setup_treeview_button_pressed(GtkTreeView *t, GdkEventButton *e, gpointer u)
 {
         /* only handle button-press events */
         if(e->type != GDK_BUTTON_PRESS)
@@ -1207,7 +1213,7 @@ gboolean on_setup_treeview_button_pressed(GtkTreeView *t, GdkEventButton *e, gpo
 
 
 /** request to generate popup-menu */
-gboolean on_setup_treeview_popup(GtkWidget *t, gpointer u)
+G_MODULE_EXPORT gboolean on_setup_treeview_popup(GtkWidget *t, gpointer u)
 {
         _tree_popup_menu(GTK_WIDGET(t), NULL, u);
         return TRUE;

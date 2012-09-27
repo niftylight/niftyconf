@@ -151,6 +151,9 @@ NiftyconfChain *chain_register_to_gui(LedChain *c)
         /* save descriptor */
         n->c = c;
 
+	/* not highlighted */
+	n->highlight = FALSE;
+	
         /* register descriptor as niftyled privdata */
         led_chain_set_privdata(c, n);
 

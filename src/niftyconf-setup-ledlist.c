@@ -162,6 +162,12 @@ gboolean setup_ledlist_init()
         return TRUE;
 }
 
+/** deinitialize this module */
+void setup_ledlist_deinit()
+{
+	g_object_unref(_ui);
+}
+
 /******************************************************************************
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
@@ -169,7 +175,7 @@ gboolean setup_ledlist_init()
 /**
  * user selected another row
  */
-void on_setup_ledlist_cursor_changed(GtkTreeView *tv, gpointer u)
+G_MODULE_EXPORT void on_setup_ledlist_cursor_changed(GtkTreeView *tv, gpointer u)
 {
         //GtkTreeModel *m = gtk_tree_view_get_model(tv);
         

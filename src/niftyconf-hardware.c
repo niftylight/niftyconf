@@ -151,7 +151,9 @@ NiftyconfHardware *hardware_register_to_gui(LedHardware *h)
 
         /* default hardware is collapsed */
         n->collapsed = TRUE;
-        
+	/* not highlighted */
+        n->highlight = FALSE;
+	
         /* register Hardware descriptor as LedHardware privdata */
         led_hardware_set_privdata(h, n);
 
@@ -264,6 +266,12 @@ void hardware_destroy(NiftyconfHardware *hw)
 gboolean hardware_init()
 {
         return TRUE;
+}
+
+/** deinitialize this module */
+void hardware_deinit()
+{
+
 }
 
 /******************************************************************************

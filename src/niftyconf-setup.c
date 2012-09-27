@@ -258,9 +258,21 @@ gboolean setup_init()
 /** deinitialize setup module */
 void setup_deinit()
 {
+	/* cleanup our current setup */
 	setup_cleanup();
+
+	/* deinitialize all modules used by this module */
+	setup_props_deinit();
+	setup_tree_deinit();
+	setup_ledlist_deinit();
+
+	/* denitialize niftyled prefs instance */
 	led_prefs_deinit(_prefs);
 	_prefs = NULL;
+	led_pixel_format_destroy();
+	
+	/* gtk stuff */
+	g_object_unref(_ui);
 }
 
 /******************************************************************************
@@ -269,7 +281,7 @@ void setup_deinit()
 
 
 /** menuitem "new" selected */
-void on_setup_menuitem_new_activate(GtkMenuItem *i, gpointer d)
+G_MODULE_EXPORT void on_setup_menuitem_new_activate(GtkMenuItem *i, gpointer d)
 {
         LedSetup *s;
         if(!(s = led_setup_new()))
@@ -285,33 +297,33 @@ void on_setup_menuitem_new_activate(GtkMenuItem *i, gpointer d)
 }
 
 /** menuitem "open" selected */
-void on_setup_menuitem_open_activate(GtkMenuItem *i, gpointer d)
+G_MODULE_EXPORT void on_setup_menuitem_open_activate(GtkMenuItem *i, gpointer d)
 {
         gtk_widget_show(GTK_WIDGET(UI("filechooserdialog")));
 }
 
 
 /** menuitem "save" selected */
-void on_setup_menuitem_save_activate(GtkMenuItem *i, gpointer d)
+G_MODULE_EXPORT void on_setup_menuitem_save_activate(GtkMenuItem *i, gpointer d)
 {
         
 }
 
 
 /** menuitem "save as" selected */
-void on_setup_menuitem_save_as_activate(GtkMenuItem *i, gpointer d)
+G_MODULE_EXPORT void on_setup_menuitem_save_as_activate(GtkMenuItem *i, gpointer d)
 {
         
 }
 
 /** "cancel" button in filechooser clicked */
-void on_setup_open_cancel_clicked(GtkButton *b, gpointer u)
+G_MODULE_EXPORT void on_setup_open_cancel_clicked(GtkButton *b, gpointer u)
 {
         gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog")));
 }
 
 /** open file */
-void on_setup_open_clicked(GtkButton *b, gpointer u)
+G_MODULE_EXPORT void on_setup_open_clicked(GtkButton *b, gpointer u)
 {
         char *filename;
         if(!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(UI("filechooserdialog")))))
@@ -330,7 +342,7 @@ void on_setup_open_clicked(GtkButton *b, gpointer u)
 }
 
 /** add hardware "add" clicked */
-void on_add_hardware_add_clicked(GtkButton *b, gpointer u)
+G_MODULE_EXPORT void on_add_hardware_add_clicked(GtkButton *b, gpointer u)
 {
 	/* add new hardware */
 	NiftyconfHardware *h;
@@ -353,13 +365,13 @@ void on_add_hardware_add_clicked(GtkButton *b, gpointer u)
 }
 
 /** add hardware "cancel" clicked */
-void on_add_hardware_cancel_clicked(GtkButton *b, gpointer u)
+G_MODULE_EXPORT void on_add_hardware_cancel_clicked(GtkButton *b, gpointer u)
 {
 	gtk_widget_set_visible(GTK_WIDGET(setup_ui("hardware_add_window")), FALSE);
 }
 
 /** add hardware "pixelformat" changed */
-void on_hardware_add_pixelformat_comboboxtext_changed(GtkComboBox *w, gpointer u)
+G_MODULE_EXPORT void on_hardware_add_pixelformat_comboboxtext_changed(GtkComboBox *w, gpointer u)
 {
 	LedPixelFormat *f;
 	if(!(f = led_pixel_format_from_string(gtk_combo_box_get_active_text(w))))

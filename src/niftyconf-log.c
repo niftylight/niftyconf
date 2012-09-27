@@ -202,12 +202,18 @@ gboolean log_init()
 }
 
 
+/** deinitialize this module */
+void log_deinit()
+{
+	g_object_unref(_ui);
+}
+
 /******************************************************************************
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
 
 /** close main window */
-gboolean on_log_window_delete_event(GtkWidget *w, GdkEvent *e)
+G_MODULE_EXPORT gboolean on_log_window_delete_event(GtkWidget *w, GdkEvent *e)
 {
         log_show(FALSE);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(niftyconf_ui("item_log_win")), FALSE);
@@ -215,14 +221,14 @@ gboolean on_log_window_delete_event(GtkWidget *w, GdkEvent *e)
 }
 
 /** close alert dialog */
-gboolean on_alert_dialog_delete_event(GtkWidget *w, GdkEvent *e)
+G_MODULE_EXPORT gboolean on_alert_dialog_delete_event(GtkWidget *w, GdkEvent *e)
 {
 	log_alert_show(NULL);
 	return TRUE;
 }
 
 /** loglevel changed */
-void on_log_combobox_changed(GtkComboBox *w, gpointer u)
+G_MODULE_EXPORT void on_log_combobox_changed(GtkComboBox *w, gpointer u)
 {
 	NftLoglevel l = (NftLoglevel) gtk_combo_box_get_active(w)+1;
 	
@@ -232,14 +238,14 @@ void on_log_combobox_changed(GtkComboBox *w, gpointer u)
 }
 
 /** "clear" button pressed */
-void on_log_button_clicked(GtkButton *b, gpointer u)
+G_MODULE_EXPORT void on_log_button_clicked(GtkButton *b, gpointer u)
 {
 	GtkTextBuffer *buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(UI("textview")));
 	gtk_text_buffer_set_text(buf, "", -1);
 }
 
 /** "dismiss" button in alert-dialog clicked */
-void on_alert_dismiss_button_clicked(GtkButton *b, gpointer u)
+G_MODULE_EXPORT void on_alert_dismiss_button_clicked(GtkButton *b, gpointer u)
 {
 	gtk_widget_set_visible(GTK_WIDGET(UI("alert_dialog")), FALSE);
 }

@@ -48,6 +48,7 @@
 
 /* GUI model functions */
 gboolean	clipboard_init();
+void		clipboard_deinit();
 NftResult 	clipboard_cut_current_selection();
 NftResult 	clipboard_copy_current_selection();
 NftResult 	clipboard_paste_current_selection();

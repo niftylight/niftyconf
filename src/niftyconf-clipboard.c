@@ -196,7 +196,7 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 	if(!(n = led_prefs_node_from_buffer(setup_get_prefs(), xml, strlen(xml))))
 	{
 		NFT_LOG(L_ERROR, "failed to parse XML from clipboard");
-		return;
+		goto cpe_exit_buf;
 	}
 
 	/* hardware node? */
@@ -399,6 +399,9 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 
 cpe_exit:
 	led_prefs_node_free(n);
+
+cpe_exit_buf:
+	g_free(xml);
 }
 
 
@@ -477,6 +480,12 @@ gboolean clipboard_init()
         return TRUE;
 }
 
+
+/** deinitialize this module */
+void clipboard_deinit()
+{
+
+}
 
 /******************************************************************************
  ***************************** CALLBACKS **************************************

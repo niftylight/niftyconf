@@ -159,7 +159,9 @@ NiftyconfTile *tile_register_to_gui(LedTile *t)
 
         /* default hardware is collapsed */
         n->collapsed = TRUE;
-        
+        /* not highlighted */
+	n->highlight = FALSE;
+	
         /* register descriptor as niftyled privdata */
         led_tile_set_privdata(t, n);
 
@@ -187,6 +189,13 @@ void tile_unregister_from_gui(NiftyconfTile *t)
                 }
                 
                 led_tile_set_privdata(t->t, NULL);
+
+		/* free chain if this tile has one */
+		LedChain *chain;
+		if((chain = led_tile_get_chain(t->t)))
+		{
+			chain_unregister_from_gui(led_chain_get_privdata(chain));
+		}
         }
         
         free(t);
@@ -271,6 +280,12 @@ void tile_destroy(NiftyconfTile *tile)
 gboolean tile_init()
 {
         return TRUE;
+}
+
+/** deinitialize this module */
+void tile_deinit()
+{
+
 }
 
 

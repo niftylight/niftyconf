@@ -49,6 +49,7 @@
 
 /* GUI model functions */
 gboolean                info_hardware_init();
+void			info_hardware_deinit();
 
 
 /* GUI functions */

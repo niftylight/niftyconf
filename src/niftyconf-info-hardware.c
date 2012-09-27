@@ -107,12 +107,19 @@ gboolean  info_hardware_init()
 }
 
 
+/** deinitialize this module */
+void info_hardware_deinit()
+{
+	g_object_unref(_ui);
+}
+
+
 /******************************************************************************
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
 
 /** close main window */
-gboolean on_info_hardware_window_delete_event(GtkWidget *w, GdkEvent *e)
+G_MODULE_EXPORT gboolean on_info_hardware_window_delete_event(GtkWidget *w, GdkEvent *e)
 {
         gtk_widget_set_visible(w, FALSE);
         return TRUE;

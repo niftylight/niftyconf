@@ -190,12 +190,19 @@ gboolean setup_props_init()
 }
 
 
+/** deinitialize this module */
+void setup_props_deinit()
+{
+	g_object_unref(_ui);
+}
+
+
 /******************************************************************************
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
 
 /** spinbutton value changed */
-void on_spinbutton_led_x_changed(GtkSpinButton *s, gpointer u)
+G_MODULE_EXPORT void on_spinbutton_led_x_changed(GtkSpinButton *s, gpointer u)
 {
         /* get currently selected LED */
         Led *l = led_niftyled(current_led);
@@ -208,7 +215,7 @@ void on_spinbutton_led_x_changed(GtkSpinButton *s, gpointer u)
 
 
 /** spinbutton value changed */
-void on_spinbutton_led_y_changed(GtkSpinButton *s, gpointer u)
+G_MODULE_EXPORT void on_spinbutton_led_y_changed(GtkSpinButton *s, gpointer u)
 {
         /* get currently selected LED */
         Led *l = led_niftyled(current_led);
@@ -221,7 +228,7 @@ void on_spinbutton_led_y_changed(GtkSpinButton *s, gpointer u)
 
 
 /** spinbutton value changed */
-void on_spinbutton_led_component_changed(GtkSpinButton *s, gpointer u)
+G_MODULE_EXPORT void on_spinbutton_led_component_changed(GtkSpinButton *s, gpointer u)
 {
         /* get currently selected LED */
         Led *l = led_niftyled(current_led);
@@ -234,7 +241,7 @@ void on_spinbutton_led_component_changed(GtkSpinButton *s, gpointer u)
 
 
 /** spinbutton value changed */
-void on_spinbutton_led_gain_changed(GtkSpinButton *s, gpointer u)
+G_MODULE_EXPORT void on_spinbutton_led_gain_changed(GtkSpinButton *s, gpointer u)
 {
         /* get currently selected LED */
         Led *l = led_niftyled(current_led);
@@ -247,7 +254,7 @@ void on_spinbutton_led_gain_changed(GtkSpinButton *s, gpointer u)
 
 
 /** spinbutton value changed */
-void on_spinbutton_chain_ledcount_changed(GtkSpinButton *s, gpointer u)
+G_MODULE_EXPORT void on_spinbutton_chain_ledcount_changed(GtkSpinButton *s, gpointer u)
 {
         /* get current tile */
         LedChain *chain = chain_niftyled(current_chain);
@@ -287,7 +294,7 @@ void on_spinbutton_chain_ledcount_changed(GtkSpinButton *s, gpointer u)
 
 
 /** spinbutton value changed */
-void on_spinbutton_tile_x_changed(GtkSpinButton *s, gpointer u)
+G_MODULE_EXPORT void on_spinbutton_tile_x_changed(GtkSpinButton *s, gpointer u)
 {
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
@@ -310,7 +317,7 @@ void on_spinbutton_tile_x_changed(GtkSpinButton *s, gpointer u)
 
 
 /** spinbutton value changed */
-void on_spinbutton_tile_y_changed(GtkSpinButton *s, gpointer u)
+G_MODULE_EXPORT void on_spinbutton_tile_y_changed(GtkSpinButton *s, gpointer u)
 {
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
@@ -334,7 +341,7 @@ void on_spinbutton_tile_y_changed(GtkSpinButton *s, gpointer u)
 
 
 /** spinbutton value changed */
-void on_spinbutton_tile_rotation_changed(GtkSpinButton *s, gpointer u)
+G_MODULE_EXPORT void on_spinbutton_tile_rotation_changed(GtkSpinButton *s, gpointer u)
 {
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
@@ -357,7 +364,7 @@ void on_spinbutton_tile_rotation_changed(GtkSpinButton *s, gpointer u)
 
 
 /** spinbutton value changed */
-void on_spinbutton_tile_pivot_x_changed(GtkSpinButton *s, gpointer u)
+G_MODULE_EXPORT void on_spinbutton_tile_pivot_x_changed(GtkSpinButton *s, gpointer u)
 {
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
@@ -381,7 +388,7 @@ void on_spinbutton_tile_pivot_x_changed(GtkSpinButton *s, gpointer u)
 
 
 /** spinbutton value changed */
-void on_spinbutton_tile_pivot_y_changed(GtkSpinButton *s, gpointer u)
+G_MODULE_EXPORT void on_spinbutton_tile_pivot_y_changed(GtkSpinButton *s, gpointer u)
 {
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
@@ -404,7 +411,7 @@ void on_spinbutton_tile_pivot_y_changed(GtkSpinButton *s, gpointer u)
 
 
 /** entry text changed */
-void on_entry_hardware_name_changed(GtkEditable *e, gpointer u)
+G_MODULE_EXPORT void on_entry_hardware_name_changed(GtkEditable *e, gpointer u)
 {
         /* get currently selected hardware */
         LedHardware *h = hardware_niftyled(current_hw);
@@ -428,7 +435,7 @@ void on_entry_hardware_name_changed(GtkEditable *e, gpointer u)
 
 
 /** entry text changed */
-void on_entry_hardware_id_changed(GtkEditable *e, gpointer u)
+G_MODULE_EXPORT void on_entry_hardware_id_changed(GtkEditable *e, gpointer u)
 {
         /* get currently selected hardware */
         LedHardware *h = hardware_niftyled(current_hw);
@@ -451,7 +458,7 @@ void on_entry_hardware_id_changed(GtkEditable *e, gpointer u)
 
 
 /** spinbutton value changed */
-void on_spinbutton_hardware_stride_changed(GtkSpinButton *s, gpointer u)
+G_MODULE_EXPORT void on_spinbutton_hardware_stride_changed(GtkSpinButton *s, gpointer u)
 {
         /* get currently selected hardware */
         LedHardware *h = hardware_niftyled(current_hw);

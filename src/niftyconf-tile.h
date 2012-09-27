@@ -54,6 +54,7 @@ typedef struct _NiftyconfTile NiftyconfTile;
 
 /* GUI model functions */
 gboolean        tile_init();
+void		tile_deinit();
 NiftyconfTile * tile_register_to_gui(LedTile *t);
 void            tile_unregister_from_gui(NiftyconfTile *t);
 gboolean       	tile_of_hardware_new(NiftyconfHardware *parent);
