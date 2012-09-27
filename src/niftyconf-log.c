@@ -41,6 +41,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <stdarg.h>
 #include <gtk/gtk.h>
 #include <niftyled.h>
 #include "niftyconf.h"
@@ -136,16 +137,40 @@ static void _logger(void *userdata,
  *
  * @param message printable text that will be presented to the user
  */
-void log_alert_show(char *message)
+void log_alert_show(char *message, ...)
 {
+#define MAX_MSG_SIZE	2048
+
+	/* just hide when message is NULL */
 	if(!message)
 	{
 		gtk_widget_set_visible(GTK_WIDGET(UI("alert_dialog")), FALSE);
 		return;
 	}
 	
+	/* allocate mem to build message */
+	char *tmp;
+        if(!(tmp = alloca(MAX_MSG_SIZE)))
+        {
+                NFT_LOG_PERROR("alloca");
+                return;
+        }
+
+	/* build message */
+        va_list ap;
+        va_start(ap, message);
+			
+	/* print log-string */
+	if(vsnprintf((char *) tmp, MAX_MSG_SIZE, message, ap) < 0)
+        {
+                NFT_LOG_PERROR("vsnprintf");
+                return;
+        }
+	
+	va_end(ap);
+	
 	/* set message */
-	gtk_label_set_text(GTK_LABEL(UI("alert_label")), message);
+	gtk_label_set_text(GTK_LABEL(UI("alert_label")), tmp);
 	
 	/* show dialog */
 	gtk_widget_set_visible(GTK_WIDGET(UI("alert_dialog")), TRUE);

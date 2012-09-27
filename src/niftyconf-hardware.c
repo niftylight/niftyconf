@@ -225,14 +225,14 @@ NiftyconfHardware *hardware_new(const char *name, const char *family,
         LedHardware *h;
         if(!(h = led_hardware_new(name, family)))
         {
-                log_alert_show("Failed to create new hardware");
+                log_alert_show("Failed to create new hardware \"%s\" (%s)", name, family);
                 return FALSE;
         }
 
 	/* try to initialize hardware */
 	if(!led_hardware_init(h, id, ledcount, pixelformat))
 	{
-		log_alert_show("Failed to initialize new hardware. Not connected?");
+		log_alert_show("Failed to initialize new hardware \"%s\". Not connected?", id);
 	}
 	
 	/* add hardware to model */

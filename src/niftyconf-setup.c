@@ -328,13 +328,13 @@ G_MODULE_EXPORT void on_setup_open_clicked(GtkButton *b, gpointer u)
         char *filename;
         if(!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(UI("filechooserdialog")))))
 	{
-		log_alert_show("No filename?");
+		log_alert_show("No filename given?");
                 return;
 	}
 	
         if(!setup_load(filename))
         {
-                log_alert_show("Error while loading file");
+                log_alert_show("Error while loading file \"%s\"", filename);
                 return;
         }
         

@@ -49,6 +49,6 @@ gboolean 	log_init();
 void		log_deinit();
 const char *	log_loglevels();
 void            log_show(gboolean visible);
-void		log_alert_show(char *message);
+void 		log_alert_show(char *message, ...);
 
 #endif /* _NIFTYCONF_LOG_H */
