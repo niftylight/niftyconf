@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -111,7 +111,7 @@ gboolean setup_save(gchar *filename)
 		return FALSE;
 	}
 
-		
+
 	if(!filename)
 	{
 		/* try to get current filename */
@@ -132,7 +132,7 @@ gboolean setup_save(gchar *filename)
 		log_alert_show("Failed to create preferences from current setup.");
 		return FALSE;
 	}
-	
+
 	/* save */
 	if(!led_prefs_node_to_file(setup_get_prefs(), n, filename))
 	{
@@ -151,12 +151,12 @@ gboolean setup_load(gchar *filename)
 	LedPrefsNode *n;
 	if(!(n = led_prefs_node_from_file(_prefs, filename)))
 		return FALSE;
-		
+
         LedSetup *s;
         if(!(s = led_prefs_setup_from_node(_prefs, n)))
                 return FALSE;
 
-        
+
         /* cleanup previously loaded setup */
         if(_setup)
                 setup_cleanup();
@@ -164,8 +164,8 @@ gboolean setup_load(gchar *filename)
         /* initialize our element descriptor and set as
            privdata in niftyled model */
         LedHardware *h;
-        for(h = led_setup_get_hardware(s); 
-            h; 
+        for(h = led_setup_get_hardware(s);
+            h;
             h = led_hardware_list_get_next(h))
         {
                 /* create new hardware element */
@@ -195,17 +195,17 @@ gboolean setup_load(gchar *filename)
                         }
                 }
         }
-        
+
         /* save new settings */
         _setup = s;
 
         /* update ui */
         setup_tree_refresh();
-        
-        
+
+
         /* redraw new setup */
         //setup_redraw();
-        
+
         return TRUE;
 }
 
@@ -226,11 +226,11 @@ void setup_cleanup()
                 {
                         tile_unregister_from_gui(led_tile_get_privdata(t));
                 }
-                
+
                 chain_unregister_from_gui(led_chain_get_privdata(led_hardware_get_chain(h)));
                 hardware_unregister_from_gui(led_hardware_get_privdata(h));
         }
-        
+
         led_setup_destroy(_setup);
         setup_tree_clear();
 	_setup = NULL;
@@ -245,7 +245,7 @@ gboolean setup_init()
 	/* initialize preference context */
 	if(!(_prefs = led_prefs_init()))
 		return FALSE;
-	   
+
         /* initialize tree module */
         if(!setup_ledlist_init())
                 return FALSE;
@@ -253,14 +253,14 @@ gboolean setup_init()
                 return FALSE;
         if(!setup_props_init())
                 return FALSE;
-        
-        
+
+
         /* attach children */
         GtkBox *box_tree = GTK_BOX(gtk_builder_get_object(_ui, "box_tree"));
         gtk_box_pack_start(box_tree, setup_tree_get_widget(), TRUE, TRUE, 0);
         GtkBox *box_props = GTK_BOX(gtk_builder_get_object(_ui, "box_props"));
         gtk_box_pack_start(box_props, setup_props_get_widget(), FALSE, FALSE, 0);
-        
+
         /* initialize file-filter to only show XML files in "open" filechooser dialog */
         GtkFileFilter *filter = GTK_FILE_FILTER(UI("filefilter"));
         gtk_file_filter_add_mime_type(filter, "application/xml");
@@ -270,14 +270,14 @@ gboolean setup_init()
 	unsigned int p;
 	for(p = 0; p < led_hardware_plugin_total_count(); p++)
 	{
-		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(UI("hardware_add_plugin_combobox")), 
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(UI("hardware_add_plugin_combobox")),
 		                               led_hardware_plugin_get_family_by_n(p));
 	}
 	gtk_combo_box_set_active(GTK_COMBO_BOX(UI("hardware_add_plugin_combobox")), 0);
 
 	/* initialize pixel-format module */
 	led_pixel_format_new();
-	
+
 	/* build "pixelformat" combobox for "add hardware" dialog */
 	size_t f;
 	for(f = led_pixel_format_get_n_formats(); f > 0; f--)
@@ -286,12 +286,12 @@ gboolean setup_init()
 		                               led_pixel_format_to_string(led_pixel_format_get_nth(f-1)));
 	}
 	gtk_combo_box_set_active(GTK_COMBO_BOX(UI("hardware_add_pixelformat_comboboxtext")), 0);
-	
+
         /* start with fresh empty setup */
 	_setup = led_setup_new();
 
         //g_object_unref(ui);
-        
+
         return TRUE;
 }
 
@@ -312,7 +312,7 @@ void setup_deinit()
 	led_prefs_deinit(_prefs);
 	_prefs = NULL;
 	led_pixel_format_destroy();
-	
+
 	/* gtk stuff */
 	g_object_unref(_ui);
 }
@@ -331,7 +331,7 @@ G_MODULE_EXPORT void on_setup_menuitem_new_activate(GtkMenuItem *i, gpointer d)
                 NFT_LOG(L_ERROR, "Failed to create new settings descriptor.");
                 return;
         }
-        
+
         setup_cleanup();
 
         /* save new settings */
@@ -341,7 +341,7 @@ G_MODULE_EXPORT void on_setup_menuitem_new_activate(GtkMenuItem *i, gpointer d)
 /** menuitem "open" selected */
 G_MODULE_EXPORT void on_setup_menuitem_open_activate(GtkMenuItem *i, gpointer d)
 {
-        gtk_widget_show(GTK_WIDGET(UI("filechooserdialog")));
+        gtk_widget_show(GTK_WIDGET(UI("filechooserdialog_load")));
 }
 
 
@@ -372,13 +372,13 @@ G_MODULE_EXPORT void on_setup_save_save_clicked(GtkButton *b, gpointer u)
 		NFT_LOG(L_ERROR, "No filename received from dialog.");
                 return;
 	}
-	
+
         if(!setup_save(filename))
         {
                 NFT_LOG(L_ERROR, "Error while saving file \"%s\"", filename);
                 goto osssc_exit;
         }
-        
+
         gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_save")));
 
 osssc_exit:
@@ -408,13 +408,13 @@ G_MODULE_EXPORT void on_setup_open_clicked(GtkButton *b, gpointer u)
 		log_alert_show("No filename given?");
                 return;
 	}
-	
+
         if(!setup_load(filename))
         {
                 log_alert_show("Error while loading file \"%s\"", filename);
                 goto osoc_exit;
         }
-        
+
         gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_load")));
 
 osoc_exit:
@@ -433,12 +433,12 @@ G_MODULE_EXPORT void on_add_hardware_add_clicked(GtkButton *b, gpointer u)
                   gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(UI("hardware_add_ledcount_spinbutton"))),
                   gtk_combo_box_get_active_text(GTK_COMBO_BOX(UI("hardware_add_pixelformat_comboboxtext"))))))
 		return;
-		
+
 	/* hide window */
 	gtk_widget_set_visible(GTK_WIDGET(setup_ui("hardware_add_window")), FALSE);
-	
+
         /** @todo refresh our menu */
-        
+
 	/* refresh tree */
         setup_tree_refresh();
 
