@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -57,8 +57,8 @@ NiftyconfChain *        chain_register_to_gui(LedChain *c);
 void                    chain_unregister_from_gui(NiftyconfChain *c);
 void                    chain_register_leds_to_gui(NiftyconfChain *c);
 void                    chain_unregister_leds_from_gui(NiftyconfChain *c);
-gboolean        	chain_of_tile_new(NiftyconfTile *parent, 
-                                  LedCount length, 
+gboolean        	chain_of_tile_new(NiftyconfTile *parent,
+                                  LedCount length,
                                   const char *pixelformat);
 void            	chain_of_tile_destroy(NiftyconfTile *tile);
 

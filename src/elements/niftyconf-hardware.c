@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -75,7 +75,7 @@ gboolean hardware_tree_get_highlighted(NiftyconfHardware *h)
 {
         if(!h)
                 NFT_LOG_NULL(FALSE);
-        
+
         return h->highlight;
 }
 
@@ -115,7 +115,7 @@ void hardware_tree_set_collapsed(NiftyconfHardware *h, gboolean is_collapsed)
         h->collapsed = is_collapsed;
 }
 
- 
+
 /**
  * getter for libniftyled object
  */
@@ -123,7 +123,7 @@ LedHardware *hardware_niftyled(NiftyconfHardware *h)
 {
         if(!h)
                 return NULL;
-        
+
         return h->h;
 }
 
@@ -145,7 +145,7 @@ NiftyconfHardware *hardware_register_to_gui(LedHardware *h)
 
         /* refresh tile->chain mapping */
         led_hardware_refresh_mapping(h);
-        
+
         /* save LedHardware descriptor */
         n->h = h;
 
@@ -153,7 +153,21 @@ NiftyconfHardware *hardware_register_to_gui(LedHardware *h)
         n->collapsed = TRUE;
 	/* not highlighted */
         n->highlight = FALSE;
-	
+
+	/* register tiles of hardware */
+	LedTile *t;
+	if((t = led_hardware_get_tile(h)))
+	{
+		tile_register_to_gui(t);
+	}
+
+	/* register chain of hardware */
+	LedChain *c;
+	if((c = led_hardware_get_chain(h)))
+	{
+		chain_register_to_gui(c);
+	}
+
         /* register Hardware descriptor as LedHardware privdata */
         led_hardware_set_privdata(h, n);
 
@@ -169,9 +183,23 @@ void hardware_unregister_from_gui(NiftyconfHardware *h)
         if(!h)
                 return;
 
+	/* register tiles of hardware */
+	LedTile *t;
+	if((t = led_hardware_get_tile(h->h)))
+	{
+		tile_unregister_from_gui(led_tile_get_privdata(t));
+	}
+
+	/* register chain of hardware */
+	LedChain *c;
+	if((c = led_hardware_get_chain(h->h)))
+	{
+		chain_unregister_from_gui(led_chain_get_privdata(c));
+	}
+
         if(h->h)
                 led_hardware_set_privdata(h->h, NULL);
-        
+
         free(h);
 }
 
@@ -180,7 +208,7 @@ void hardware_unregister_from_gui(NiftyconfHardware *h)
  * add hardware to model
  */
 NiftyconfHardware *hardware_register_to_gui_and_niftyled(LedHardware *h)
-{	
+{
         /* register hardware to gui */
         NiftyconfHardware *hardware;
         if(!(hardware = hardware_register_to_gui(h)))
@@ -196,7 +224,7 @@ NiftyconfHardware *hardware_register_to_gui_and_niftyled(LedHardware *h)
 	{
 		chain_register_to_gui(chain);
 	}
-	
+
 	/* get last hardware node */
 	LedHardware *last = led_setup_get_hardware(setup_get_current());
 	if(!last)
@@ -214,11 +242,11 @@ NiftyconfHardware *hardware_register_to_gui_and_niftyled(LedHardware *h)
 }
 
 
-/** 
- * create new hardware element in setup 
+/**
+ * create new hardware element in setup
  */
-NiftyconfHardware *hardware_new(const char *name, const char *family, 
-                                      const char *id, LedCount ledcount, 
+NiftyconfHardware *hardware_new(const char *name, const char *family,
+                                      const char *id, LedCount ledcount,
                                       const char *pixelformat)
 {
         /* create new niftyled hardware */
@@ -234,27 +262,27 @@ NiftyconfHardware *hardware_new(const char *name, const char *family,
 	{
 		log_alert_show("Failed to initialize new hardware \"%s\". Not connected?", id);
 	}
-	
+
 	/* add hardware to model */
 	return hardware_register_to_gui_and_niftyled(h);
-        
+
 }
 
 
-/** 
- * remove hardware from current setup 
+/**
+ * remove hardware from current setup
  */
 void hardware_destroy(NiftyconfHardware *hw)
 {
         LedHardware *h = hardware_niftyled(hw);
-        
+
         /* unregister hardware */
         hardware_unregister_from_gui(hw);
 
 	/* remove hardware from setup? */
 	if(led_setup_get_hardware(setup_get_current()) == h)
 		led_setup_set_hardware(setup_get_current(), NULL);
-	
+
         //led_settings_hardware_unlink(setup_get_current(), h);
         led_hardware_destroy(h);
 }

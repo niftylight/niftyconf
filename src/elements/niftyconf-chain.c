@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -84,7 +84,7 @@ gboolean chain_tree_get_highlighted(NiftyconfChain *c)
 {
         if(!c)
                 NFT_LOG_NULL(FALSE);
-        
+
         return c->highlight;
 }
 
@@ -104,7 +104,7 @@ LedChain *chain_niftyled(NiftyconfChain *c)
 {
         if(!c)
                 return NULL;
-        
+
         return c->c;
 }
 
@@ -114,7 +114,7 @@ void chain_unregister_leds_from_gui(NiftyconfChain *c)
 {
         if(!c)
                 NFT_LOG_NULL();
-        
+
         /* free all LEDs of chain */
         if(c->c)
         {
@@ -153,7 +153,7 @@ NiftyconfChain *chain_register_to_gui(LedChain *c)
 
 	/* not highlighted */
 	n->highlight = FALSE;
-	
+
         /* register descriptor as niftyled privdata */
         led_chain_set_privdata(c, n);
 
@@ -177,15 +177,15 @@ void chain_unregister_from_gui(NiftyconfChain *c)
 
 
 /** create new chain for tile */
-gboolean chain_of_tile_new(NiftyconfTile *parent, 
-                                  LedCount length, 
+gboolean chain_of_tile_new(NiftyconfTile *parent,
+                                  LedCount length,
                                   const char *pixelformat)
 {
         /** create new chain @todo select format */
         LedChain *n;
         if(!(n = led_chain_new(length, pixelformat)))
                 return FALSE;
-        
+
         /* attach chain to tile */
         LedTile *tile = tile_niftyled(parent);
         led_tile_set_chain(tile, n);
@@ -193,7 +193,7 @@ gboolean chain_of_tile_new(NiftyconfTile *parent,
         /* create config */
         //if(!led_settings_create_from_chain(setup_get_current(), n))
         //        return FALSE;
-        
+
         /* register chain to gui */
         chain_register_to_gui(n);
 
@@ -206,7 +206,7 @@ void chain_of_tile_destroy(NiftyconfTile *tile)
 {
         /* get niftyled tile */
         LedTile *t = tile_niftyled(tile);
-        
+
         /* if this tile has no chain, silently succeed */
         LedChain *c;
         if(!(c = led_tile_get_chain(t)))
@@ -214,7 +214,7 @@ void chain_of_tile_destroy(NiftyconfTile *tile)
 
         /* unregister from tile */
         led_tile_set_chain(t, NULL);
-        
+
         /* unregister from gui */
         NiftyconfChain *chain = led_chain_get_privdata(c);
         chain_unregister_from_gui(chain);
