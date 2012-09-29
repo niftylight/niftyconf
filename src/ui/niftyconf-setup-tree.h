@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -55,11 +55,12 @@ GtkWidget *     setup_tree_get_widget();
 /* GUI functions */
 void            setup_tree_clear();
 void            setup_tree_refresh();
-void            setup_tree_do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer *e));
-void            setup_tree_do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer *element));
-void            setup_tree_do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer *element));
-void            setup_tree_get_last_selected_element(NIFTYLED_TYPE *t, gpointer **element);
-void 		setup_tree_get_first_selected_element(NIFTYLED_TYPE *t, gpointer **element);
+void            setup_tree_do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer e));
+void            setup_tree_do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer element));
+void            setup_tree_do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer element));
+void            setup_tree_get_last_selected_element(NIFTYLED_TYPE *t, gpointer *element);
+void		   setup_tree_get_first_selected_element(NIFTYLED_TYPE *t, gpointer *element);
+void 	    setup_tree_highlight_only(NIFTYLED_TYPE t, gpointer element);
 
 /* model functions */
 

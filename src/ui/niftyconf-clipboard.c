@@ -84,8 +84,9 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 {
 	NFT_LOG(L_DEBUG, cut ? "Cutting element..." : "Copying element...");
 
+
+
 	const char *xml = NULL;
-        
         switch(t)
         {
                 case LED_HARDWARE_T:
@@ -94,7 +95,7 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 			LedPrefsNode *n = led_prefs_hardware_to_node(setup_get_prefs(), h);
                         xml = led_prefs_node_to_buffer(setup_get_prefs(), n);
 			led_prefs_node_free(n);
-			
+
                         /* remove element? */
                         if(cut)
                         {
@@ -110,7 +111,7 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 			LedPrefsNode *n = led_prefs_tile_to_node(setup_get_prefs(), t);
                         xml = led_prefs_node_to_buffer(setup_get_prefs(), n);
 			led_prefs_node_free(n);
-			
+
                         /* remove element? */
                         if(cut)
                         {
@@ -126,11 +127,11 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 			LedPrefsNode *n = led_prefs_chain_to_node(setup_get_prefs(), c);
                         xml = led_prefs_node_to_buffer(setup_get_prefs(), n);
 			led_prefs_node_free(n);
-			
+
                         /* don't cut from hardware elements */
                         if(led_chain_parent_is_hardware(c))
                                 break;
-                        
+
                         /* remove element? */
                         if(cut)
                         {
@@ -158,14 +159,14 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 				//setup_tree_refresh();
 			}
 		}
-			
+
 		default:
 		{
 			NFT_LOG(L_ERROR, "Attempt to cut/copy unknown element. This shouldn't happen?!");
 		}
         }
-	
-   
+
+
         if(!xml)
                 return;
 
@@ -176,14 +177,15 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
         gtk_clipboard_store(_clipboard);
 
         NFT_LOG(L_VERY_NOISY, "%s", xml);
-        
+
         free((void *) xml);
 }
 
 
 /** paste element from clipboard */
-static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
+static void _paste_element(NIFTYLED_TYPE parent_t, gpointer parent_element)
 {
+
 	/* get XML data from clipboard */
         gchar *xml;
         if(!(xml = gtk_clipboard_wait_for_text(_clipboard)))
@@ -210,7 +212,7 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 			log_alert_show("Failed to parse Hardware node from clipboard buffer");
 			goto cpe_exit;
 		}
-		
+
 		/* hardware nodes will always be pasted top-level, no matter
 		   what is currently selected */
 		if(!hardware_register_to_gui_and_niftyled(h))
@@ -230,12 +232,12 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 			log_alert_show("Failed to parse Tile node from clipboard buffer");
 			goto cpe_exit;
 		}
-		
+
  		switch(parent_t)
-		{		
+		{
 			/* paste tile to hardware */
 			case LED_HARDWARE_T:
-			{				
+			{
 				/* parent hardware element */
 				LedHardware *h;
 				if(!(h = hardware_niftyled((NiftyconfHardware *) parent_element)))
@@ -267,6 +269,8 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 					}
 				}
 
+				/* register tile to GUI */
+				tile_register_to_gui(t);
 				break;
 			}
 
@@ -289,6 +293,9 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 					led_tile_destroy(t);
 					goto cpe_exit;
 				}
+
+				/* register tile to GUI */
+				tile_register_to_gui(t);
 				break;
 			}
 
@@ -324,7 +331,7 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 					log_alert_show("Selected Ttile already has a Chain. Please remove that Chain first.");
 					goto cpe_exit;
 				}
-				
+
 				/* create chain from prefs node */
 				LedChain *c;
 				if(!(c = led_prefs_chain_from_node(setup_get_prefs(), n)))
@@ -333,27 +340,26 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 					goto cpe_exit;
 				}
 
-				/* register new chain to GUI */
-				NiftyconfChain *chain;
-				if(!(chain = chain_register_to_gui(c)))
-				{
-					log_alert_show("Failed to register new Chain to GUI model");
-					led_chain_destroy(c);
-					goto cpe_exit;
-				}
-				
 				/* set chain to parent tile */
 				if(!(led_tile_set_chain(pt, c)))
 				{
 					log_alert_show("Failed to attach Chain to selected Tile");
-					chain_unregister_from_gui(chain);
 					led_chain_destroy(c);
 					goto cpe_exit;
 				}
-				
+
+				/* register new chain to GUI */
+				if(!chain_register_to_gui(c))
+				{
+					log_alert_show("Failed to register new Chain to GUI model");
+					led_chain_destroy(c);
+					led_tile_set_chain(pt, NULL);
+					goto cpe_exit;
+				}
+
 				break;
 			}
-				
+
 			default:
 			{
 				log_alert_show("Chains can only be pasted into Tiles");
@@ -368,35 +374,6 @@ static void _paste_element(NIFTYLED_TYPE parent_t, gpointer *parent_element)
 
 	/* refresh whole tree view */
 	setup_tree_refresh();
-	
-        //~ switch(led_settings_node_get_type(xml))
-        //~ {
-               
-                //~ case T_LED_TILE:
-                //~ {
-                       
-
-                        //~ break;
-                //~ }
-
-                //~ case T_LED_CHAIN:
-                //~ {
-                        //~ switch(parent_t)
-                        //~ {
-                                //~ /** paste chain to tile */
-                                //~ case T_LED_TILE:
-                                //~ {
-                                        //~ printf("-> chain -> tile\n");
-                                        //~ break;
-                                //~ }
-
-                                //~ default:
-                                        //~ break;
-                        //~ }
-
-                        //~ break;
-                //~ }
-        //~ }
 
 cpe_exit:
 	led_prefs_node_free(n);
@@ -414,7 +391,7 @@ NftResult clipboard_cut_current_selection()
 {
 	/* get currently selected element */
 	NIFTYLED_TYPE t;
-        gpointer *e;
+        gpointer e;
         setup_tree_get_first_selected_element(&t, &e);
 
 	if(t == LED_INVALID_T)
@@ -422,6 +399,9 @@ NftResult clipboard_cut_current_selection()
 		NFT_LOG(L_DEBUG, "could not get first selected element from tree (nothing selected?)");
 		return NFT_FAILURE;
 	}
+
+	/* highlight only this element */
+	setup_tree_highlight_only(t, e);
 
 	_cut_or_copy_element(t, e, TRUE);
 
@@ -434,7 +414,7 @@ NftResult clipboard_copy_current_selection()
 {
 	/* get currently selected element */
 	NIFTYLED_TYPE t;
-        gpointer *e;
+        gpointer e;
         setup_tree_get_first_selected_element(&t, &e);
 
 	if(t == LED_INVALID_T)
@@ -442,6 +422,9 @@ NftResult clipboard_copy_current_selection()
 		NFT_LOG(L_DEBUG, "could not get first selected element from tree (nothing selected?)");
 		return NFT_FAILURE;
 	}
+
+	/* highlight only this element */
+	setup_tree_highlight_only(t, e);
 
 	_cut_or_copy_element(t, e, FALSE);
 
@@ -454,7 +437,7 @@ NftResult clipboard_paste_current_selection()
 {
 	/* get currently selected element */
 	NIFTYLED_TYPE t;
-        gpointer *e;
+        gpointer e;
         setup_tree_get_first_selected_element(&t, &e);
 
 	if(t == LED_INVALID_T)

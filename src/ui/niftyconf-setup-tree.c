@@ -158,7 +158,7 @@ static void _tree_append_hardware(GtkTreeStore *s, LedHardware *h)
 
 
 /** wrapper for do_* functions */
-static void _foreach_remove_hardware(NIFTYLED_TYPE t, gpointer *e)
+static void _foreach_remove_hardware(NIFTYLED_TYPE t, gpointer e)
 {
         if(t != LED_HARDWARE_T)
                 return;
@@ -168,7 +168,7 @@ static void _foreach_remove_hardware(NIFTYLED_TYPE t, gpointer *e)
 
 
 /** wrapper for do_* functions */
-static void _foreach_remove_tile(NIFTYLED_TYPE t, gpointer *e)
+static void _foreach_remove_tile(NIFTYLED_TYPE t, gpointer e)
 {
         if(t != LED_TILE_T)
                 return;
@@ -178,7 +178,7 @@ static void _foreach_remove_tile(NIFTYLED_TYPE t, gpointer *e)
 
 
 /** wrapper for do_* functions */
-static void _foreach_remove_chain(NIFTYLED_TYPE type, gpointer *e)
+static void _foreach_remove_chain(NIFTYLED_TYPE type, gpointer e)
 {
         /* works only if tile-element is selected */
         if(type != LED_TILE_T)
@@ -281,7 +281,7 @@ gboolean _foreach_element_refresh_highlight(GtkTreeModel *model, GtkTreePath *pa
 
 
 /** foreach: function to process an element that is currently selected */
-static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer *e)
+static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer e)
 {
         setup_props_hide();
 
@@ -295,7 +295,7 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer *e)
                         gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_tile_add")), TRUE);
 
                         /* disable non-hardware related menus */
-			gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_tile_remove")), FALSE);                        
+			gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_tile_remove")), FALSE);
                         gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_chain_add")), FALSE);
                         gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_chain_remove")), FALSE);
 
@@ -321,14 +321,14 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer *e)
                         gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_tile_add")), TRUE);
 
                         /* disable non-tile related menus */
-			gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_hardware_remove")), FALSE);                        
+			gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_hardware_remove")), FALSE);
 			gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_chain_add")), (gboolean) !led_tile_get_chain(
                                                         tile_niftyled(
                                                         (NiftyconfTile *) e)));
                         gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_chain_remove")), (gboolean) led_tile_get_chain(
                                                         tile_niftyled(
                                                         (NiftyconfTile *) e)));
-                        
+
 
 
                         /* highlight tile */
@@ -350,8 +350,8 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer *e)
                 {
                         /* disable non-chain related menus */
 			gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_hardware_remove")), FALSE);
-			gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_tile_add")), FALSE);			
-			gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_tile_remove")), FALSE);                        
+			gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_tile_add")), FALSE);
+			gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_tile_remove")), FALSE);
                         gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_chain_add")), FALSE);
                         gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_chain_remove")), FALSE);
 
@@ -378,7 +378,7 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer *e)
 
 
 /** foreach: unhighlight element */
-static void _foreach_unhighlight_element(NIFTYLED_TYPE t, gpointer *e)
+static void _foreach_unhighlight_element(NIFTYLED_TYPE t, gpointer e)
 {
         switch(t)
         {
@@ -409,8 +409,40 @@ static void _foreach_unhighlight_element(NIFTYLED_TYPE t, gpointer *e)
 }
 
 
+/** foreach: highlight element */
+static void _foreach_highlight_element(NIFTYLED_TYPE t, gpointer e)
+{
+        switch(t)
+        {
+                case LED_HARDWARE_T:
+                {
+                        hardware_tree_set_highlighted((NiftyconfHardware *) e, TRUE);
+                        break;
+                }
+
+                case LED_TILE_T:
+                {
+                        tile_tree_set_highlighted((NiftyconfTile *) e, TRUE);
+                        break;
+                }
+
+                case LED_CHAIN_T:
+                {
+                        chain_tree_set_highlighted((NiftyconfChain *) e, TRUE);
+                        break;
+                }
+
+		default:
+		{
+			break;
+		}
+        }
+
+}
+
+
 /** set currently active element */
-static void _foreach_set_current_element(NIFTYLED_TYPE t, gpointer *e)
+static void _foreach_set_current_element(NIFTYLED_TYPE t, gpointer e)
 {
         switch(t)
         {
@@ -447,7 +479,7 @@ static void _foreach_set_current_element(NIFTYLED_TYPE t, gpointer *e)
 
 /** recursion helper */
 static void _do_foreach_iter(GtkTreeModel *m, GtkTreeIter *i,
-                          void (*func)(NIFTYLED_TYPE t, gpointer *e))
+                          void (*func)(NIFTYLED_TYPE t, gpointer e))
 {
         do
         {
@@ -502,7 +534,7 @@ static void _tree_build()
  ******************************************************************************/
 
 /** run function on every tree-element */
-void setup_tree_do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer *e))
+void setup_tree_do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer e))
 {
         /* get model */
         GtkTreeModel *m = gtk_tree_view_get_model(GTK_TREE_VIEW(UI("treeview")));
@@ -512,7 +544,7 @@ void setup_tree_do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer *e))
 }
 
 /** run function on every selected tree-element (multiple selections) */
-void setup_tree_do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer *element))
+void setup_tree_do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer element))
 {
         /* get current treeview selection */
         GtkTreeSelection *selection;
@@ -548,7 +580,7 @@ void setup_tree_do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpoint
 
 
 /** run function on last selected element */
-void setup_tree_do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer *element))
+void setup_tree_do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer element))
 {
         /* get current treeview selection */
         GtkTreeSelection *selection;
@@ -574,7 +606,7 @@ void setup_tree_do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpoin
 
 
 /** get last of currently selected elements */
-void setup_tree_get_last_selected_element(NIFTYLED_TYPE *t, gpointer **element)
+void setup_tree_get_last_selected_element(NIFTYLED_TYPE *t, gpointer *element)
 {
         *t = LED_INVALID_T;
         *element = NULL;
@@ -604,7 +636,7 @@ void setup_tree_get_last_selected_element(NIFTYLED_TYPE *t, gpointer **element)
 
 
 /** get first of currently selected elements */
-void setup_tree_get_first_selected_element(NIFTYLED_TYPE *t, gpointer **element)
+void setup_tree_get_first_selected_element(NIFTYLED_TYPE *t, gpointer *element)
 {
 	*t = LED_INVALID_T;
 	*element = NULL;
@@ -630,6 +662,17 @@ void setup_tree_get_first_selected_element(NIFTYLED_TYPE *t, gpointer **element)
 
         *t = type;
         *element = pointer;
+}
+
+
+/** unselect all but this element */
+void setup_tree_highlight_only(NIFTYLED_TYPE t, gpointer element)
+{
+		/* unselect all elements */
+		setup_tree_do_foreach_element(_foreach_unhighlight_element);
+
+		/* highlight this element */
+		_foreach_highlight_element(t, element);
 }
 
 
@@ -1151,7 +1194,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                         gtk_widget_set_sensitive(remove_tile, FALSE);
                         break;
                 }
-			
+
                 default:
                 {
                         /* disable unneeded menus */
