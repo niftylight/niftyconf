@@ -5,6 +5,7 @@ bin_PROGRAMS = \
 niftyconf_SOURCES = \
 	niftyconf.c \
 	ui/niftyconf-ui.c \
+	ui/niftyconf-about.c \
 	ui/niftyconf-log.c \
 	ui/niftyconf-clipboard.c \
 	ui/niftyconf-info-hardware.c \

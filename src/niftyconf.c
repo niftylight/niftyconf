@@ -48,6 +48,7 @@
 #include "elements/niftyconf-chain.h"
 #include "elements/niftyconf-led.h"
 #include "ui/niftyconf-setup.h"
+#include "ui/niftyconf-about.h"
 #include "ui/niftyconf-ui.h"
 #include "ui/niftyconf-log.h"
 #include "ui/niftyconf-clipboard.h"
@@ -177,7 +178,8 @@ int main (int argc, char *argv[])
                 g_error("Failed to initialize \"setup\" module");
         if(!clipboard_init())
                 g_error("Failed to initialize \"clipboard\" module");
-
+	if(!about_init())
+		g_error("Failed to initialize \"about\" module");
 
         /* build our ui */
         _ui = ui_builder("niftyconf.ui");
@@ -207,6 +209,7 @@ int main (int argc, char *argv[])
 
 	g_object_unref(_ui);
 
+	about_deinit();
 	clipboard_deinit();
 	setup_deinit();
 	info_hardware_deinit();
@@ -399,4 +402,10 @@ G_MODULE_EXPORT void on_niftyconf_menu_copy_activate(GtkWidget *i, gpointer u)
 G_MODULE_EXPORT void on_niftyconf_menu_paste_activate(GtkWidget *i, gpointer u)
 {
 	clipboard_paste_current_selection();
+}
+
+/** menu-entry selected */
+G_MODULE_EXPORT void on_niftyconf_menu_help_about_activate(GtkWidget *i, gpointer u)
+{
+	about_set_visible(TRUE);
 }

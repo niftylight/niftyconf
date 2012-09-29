@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- interface-requires gtk+ 3.0 -->
+  <object class="GtkAboutDialog" id="window">
+    <property name="can_focus">False</property>
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">About...</property>
+    <property name="icon">icons/hicolor_apps_128x128_niftyconf.png</property>
+    <property name="type_hint">dialog</property>
+    <property name="program_name">niftyconf</property>
+    <property name="version">unknown version</property>
+    <property name="copyright" translatable="yes">Copyright (C) 2011-2012 Daniel Hiepler</property>
+    <property name="website">http://wiki.niftylight.de/niftyconf</property>
+    <property name="website_label" translatable="yes">niftylight Wikipage</property>
+    <property name="authors">Daniel Hiepler &lt;daniel@niftylight.de&gt;
+</property>
+    <property name="logo">icons/hicolor_apps_128x128_niftyconf.png</property>
+    <property name="logo_icon_name">niftylight GmbH</property>
+    <property name="license_type">gpl-3-0</property>
+    <signal name="close" handler="on_about_dialog_closed" swapped="no"/>
+    <signal name="response" handler="on_about_dialog_response" swapped="no"/>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="aboutdialog-vbox1">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="aboutdialog-action_area1">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
