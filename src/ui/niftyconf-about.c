@@ -43,7 +43,7 @@
 
 #include <gtk/gtk.h>
 #include "niftyconf-ui.h"
-
+#include "config.h"
 
 
 /** GtkBuilder for this module */
@@ -79,6 +79,12 @@ gboolean  about_init()
         if(!(_ui = ui_builder("niftyconf-about.ui")))
                 return FALSE;
 
+	GtkAboutDialog *d;
+	d = GTK_ABOUT_DIALOG(UI("window"));
+	gtk_about_dialog_set_program_name(d, PACKAGE_NAME);
+	gtk_about_dialog_set_version(d, PACKAGE_VERSION);
+	gtk_about_dialog_set_website(d, PACKAGE_URL);
+	gtk_link_button_set_uri(GTK_LINK_BUTTON(UI("linkbutton_bugreport")), PACKAGE_BUGREPORT);
         return TRUE;
 }
 

@@ -689,7 +689,6 @@ Public License instead of this License.  But first, please read
     <property name="authors">Daniel Hiepler &lt;daniel@niftylight.de&gt;
 </property>
     <property name="logo">gfx/niftylight.png</property>
-    <property name="logo_icon_name">niftylight GmbH</property>
     <property name="license_type">gpl-3-0</property>
     <signal name="close" handler="on_about_dialog_closed" swapped="no"/>
     <signal name="response" handler="on_about_dialog_response" swapped="no"/>
@@ -711,7 +710,22 @@ Public License instead of this License.  But first, please read
           </packing>
         </child>
         <child>
-          <placeholder/>
+          <object class="GtkLinkButton" id="linkbutton_bugreport">
+            <property name="label" translatable="yes">button</property>
+            <property name="use_action_appearance">False</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="has_tooltip">True</property>
+            <property name="use_action_appearance">False</property>
+            <property name="relief">none</property>
+            <property name="uri">http://github.com/niftylight/niftyconf/issues</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
         </child>
       </object>
     </child>
