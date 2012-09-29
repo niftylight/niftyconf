@@ -218,12 +218,6 @@ NiftyconfHardware *hardware_register_to_gui_and_niftyled(LedHardware *h)
                 return NULL;
         }
 
-	/* register chain of hardware to gui */
-	LedChain *chain;
-	if((chain = led_hardware_get_chain(h)))
-	{
-		chain_register_to_gui(chain);
-	}
 
 	/* get last hardware node */
 	LedHardware *last = led_setup_get_hardware(setup_get_current());
@@ -235,7 +229,7 @@ NiftyconfHardware *hardware_register_to_gui_and_niftyled(LedHardware *h)
 	else
 	{
 		/* append to end of setup */
-		led_hardware_list_append(last, h);
+		led_hardware_list_append_head(last, h);
 	}
 
 	return hardware;
