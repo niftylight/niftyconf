@@ -673,6 +673,8 @@ void setup_tree_highlight_only(NIFTYLED_TYPE t, gpointer element)
 
 		/* highlight this element */
 		_foreach_highlight_element(t, element);
+
+		setup_tree_refresh();
 }
 
 
