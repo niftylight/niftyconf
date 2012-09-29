@@ -121,6 +121,7 @@ AC_CONFIG_FILES([
    data/niftyconf.desktop.in
    data/Makefile
    data/icons/Makefile
+   data/gfx/Makefile
    src/Makefile
 ])
 AC_OUTPUT
