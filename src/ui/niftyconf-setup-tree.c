@@ -854,6 +854,9 @@ G_MODULE_EXPORT gboolean on_popup_remove_hardware(GtkWidget *w, GdkEventButton *
         /* refresh tree */
         setup_tree_refresh();
 
+	/* hide properties */
+	setup_props_hide();
+
         return TRUE;
 
 }
@@ -872,6 +875,9 @@ G_MODULE_EXPORT gboolean on_popup_remove_tile(GtkWidget *w, GdkEventButton *e, g
         /* refresh tree */
         setup_tree_refresh();
 
+	/* hide properties */
+	setup_props_hide();
+
         return TRUE;
 
 }
@@ -889,6 +895,9 @@ G_MODULE_EXPORT gboolean on_popup_remove_chain(GtkWidget *w, GdkEventButton *e, 
 
         /* refresh tree */
         setup_tree_refresh();
+
+	/* hide properties */
+	setup_props_hide();
 
         return TRUE;
 

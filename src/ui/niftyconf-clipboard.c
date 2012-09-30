@@ -44,6 +44,7 @@
 #include <niftyled.h>
 #include <gtk/gtk.h>
 #include "ui/niftyconf-setup.h"
+#include "ui/niftyconf-setup-props.h"
 #include "ui/niftyconf-setup-tree.h"
 #include "ui/niftyconf-log.h"
 #include "elements/niftyconf-hardware.h"
@@ -100,7 +101,10 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
                         if(cut)
                         {
 				hardware_destroy((NiftyconfHardware *) e);
+
                                 setup_tree_refresh();
+				/* hide properties */
+				setup_props_hide();
                         }
                         break;
                 }
@@ -116,7 +120,10 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
                         if(cut)
                         {
 				tile_destroy((NiftyconfTile *) e);
+
                                 setup_tree_refresh();
+				/* hide properties */
+				setup_props_hide();
                         }
                         break;
                 }
@@ -139,7 +146,10 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 				LedTile *t = led_chain_get_parent_tile(c);
 				NiftyconfTile *tile = led_tile_get_privdata(t);
 				chain_of_tile_destroy(tile);
+
                                 setup_tree_refresh();
+				/* hide properties */
+				setup_props_hide();
                         }
                         break;
                 }

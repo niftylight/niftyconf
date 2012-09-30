@@ -52,6 +52,7 @@
 #include "ui/niftyconf-ui.h"
 #include "ui/niftyconf-log.h"
 #include "ui/niftyconf-clipboard.h"
+#include "ui/niftyconf-setup-props.h"
 #include "ui/niftyconf-setup-tree.h"
 #include "ui/niftyconf-setup-ledlist.h"
 #include "ui/niftyconf-info-hardware.h"
@@ -316,10 +317,11 @@ G_MODULE_EXPORT void on_niftyconf_menu_remove_hardware_activate(GtkWidget *i, gp
         /* remove all currently selected elements */
         setup_tree_do_foreach_selected_element(_foreach_remove_hardware);
 
-        /** @todo refresh our menu */
-
         /* refresh tree */
         setup_tree_refresh();
+
+	/* hide properties */
+	setup_props_hide();
 }
 
 
@@ -339,9 +341,11 @@ G_MODULE_EXPORT void on_niftyconf_menu_remove_tile_activate(GtkWidget *i, gpoint
         /* remove all currently selected elements */
         setup_tree_do_foreach_selected_element(_foreach_remove_tile);
 
-        /** @todo refresh our menu */
         /* refresh tree */
         setup_tree_refresh();
+
+	/* hide properties */
+	setup_props_hide();
 }
 
 
@@ -362,10 +366,11 @@ G_MODULE_EXPORT void on_niftyconf_menu_remove_chain_activate(GtkWidget *i, gpoin
         /* remove all currently selected elements */
         setup_tree_do_foreach_selected_element(_foreach_remove_chain);
 
-        /** @todo refresh our menu */
-
         /* refresh tree */
         setup_tree_refresh();
+
+	/* hide properties */
+	setup_props_hide();
 }
 
 
