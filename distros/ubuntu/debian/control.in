@@ -10,7 +10,7 @@ Homepage: @PACKAGE_URL@
 
 Package: @PACKAGE_TARNAME@
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${misc:Depends}
 Description: @PACKAGE_DESCRIPTION@
  GUI to create or edit LED setup configuration files for the niftyled framework
 

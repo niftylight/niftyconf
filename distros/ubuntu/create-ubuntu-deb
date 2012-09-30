@@ -13,7 +13,7 @@ REPO="file:///media/GT-5830/code/niftyconf.git"
 # debian files
 DEBIAN="$(pwd)/debian"
 # temporary path
-TMP="/tmp/niftyconf"
+TMP="`pwd`/niftyconf-deb-build"
 # package name
 PKG_NAME="niftyconf"
 # package version
@@ -35,24 +35,30 @@ if ! test -d "${TMP}" ; then mkdir ${TMP} || die "mkdir" ; fi
 DIR="${TMP}/${PKG_NAME}-${PKG_VERSION}"
 
 # clone repo
-git clone --verbose "${REPO}" "${DIR}" || die "git"
-cd ${DIR} || die "cd"
+if test -d "${DIR}" ; then
+ cd ${DIR} || die "cd"
+ git pull || die "git"
+else
+ git clone "${REPO}" "${DIR}" || die "git"
+ cd ${DIR} || die "cd"
+fi
 
 # configure
 autoreconf -i || die "autoreconf"
 
 # create debian files
-rm -Rf ${TMP}/debian 2>/dev/null
-dh_make  --copyright "${LICENSE}" --email "${DEBEMAIL}" --createorig --multi || die "dh_make"
+rm -Rf ${DIR}/debian 2>/dev/null
+dh_make  --copyright "${LICENSE}" --email "${DEBEMAIL}" --createorig --single || die "dh_make"
 cp -r "${DEBIAN}"/* "${DIR}/debian/" || die "debian files copy"
 
-# build binary
-debuild || die "debuild"
-
 # build source
-debuild -S || "debuild source"
+dpkg-buildpackage -S -v"${PKG_VERSION}" || die "source pkg build"
+
+# build binary
+dpkg-buildpackage -b -v"${PKG_VERSION}" || die "binary pkg build"
+
 
 cd -
-rm -Rf "${DIR}"
+#rm -Rf "${DIR}"
 
 echo "Done. All files in \"${TMP}\""
