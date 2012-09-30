@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.24"/>
+  <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkAdjustment" id="adjustment_chain_ledcount">
     <property name="upper">65535</property>
     <property name="step_increment">1</property>
@@ -76,6 +76,7 @@
       <object class="GtkFrame" id="frame_led">
         <property name="can_focus">False</property>
         <property name="hexpand">True</property>
+        <property name="vexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
@@ -90,7 +91,13 @@
                 <property name="n_rows">4</property>
                 <property name="n_columns">3</property>
                 <property name="column_spacing">3</property>
-                <property name="row_spacing">2</property>
+                <property name="row_spacing">3</property>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
                 <child>
                   <object class="GtkLabel" id="label19">
                     <property name="visible">True</property>
@@ -247,12 +254,6 @@
                     <property name="bottom_attach">4</property>
                   </packing>
                 </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
               </object>
             </child>
           </object>
@@ -261,8 +262,12 @@
           <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">&lt;b&gt;LED&lt;/b&gt;</property>
-            <property name="use_markup">True</property>
+            <property name="ypad">5</property>
+            <property name="label" translatable="yes">LED</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+              <attribute name="underline" value="True"/>
+            </attributes>
           </object>
         </child>
       </object>
@@ -277,6 +282,7 @@
       <object class="GtkFrame" id="frame_chain">
         <property name="can_focus">False</property>
         <property name="hexpand">True</property>
+        <property name="vexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
@@ -291,7 +297,10 @@
                 <property name="n_rows">2</property>
                 <property name="n_columns">3</property>
                 <property name="column_spacing">3</property>
-                <property name="row_spacing">2</property>
+                <property name="row_spacing">3</property>
+                <child>
+                  <placeholder/>
+                </child>
                 <child>
                   <object class="GtkLabel" id="label17">
                     <property name="visible">True</property>
@@ -365,9 +374,6 @@
                     <property name="bottom_attach">2</property>
                   </packing>
                 </child>
-                <child>
-                  <placeholder/>
-                </child>
               </object>
             </child>
           </object>
@@ -376,8 +382,12 @@
           <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">&lt;b&gt;Chain&lt;/b&gt;</property>
-            <property name="use_markup">True</property>
+            <property name="ypad">5</property>
+            <property name="label" translatable="yes">Chain</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+              <attribute name="underline" value="True"/>
+            </attributes>
           </object>
         </child>
       </object>
@@ -391,6 +401,7 @@
       <object class="GtkFrame" id="frame_tile">
         <property name="can_focus">False</property>
         <property name="hexpand">True</property>
+        <property name="vexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
@@ -405,7 +416,7 @@
                 <property name="n_rows">7</property>
                 <property name="n_columns">3</property>
                 <property name="column_spacing">3</property>
-                <property name="row_spacing">2</property>
+                <property name="row_spacing">3</property>
                 <child>
                   <object class="GtkLabel" id="label10">
                     <property name="visible">True</property>
@@ -746,8 +757,12 @@
           <object class="GtkLabel" id="label3">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">&lt;b&gt;Tile&lt;/b&gt;</property>
-            <property name="use_markup">True</property>
+            <property name="ypad">5</property>
+            <property name="label" translatable="yes">Tile</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+              <attribute name="underline" value="True"/>
+            </attributes>
           </object>
         </child>
       </object>
@@ -761,6 +776,7 @@
       <object class="GtkFrame" id="frame_hardware">
         <property name="can_focus">False</property>
         <property name="hexpand">True</property>
+        <property name="vexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
@@ -775,7 +791,10 @@
                 <property name="n_rows">4</property>
                 <property name="n_columns">3</property>
                 <property name="column_spacing">3</property>
-                <property name="row_spacing">2</property>
+                <property name="row_spacing">3</property>
+                <child>
+                  <placeholder/>
+                </child>
                 <child>
                   <object class="GtkLabel" id="label5">
                     <property name="visible">True</property>
@@ -965,9 +984,6 @@
                 <child>
                   <placeholder/>
                 </child>
-                <child>
-                  <placeholder/>
-                </child>
               </object>
             </child>
           </object>
@@ -976,8 +992,12 @@
           <object class="GtkLabel" id="label4">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">&lt;b&gt;Hardware&lt;/b&gt;</property>
-            <property name="use_markup">True</property>
+            <property name="ypad">5</property>
+            <property name="label" translatable="yes">Hardware</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+              <attribute name="underline" value="True"/>
+            </attributes>
           </object>
         </child>
       </object>
