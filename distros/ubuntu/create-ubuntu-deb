@@ -54,3 +54,5 @@ debuild -S || "debuild source"
 
 cd -
 rm -Rf "${DIR}"
+
+echo "Done. All files in \"${TMP}\""

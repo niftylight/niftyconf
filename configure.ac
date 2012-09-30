@@ -123,6 +123,7 @@ AC_CONFIG_FILES([
    data/icons/Makefile
    data/gfx/Makefile
    src/Makefile
+   distros/ubuntu/debian/control
 ])
 AC_OUTPUT
 
