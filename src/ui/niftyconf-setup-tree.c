@@ -45,14 +45,14 @@
 #include <niftyled.h>
 #include <gtk/gtk.h>
 #include "niftyconf.h"
-#include "niftyconf-ui.h"
-#include "niftyconf-setup.h"
-#include "niftyconf-setup-props.h"
-#include "niftyconf-setup-tree.h"
-#include "niftyconf-setup-ledlist.h"
-#include "niftyconf-info-hardware.h"
-#include "niftyconf-clipboard.h"
-
+#include "ui/niftyconf-ui.h"
+#include "ui/niftyconf-setup.h"
+#include "ui/niftyconf-setup-props.h"
+#include "ui/niftyconf-setup-tree.h"
+#include "ui/niftyconf-setup-ledlist.h"
+#include "ui/niftyconf-info-hardware.h"
+#include "ui/niftyconf-clipboard.h"
+#include "ui/niftyconf-log.h"
 
 
 /* columns for our setup-treeview */
@@ -458,7 +458,7 @@ static void _foreach_set_current_element(NIFTYLED_TYPE t, gpointer e)
                 case LED_TILE_T:
                 {
                         current_tile = (NiftyconfTile *) e;
-                        break;
+                        break;NIFTYLED_TYPE		setup_tree_current_element_type();
                 }
 
                 case LED_CHAIN_T:
@@ -703,6 +703,13 @@ void setup_tree_refresh()
 GtkWidget *setup_tree_get_widget()
 {
         return GTK_WIDGET(UI("box"));
+}
+
+
+/** get type of currently selected element */
+NIFTYLED_TYPE setup_tree_current_element_type()
+{
+	return current_type;
 }
 
 
@@ -952,18 +959,8 @@ G_MODULE_EXPORT gboolean on_popup_add_chain(GtkWidget *w, GdkEventButton *e, gpo
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
                 return FALSE;
 
-        /* set currently active element */
-        setup_tree_do_for_last_selected_element(_foreach_set_current_element);
-
-        /* can only add chains to tiles */
-        if(current_type != LED_TILE_T)
-                return FALSE;
-
-        /* add new chain */
-       chain_of_tile_new(current_tile, 0, "RGB u8");
-
-        /* refresh tree */
-        setup_tree_refresh();
+	/* show "add hardware" window */
+        gtk_widget_set_visible(GTK_WIDGET(setup_ui("chain_add_window")), TRUE);
 
         return TRUE;
 }

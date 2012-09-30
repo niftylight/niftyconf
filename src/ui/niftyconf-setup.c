@@ -282,10 +282,14 @@ gboolean setup_init()
 	size_t f;
 	for(f = led_pixel_format_get_n_formats(); f > 0; f--)
 	{
+		const char *format = led_pixel_format_to_string(led_pixel_format_get_nth(f-1));
 		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(UI("hardware_add_pixelformat_comboboxtext")),
-		                               led_pixel_format_to_string(led_pixel_format_get_nth(f-1)));
+		                               format);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(UI("chain_add_pixelformat_comboboxtext")),
+		                               format);
 	}
 	gtk_combo_box_set_active(GTK_COMBO_BOX(UI("hardware_add_pixelformat_comboboxtext")), 0);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(UI("chain_add_pixelformat_comboboxtext")), 0);
 
         /* start with fresh empty setup */
 	_setup = led_setup_new();
@@ -435,7 +439,7 @@ G_MODULE_EXPORT void on_add_hardware_add_clicked(GtkButton *b, gpointer u)
 		return;
 
 	/* hide window */
-	gtk_widget_set_visible(GTK_WIDGET(setup_ui("hardware_add_window")), FALSE);
+	gtk_widget_set_visible(GTK_WIDGET(UI("hardware_add_window")), FALSE);
 
         /** @todo refresh our menu */
 
@@ -447,8 +451,17 @@ G_MODULE_EXPORT void on_add_hardware_add_clicked(GtkButton *b, gpointer u)
 /** add hardware "cancel" clicked */
 G_MODULE_EXPORT void on_add_hardware_cancel_clicked(GtkButton *b, gpointer u)
 {
-	gtk_widget_set_visible(GTK_WIDGET(setup_ui("hardware_add_window")), FALSE);
+	gtk_widget_set_visible(GTK_WIDGET(UI("hardware_add_window")), FALSE);
 }
+
+
+/** add hardware window close */
+G_MODULE_EXPORT gboolean on_add_hardware_window_delete_event(GtkWidget *w, GdkEvent *e)
+{
+	gtk_widget_set_visible(GTK_WIDGET(UI("hardware_add_window")), FALSE);
+        return TRUE;
+}
+
 
 /** add hardware "pixelformat" changed */
 G_MODULE_EXPORT void on_hardware_add_pixelformat_comboboxtext_changed(GtkComboBox *w, gpointer u)
@@ -465,9 +478,71 @@ G_MODULE_EXPORT void on_hardware_add_pixelformat_comboboxtext_changed(GtkComboBo
 
 	/* set minimum for "ledcount" spinbutton according to format */
 	size_t minimum = led_pixel_format_get_n_components(f);
-	gtk_adjustment_set_lower(GTK_ADJUSTMENT(UI("hardware_add_ledcount_adjustment")), (gdouble) minimum);
+	gtk_adjustment_set_lower(GTK_ADJUSTMENT(UI("ledcount_adjustment")), (gdouble) minimum);
 	if(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(UI("hardware_add_ledcount_spinbutton"))) < minimum)
 	{
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("hardware_add_ledcount_spinbutton")), (gdouble) minimum);
+	}
+}
+
+
+/** add chain "add" clicked */
+G_MODULE_EXPORT void on_add_chain_add_clicked(GtkButton *b, gpointer u)
+{
+
+	/* get parent element */
+	NIFTYLED_TYPE t;
+	gpointer element;
+	setup_tree_get_first_selected_element (&t, &element);
+
+        /* add new chain */
+       if(!chain_of_tile_new(t, element,
+                         gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(UI("chain_add_ledcount_spinbutton"))),
+                         gtk_combo_box_get_active_text (GTK_COMBO_BOX(UI("chain_add_pixelformat_comboboxtext")))))
+		return;
+
+	/* hide dialog */
+	gtk_widget_set_visible(GTK_WIDGET(UI("chain_add_window")), FALSE);
+
+        /* refresh tree */
+        setup_tree_refresh();
+
+}
+
+
+/** add chain "cancel" clicked */
+G_MODULE_EXPORT void on_add_chain_cancel_clicked(GtkButton *b, gpointer u)
+{
+	gtk_widget_set_visible(GTK_WIDGET(UI("chain_add_window")), FALSE);
+}
+
+
+/** add chain window close */
+G_MODULE_EXPORT gboolean on_add_chain_window_delete_event(GtkWidget *w, GdkEvent *e)
+{
+	gtk_widget_set_visible(GTK_WIDGET(UI("chain_add_window")), FALSE);
+        return TRUE;
+}
+
+
+/** add chain "pixelformat" changed */
+G_MODULE_EXPORT void on_chain_add_pixelformat_comboboxtext_changed(GtkComboBox *w, gpointer u)
+{
+	LedPixelFormat *f;
+	if(!(f = led_pixel_format_from_string(gtk_combo_box_get_active_text(w))))
+	{
+		/* invalid pixel format? */
+		gtk_widget_set_sensitive(GTK_WIDGET(UI("chain_add_ledcount_spinbutton")), false);
+		return;
+	}
+
+	gtk_widget_set_sensitive(GTK_WIDGET(UI("chain_add_ledcount_spinbutton")), true);
+
+	/* set minimum for "ledcount" spinbutton according to format */
+	size_t minimum = led_pixel_format_get_n_components(f);
+	gtk_adjustment_set_lower(GTK_ADJUSTMENT(UI("ledcount_adjustment")), (gdouble) minimum);
+	if(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(UI("chain_add_ledcount_spinbutton"))) < minimum)
+	{
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("chain_add_ledcount_spinbutton")), (gdouble) minimum);
 	}
 }

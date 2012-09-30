@@ -296,21 +296,7 @@ G_MODULE_EXPORT void on_niftyconf_menu_add_tile_activate(GtkWidget *i, gpointer 
 /** menu-entry selected */
 G_MODULE_EXPORT void on_niftyconf_menu_add_chain_activate(GtkWidget *i, gpointer u)
 {
-        NIFTYLED_TYPE t;
-        gpointer e;
-        setup_tree_get_last_selected_element(&t, &e);
-
-        /* can only add chains to tiles */
-        if(t != LED_TILE_T)
-                return;
-
-        /* add new chain */
-       chain_of_tile_new((NiftyconfTile *) e, 3, "RGB u8");
-
-        /** @todo refresh our menu */
-
-        /* refresh tree */
-        setup_tree_refresh();
+       gtk_widget_set_visible(GTK_WIDGET(setup_ui("chain_add_window")), TRUE);
 }
 
 

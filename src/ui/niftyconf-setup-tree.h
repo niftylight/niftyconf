@@ -51,6 +51,8 @@
 gboolean        setup_tree_init();
 void		setup_tree_deinit();
 GtkWidget *     setup_tree_get_widget();
+NIFTYLED_TYPE		setup_tree_current_element_type();
+
 
 /* GUI functions */
 void            setup_tree_clear();

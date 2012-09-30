@@ -43,6 +43,7 @@
 
 #include <gtk/gtk.h>
 #include "ui/niftyconf-ui.h"
+#include "ui/niftyconf-log.h"
 #include "ui/niftyconf-setup-props.h"
 #include "elements/niftyconf-led.h"
 #include "elements/niftyconf-chain.h"
@@ -177,14 +178,28 @@ void chain_unregister_from_gui(NiftyconfChain *c)
 
 
 /** create new chain for tile */
-gboolean chain_of_tile_new(NiftyconfTile *parent,
+gboolean chain_of_tile_new(NIFTYLED_TYPE parent_t,
+                           	  gpointer parent_element,
                                   LedCount length,
                                   const char *pixelformat)
 {
+
+        /* can only add chains to tiles */
+        if(parent_t != LED_TILE_T)
+	{
+		log_alert_show("Can only add Chain to Tiles");
+                return FALSE;
+	}
+
+	NiftyconfTile *parent = (NiftyconfTile *) parent_element;
+
         /** create new chain @todo select format */
         LedChain *n;
         if(!(n = led_chain_new(length, pixelformat)))
+	{
+		log_alert_show("Failed to create new chain \"%s\" (%d)", pixelformat, length);
                 return FALSE;
+	}
 
         /* attach chain to tile */
         LedTile *tile = tile_niftyled(parent);
@@ -195,7 +210,11 @@ gboolean chain_of_tile_new(NiftyconfTile *parent,
         //        return FALSE;
 
         /* register chain to gui */
-        chain_register_to_gui(n);
+        if(!chain_register_to_gui(n))
+	{
+		log_alert_show("Failed to register new chain to GUI. This is a bug. Expect the unexpected.");
+		return FALSE;
+	}
 
         return TRUE;
 }
