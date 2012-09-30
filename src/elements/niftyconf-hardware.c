@@ -273,10 +273,6 @@ void hardware_destroy(NiftyconfHardware *hw)
         /* unregister hardware */
         hardware_unregister_from_gui(hw);
 
-	/* remove hardware from setup? */
-	if(led_setup_get_hardware(setup_get_current()) == h)
-		led_setup_set_hardware(setup_get_current(), NULL);
-
         //led_settings_hardware_unlink(setup_get_current(), h);
         led_hardware_destroy(h);
 }
