@@ -156,7 +156,7 @@ NiftyconfHardware *hardware_register_to_gui(LedHardware *h)
 
 	/* register tiles of hardware */
 	LedTile *t;
-	if((t = led_hardware_get_tile(h)))
+	for(t = led_hardware_get_tile(h); t; t = led_tile_list_get_next(t))
 	{
 		tile_register_to_gui(t);
 	}
