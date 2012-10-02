@@ -43,18 +43,45 @@
 
 #include <gtk/gtk.h>
 #include <niftyled.h>
+#include "niftyconf-ui.h"
 #include "niftyconf-renderer.h"
 
 
 
-/** descriptor for renderer - renders one niftyconf element (setup, hardware, tile, ...) */
+
+/** renderer model */
+static struct
+{
+        /** viewport */
+        struct
+        {
+                gdouble pan_x, pan_y;
+                gdouble pan_t_x, pan_t_y;
+                gdouble scale;
+                gdouble scale_delta;
+                gdouble scale_cords;
+                gboolean mouse_1_pressed;
+                gdouble mouse_hold_x, mouse_hold_y;
+        }view;
+}_r;
+
+
+/** one renderer - renders one niftyconf element (setup, hardware, tile, ...) */
 struct _NiftyconfRenderer
 {
         /** element type */
 	NIFTYLED_TYPE type;
 	/** element */
 	gpointer element;
+	/** drawing surface */
+	cairo_surface_t *surface;
 };
+
+
+/** GtkBuilder for this module */
+static GtkBuilder *_ui;
+
+
 
 
 
@@ -66,12 +93,26 @@ struct _NiftyconfRenderer
 
 /******************************************************************************
  ******************************************************************************/
+/** getter for list widget */
+GtkWidget *renderer_get_widget()
+{
+        return GTK_WIDGET(UI("drawingarea"));
+}
 
 
 /** initialize this module */
 gboolean renderer_init()
 {
+	/* build ui */
+	_ui = ui_builder("niftyconf-renderer.ui");
+	
+	/* initial scale */
+	_r.view.scale = 1;
+        _r.view.scale_delta = 0.1;
 
+	/* initialize drawingarea */
+	gtk_widget_set_app_paintable(GTK_WIDGET(UI("drawingarea")), TRUE);
+	
         return TRUE;
 }
 
@@ -79,7 +120,7 @@ gboolean renderer_init()
 /** deinitialize this module */
 void renderer_deinit()
 {
-
+	g_object_unref(_ui);
 }
 
 

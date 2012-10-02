@@ -49,13 +49,14 @@ typedef struct _NiftyconfRenderer NiftyconfRenderer;
 
 
 /* GUI model functions */
-NiftyconfRenderer *	renderer_new(NIFTYLED_TYPE type, gpointer element);
+NiftyconfRenderer *		renderer_new(NIFTYLED_TYPE type, gpointer element);
 void 				renderer_destroy(NiftyconfRenderer *r);
 
 
 /* GUI functions */
 gboolean 			renderer_init();
 void 				renderer_deinit();
+GtkWidget *			renderer_get_widget();
 
 
 /* model functions */

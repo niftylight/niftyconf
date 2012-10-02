@@ -55,6 +55,7 @@
 #include "ui/niftyconf-setup-props.h"
 #include "ui/niftyconf-setup-tree.h"
 #include "ui/niftyconf-setup-ledlist.h"
+#include "ui/niftyconf-renderer.h"
 #include "ui/niftyconf-info-hardware.h"
 #include "config.h"
 
@@ -165,6 +166,8 @@ int main (int argc, char *argv[])
         /* initialize modules */
         if(!log_init())
                 g_error("Failed to initialize \"log\" module");
+	if(!renderer_init())
+		g_error("Failed to initialize \"renderer\" module");
         if(!led_init())
                 g_error("Failed to initialize \"led\" module");
         if(!chain_init())
@@ -184,11 +187,12 @@ int main (int argc, char *argv[])
 
         /* build our ui */
         _ui = ui_builder("niftyconf.ui");
-        GtkBox *box_setup = GTK_BOX(gtk_builder_get_object(_ui, "box_setup"));
+        GtkBox *box_setup = GTK_BOX(UI("box_setup"));
         gtk_box_pack_start(box_setup, setup_get_widget(), TRUE, TRUE, 0);
-        GtkBox *box_chain = GTK_BOX(gtk_builder_get_object(_ui, "box_chain"));
+        GtkBox *box_chain = GTK_BOX(UI("box_chain"));
         gtk_box_pack_start(box_chain, setup_ledlist_get_widget(), TRUE, TRUE, 0);
-
+	GtkBox *box_canvas = GTK_BOX(UI("box_canvas"));
+	gtk_box_pack_start(box_canvas, renderer_get_widget(), TRUE, TRUE, 0);
 
 
         /* load setup file if any given from commandline */
@@ -217,6 +221,7 @@ int main (int argc, char *argv[])
 	hardware_deinit();
 	tile_deinit();
 	led_deinit();
+	renderer_deinit();
 	log_deinit();
 
 
