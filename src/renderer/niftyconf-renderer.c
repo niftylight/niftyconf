@@ -45,6 +45,8 @@
 #include <gtk/gtk.h>
 #include <niftyled.h>
 #include "ui/niftyconf-ui.h"
+#include "ui/niftyconf-setup.h"
+#include "elements/niftyconf-tile.h"
 #include "renderer/niftyconf-renderer.h"
 
 
@@ -61,6 +63,7 @@ static struct
                 gdouble scale;
                 gdouble scale_delta;
                 gdouble scale_cords;
+		gdouble scale_factor;
                 gboolean mouse_1_pressed;
                 gdouble mouse_hold_x, mouse_hold_y;
         }view;
@@ -114,14 +117,15 @@ gboolean renderer_init()
 {
 	/* build ui */
 	_ui = ui_builder("niftyconf-renderer.ui");
-	
+
 	/* initial scale */
 	_r.view.scale = 1;
         _r.view.scale_delta = 0.1;
+	_r.view.scale_factor = 4;
 
 	/* initialize drawingarea */
 	gtk_widget_set_app_paintable(GTK_WIDGET(UI("drawingarea")), TRUE);
-	
+
         return TRUE;
 }
 
@@ -168,27 +172,27 @@ void renderer_destroy(NiftyconfRenderer *r)
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
 
-/** 
- * mousebutton pressed above drawingarea 
+/**
+ * mousebutton pressed above drawingarea
  */
-gboolean on_renderer_button_press_event(GtkWidget *w, 
-                                     GdkEventButton *ev, 
-                                     gpointer u) 
+gboolean on_renderer_button_press_event(GtkWidget *w,
+                                     GdkEventButton *ev,
+                                     gpointer u)
 {
         /* save coordinates */
         _r.view.mouse_hold_x = ev->x;
         _r.view.mouse_hold_y = ev->y;
-        
+
         return FALSE;
 }
 
 
-/** 
- * mousebutton released above drawingarea 
+/**
+ * mousebutton released above drawingarea
  */
-gboolean on_renderer_button_release_event(GtkWidget *w, 
-                                     GdkEvent *ev, 
-                                     gpointer u) 
+gboolean on_renderer_button_release_event(GtkWidget *w,
+                                     GdkEvent *ev,
+                                     gpointer u)
 {
         _r.view.pan_x += _r.view.pan_t_x;
         _r.view.pan_y += _r.view.pan_t_y;
@@ -198,12 +202,12 @@ gboolean on_renderer_button_release_event(GtkWidget *w,
 }
 
 
-/** 
- * mouse moved above drawingarea 
+/**
+ * mouse moved above drawingarea
  */
-gboolean on_renderer_motion_notify_event(GtkWidget *w, 
-                                     GdkEventMotion *ev, 
-                                     gpointer u) 
+gboolean on_renderer_motion_notify_event(GtkWidget *w,
+                                     GdkEventMotion *ev,
+                                     gpointer u)
 {
         /* mousebutton pressed? */
         if(ev->state & GDK_BUTTON1_MASK)
@@ -213,7 +217,7 @@ gboolean on_renderer_motion_notify_event(GtkWidget *w,
         }
 
         renderer_redraw();
-        
+
         return FALSE;
 }
 
@@ -242,8 +246,8 @@ gboolean on_renderer_scroll_event(GtkWidget *w,
                                 if(_r.view.scale_delta > 0.1)
                                         _r.view.scale_delta /= 1.1;
                                 _r.view.scale -= _r.view.scale_delta;
-                        }    
-                        
+                        }
+
                         renderer_redraw();
                         break;
                 }
@@ -251,8 +255,8 @@ gboolean on_renderer_scroll_event(GtkWidget *w,
                 default:
                         break;
         }
-        
-        
+
+
         return FALSE;
 }
 
@@ -276,61 +280,62 @@ gboolean on_renderer_expose_event(GtkWidget *w, GdkEventExpose *e, gpointer d)
 
         /* disable antialiasing */
         cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-        
+
         /* fill background */
         cairo_set_source_rgb(cr, 0,0,0);
-        cairo_rectangle(cr, 
-                        0, 0, 
+        cairo_rectangle(cr,
+                        0, 0,
                         (double) gdk_window_get_width(w->window),
                         (double) gdk_window_get_height(w->window));
         cairo_fill(cr);
 
-        
+
+        /* current LedSetup */
+	LedSetup *s;
+	if(!(s = setup_get_current()))
+		return FALSE;
+
+
         /* pan & scale */
-        //~ cairo_translate(cr, 
-                        //~ pan_x-((double) led_settings_get_width(setup_settings())*_r.view.scale*SCALE_FACTOR)/2, 
-                        //~ pan_y-((double) led_settings_get_height(setup_settings())*_r.view.scale*SCALE_FACTOR)/2);       
-        //~ cairo_scale(cr, _s.view.scale, _s.view.scale);
-        
-        
-        //~ /* walk through all hardware LED adapters */
-        //~ LedHardware *h;
-        //~ for(h = led_settings_hardware_get_first(setup_settings());
-            //~ h;
-            //~ h = led_hardware_sibling_get_next(h))
-        //~ {           
-                //~ cairo_surface_t *s;
-                
-                
-                //~ /* Walk all tiles of this hardware & draw their surface */
-                //~ LedTile *t;
-                //~ for(t = led_hardware_get_tile(h);
-                    //~ t;
-                    //~ t = led_tile_sibling_get_next(t))
-                //~ {
-                
-                        //~ /* check visibility */
+        cairo_translate(cr,
+                        pan_x-((double) led_setup_get_width(s)*_r.view.scale*_r.view.scale_factor)/2,
+                        pan_y-((double) led_setup_get_height(s)*_r.view.scale*_r.view.scale_factor)/2);
+        cairo_scale(cr, _r.view.scale, _r.view.scale);
 
-                        //~ /* get surface from tile */
-                        //~ Tile *tile = (Tile *) led_tile_get_privdata(t);
-                        //~ s = tile_get_surface(tile);
 
-                        //~ /* draw surface */
-                        //~ cairo_set_source_surface(cr, s, 
-                                //~ (double) (led_tile_get_x(t)*SCALE_FACTOR), 
-                                //~ (double) (led_tile_get_y(t)*SCALE_FACTOR));
-                        //~ cairo_paint(cr);
-                //~ }
+        /* walk through all hardware LED adapters */
+        LedHardware *h;
+        for(h = led_setup_get_hardware(s);
+            h;
+            h = led_hardware_list_get_next(h))
+        {
 
-                //~ /* Draw chain of this hardware */
-                //~ s = chain_get_surface(led_chain_get_privdata(led_hardware_get_chain(h)));
-                //~ cairo_set_source_surface(cr, s, 0, 0);
-                        //~ cairo_paint(cr);
-                
-        //~ }
+                /* Walk all tiles of this hardware & draw their surface */
+                LedTile *t;
+                for(t = led_hardware_get_tile(h);
+                    t;
+                    t = led_tile_list_get_next(t))
+                {
 
-        
+                        /* check visibility */
+
+                        /* get surface from tile */
+                        NiftyconfTile *tile = (NiftyconfTile *) led_tile_get_privdata(t);
+
+                        /* draw surface */
+                        cairo_set_source_surface(cr, tile_get_renderer(tile)->surface,
+                                (double) (led_tile_get_x(t)*_r.view.scale_factor),
+                                (double) (led_tile_get_y(t)*_r.view.scale_factor));
+                        cairo_paint(cr);
+                }
+
+                /* Draw chain of this hardware */
+                /*s = chain_get_surface(led_chain_get_privdata(led_hardware_get_chain(h)));
+                cairo_set_source_surface(cr, s, 0, 0);
+                        cairo_paint(cr);*/
+
+        }
+
         cairo_destroy(cr);
-        
         return FALSE;
 }

@@ -44,6 +44,8 @@
 #ifndef _NIFTYCONF_RENDERER_H
 #define _NIFTYCONF_RENDERER_H
 
+#include <niftyled.h>
+
 
 typedef struct _NiftyconfRenderer NiftyconfRenderer;
 

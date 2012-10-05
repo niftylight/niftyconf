@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -42,8 +42,9 @@
  */
 
 #include <gtk/gtk.h>
-#include "niftyconf-chain.h"
-#include "niftyconf-tile.h"
+#include "renderer/niftyconf-renderer.h"
+#include "elements/niftyconf-chain.h"
+#include "elements/niftyconf-tile.h"
 
 
 
@@ -56,6 +57,8 @@ struct _NiftyconfTile
         gboolean highlight;
         /** true if element tree is currently collapsed */
         gboolean collapsed;
+	/** renderer */
+	NiftyconfRenderer *renderer;
 };
 
 
@@ -68,12 +71,22 @@ struct _NiftyconfTile
 /******************************************************************************
  ******************************************************************************/
 
+/** getter for renderer */
+NiftyconfRenderer *tile_get_renderer(NiftyconfTile *t)
+{
+	if(!t)
+		NFT_LOG_NULL(NULL);
+
+	return t->renderer;
+}
+
+
 /** getter for boolean value whether element is currently highlighted */
 gboolean tile_tree_get_highlighted(NiftyconfTile *t)
 {
         if(!t)
                 NFT_LOG_NULL(FALSE);
-        
+
         return t->highlight;
 }
 
@@ -89,7 +102,7 @@ void tile_tree_set_highlighted(NiftyconfTile *t, gboolean is_highlighted)
 
 
 /**
- * getter for boolean value whether element 
+ * getter for boolean value whether element
  * tree is currently collapsed
  */
 gboolean tile_tree_get_collapsed(NiftyconfTile *t)
@@ -121,7 +134,7 @@ LedTile *tile_niftyled(NiftyconfTile *t)
 {
         if(!t)
                 return NULL;
-        
+
         return t->t;
 }
 
@@ -146,7 +159,7 @@ NiftyconfTile *tile_register_to_gui(LedTile *t)
         {
                 chain_register_to_gui(c);
         }
-        
+
         NiftyconfTile *n;
         if(!(n = calloc(1, sizeof(NiftyconfTile))))
         {
@@ -161,7 +174,14 @@ NiftyconfTile *tile_register_to_gui(LedTile *t)
         n->collapsed = TRUE;
         /* not highlighted */
 	n->highlight = FALSE;
-	
+	/* allocate renderer */
+	if(!(n->renderer = renderer_new(LED_TILE_T, n)))
+	{
+		g_error("Failed to allocate renderer for tile");
+		tile_unregister_from_gui(n);
+		return NULL;
+	}
+
         /* register descriptor as niftyled privdata */
         led_tile_set_privdata(t, n);
 
@@ -187,7 +207,7 @@ void tile_unregister_from_gui(NiftyconfTile *t)
                 {
                         tile_unregister_from_gui(led_tile_get_privdata(tile));
                 }
-                
+
                 led_tile_set_privdata(t->t, NULL);
 
 		/* free chain if this tile has one */
@@ -197,7 +217,10 @@ void tile_unregister_from_gui(NiftyconfTile *t)
 			chain_unregister_from_gui(led_chain_get_privdata(chain));
 		}
         }
-        
+
+	/* destroy renderer of this tile */
+	renderer_destroy(t->renderer);
+
         free(t);
 }
 
@@ -212,7 +235,7 @@ gboolean tile_of_hardware_new(NiftyconfHardware *parent)
 
         /* get last tile of this hardware */
         LedHardware *h = hardware_niftyled(parent);
-        
+
         /* does hw already have a tile? */
         LedTile *tile;
         if(!(tile = led_hardware_get_tile(h)))
@@ -230,7 +253,7 @@ gboolean tile_of_hardware_new(NiftyconfHardware *parent)
         /* create config */
         //if(!led_settings_create_from_tile(setup_get_current(), n))
         //        return FALSE;
-        
+
         return TRUE;
 }
 
@@ -252,7 +275,7 @@ gboolean tile_of_tile_new(NiftyconfTile *parent)
         /* create config */
         //if(!led_settings_create_from_tile(setup_get_current(), n))
         //        return FALSE;
-        
+
         return TRUE;
 }
 
@@ -262,9 +285,9 @@ void tile_destroy(NiftyconfTile *tile)
 {
         if(!tile)
                 NFT_LOG_NULL();
-        
+
         LedTile *t = tile_niftyled(tile);
-        
+
         /* unregister from gui */
         tile_unregister_from_gui(tile);
         /* unregister from settings */

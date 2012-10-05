@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -45,6 +45,7 @@
 #define _NIFTYCONF_TILE_H
 
 #include <niftyled.h>
+#include "renderer/niftyconf-renderer.h"
 #include "niftyconf-hardware.h"
 
 
@@ -70,7 +71,8 @@ void            tile_tree_set_highlighted(NiftyconfTile *t, gboolean is_highligh
 
 
 /* model functions */
-LedTile *       tile_niftyled(NiftyconfTile *t);
+NiftyconfRenderer *	tile_get_renderer(NiftyconfTile *t);
+LedTile *       			tile_niftyled(NiftyconfTile *t);
 
 
 
