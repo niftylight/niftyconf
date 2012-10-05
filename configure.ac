@@ -67,6 +67,7 @@ NIFTYLED_REQUIRED=0.1.0
 # ---------------------
 PKG_CHECK_MODULES(NIFTYCONF, 
 [
+        cairo
         gtk+-2.0 >= 2.2
         gmodule-2.0 
         niftyled >= $NIFTYLED_REQUIRED

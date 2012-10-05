@@ -9,7 +9,6 @@ niftyconf_SOURCES = \
 	ui/niftyconf-log.c \
 	ui/niftyconf-clipboard.c \
 	ui/niftyconf-info-hardware.c \
-	ui/niftyconf-renderer.c \
 	ui/niftyconf-setup-props.c \
 	ui/niftyconf-setup-tree.c \
 	ui/niftyconf-setup-ledlist.c \
@@ -17,7 +16,10 @@ niftyconf_SOURCES = \
 	elements/niftyconf-led.c \
 	elements/niftyconf-chain.c \
 	elements/niftyconf-tile.c \
-	elements/niftyconf-hardware.c
+	elements/niftyconf-hardware.c \
+	renderer/niftyconf-renderer.c \
+	renderer/niftyconf-renderer-tile.c \
+	renderer/niftyconf-renderer-chain.c
 
 
 niftyconf_INCLUDES = \

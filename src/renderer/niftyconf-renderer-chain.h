@@ -41,26 +41,18 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _NIFTYCONF_RENDERER_H
-#define _NIFTYCONF_RENDERER_H
-
-
-typedef struct _NiftyconfRenderer NiftyconfRenderer;
+#ifndef _NIFTYCONF_RENDERER_CHAIN_H
+#define _NIFTYCONF_RENDERER_CHAIN_H
 
 
 /* GUI model functions */
-NiftyconfRenderer *		renderer_new(NIFTYLED_TYPE type, gpointer element);
-void 				renderer_destroy(NiftyconfRenderer *r);
 
 
 /* GUI functions */
-gboolean 			renderer_init();
-void 				renderer_deinit();
-GtkWidget *			renderer_get_widget();
 
 
 /* model functions */
 
 
 
-#endif /* _NIFTYCONF_RENDERER_H */
+#endif /* _NIFTYCONF_RENDERER_CHAIN_H */

@@ -55,8 +55,8 @@
 #include "ui/niftyconf-setup-props.h"
 #include "ui/niftyconf-setup-tree.h"
 #include "ui/niftyconf-setup-ledlist.h"
-#include "ui/niftyconf-renderer.h"
 #include "ui/niftyconf-info-hardware.h"
+#include "renderer/niftyconf-renderer.h"
 #include "config.h"
 
 
