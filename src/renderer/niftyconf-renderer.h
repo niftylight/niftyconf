@@ -44,6 +44,7 @@
 #ifndef _NIFTYCONF_RENDERER_H
 #define _NIFTYCONF_RENDERER_H
 
+#include <cairo.h>
 #include <niftyled.h>
 
 
@@ -51,16 +52,17 @@ typedef struct _NiftyconfRenderer NiftyconfRenderer;
 
 
 /* GUI model functions */
-NiftyconfRenderer *		renderer_new(NIFTYLED_TYPE type, gpointer element);
+NiftyconfRenderer *		renderer_new(NIFTYLED_TYPE type, gpointer element, gint width, gint height);
 void 				renderer_destroy(NiftyconfRenderer *r);
-
 
 /* GUI functions */
 gboolean 			renderer_init();
 void 				renderer_deinit();
 GtkWidget *			renderer_get_widget();
 void 				renderer_redraw();
-
+gdouble				renderer_scale_factor();
+gboolean 			renderer_resize(NiftyconfRenderer *r, gint width, gint height);
+cairo_surface_t *		renderer_get_surface(NiftyconfRenderer *r);
 
 /* model functions */
 

@@ -41,7 +41,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <cairo.h>
+
 #include <gtk/gtk.h>
 #include <niftyled.h>
 #include "ui/niftyconf-ui.h"
@@ -105,10 +105,27 @@ void renderer_redraw()
 }
 
 
-/** getter for list widget */
+/** getter for widget */
 GtkWidget *renderer_get_widget()
 {
         return GTK_WIDGET(UI("drawingarea"));
+}
+
+
+/** getter for cairo surface */
+cairo_surface_t *renderer_get_surface(NiftyconfRenderer *r)
+{
+	if(!r)
+		NFT_LOG_NULL(NULL);
+
+	return r->surface;
+}
+
+
+/** getter for scaling factor */
+gdouble renderer_scale_factor()
+{
+	return _r.view.scale_factor;
 }
 
 
@@ -121,7 +138,7 @@ gboolean renderer_init()
 	/* initial scale */
 	_r.view.scale = 1;
         _r.view.scale_delta = 0.1;
-	_r.view.scale_factor = 4;
+	_r.view.scale_factor = 15;
 
 	/* initialize drawingarea */
 	gtk_widget_set_app_paintable(GTK_WIDGET(UI("drawingarea")), TRUE);
@@ -138,7 +155,7 @@ void renderer_deinit()
 
 
 /** allocate new renderer */
-NiftyconfRenderer *renderer_new(NIFTYLED_TYPE type, gpointer element)
+NiftyconfRenderer *renderer_new(NIFTYLED_TYPE type, gpointer element, gint width, gint height)
 {
 	if(!element)
 		NFT_LOG_NULL(NULL);
@@ -153,6 +170,15 @@ NiftyconfRenderer *renderer_new(NIFTYLED_TYPE type, gpointer element)
 	n->type = type;
 	n->element = element;
 
+        if(!(n->surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height)))
+        {
+                g_error("failed to create cairo surface (%dx%d)",
+                        width, height);
+                free(n);
+		return NULL;
+        }
+
+	
 	return n;
 }
 
@@ -163,8 +189,31 @@ void renderer_destroy(NiftyconfRenderer *r)
 	if(!r)
 		NFT_LOG_NULL();
 
-
+	
+	cairo_surface_destroy(r->surface);
+	
 	free(r);
+}
+
+
+/** resize surface of renderer */
+gboolean renderer_resize(NiftyconfRenderer *r, gint width, gint height)
+{
+	if(!r || !r->surface)
+		NFT_LOG_NULL(FALSE);
+
+	/* silently suceed if size is as requested */
+	if(width == cairo_image_surface_get_width(r->surface) &&
+	   height == cairo_image_surface_get_width(r->surface))
+		return TRUE;
+
+	/* destroy old surface */
+	cairo_surface_destroy(r->surface);
+
+	if(!(r->surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height)))
+		return FALSE;
+
+	return TRUE;
 }
 
 

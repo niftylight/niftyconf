@@ -42,9 +42,10 @@
  */
 
 #include <gtk/gtk.h>
-#include "renderer/niftyconf-renderer.h"
 #include "elements/niftyconf-chain.h"
 #include "elements/niftyconf-tile.h"
+#include "renderer/niftyconf-renderer.h"
+#include "renderer/niftyconf-renderer-tile.h"
 
 
 
@@ -175,7 +176,7 @@ NiftyconfTile *tile_register_to_gui(LedTile *t)
         /* not highlighted */
 	n->highlight = FALSE;
 	/* allocate renderer */
-	if(!(n->renderer = renderer_new(LED_TILE_T, n)))
+	if(!(n->renderer = renderer_tile_new(n)))
 	{
 		g_error("Failed to allocate renderer for tile");
 		tile_unregister_from_gui(n);
@@ -184,7 +185,7 @@ NiftyconfTile *tile_register_to_gui(LedTile *t)
 
         /* register descriptor as niftyled privdata */
         led_tile_set_privdata(t, n);
-
+	
 	return n;
 }
 

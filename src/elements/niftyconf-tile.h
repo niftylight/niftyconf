@@ -72,7 +72,7 @@ void            tile_tree_set_highlighted(NiftyconfTile *t, gboolean is_highligh
 
 /* model functions */
 NiftyconfRenderer *	tile_get_renderer(NiftyconfTile *t);
-LedTile *       			tile_niftyled(NiftyconfTile *t);
+LedTile *       	tile_niftyled(NiftyconfTile *t);
 
 
 
