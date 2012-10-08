@@ -46,6 +46,7 @@
 #include "elements/niftyconf-tile.h"
 #include "elements/niftyconf-chain.h"
 #include "renderer/niftyconf-renderer.h"
+#include "renderer/niftyconf-renderer-chain.h"
 
 
 
@@ -66,12 +67,12 @@ NiftyconfRenderer *renderer_tile_new(NiftyconfTile *tile)
 {
 	if(!tile)
 		NFT_LOG_NULL(NULL);
-	
+
 	/* dimensions of cairo surface */
 	LedTile *t = tile_niftyled(tile);
-        gint width = (int) led_tile_get_width(t)*renderer_scale_factor();
-        gint height = (int) led_tile_get_height(t)*renderer_scale_factor();
-   	
+        gint width = led_tile_get_width(t)*renderer_scale_factor();
+        gint height = led_tile_get_height(t)*renderer_scale_factor();
+
         return renderer_new(LED_TILE_T, tile, width, height);
 }
 
@@ -83,13 +84,13 @@ void renderer_tile_redraw(NiftyconfTile *tile)
         if(!tile)
                 NFT_LOG_NULL();
 
-		
+
 	/* get this tile */
 	LedTile *t = tile_niftyled(tile);
 
 	/* get renderer of this tile */
 	NiftyconfRenderer *r = tile_get_renderer(tile);
-	
+
         /* if dimensions changed, we need to allocate a new surface */
 	gint width = led_tile_get_transformed_width(t)*renderer_scale_factor();
 	gint height = led_tile_get_transformed_height(t)*renderer_scale_factor();
@@ -99,26 +100,26 @@ void renderer_tile_redraw(NiftyconfTile *tile)
 		return;
 	}
 
-	
+
 	/* get cairo surface of this renderer */
        	cairo_surface_t *s = renderer_get_surface(r);
-	
+
         /* create context for drawing */
         cairo_t *cr = cairo_create(s);
 
         /* disable antialiasing */
         cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-        
+
         /* clear surface */
         cairo_set_source_rgba(cr, 0,0,0,1);
-        cairo_rectangle(cr, 
-                        0, 0, 
+        cairo_rectangle(cr,
+                        0, 0,
                         (double) cairo_image_surface_get_width(s),
                         (double) cairo_image_surface_get_height(s));
         cairo_fill(cr);
 
 
-        
+
         /* redraw children */
         LedTile *ct;
         for(ct = led_tile_get_child(t);
@@ -126,35 +127,35 @@ void renderer_tile_redraw(NiftyconfTile *tile)
             ct = led_tile_list_get_next(ct))
         {
                 NiftyconfTile *ctt = (NiftyconfTile *) led_tile_get_privdata(ct);
-                
+
                 /* redraw tile's surface */
                 renderer_tile_redraw(ctt);
-                
+
 
                 /* move to x/y */
                 cairo_translate(cr,
-                                (double) (led_tile_get_x(ct))*renderer_scale_factor(), 
+                                (double) (led_tile_get_x(ct))*renderer_scale_factor(),
                                 (double) (led_tile_get_y(ct))*renderer_scale_factor());
-                
+
                 /* rotate */
                 cairo_translate(cr,
-                                (led_tile_get_transformed_pivot_x(ct))*renderer_scale_factor(), 
+                                (led_tile_get_transformed_pivot_x(ct))*renderer_scale_factor(),
                                 (led_tile_get_transformed_pivot_y(ct))*renderer_scale_factor());
-                
+
                 cairo_rotate(cr, led_tile_get_rotation(ct));
                 cairo_translate(cr,
-                                -(led_tile_get_pivot_x(ct))*renderer_scale_factor(), 
+                                -(led_tile_get_pivot_x(ct))*renderer_scale_factor(),
                                 -(led_tile_get_pivot_y(ct))*renderer_scale_factor());
 
                 /* adapt to new pivot */
                 /*cairo_translate(cr,
                                 (led_tile_get_pivot_y(ct)-led_tile_get_transformed_pivot_x(ct))*renderer_scale_factor(),
                                 (led_tile_get_pivot_x(ct)-led_tile_get_transformed_pivot_y(ct))*renderer_scale_factor());*/
-                
+
                 /* draw */
                 cairo_set_source_surface(cr, renderer_get_surface(tile_get_renderer(ctt)), 0, 0);
 
-                
+
                 cairo_fill(cr);
                 cairo_paint(cr);
 
@@ -163,21 +164,21 @@ void renderer_tile_redraw(NiftyconfTile *tile)
 
         }
 
-        
-        
+
+
         /* redraw chain */
         LedChain *chain;
         if((chain = led_tile_get_chain(t)))
         {
                 /* redraw chain */
                 NiftyconfChain *ch = led_chain_get_privdata(chain);
-                //chain_redraw(ch);
-                
+                renderer_chain_redraw(ch);
+
                 /* draw chain's surface to parent tile's surface */
-                //cairo_set_source_surface(cr, renderer_get_surface(chain_get_renderer(ch)), 0,0);                
-                //cairo_paint(cr);
+                cairo_set_source_surface(cr, renderer_get_surface(chain_get_renderer(ch)), 0,0);
+                cairo_paint(cr);
         }
-        
+
 
 
         if(tile_tree_get_highlighted(tile))
@@ -192,31 +193,31 @@ void renderer_tile_redraw(NiftyconfTile *tile)
                 cairo_set_source_rgba(cr, 1, 1, 1, 1);
                 cairo_set_line_width (cr, 1.5);
         }
-        
+
         /* draw tile outlines */
-        cairo_rectangle(cr, 0, 0, 
+        cairo_rectangle(cr, 0, 0,
                         (double) led_tile_get_transformed_width(t)*renderer_scale_factor(),
                         (double) led_tile_get_transformed_height(t)*renderer_scale_factor());
         cairo_stroke(cr);
 
 
-        
+
         /* highlight... */
         if(tile_tree_get_highlighted(tile))
         {
                 cairo_set_line_width (cr, 1);
                 cairo_set_source_rgba(cr, 1,1,1,0.25);
-                
-                cairo_rectangle(cr, 
-                        0, 0, 
+
+                cairo_rectangle(cr,
+                        0, 0,
                         (double) cairo_image_surface_get_width(s),
                         (double) cairo_image_surface_get_height(s));
-                cairo_fill(cr); 
+                cairo_fill(cr);
         }
 
         /* draw arrow (rectangle) to mark top */
         cairo_set_source_rgba(cr, 1,1,1,1);
-        
+
         if(tile_tree_get_highlighted(tile))
                 cairo_set_line_width (cr, 2);
         else
@@ -235,7 +236,7 @@ void renderer_tile_redraw(NiftyconfTile *tile)
         cairo_line_to(cr, cx, cy);
         cairo_close_path(cr);
         cairo_stroke(cr);
-        
+
         cairo_destroy(cr);
 }
 

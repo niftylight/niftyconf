@@ -47,6 +47,7 @@
 #include "ui/niftyconf-setup-props.h"
 #include "elements/niftyconf-led.h"
 #include "elements/niftyconf-chain.h"
+#include "renderer/niftyconf-renderer-chain.h"
 
 
 
@@ -57,6 +58,8 @@ struct _NiftyconfChain
         LedChain *c;
         /** true if element is currently highlighted */
         gboolean highlight;
+	/** renderer */
+	NiftyconfRenderer *renderer;
 };
 
 
@@ -77,7 +80,14 @@ struct _NiftyconfChain
 
 
 
+/** getter for renderer */
+NiftyconfRenderer *chain_get_renderer(NiftyconfChain *c)
+{
+	if(!c)
+		NFT_LOG_NULL(NULL);
 
+	return c->renderer;
+}
 
 
 /** getter for boolean value whether element is currently highlighted */
@@ -155,6 +165,14 @@ NiftyconfChain *chain_register_to_gui(LedChain *c)
 	/* not highlighted */
 	n->highlight = FALSE;
 
+	/* allocate renderer */
+	if(!(n->renderer = renderer_chain_new(n)))
+	{
+		g_error("Failed to allocate renderer for Chain");
+		chain_unregister_from_gui(n);
+		return NULL;
+	}
+
         /* register descriptor as niftyled privdata */
         led_chain_set_privdata(c, n);
 
@@ -172,6 +190,9 @@ void chain_unregister_from_gui(NiftyconfChain *c)
 
         chain_unregister_leds_from_gui(c);
         led_chain_set_privdata(c->c, NULL);
+
+	/* destroy renderer of this tile */
+	renderer_destroy(c->renderer);
 
         free(c);
 }

@@ -19,7 +19,9 @@ niftyconf_SOURCES = \
 	elements/niftyconf-hardware.c \
 	renderer/niftyconf-renderer.c \
 	renderer/niftyconf-renderer-tile.c \
-	renderer/niftyconf-renderer-chain.c
+	renderer/niftyconf-renderer-chain.c \
+	renderer/niftyconf-renderer-led.c
+
 
 
 niftyconf_INCLUDES = \

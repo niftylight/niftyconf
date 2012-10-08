@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -42,8 +42,9 @@
  */
 
 #include <gtk/gtk.h>
-#include "niftyconf-led.h"
-
+#include "elements/niftyconf-led.h"
+#include "renderer/niftyconf-renderer.h"
+#include "renderer/niftyconf-renderer-led.h"
 
 
 /** one element */
@@ -53,6 +54,8 @@ struct _NiftyconfLed
         Led *l;
         /** true if element is currently highlighted */
         gboolean highlight;
+	/** renderer */
+	NiftyconfRenderer *renderer;
 };
 
 
@@ -68,12 +71,22 @@ struct _NiftyconfLed
 /******************************************************************************
  ******************************************************************************/
 
+/** getter for renderer */
+NiftyconfRenderer *led_get_renderer(NiftyconfLed *l)
+{
+	if(!l)
+		NFT_LOG_NULL(NULL);
+
+	return l->renderer;
+}
+
+
 /** getter for boolean value whether element is currently highlighted */
 gboolean led_get_highlighted(NiftyconfLed *l)
 {
         if(!l)
                 NFT_LOG_NULL(FALSE);
-        
+
         return l->highlight;
 }
 
@@ -95,7 +108,7 @@ Led *led_niftyled(NiftyconfLed *l)
 {
         if(!l)
                 return NULL;
-        
+
         return l->l;
 }
 
@@ -115,6 +128,14 @@ NiftyconfLed *led_register_to_gui(Led *l)
         /* save descriptor */
         n->l = l;
 
+	/* allocate renderer */
+	if(!(n->renderer = renderer_led_new(n)))
+	{
+		g_error("Failed to allocate renderer for Led");
+		led_unregister_from_gui(n);
+		return NULL;
+	}
+
         /* register descriptor as niftyled privdata */
         led_set_privdata(l, n);
 
@@ -130,9 +151,12 @@ void led_unregister_from_gui(NiftyconfLed *l)
         if(!l)
                 return;
 
+	/* destroy renderer of this tile */
+	renderer_destroy(l->renderer);
+
         if(l->l)
                 led_set_privdata(l->l, NULL);
-        
+
         free(l);
 }
 
@@ -141,7 +165,7 @@ void led_unregister_from_gui(NiftyconfLed *l)
  * initialize led module
  */
 gboolean led_init()
-{        
+{
         return TRUE;
 }
 

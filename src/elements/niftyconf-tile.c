@@ -175,17 +175,18 @@ NiftyconfTile *tile_register_to_gui(LedTile *t)
         n->collapsed = TRUE;
         /* not highlighted */
 	n->highlight = FALSE;
+
 	/* allocate renderer */
 	if(!(n->renderer = renderer_tile_new(n)))
 	{
-		g_error("Failed to allocate renderer for tile");
+		g_error("Failed to allocate renderer for Tile");
 		tile_unregister_from_gui(n);
 		return NULL;
 	}
 
         /* register descriptor as niftyled privdata */
         led_tile_set_privdata(t, n);
-	
+
 	return n;
 }
 

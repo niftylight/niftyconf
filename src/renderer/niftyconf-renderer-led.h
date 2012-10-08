@@ -41,31 +41,20 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _NIFTYCONF_LED_H
-#define _NIFTYCONF_LED_H
-
-#include <niftyled.h>
-#include "elements/niftyconf-chain.h"
-
-typedef struct _NiftyconfLed NiftyconfLed;
+#ifndef _NIFTYCONF_RENDERER_LED_H
+#define _NIFTYCONF_RENDERER_LED_H
 
 
 /* GUI model functions */
-gboolean        led_init();
-void		led_deinit();
-NiftyconfLed *  led_register_to_gui(Led *l);
-void            led_unregister_from_gui(NiftyconfLed *l);
+NiftyconfRenderer *	renderer_led_new(NiftyconfLed *led);
+
 
 /* GUI functions */
-gboolean        led_get_highlighted(NiftyconfLed *l);
-void            led_set_highlighted(NiftyconfLed *l, gboolean is_highlighted);
-NiftyconfRenderer *	led_get_renderer(NiftyconfLed *l);
+void 				renderer_led_redraw(NiftyconfLed *led);
+
 
 /* model functions */
-Led *           led_niftyled(NiftyconfLed *l);
 
 
 
-
-
-#endif /* _NIFTYCONF_LED_H */
+#endif /* _NIFTYCONF_RENDERER_LED_H */

@@ -67,6 +67,7 @@ void            	chain_of_tile_destroy(NiftyconfTile *tile);
 /* GUI functions */
 void                    chain_tree_set_highlighted(NiftyconfChain *c, gboolean is_highlighted);
 gboolean                chain_tree_get_highlighted(NiftyconfChain *c);
+NiftyconfRenderer *chain_get_renderer(NiftyconfChain *c);
 
 
 /* model functions */
