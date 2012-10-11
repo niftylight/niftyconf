@@ -68,8 +68,8 @@ NiftyconfRenderer *renderer_chain_new(NiftyconfChain *chain)
 
 	/* dimensions of cairo surface */
 	LedChain *c = chain_niftyled(chain);
-        gint width = (led_chain_get_max_x(c)+1)*renderer_scale_factor();
-        gint height = (led_chain_get_max_y(c)+1)*renderer_scale_factor();
+        int width = (led_chain_get_max_x(c)+1)*renderer_scale_factor();
+        int height = (led_chain_get_max_y(c)+1)*renderer_scale_factor();
 
         return renderer_new(LED_CHAIN_T, chain, width, height);
 }
@@ -88,9 +88,17 @@ void renderer_chain_redraw(NiftyconfChain *chain)
 	/* get renderer of this chain */
 	NiftyconfRenderer *r = chain_get_renderer(chain);
 
+	/* if dimensions of our chain changed, resize renderer surface */
+	int width = (led_chain_get_max_x(c)+1)*renderer_scale_factor();
+	int height = (led_chain_get_max_y(c)+1)*renderer_scale_factor();
+	if(!renderer_resize(r, width, height))
+	{
+		g_error("Failed to resize renderer to %dx%d", width, height);
+		return;
+	}
+
 	/* get cairo surface of this renderer */
        	cairo_surface_t *s = renderer_get_surface(r);
-
 
 	 /* create context for drawing */
         cairo_t *cr = cairo_create(s);

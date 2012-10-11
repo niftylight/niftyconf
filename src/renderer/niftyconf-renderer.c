@@ -199,7 +199,7 @@ void renderer_destroy(NiftyconfRenderer *r)
 
 
 /** resize surface of renderer */
-gboolean renderer_resize(NiftyconfRenderer *r, gint width, gint height)
+gboolean renderer_resize(NiftyconfRenderer *r, int width, int height)
 {
 	if(!r || !r->surface)
 		NFT_LOG_NULL(FALSE);
