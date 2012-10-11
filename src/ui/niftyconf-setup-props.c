@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -43,13 +43,13 @@
 
 #include <math.h>
 #include <gtk/gtk.h>
-#include "niftyconf-ui.h"
-#include "niftyconf-log.h"
-#include "niftyconf-setup.h"
-#include "niftyconf-setup-tree.h"
-#include "niftyconf-setup-props.h"
-#include "niftyconf-setup-ledlist.h"
-
+#include "ui/niftyconf-ui.h"
+#include "ui/niftyconf-log.h"
+#include "ui/niftyconf-setup-tree.h"
+#include "ui/niftyconf-setup-props.h"
+#include "ui/niftyconf-setup-ledlist.h"
+#include "elements/niftyconf-setup.h"
+#include "renderer/niftyconf-renderer-setup.h"
 
 
 
@@ -99,7 +99,7 @@ GtkWidget *setup_props_get_widget()
 void setup_props_hardware_show(NiftyconfHardware *h)
 {
         current_hw = h;
-        
+
         if(h)
         {
                 LedHardware *hardware = hardware_niftyled(h);
@@ -111,7 +111,7 @@ void setup_props_hardware_show(NiftyconfHardware *h)
 		/* set button to right toggled state */
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(UI("togglebutton_initialized")), led_hardware_is_initialized(hardware));
         }
-        
+
         gtk_widget_show(GTK_WIDGET(UI("frame_hardware")));
 }
 
@@ -120,7 +120,7 @@ void setup_props_hardware_show(NiftyconfHardware *h)
 void setup_props_tile_show(NiftyconfTile *t)
 {
         current_tile = t;
-        
+
         if(t)
         {
                 LedTile *tile = tile_niftyled(t);
@@ -132,7 +132,7 @@ void setup_props_tile_show(NiftyconfTile *t)
                 gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_tile_pivot_x")), (gdouble) led_tile_get_pivot_x(tile));
                 gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_tile_pivot_y")), (gdouble) led_tile_get_pivot_y(tile));
         }
-        
+
         gtk_widget_show(GTK_WIDGET(UI("frame_tile")));
 }
 
@@ -141,17 +141,17 @@ void setup_props_tile_show(NiftyconfTile *t)
 void setup_props_chain_show(NiftyconfChain *c)
 {
         current_chain = c;
-        
+
         if(c)
         {
-                LedChain *chain = chain_niftyled(c);               
+                LedChain *chain = chain_niftyled(c);
                 gtk_entry_set_text(GTK_ENTRY(UI("entry_chain_format")), led_pixel_format_to_string(led_chain_get_format(chain)));
 		/* set minimum for "ledcount" spinbutton according to format */
 		size_t minimum = led_pixel_format_get_n_components(led_chain_get_format(chain));
 		gtk_adjustment_set_lower(GTK_ADJUSTMENT(UI("adjustment_chain_ledcount")), (gdouble) minimum);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_chain_ledcount")), (gdouble) led_chain_get_ledcount(chain));
         }
-        
+
         gtk_widget_show(GTK_WIDGET(UI("frame_chain")));
 }
 
@@ -160,16 +160,16 @@ void setup_props_chain_show(NiftyconfChain *c)
 void setup_props_led_show(NiftyconfLed *l)
 {
         current_led = l;
-        
+
         if(l)
         {
                 Led *led = led_niftyled(l);
                 gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_led_x")), (gdouble) led_get_x(led));
                 gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_led_y")), (gdouble) led_get_y(led));
                 gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_led_component")), (gdouble) led_get_component(led));
-                gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_led_gain")), (gdouble) led_get_gain(led)); 
+                gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_led_gain")), (gdouble) led_get_gain(led));
         }
-        
+
         gtk_widget_show(GTK_WIDGET(UI("frame_led")));
 }
 
@@ -188,7 +188,7 @@ void setup_props_hide()
 gboolean setup_props_init()
 {
         _ui = ui_builder("niftyconf-setup-props.ui");
-                
+
         return TRUE;
 }
 
@@ -204,7 +204,7 @@ void setup_props_hardware_initialized_image(gboolean is_initialized)
 {
 	/* show correct image */
 	gtk_widget_set_visible(GTK_WIDGET(UI("image_initialized")), is_initialized);
-	gtk_widget_set_visible(GTK_WIDGET(UI("image_deinitialized")), !is_initialized);	
+	gtk_widget_set_visible(GTK_WIDGET(UI("image_deinitialized")), !is_initialized);
 }
 
 
@@ -222,6 +222,9 @@ G_MODULE_EXPORT void on_spinbutton_led_x_changed(GtkSpinButton *s, gpointer u)
                 _widget_set_error_background(GTK_WIDGET(s), TRUE);
         else
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
+
+	/* redraw */
+	renderer_setup_redraw();
 }
 
 
@@ -235,6 +238,9 @@ G_MODULE_EXPORT void on_spinbutton_led_y_changed(GtkSpinButton *s, gpointer u)
                 _widget_set_error_background(GTK_WIDGET(s), TRUE);
         else
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
+
+	/* redraw */
+	renderer_setup_redraw();
 }
 
 
@@ -243,11 +249,14 @@ G_MODULE_EXPORT void on_spinbutton_led_component_changed(GtkSpinButton *s, gpoin
 {
         /* get currently selected LED */
         Led *l = led_niftyled(current_led);
-        
+
         if(!led_set_component(l, (LedFrameComponent) gtk_spin_button_get_value_as_int(s)))
                 _widget_set_error_background(GTK_WIDGET(s), TRUE);
         else
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
+
+	/* redraw */
+	renderer_setup_redraw();
 }
 
 
@@ -261,6 +270,9 @@ G_MODULE_EXPORT void on_spinbutton_led_gain_changed(GtkSpinButton *s, gpointer u
                 _widget_set_error_background(GTK_WIDGET(s), TRUE);
         else
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
+
+	/* redraw */
+	renderer_setup_redraw();
 }
 
 
@@ -272,14 +284,14 @@ G_MODULE_EXPORT void on_spinbutton_chain_ledcount_changed(GtkSpinButton *s, gpoi
 
         /* get new ledcount */
         LedCount ledcount = (LedCount) gtk_spin_button_get_value_as_int(s);
-        
+
         /* ledcount changed? */
         if(led_chain_get_ledcount(chain) == ledcount)
                 return;
 
         /* remove all current LEDs */
         setup_ledlist_clear();
-        
+
         /* unregister all LEDs from chain */
         chain_unregister_leds_from_gui(current_chain);
 
@@ -298,9 +310,12 @@ G_MODULE_EXPORT void on_spinbutton_chain_ledcount_changed(GtkSpinButton *s, gpoi
 
         /* re-register (less or more) LEDs in chain */
         chain_register_leds_to_gui(current_chain);
-                
+
         /* refresh view */
         setup_ledlist_refresh(current_chain);
+
+	/* redraw */
+	renderer_setup_redraw();
 }
 
 
@@ -309,7 +324,7 @@ G_MODULE_EXPORT void on_spinbutton_tile_x_changed(GtkSpinButton *s, gpointer u)
 {
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
-        
+
         /* set new value */
         if(!led_tile_set_x(tile, (LedFrameCord) gtk_spin_button_get_value_as_int(s)))
         /* error background color */
@@ -322,7 +337,8 @@ G_MODULE_EXPORT void on_spinbutton_tile_x_changed(GtkSpinButton *s, gpointer u)
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
         }
 
-        /* refresh view */
+        /* redraw */
+	renderer_setup_redraw();
 
 }
 
@@ -332,7 +348,7 @@ G_MODULE_EXPORT void on_spinbutton_tile_y_changed(GtkSpinButton *s, gpointer u)
 {
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
-        
+
         /* set new value */
         if(!led_tile_set_y(tile, (LedFrameCord) gtk_spin_button_get_value_as_int(s)))
         /* error background color */
@@ -344,9 +360,9 @@ G_MODULE_EXPORT void on_spinbutton_tile_y_changed(GtkSpinButton *s, gpointer u)
         {
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
         }
-        
 
-        /* refresh view */
+	/* redraw */
+	renderer_setup_redraw();
 
 }
 
@@ -356,7 +372,7 @@ G_MODULE_EXPORT void on_spinbutton_tile_rotation_changed(GtkSpinButton *s, gpoin
 {
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
-        
+
         /* set new value */
         if(!led_tile_set_rotation(tile, (gtk_spin_button_get_value(s)*M_PI)/180))
         /* error background color */
@@ -371,6 +387,9 @@ G_MODULE_EXPORT void on_spinbutton_tile_rotation_changed(GtkSpinButton *s, gpoin
 
         /* refresh view */
         setup_props_tile_show(current_tile);
+
+	/* redraw */
+	renderer_setup_redraw();
 }
 
 
@@ -379,7 +398,7 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_x_changed(GtkSpinButton *s, gpoint
 {
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
-        
+
         /* set new value */
         if(!led_tile_set_pivot_x(tile, gtk_spin_button_get_value(s)))
         /* error background color */
@@ -391,10 +410,12 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_x_changed(GtkSpinButton *s, gpoint
         {
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
         }
-        
 
         /* refresh view */
         setup_props_tile_show(current_tile);
+
+	/* redraw */
+	renderer_setup_redraw();
 }
 
 
@@ -403,7 +424,7 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_y_changed(GtkSpinButton *s, gpoint
 {
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
-        
+
         /* set new value */
         if(!led_tile_set_pivot_y(tile, gtk_spin_button_get_value(s)))
         /* error background color */
@@ -418,6 +439,9 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_y_changed(GtkSpinButton *s, gpoint
 
         /* refresh view */
         setup_props_tile_show(current_tile);
+
+	/* redraw */
+	renderer_setup_redraw();
 }
 
 
@@ -441,7 +465,7 @@ G_MODULE_EXPORT void on_entry_hardware_name_changed(GtkEditable *e, gpointer u)
 
         /* refresh view */
         setup_tree_refresh();
-        
+
 }
 
 
@@ -463,8 +487,6 @@ G_MODULE_EXPORT void on_entry_hardware_id_changed(GtkEditable *e, gpointer u)
                 _widget_set_error_background(GTK_WIDGET(e), FALSE);
         }
 
-        /* refresh view */
-
 }
 
 
@@ -485,11 +507,7 @@ G_MODULE_EXPORT void on_spinbutton_hardware_stride_changed(GtkSpinButton *s, gpo
         {
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
         }
-        
-        
-        /* refresh view */
 
-        
 }
 
 
@@ -497,7 +515,7 @@ G_MODULE_EXPORT void on_spinbutton_hardware_stride_changed(GtkSpinButton *s, gpo
 G_MODULE_EXPORT void on_togglebutton_hardware_init_toggled(GtkToggleButton *b, gpointer u)
 {
 	LedHardware *h = hardware_niftyled(current_hw);
-	
+
 	/* initialize */
 	if(gtk_toggle_button_get_active(b))
 	{
@@ -506,13 +524,13 @@ G_MODULE_EXPORT void on_togglebutton_hardware_init_toggled(GtkToggleButton *b, g
 		const gchar *id = gtk_entry_get_text(GTK_ENTRY(UI("entry_hw_id")));
 		LedCount ledcount = led_chain_get_ledcount(c);
 		const char *pixelformat = led_pixel_format_to_string(led_chain_get_format(c));
-		
+
 		if(!(led_hardware_init(h, id, ledcount, pixelformat)))
 		{
 			log_alert_show("Failed to initialize hardware.");
 			return;
 		}
-		
+
 		/* show correct image */
 		setup_props_hardware_initialized_image(TRUE);
 
@@ -524,7 +542,7 @@ G_MODULE_EXPORT void on_togglebutton_hardware_init_toggled(GtkToggleButton *b, g
 	{
 		/* deinitialize hardware */
 		led_hardware_deinit(h);
-		
+
 		/* show correct image */
 		setup_props_hardware_initialized_image(FALSE);
 	}

@@ -12,12 +12,13 @@ niftyconf_SOURCES = \
 	ui/niftyconf-setup-props.c \
 	ui/niftyconf-setup-tree.c \
 	ui/niftyconf-setup-ledlist.c \
-	ui/niftyconf-setup.c \
 	elements/niftyconf-led.c \
 	elements/niftyconf-chain.c \
 	elements/niftyconf-tile.c \
 	elements/niftyconf-hardware.c \
+	elements/niftyconf-setup.c \
 	renderer/niftyconf-renderer.c \
+	renderer/niftyconf-renderer-setup.c \
 	renderer/niftyconf-renderer-tile.c \
 	renderer/niftyconf-renderer-chain.c \
 	renderer/niftyconf-renderer-led.c

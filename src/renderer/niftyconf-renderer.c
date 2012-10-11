@@ -45,7 +45,7 @@
 #include <gtk/gtk.h>
 #include <niftyled.h>
 #include "ui/niftyconf-ui.h"
-#include "ui/niftyconf-setup.h"
+#include "elements/niftyconf-setup.h"
 #include "elements/niftyconf-tile.h"
 #include "renderer/niftyconf-renderer.h"
 
@@ -138,7 +138,7 @@ gboolean renderer_init()
 	/* initial scale */
 	_r.view.scale = 1;
         _r.view.scale_delta = 0.1;
-	_r.view.scale_factor = 15;
+	_r.view.scale_factor = 60;
 
 	/* initialize drawingarea */
 	gtk_widget_set_app_paintable(GTK_WIDGET(UI("drawingarea")), TRUE);
@@ -178,7 +178,7 @@ NiftyconfRenderer *renderer_new(NIFTYLED_TYPE type, gpointer element, gint width
 		return NULL;
         }
 
-	
+
 	return n;
 }
 
@@ -189,9 +189,11 @@ void renderer_destroy(NiftyconfRenderer *r)
 	if(!r)
 		NFT_LOG_NULL();
 
-	
-	cairo_surface_destroy(r->surface);
-	
+	if(r->surface)
+		cairo_surface_destroy(r->surface);
+
+	r->surface = NULL;
+
 	free(r);
 }
 
@@ -202,9 +204,9 @@ gboolean renderer_resize(NiftyconfRenderer *r, gint width, gint height)
 	if(!r || !r->surface)
 		NFT_LOG_NULL(FALSE);
 
-	/* silently suceed if size is as requested */
+	/* silently succeed if size is as requested */
 	if(width == cairo_image_surface_get_width(r->surface) &&
-	   height == cairo_image_surface_get_width(r->surface))
+	   height == cairo_image_surface_get_height(r->surface))
 		return TRUE;
 
 	/* destroy old surface */

@@ -43,10 +43,10 @@
 
 #include <niftyled.h>
 #include <gtk/gtk.h>
-#include "ui/niftyconf-setup.h"
 #include "ui/niftyconf-setup-props.h"
 #include "ui/niftyconf-setup-tree.h"
 #include "ui/niftyconf-setup-ledlist.h"
+#include "elements/niftyconf-setup.h"
 #include "elements/niftyconf-hardware.h"
 #include "ui/niftyconf-ui.h"
 #include "ui/niftyconf-log.h"
@@ -174,26 +174,6 @@ gboolean setup_load(gchar *filename)
                         g_warning("failed to allocate new hardware element");
                         return FALSE;
                 }
-
-                /* create chain of this hardware */
-                if(!chain_register_to_gui(led_hardware_get_chain(h)))
-                {
-                        g_warning("failed to allocate new chain element");
-                        return FALSE;
-                }
-
-                /* walk all tiles belonging to this hardware & initialize */
-                LedTile *t;
-                for(t = led_hardware_get_tile(h);
-                    t;
-                    t = led_tile_list_get_next(t))
-                {
-                        if(!tile_register_to_gui(t))
-                        {
-                                g_warning("failed to allocate new tile element");
-                                return FALSE;
-                        }
-                }
         }
 
         /* save new settings */
@@ -201,10 +181,6 @@ gboolean setup_load(gchar *filename)
 
         /* update ui */
         setup_tree_refresh();
-
-
-        /* redraw new setup */
-        //setup_redraw();
 
         return TRUE;
 }
@@ -219,15 +195,7 @@ void setup_cleanup()
             h;
             h = led_hardware_list_get_next(h))
         {
-                LedTile *t;
-                for(t = led_hardware_get_tile(h);
-                    t;
-                    t = led_tile_list_get_next(t))
-                {
-                        tile_unregister_from_gui(led_tile_get_privdata(t));
-                }
-
-                chain_unregister_from_gui(led_chain_get_privdata(led_hardware_get_chain(h)));
+		/* unregister hardware */
                 hardware_unregister_from_gui(led_hardware_get_privdata(h));
         }
 

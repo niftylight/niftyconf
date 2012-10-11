@@ -92,8 +92,12 @@ void renderer_tile_redraw(NiftyconfTile *tile)
 	NiftyconfRenderer *r = tile_get_renderer(tile);
 
         /* if dimensions changed, we need to allocate a new surface */
+	gint width = led_tile_get_width(t)*renderer_scale_factor();
+	gint height = led_tile_get_height(t)*renderer_scale_factor();
+	/*
 	gint width = led_tile_get_transformed_width(t)*renderer_scale_factor();
 	gint height = led_tile_get_transformed_height(t)*renderer_scale_factor();
+	 */
 	if(!renderer_resize(r, width, height))
 	{
 		g_error("Failed to resize renderer to %dx%d", width, height);

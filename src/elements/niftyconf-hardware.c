@@ -44,7 +44,7 @@
 #include <gtk/gtk.h>
 #include "elements/niftyconf-hardware.h"
 #include "elements/niftyconf-chain.h"
-#include "ui/niftyconf-setup.h"
+#include "elements/niftyconf-setup.h"
 #include "ui/niftyconf-log.h"
 
 
@@ -128,9 +128,6 @@ LedHardware *hardware_niftyled(NiftyconfHardware *h)
 }
 
 
-
-
-
 /**
  * allocate new hardware element for GUI
  */
@@ -156,7 +153,9 @@ NiftyconfHardware *hardware_register_to_gui(LedHardware *h)
 
 	/* register tiles of hardware */
 	LedTile *t;
-	for(t = led_hardware_get_tile(h); t; t = led_tile_list_get_next(t))
+	for(t = led_hardware_get_tile(h);
+	      t;
+	      t = led_tile_list_get_next(t))
 	{
 		tile_register_to_gui(t);
 	}
@@ -183,14 +182,17 @@ void hardware_unregister_from_gui(NiftyconfHardware *h)
         if(!h)
                 return;
 
-	/* register tiles of hardware */
+
+	/* unregister tiles of hardware */
 	LedTile *t;
-	if((t = led_hardware_get_tile(h->h)))
+	for(t = led_hardware_get_tile(h->h);
+	      t;
+	      t = led_tile_list_get_next(t))
 	{
 		tile_unregister_from_gui(led_tile_get_privdata(t));
 	}
 
-	/* register chain of hardware */
+	/* unregister chain of hardware */
 	LedChain *c;
 	if((c = led_hardware_get_chain(h->h)))
 	{
@@ -273,7 +275,6 @@ void hardware_destroy(NiftyconfHardware *hw)
         /* unregister hardware */
         hardware_unregister_from_gui(hw);
 
-        //led_settings_hardware_unlink(setup_get_current(), h);
         led_hardware_destroy(h);
 }
 

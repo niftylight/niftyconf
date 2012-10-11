@@ -46,13 +46,16 @@
 #include <gtk/gtk.h>
 #include "niftyconf.h"
 #include "ui/niftyconf-ui.h"
-#include "ui/niftyconf-setup.h"
 #include "ui/niftyconf-setup-props.h"
 #include "ui/niftyconf-setup-tree.h"
 #include "ui/niftyconf-setup-ledlist.h"
 #include "ui/niftyconf-info-hardware.h"
 #include "ui/niftyconf-clipboard.h"
 #include "ui/niftyconf-log.h"
+#include "elements/niftyconf-setup.h"
+#include "renderer/niftyconf-renderer-setup.h"
+
+
 
 
 /* columns for our setup-treeview */
@@ -696,6 +699,9 @@ void setup_tree_refresh()
 
         /* rebuild tree */
         _tree_build();
+
+	/* redraw */
+	renderer_setup_redraw();
 }
 
 
@@ -833,9 +839,8 @@ G_MODULE_EXPORT void on_setup_treeview_cursor_changed(GtkTreeView *tv, gpointer 
         /* process all selected elements */
         setup_tree_do_foreach_selected_element(_foreach_element_selected);
 
-
-        //setup_redraw();
-        //scene_redraw();
+	/* redraw */
+	renderer_setup_redraw();
 }
 
 

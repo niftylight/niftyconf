@@ -47,7 +47,7 @@
 #include "elements/niftyconf-tile.h"
 #include "elements/niftyconf-chain.h"
 #include "elements/niftyconf-led.h"
-#include "ui/niftyconf-setup.h"
+#include "elements/niftyconf-setup.h"
 #include "ui/niftyconf-about.h"
 #include "ui/niftyconf-ui.h"
 #include "ui/niftyconf-log.h"
