@@ -56,10 +56,10 @@ struct _NiftyconfChain
 {
         /** niftyled descriptor */
         LedChain *c;
-        /** true if element is currently highlighted */
-        gboolean highlight;
 	/** renderer */
 	NiftyconfRenderer *renderer;
+	/** true if element is currently highlighted */
+        gboolean highlight;
 };
 
 
@@ -135,7 +135,6 @@ void chain_unregister_leds_from_gui(NiftyconfChain *c)
 			Led *l = led_chain_get_nth(c->c, i);
 			NiftyconfLed *led = led_get_privdata(l);
                         led_unregister_from_gui(led);
-			led_set_privdata(l, NULL);
                 }
         }
 }

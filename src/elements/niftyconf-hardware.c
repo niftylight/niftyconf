@@ -146,9 +146,9 @@ NiftyconfHardware *hardware_register_to_gui(LedHardware *h)
         /* save LedHardware descriptor */
         n->h = h;
 
-        /* default hardware is collapsed */
+        /* default hardware is collapsed... */
         n->collapsed = TRUE;
-	/* not highlighted */
+	/* ...not highlighted */
         n->highlight = FALSE;
 
 	/* register tiles of hardware */
@@ -180,7 +180,7 @@ NiftyconfHardware *hardware_register_to_gui(LedHardware *h)
 void hardware_unregister_from_gui(NiftyconfHardware *h)
 {
         if(!h)
-                return;
+                NFT_LOG_NULL();
 
 
 	/* unregister tiles of hardware */
@@ -189,18 +189,19 @@ void hardware_unregister_from_gui(NiftyconfHardware *h)
 	      t;
 	      t = led_tile_list_get_next(t))
 	{
-		tile_unregister_from_gui(led_tile_get_privdata(t));
+		NiftyconfTile *tile = led_tile_get_privdata(t);
+		tile_unregister_from_gui(tile);
 	}
 
 	/* unregister chain of hardware */
 	LedChain *c;
 	if((c = led_hardware_get_chain(h->h)))
 	{
-		chain_unregister_from_gui(led_chain_get_privdata(c));
+		NiftyconfChain *chain = led_chain_get_privdata(c);
+		chain_unregister_from_gui(chain);
 	}
 
-        if(h->h)
-                led_hardware_set_privdata(h->h, NULL);
+        led_hardware_set_privdata(h->h, NULL);
 
         free(h);
 }

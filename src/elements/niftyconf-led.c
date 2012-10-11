@@ -52,10 +52,10 @@ struct _NiftyconfLed
 {
         /** niftyled descriptor */
         Led *l;
-        /** true if element is currently highlighted */
-        gboolean highlight;
-	/** renderer */
+        /** renderer */
 	NiftyconfRenderer *renderer;
+	/** true if element is currently highlighted */
+        gboolean highlight;
 };
 
 
@@ -154,8 +154,7 @@ void led_unregister_from_gui(NiftyconfLed *l)
 	/* destroy renderer of this tile */
 	renderer_destroy(l->renderer);
 
-        if(l->l)
-                led_set_privdata(l->l, NULL);
+        led_set_privdata(l->l, NULL);
 
         free(l);
 }
