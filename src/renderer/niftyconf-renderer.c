@@ -136,7 +136,7 @@ gboolean renderer_init()
 	_ui = ui_builder("niftyconf-renderer.ui");
 
 	/* initial scale */
-	_r.view.scale = 1;
+	_r.view.scale = 0.5;
         _r.view.scale_delta = 0.1;
 	_r.view.scale_factor = 60;
 
@@ -190,9 +190,10 @@ void renderer_destroy(NiftyconfRenderer *r)
 		NFT_LOG_NULL();
 
 	if(r->surface)
+	{
 		cairo_surface_destroy(r->surface);
-
-	r->surface = NULL;
+		r->surface = NULL;
+	}
 
 	free(r);
 }

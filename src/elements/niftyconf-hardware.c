@@ -182,6 +182,13 @@ void hardware_unregister_from_gui(NiftyconfHardware *h)
         if(!h)
                 NFT_LOG_NULL();
 
+	/* unregister chain of hardware */
+	LedChain *c;
+	if((c = led_hardware_get_chain(h->h)))
+	{
+		NiftyconfChain *chain = led_chain_get_privdata(c);
+		chain_unregister_from_gui(chain);
+	}
 
 	/* unregister tiles of hardware */
 	LedTile *t;
@@ -191,14 +198,6 @@ void hardware_unregister_from_gui(NiftyconfHardware *h)
 	{
 		NiftyconfTile *tile = led_tile_get_privdata(t);
 		tile_unregister_from_gui(tile);
-	}
-
-	/* unregister chain of hardware */
-	LedChain *c;
-	if((c = led_hardware_get_chain(h->h)))
-	{
-		NiftyconfChain *chain = led_chain_get_privdata(c);
-		chain_unregister_from_gui(chain);
 	}
 
         led_hardware_set_privdata(h->h, NULL);

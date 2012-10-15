@@ -218,7 +218,13 @@ G_MODULE_EXPORT void on_spinbutton_led_x_changed(GtkSpinButton *s, gpointer u)
         /* get currently selected LED */
         Led *l = led_niftyled(current_led);
 
-        if(!led_set_x(l, (LedFrameCord) gtk_spin_button_get_value_as_int(s)))
+	/* value really changed? */
+	int new_val = gtk_spin_button_get_value_as_int(s);
+	if(led_get_x(l) == new_val)
+		return;
+
+	/* set new value */
+        if(!led_set_x(l, new_val))
                 _widget_set_error_background(GTK_WIDGET(s), TRUE);
         else
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
@@ -234,7 +240,12 @@ G_MODULE_EXPORT void on_spinbutton_led_y_changed(GtkSpinButton *s, gpointer u)
         /* get currently selected LED */
         Led *l = led_niftyled(current_led);
 
-        if(!led_set_y(l, (LedFrameCord) gtk_spin_button_get_value_as_int(s)))
+	/* value really changed? */
+	int new_val = gtk_spin_button_get_value_as_int(s);
+	if(led_get_y(l) == new_val)
+		return;
+
+        if(!led_set_y(l, new_val))
                 _widget_set_error_background(GTK_WIDGET(s), TRUE);
         else
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
@@ -250,7 +261,12 @@ G_MODULE_EXPORT void on_spinbutton_led_component_changed(GtkSpinButton *s, gpoin
         /* get currently selected LED */
         Led *l = led_niftyled(current_led);
 
-        if(!led_set_component(l, (LedFrameComponent) gtk_spin_button_get_value_as_int(s)))
+	/* value really changed? */
+	int new_val = gtk_spin_button_get_value_as_int(s);
+	if(led_get_component(l) == new_val)
+		return;
+
+        if(!led_set_component(l, new_val))
                 _widget_set_error_background(GTK_WIDGET(s), TRUE);
         else
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
@@ -266,7 +282,12 @@ G_MODULE_EXPORT void on_spinbutton_led_gain_changed(GtkSpinButton *s, gpointer u
         /* get currently selected LED */
         Led *l = led_niftyled(current_led);
 
-        if(!led_set_gain(l, (LedGain) gtk_spin_button_get_value_as_int(s)))
+	/* value really changed? */
+	int new_val = gtk_spin_button_get_value_as_int(s);
+	if(led_get_gain(l) == new_val)
+		return;
+
+        if(!led_set_gain(l, new_val))
                 _widget_set_error_background(GTK_WIDGET(s), TRUE);
         else
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
@@ -279,13 +300,13 @@ G_MODULE_EXPORT void on_spinbutton_led_gain_changed(GtkSpinButton *s, gpointer u
 /** spinbutton value changed */
 G_MODULE_EXPORT void on_spinbutton_chain_ledcount_changed(GtkSpinButton *s, gpointer u)
 {
-        /* get current tile */
+        /* get current chain */
         LedChain *chain = chain_niftyled(current_chain);
 
         /* get new ledcount */
-        LedCount ledcount = (LedCount) gtk_spin_button_get_value_as_int(s);
+        int ledcount = gtk_spin_button_get_value_as_int(s);
 
-        /* ledcount changed? */
+        /* ledcount really changed? */
         if(led_chain_get_ledcount(chain) == ledcount)
                 return;
 
@@ -295,18 +316,38 @@ G_MODULE_EXPORT void on_spinbutton_chain_ledcount_changed(GtkSpinButton *s, gpoi
         /* unregister all LEDs from chain */
         chain_unregister_leds_from_gui(current_chain);
 
-        /* set new ledcount */
-        if(!led_chain_set_ledcount(chain, ledcount))
-        /* error background color */
-        {
-                _widget_set_error_background(GTK_WIDGET(s), TRUE);
-                return;
-        }
-        /* normal background color */
-        else
-        {
-                _widget_set_error_background(GTK_WIDGET(s), FALSE);
-        }
+	/* is this the chain of a hardware element? */
+	LedHardware *h;
+	if((h = led_chain_get_parent_hardware(chain)))
+	{
+		/* set new ledcount */
+		if(!led_hardware_set_ledcount(h, ledcount))
+		/* error background color */
+		{
+			_widget_set_error_background(GTK_WIDGET(s), TRUE);
+			return;
+		}
+		/* normal background color */
+		else
+		{
+			_widget_set_error_background(GTK_WIDGET(s), FALSE);
+		}
+	}
+	/* this is an ordinary chain of a tile element */
+	{
+		/* set new ledcount */
+		if(!led_chain_set_ledcount(chain, ledcount))
+		/* error background color */
+		{
+			_widget_set_error_background(GTK_WIDGET(s), TRUE);
+			return;
+		}
+		/* normal background color */
+		else
+		{
+			_widget_set_error_background(GTK_WIDGET(s), FALSE);
+		}
+	}
 
         /* re-register (less or more) LEDs in chain */
         chain_register_leds_to_gui(current_chain);
@@ -325,8 +366,13 @@ G_MODULE_EXPORT void on_spinbutton_tile_x_changed(GtkSpinButton *s, gpointer u)
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
 
+	/* value really changed? */
+	int new_val = gtk_spin_button_get_value_as_int(s);
+	if(led_tile_get_x(tile) == new_val)
+		return;
+
         /* set new value */
-        if(!led_tile_set_x(tile, (LedFrameCord) gtk_spin_button_get_value_as_int(s)))
+        if(!led_tile_set_x(tile, new_val))
         /* error background color */
         {
                 _widget_set_error_background(GTK_WIDGET(s), TRUE);
@@ -349,8 +395,13 @@ G_MODULE_EXPORT void on_spinbutton_tile_y_changed(GtkSpinButton *s, gpointer u)
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
 
+	/* value really changed? */
+	int new_val = gtk_spin_button_get_value_as_int(s);
+	if(led_tile_get_y(tile) == new_val)
+		return;
+
         /* set new value */
-        if(!led_tile_set_y(tile, (LedFrameCord) gtk_spin_button_get_value_as_int(s)))
+        if(!led_tile_set_y(tile, new_val))
         /* error background color */
         {
                 _widget_set_error_background(GTK_WIDGET(s), TRUE);
@@ -373,8 +424,13 @@ G_MODULE_EXPORT void on_spinbutton_tile_rotation_changed(GtkSpinButton *s, gpoin
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
 
+	/* value really changed? */
+	double new_val = (gtk_spin_button_get_value(s)*M_PI)/180;
+	if(led_tile_get_rotation(tile) == new_val)
+		return;
+
         /* set new value */
-        if(!led_tile_set_rotation(tile, (gtk_spin_button_get_value(s)*M_PI)/180))
+        if(!led_tile_set_rotation(tile, new_val))
         /* error background color */
         {
                 _widget_set_error_background(GTK_WIDGET(s), TRUE);
@@ -399,8 +455,13 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_x_changed(GtkSpinButton *s, gpoint
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
 
+	/* value really changed? */
+	double new_val = gtk_spin_button_get_value_as_int(s);
+	if(led_tile_get_pivot_x(tile) == new_val)
+		return;
+
         /* set new value */
-        if(!led_tile_set_pivot_x(tile, gtk_spin_button_get_value(s)))
+        if(!led_tile_set_pivot_x(tile, new_val))
         /* error background color */
         {
                 _widget_set_error_background(GTK_WIDGET(s), TRUE);
@@ -425,8 +486,13 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_y_changed(GtkSpinButton *s, gpoint
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
 
+	/* value really changed? */
+	double new_val = gtk_spin_button_get_value_as_int(s);
+	if(led_tile_get_pivot_y(tile) == new_val)
+		return;
+
         /* set new value */
-        if(!led_tile_set_pivot_y(tile, gtk_spin_button_get_value(s)))
+        if(!led_tile_set_pivot_y(tile, new_val))
         /* error background color */
         {
                 _widget_set_error_background(GTK_WIDGET(s), TRUE);

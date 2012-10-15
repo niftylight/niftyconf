@@ -190,12 +190,12 @@ void renderer_tile_redraw(NiftyconfTile *tile)
                 /* set white */
                 cairo_set_source_rgba(cr, 1, 1, 0, 1);
                 /* set line-width */
-                cairo_set_line_width (cr, 2);
+                cairo_set_line_width (cr, 4);
         }
         else
         {
                 cairo_set_source_rgba(cr, 1, 1, 1, 1);
-                cairo_set_line_width (cr, 1.5);
+                cairo_set_line_width (cr, 2);
         }
 
         /* draw tile outlines */
@@ -210,7 +210,7 @@ void renderer_tile_redraw(NiftyconfTile *tile)
         if(tile_tree_get_highlighted(tile))
         {
                 cairo_set_line_width (cr, 1);
-                cairo_set_source_rgba(cr, 1,1,1,0.25);
+                cairo_set_source_rgba(cr, 1,1,1,0.5);
 
                 cairo_rectangle(cr,
                         0, 0,
@@ -223,9 +223,9 @@ void renderer_tile_redraw(NiftyconfTile *tile)
         cairo_set_source_rgba(cr, 1,1,1,1);
 
         if(tile_tree_get_highlighted(tile))
-                cairo_set_line_width (cr, 2);
+                cairo_set_line_width (cr, 8);
         else
-                cairo_set_line_width (cr, 1);
+                cairo_set_line_width (cr, 2);
 
         double w = (double) led_tile_get_width(t)*renderer_scale_factor();
         double h = (double) led_tile_get_height(t)*renderer_scale_factor();

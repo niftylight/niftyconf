@@ -93,6 +93,11 @@ static NiftyconfChain *current_chain;
 static void _tree_append_chain(GtkTreeStore *s, LedChain *c, GtkTreeIter *parent)
 {
         NiftyconfChain *chain = led_chain_get_privdata(c);
+
+	/* don't add an element that's not registered */
+	if(!chain)
+		return;
+
         GtkTreeIter i;
         gtk_tree_store_append(s, &i, parent);
         gtk_tree_store_set(s, &i,
@@ -107,6 +112,11 @@ static void _tree_append_chain(GtkTreeStore *s, LedChain *c, GtkTreeIter *parent
 static void _tree_append_tile(GtkTreeStore *s, LedTile *t, GtkTreeIter *parent)
 {
         NiftyconfTile *tile = led_tile_get_privdata(t);
+
+	/* don't add an element that's not registered */
+	if(!tile)
+		return;
+
         GtkTreeIter i;
         gtk_tree_store_append(s, &i, parent);
         gtk_tree_store_set(s, &i,
@@ -138,6 +148,11 @@ static void _tree_append_tile(GtkTreeStore *s, LedTile *t, GtkTreeIter *parent)
 static void _tree_append_hardware(GtkTreeStore *s, LedHardware *h)
 {
         NiftyconfHardware *hardware = led_hardware_get_privdata(h);
+
+	/* don't add an element that's not registered */
+	if(!hardware)
+		return;
+
         GtkTreeIter i;
         gtk_tree_store_append(s, &i, NULL);
         gtk_tree_store_set(s, &i,
