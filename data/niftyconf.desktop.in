@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=@PACKAGE_VERSION@
+Name=@PACKAGE_NAME@
+GenericName=niftyled config GUI
+X-GNOME-FullName=@PACKAGE_NAME@
+Comment=Create, view and edit niftyled XML configuration files
+Exec=niftyconf %U
+Icon=niftyconf
+Terminal=false
+Type=Application
+Categories=Graphics;GNOME;GTK;
