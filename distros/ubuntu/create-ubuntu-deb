@@ -9,18 +9,18 @@
 export DEBFULLNAME="Daniel Hiepler"
 export DEBEMAIL="daniel-ubuntu@niftylight.de"
 # repository
-REPO="file:///media/GT-5830/code/niftyconf.git"
+REPO=../../../niftyconf.git
 # debian files
 DEBIAN="$(pwd)/debian"
-# temporary path
-TMP="`pwd`/niftyconf-deb-build"
 # package name
 PKG_NAME="niftyconf"
 # package version
 PKG_VERSION="0.0.1"
+PKG_VERSION_SHORT="0.0.1"
 # dh_make license
 LICENSE=gpl3
-
+# temporary path
+TMP="`pwd`/${PKG_NAME}-deb-build"
 
 
 
@@ -32,7 +32,7 @@ function die()
 
 
 if ! test -d "${TMP}" ; then mkdir ${TMP} || die "mkdir" ; fi
-DIR="${TMP}/${PKG_NAME}-${PKG_VERSION}"
+DIR="${TMP}/${PKG_NAME}-${PKG_VERSION_SHORT}"
 
 # clone repo
 if test -d "${DIR}" ; then
@@ -49,7 +49,7 @@ autoreconf -i || die "autoreconf"
 # create debian files
 rm -Rf ${DIR}/debian 2>/dev/null
 dh_make  --copyright "${LICENSE}" --email "${DEBEMAIL}" --createorig --single || die "dh_make"
-cp -r "${DEBIAN}"/* "${DIR}/debian/" || die "debian files copy"
+cp -r "${DEBIAN}"/* "${DIR}/debian/" || echo "No debian files found in \"${DEBIAN}\". Using those from dh_make"
 
 # build source
 dpkg-buildpackage -S -v"${PKG_VERSION}" || die "source pkg build"
