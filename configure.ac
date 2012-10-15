@@ -119,7 +119,7 @@ AC_SUBST(LDFLAGS)
 
 AC_CONFIG_FILES([
    Makefile
-   data/niftyconf.desktop.in
+   data/niftyconf.desktop
    data/Makefile
    data/icons/Makefile
    data/gfx/Makefile
