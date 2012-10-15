@@ -1,6 +1,6 @@
 
 bin_PROGRAMS = \
-	niftyconf      
+	niftyconf
 
 niftyconf_SOURCES = \
 	niftyconf.c \
