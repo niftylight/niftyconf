@@ -2,11 +2,11 @@ public_icons_themes = \
 	hicolor
 
 public_icons = \
-	hicolor_apps_128x128_niftyconf.png
-	hicolor_apps_48x48_niftyconf.png
-	hicolor_apps_24x24_niftyconf.png
-	hicolor_apps_16x16_niftyconf.png
-	hicolor_apps_32x32_niftyconf.png
+	hicolor_apps_128x128_niftyconf.png \
+	hicolor_apps_48x48_niftyconf.png \
+	hicolor_apps_24x24_niftyconf.png \
+	hicolor_apps_16x16_niftyconf.png \
+	hicolor_apps_32x32_niftyconf.png \
 	hicolor_apps_22x22_niftyconf.png
 
 EXTRA_DIST = \
