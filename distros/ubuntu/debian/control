@@ -13,8 +13,3 @@ Architecture: any
 Depends: ${misc:Depends}, libcairo2, libgtk2.0, niftyled
 Description: niftyled setup configuration GUI
  GUI to create or edit LED setup configuration files for the niftyled framework
-
-Package: niftyconf-doc
-Architecture: all
-Description: doc files for niftyconf
- various descriptive files
