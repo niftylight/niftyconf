@@ -25,7 +25,7 @@ m4_define(niftyconf_full_version,
 #  autoconf init
 # ---------------
 
-AC_INIT([Niftyconf],
+AC_INIT([niftyconf],
         [niftyconf_version],
         [http://github.com/niftylight/niftyconf/issues],
         [niftyconf],
@@ -122,7 +122,6 @@ AC_CONFIG_FILES([
    data/niftyconf.desktop
    data/Makefile
    data/icons/Makefile
-   data/gfx/Makefile
    src/Makefile
 ])
 AC_OUTPUT

@@ -9,8 +9,15 @@ public_icons = \
 	hicolor_apps_32x32_niftyconf.png \
 	hicolor_apps_22x22_niftyconf.png
 
+private_icons = \
+	niftylight.png \
+	niftyconf.png
+
 EXTRA_DIST = \
 	$(public_icons)
+
+gtk_update_icon_cache = gtk-update-icon-cache -f -t
+
 
 
 install-icons:
@@ -23,15 +30,11 @@ install-icons:
 		$(INSTALL_DATA) $(srcdir)/$$icon $(DESTDIR)$(datadir)/icons/$$THEME/$$SIZE/$$CONTEXT/$$ICONFILE; \
 	done; \
 	for icon in $(private_icons); do \
-		THEME=`echo $$icon | cut -d_ -f1`; \
-		CONTEXT=`echo $$icon | cut -d_ -f2`; \
-		SIZE=`echo $$icon | cut -d_ -f3`; \
-		ICONFILE=`echo $$icon | cut -d_ -f4`; \
-		mkdir -p $(DESTDIR)$(pkgdatadir)/icons/$$THEME/$$SIZE/$$CONTEXT; \
-		$(INSTALL_DATA) $(srcdir)/$$icon $(DESTDIR)$(pkgdatadir)/icons/$$THEME/$$SIZE/$$CONTEXT/$$ICONFILE; \
+		mkdir -p $(DESTDIR)$(pkgdatadir)/icons; \
+		$(INSTALL_DATA) $(srcdir)/$$icon $(DESTDIR)$(pkgdatadir)/icons/$$icon; \
 	done
-        
-        
+
+
 uninstall-icons:
 	-for icon in $(public_icons); do \
 	        THEME=`echo $$icon | cut -d_ -f1`; \
@@ -41,13 +44,9 @@ uninstall-icons:
 	        rm -f $(DESTDIR)$(datadir)/icons/$$THEME/$$SIZE/$$CONTEXT/$$ICONFILE; \
 	done; \
 	for icon in $(private_icons); do \
-	        THEME=`echo $$icon | cut -d_ -f1`; \
-	        CONTEXT=`echo $$icon | cut -d_ -f2`; \
-	        SIZE=`echo $$icon | cut -d_ -f3`; \
-	        ICONFILE=`echo $$icon | cut -d_ -f4`; \
-	        rm -f $(DESTDIR)$(pkgdatadir)/icons/$$THEME/$$SIZE/$$CONTEXT/$$ICONFILE; \
+	        rm -f $(DESTDIR)$(pkgdatadir)/icons/$$icon; \
 	done
-        
+
 update-icon-cache:
 	@-if test -z "$(DESTDIR)"; then \
 		echo "Updating Gtk icon cache."; \
@@ -55,7 +54,7 @@ update-icon-cache:
 			$(gtk_update_icon_cache) $(datadir)/icons/$$theme; \
 		done; \
 		for theme in $(private_icons_themes); do \
-			$(gtk_update_icon_cache) $(pkgdatadir)/icons/$$theme; \
+			$(gtk_update_icon_cache) $(pkgdatadir)/icons; \
 		done; \
 	else \
 		echo "*** Icon cache not updated.  After (un)install, run this:"; \
@@ -63,7 +62,7 @@ update-icon-cache:
 			echo "***   $(gtk_update_icon_cache) $(datadir)/icons/$$theme"; \
 		done; \
 		for theme in $(private_icons_themes); do \
-			echo "***   $(gtk_update_icon_cache) $(pkgdatadir)/icons/$$theme"; \
+			echo "***   $(gtk_update_icon_cache) $(pkgdatadir)/icons"; \
 		done; \
 	fi
 
