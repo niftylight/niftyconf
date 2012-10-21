@@ -1,4 +1,27 @@
 
+EXTRA_DIST = \
+	elements/niftyconf-chain.h \
+	elements/niftyconf-tile.h \
+	elements/niftyconf-hardware.h \
+	elements/niftyconf-led.h \
+	elements/niftyconf-setup.h \
+	renderer/niftyconf-renderer-chain.h \
+	renderer/niftyconf-renderer.h \
+	renderer/niftyconf-renderer-led.h \
+	renderer/niftyconf-renderer-setup.h \
+	renderer/niftyconf-renderer-tile.h \
+	ui/niftyconf-about.h \
+	ui/niftyconf-setup-ledlist.h \
+	ui/niftyconf-clipboard.h \
+	ui/niftyconf-setup-props.h \
+	ui/niftyconf-info-hardware.h \
+	ui/niftyconf-setup-tree.h \
+	ui/niftyconf-log.h \
+	ui/niftyconf-ui.h \
+	ui/niftyconf-setup.h \
+	niftyconf.h
+
+
 bin_PROGRAMS = \
 	niftyconf
 

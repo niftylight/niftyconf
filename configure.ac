@@ -123,6 +123,7 @@ AC_CONFIG_FILES([
    data/Makefile
    data/icons/Makefile
    src/Makefile
+   debian/control.tmpl
 ])
 AC_OUTPUT
 

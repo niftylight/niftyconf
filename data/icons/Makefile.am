@@ -14,7 +14,8 @@ private_icons = \
 	niftyconf.png
 
 EXTRA_DIST = \
-	$(public_icons)
+	$(public_icons) \
+	$(private_icons)
 
 gtk_update_icon_cache = gtk-update-icon-cache -f -t
 
