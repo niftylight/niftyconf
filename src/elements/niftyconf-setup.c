@@ -233,6 +233,7 @@ gboolean setup_init()
         GtkFileFilter *filter = GTK_FILE_FILTER(UI("filefilter"));
         gtk_file_filter_add_mime_type(filter, "application/xml");
         gtk_file_filter_add_mime_type(filter, "text/xml");
+		gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(UI("filechooserdialog_save")), filter);
 
 	/* build "plugin" combobox for "add hardware" dialog */
 	unsigned int p;
