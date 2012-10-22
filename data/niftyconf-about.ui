@@ -11,7 +11,7 @@
     <property name="version">unknown version</property>
     <property name="copyright" translatable="yes">Copyright (C) 2011-2012 Daniel Hiepler</property>
     <property name="website">http://wiki.niftylight.de/niftyconf</property>
-    <property name="website_label" translatable="yes">niftylight Wikipage</property>
+    <property name="website_label" translatable="yes">Project page</property>
     <property name="license" translatable="yes">GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
@@ -693,7 +693,7 @@ Public License instead of this License.  But first, please read
     <signal name="close" handler="on_about_dialog_closed" swapped="no"/>
     <signal name="response" handler="on_about_dialog_response" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkBox" id="aboutdialog-vbox1">
+      <object class="GtkVBox" id="aboutdialog-vbox1">
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
@@ -710,20 +710,124 @@ Public License instead of this License.  But first, please read
           </packing>
         </child>
         <child>
-          <object class="GtkLinkButton" id="linkbutton_bugreport">
-            <property name="label" translatable="yes">Bugtracker (click to report an issue)</property>
-            <property name="use_action_appearance">False</property>
+          <object class="GtkVBox" id="box1">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="has_tooltip">True</property>
-            <property name="use_action_appearance">False</property>
-            <property name="relief">none</property>
-            <property name="uri">http://github.com/niftylight/niftyconf/issues</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkHSeparator" id="separator3">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="box2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLinkButton" id="linkbutton_doc">
+                    <property name="label" translatable="yes">Documentation</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_markup" translatable="yes"> (click to report an issue)</property>
+                    <property name="tooltip_text" translatable="yes"> (click to report an issue)</property>
+                    <property name="relief">none</property>
+                    <property name="uri">http://wiki.niftylight.de/Niftyconf/Documentation</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkVSeparator" id="separator1">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLinkButton" id="linkbutton_source">
+                    <property name="label" translatable="yes">Sourcecode</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_markup" translatable="yes"> (click to report an issue)</property>
+                    <property name="tooltip_text" translatable="yes"> (click to report an issue)</property>
+                    <property name="relief">none</property>
+                    <property name="uri">http://github.com/niftylight/niftyconf.git</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">False</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkVSeparator" id="separator2">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLinkButton" id="linkbutton_bugreport">
+                    <property name="label" translatable="yes">Bugtracker</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text" translatable="yes"> (click to report an issue)</property>
+                    <property name="relief">none</property>
+                    <property name="uri">http://github.com/niftylight/niftyconf/issues</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">False</property>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHSeparator" id="separator4">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">True</property>
+            <property name="fill">False</property>
             <property name="position">2</property>
           </packing>
         </child>
