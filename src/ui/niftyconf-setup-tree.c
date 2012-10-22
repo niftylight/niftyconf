@@ -518,6 +518,7 @@ static void _do_foreach_iter(GtkTreeModel *m, GtkTreeIter *i,
         }while(gtk_tree_model_iter_next(m, i));
 }
 
+
 /** build setup-tree according to current setup */
 static void _tree_build()
 {
@@ -715,8 +716,8 @@ void setup_tree_refresh()
         /* rebuild tree */
         _tree_build();
 
-	/* redraw */
-	renderer_setup_redraw();
+		/* redraw */
+		renderer_setup_redraw();
 }
 
 
@@ -724,6 +725,13 @@ void setup_tree_refresh()
 GtkWidget *setup_tree_get_widget()
 {
         return GTK_WIDGET(UI("box"));
+}
+
+
+/** getter for treeview */
+GtkTreeView *setup_tree_view()
+{
+		return GTK_TREE_VIEW(UI("treeview"));
 }
 
 

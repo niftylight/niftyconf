@@ -48,9 +48,10 @@
 
 
 /* GUI model functions */
-gboolean        setup_tree_init();
-void		setup_tree_deinit();
+gboolean        	setup_tree_init();
+void					setup_tree_deinit();
 GtkWidget *     setup_tree_get_widget();
+GtkTreeView *	setup_tree_view();
 NIFTYLED_TYPE		setup_tree_current_element_type();
 
 

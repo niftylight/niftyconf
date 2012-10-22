@@ -247,6 +247,21 @@ G_MODULE_EXPORT void on_niftyconf_menu_quit_activate(GtkMenuItem *i, gpointer d)
         gtk_main_quit();
 }
 
+
+/** menuitem "collapse all" activated */
+G_MODULE_EXPORT void on_niftyconf_menu_tree_collapse_activate(GtkWidget *i, gpointer u)
+{
+		gtk_tree_view_collapse_all(setup_tree_view());
+}
+
+
+/** menuitem "expand all" activated */
+G_MODULE_EXPORT void on_niftyconf_menu_tree_expand_activate(GtkWidget *i, gpointer u)
+{
+		gtk_tree_view_expand_all(setup_tree_view());
+}
+
+
 /** menuitem "show log-window" toggled */
 G_MODULE_EXPORT void on_niftyconf_menu_log_window_activate(GtkWidget *i, gpointer u)
 {
