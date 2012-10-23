@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -61,10 +61,10 @@ static GtkBuilder *_ui;
  ******************************************************************************/
 
 
-static void _logger(void *userdata, 
-                    NftLoglevel level, 
-                    const char * file, 
-                    const char * func, 
+static void _logger(void *userdata,
+                    NftLoglevel level,
+                    const char * file,
+                    const char * func,
                     int line, const char * msg)
 {
         /* output this at current loglevel? */
@@ -80,18 +80,18 @@ static void _logger(void *userdata,
                 size += strlen(func);
         if(msg)
                 size += strlen(msg);
-        
+
 	gchar *s;
 	if(!(s = alloca(size)))
 		return;
 
-	snprintf(s, size, "(%s) ", 
+	snprintf(s, size, "(%s) ",
 	         nft_log_level_to_string(level));
 
 	/* include filename? */
 	if(file && gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(UI("checkbutton_file"))))
 	{
-                
+
                 strncat(s, file, (size-strlen(s) > 0 ? size-strlen(s) : 0));
 	}
 
@@ -118,7 +118,7 @@ static void _logger(void *userdata,
 
 	strncat(s, msg, (size-strlen(s) > 0 ? size-strlen(s) : 0));
 	strncat(s, "\n", (size-strlen(s) > 0 ? size-strlen(s) : 0));
-	
+
 	GtkTextView *tv = GTK_TEXT_VIEW(userdata);
 	GtkTextBuffer *buf = gtk_text_view_get_buffer(tv);
 	GtkTextIter iter;
@@ -141,39 +141,42 @@ void log_alert_show(char *message, ...)
 {
 #define MAX_MSG_SIZE	2048
 
-	/* just hide when message is NULL */
-	if(!message)
-	{
-		gtk_widget_set_visible(GTK_WIDGET(UI("alert_dialog")), FALSE);
-		return;
-	}
-	
-	/* allocate mem to build message */
-	char *tmp;
-        if(!(tmp = alloca(MAX_MSG_SIZE)))
-        {
-                NFT_LOG_PERROR("alloca");
-                return;
-        }
+		/* just hide when message is NULL */
+		if(!message)
+		{
+			gtk_widget_set_visible(GTK_WIDGET(UI("alert_dialog")), FALSE);
+			return;
+		}
 
-	/* build message */
-        va_list ap;
-        va_start(ap, message);
-			
-	/* print log-string */
-	if(vsnprintf((char *) tmp, MAX_MSG_SIZE, message, ap) < 0)
-        {
-                NFT_LOG_PERROR("vsnprintf");
-                return;
-        }
-	
-	va_end(ap);
-	
-	/* set message */
-	gtk_label_set_text(GTK_LABEL(UI("alert_label")), tmp);
-	
-	/* show dialog */
-	gtk_widget_set_visible(GTK_WIDGET(UI("alert_dialog")), TRUE);
+		/* allocate mem to build message */
+		char *tmp;
+		if(!(tmp = alloca(MAX_MSG_SIZE)))
+		{
+				NFT_LOG_PERROR("alloca");
+				return;
+		}
+
+		/* build message */
+		va_list ap;
+		va_start(ap, message);
+
+		/* print log-string */
+		if(vsnprintf((char *) tmp, MAX_MSG_SIZE, message, ap) < 0)
+		{
+				NFT_LOG_PERROR("vsnprintf");
+				return;
+		}
+
+		va_end(ap);
+
+		/* putout message through niftyled log mechanism also */
+		NFT_LOG(L_ERROR, "%s", tmp);
+
+		/* set message */
+		gtk_label_set_text(GTK_LABEL(UI("alert_label")), tmp);
+
+		/* show dialog */
+		gtk_widget_set_visible(GTK_WIDGET(UI("alert_dialog")), TRUE);
 }
 
 /**
@@ -181,11 +184,11 @@ void log_alert_show(char *message, ...)
  */
 void log_show(gboolean visible)
 {
-        gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);        
+        gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);
 }
 
-/** 
- * build a string with valid loglevels 
+/**
+ * build a string with valid loglevels
  */
 const char *log_loglevels()
 {
@@ -211,10 +214,10 @@ gboolean log_init()
         _ui = ui_builder("niftyconf-log.ui");
 
         /* initialize loglevel combobox */
-        NftLoglevel i;        
+        NftLoglevel i;
         for(i = L_MAX+1; i<L_MIN-1; i++)
         {
-                gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(UI("combobox")), nft_log_level_to_string(i));                
+                gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(UI("combobox")), nft_log_level_to_string(i));
         }
 
         /* set combobox to current loglevel */
@@ -256,7 +259,7 @@ G_MODULE_EXPORT gboolean on_alert_dialog_delete_event(GtkWidget *w, GdkEvent *e)
 G_MODULE_EXPORT void on_log_combobox_changed(GtkComboBox *w, gpointer u)
 {
 	NftLoglevel l = (NftLoglevel) gtk_combo_box_get_active(w)+1;
-	
+
 	if(!nft_log_level_set(l))
 		g_warning("Failed to set loglevel: \"%s\" (%d)",
 		          nft_log_level_to_string(l), (gint) l);
