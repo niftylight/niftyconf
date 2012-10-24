@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -96,7 +96,7 @@ static void _build(NiftyconfChain *c)
         for(i = 0;
             i < led_chain_get_ledcount(chain_niftyled(c));
             i++)
-        {         
+        {
                 Led *led = led_chain_get_nth(chain_niftyled(c), i);
                 GtkTreeIter iter;
                 gtk_list_store_append(GTK_LIST_STORE(UI("liststore")), &iter);
@@ -121,7 +121,7 @@ GtkWidget *setup_ledlist_get_widget()
 
 /** clear list */
 void setup_ledlist_clear()
-{        
+{
         gtk_list_store_clear(GTK_LIST_STORE(UI("liststore")));
 }
 
@@ -151,15 +151,15 @@ gboolean setup_ledlist_init()
 
         /* set selection mode for tree */
         gtk_tree_selection_set_mode(
-                gtk_tree_view_get_selection(GTK_TREE_VIEW(UI("treeview"))), 
+                gtk_tree_view_get_selection(GTK_TREE_VIEW(UI("treeview"))),
                 GTK_SELECTION_MULTIPLE);
-        
+
         /* initialize setup treeview */
         GtkTreeViewColumn *col = GTK_TREE_VIEW_COLUMN(UI("column_led"));
         GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
         gtk_tree_view_column_pack_start(col, renderer, TRUE);
         gtk_tree_view_column_add_attribute(col, renderer, "text", C_CHAIN_LED);
-        
+
         return TRUE;
 }
 
@@ -169,8 +169,44 @@ void setup_ledlist_deinit()
 	g_object_unref(_ui);
 }
 
+/** run function on every selected tree-element (multiple selections) */
+void setup_ledlist_do_foreach_selected_element(void (*func)(LedCount pos, NiftyconfLed *led))
+{
+        /* get current treeview selection */
+        GtkTreeSelection *selection;
+        selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(UI("treeview")));
+
+        /* something selected? */
+        GList *selected;
+        GtkTreeModel *m;
+        if(!(selected = gtk_tree_selection_get_selected_rows(selection, &m)))
+                return;
+
+        /* walk all selected rows */
+        GList *cur;
+        for(cur = g_list_last(selected); cur; cur = g_list_previous(cur))
+        {
+                GtkTreePath *path = (GtkTreePath *) cur->data;
+                GtkTreeIter i;
+                gtk_tree_model_get_iter(m, &i, path);
+
+                /* get this element */
+                LedCount current_pos;
+                NiftyconfLed *current_led;
+                gtk_tree_model_get(m, &i, C_CHAIN_LED, &current_pos, C_CHAIN_ELEMENT, &current_led,  -1);
+
+                /* run user function */
+                func(current_pos, current_led);
+        }
+
+        /* free list */
+        g_list_foreach(selected, (GFunc) gtk_tree_path_free, NULL);
+        g_list_free(selected);
+}
+
+
 /******************************************************************************
- ***************************** CALLBACKS **************************************
+ ***************************** CALLBACKS ************************************
  ******************************************************************************/
 
 /**
@@ -179,7 +215,7 @@ void setup_ledlist_deinit()
 G_MODULE_EXPORT void on_setup_ledlist_cursor_changed(GtkTreeView *tv, gpointer u)
 {
         //GtkTreeModel *m = gtk_tree_view_get_model(tv);
-        
+
         /* unhighlight all elements */
         //GtkTreeIter i;
         //gtk_tree_model_get_iter_root(m, &i);

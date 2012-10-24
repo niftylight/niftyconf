@@ -96,7 +96,7 @@ static gboolean _parse_cmdline_args(int argc, char *argv[], gchar **setupfile)
         if (!g_option_context_parse (context, &argc, &argv, &error))
         {
                 g_print ("option parsing failed: %s\n", error->message);
-		g_error_free(error);
+				g_error_free(error);
                 return FALSE;
         }
 
@@ -415,6 +415,20 @@ G_MODULE_EXPORT void on_niftyconf_menu_paste_activate(GtkWidget *i, gpointer u)
 {
 	clipboard_paste_current_selection();
 }
+
+/** menu-entry selected */
+G_MODULE_EXPORT void on_niftyconf_menu_import_activate(GtkWidget *i, gpointer u)
+{
+		gtk_widget_show(GTK_WIDGET(setup_ui("filechooserdialog_import")));
+}
+
+
+/** menu-entry selected */
+G_MODULE_EXPORT void on_niftyconf_menu_export_activate(GtkWidget *i, gpointer u)
+{
+		gtk_widget_show(GTK_WIDGET(setup_ui("filechooserdialog_export")));
+}
+
 
 /** menu-entry selected */
 G_MODULE_EXPORT void on_niftyconf_menu_help_about_activate(GtkWidget *i, gpointer u)

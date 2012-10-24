@@ -44,6 +44,7 @@
 #include <gtk/gtk.h>
 #include "elements/niftyconf-chain.h"
 #include "elements/niftyconf-tile.h"
+#include "elements/niftyconf-setup.h"
 #include "renderer/niftyconf-renderer.h"
 #include "renderer/niftyconf-renderer-tile.h"
 
@@ -71,6 +72,22 @@ struct _NiftyconfTile
 
 /******************************************************************************
  ******************************************************************************/
+
+/** dump element definition to printable string - use free() to deallacote the result */
+char *tile_dump(NiftyconfTile *tile)
+{
+		LedTile *t = tile_niftyled(tile);
+		LedPrefsNode *n;
+		if(!(n = led_prefs_tile_to_node(setup_get_prefs(), t)))
+				return NULL;
+
+		char *result = NULL;
+		result = led_prefs_node_to_buffer(setup_get_prefs(), n);
+		led_prefs_node_free(n);
+
+		return result;
+}
+
 
 /** getter for renderer */
 NiftyconfRenderer *tile_get_renderer(NiftyconfTile *t)

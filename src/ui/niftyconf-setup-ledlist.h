@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -49,9 +49,9 @@
 
 
 /* GUI model functions */
-gboolean                setup_ledlist_init();
-void			setup_ledlist_deinit();
-GtkWidget *             setup_ledlist_get_widget();
+gboolean             setup_ledlist_init();
+void						setup_ledlist_deinit();
+GtkWidget *         setup_ledlist_get_widget();
 
 
 /* GUI functions */
@@ -59,7 +59,7 @@ void                    setup_ledlist_refresh(NiftyconfChain *c);
 void                    setup_ledlist_clear();
 
 /* model functions */
-
+void 					setup_ledlist_do_foreach_selected_element(void (*func)(NiftyconfLed *led));
 
 
 #endif /* _NIFTYCONF_SETUP_LEDLIST_H */

@@ -92,48 +92,53 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
         {
                 case LED_HARDWARE_T:
                 {
-                        LedHardware *h = hardware_niftyled((NiftyconfHardware *) e);
-			LedPrefsNode *n = led_prefs_hardware_to_node(setup_get_prefs(), h);
-                        xml = led_prefs_node_to_buffer(setup_get_prefs(), n);
-			led_prefs_node_free(n);
+						if(!(xml = hardware_dump((NiftyconfHardware *) e)))
+						{
+								NFT_LOG(L_ERROR, "Failed to dump Hardware element");
+								return;
+						}
 
-                        /* remove element? */
+                        /* also remove element? */
                         if(cut)
                         {
-				hardware_destroy((NiftyconfHardware *) e);
-
+								hardware_destroy((NiftyconfHardware *) e);
                                 setup_tree_refresh();
-				/* hide properties */
-				setup_props_hide();
+
+								/* hide properties */
+								setup_props_hide();
                         }
                         break;
                 }
 
                 case LED_TILE_T:
                 {
-                        LedTile *t = tile_niftyled((NiftyconfTile *) e);
-			LedPrefsNode *n = led_prefs_tile_to_node(setup_get_prefs(), t);
-                        xml = led_prefs_node_to_buffer(setup_get_prefs(), n);
-			led_prefs_node_free(n);
+						if(!(xml = tile_dump((NiftyconfTile *) e)))
+						{
+								NFT_LOG(L_ERROR, "Failed to dump Tile element");
+								return;
+						}
 
                         /* remove element? */
                         if(cut)
                         {
-				tile_destroy((NiftyconfTile *) e);
-
+								tile_destroy((NiftyconfTile *) e);
                                 setup_tree_refresh();
-				/* hide properties */
-				setup_props_hide();
+
+								/* hide properties */
+								setup_props_hide();
                         }
                         break;
                 }
 
                 case LED_CHAIN_T:
                 {
-                        LedChain *c = chain_niftyled((NiftyconfChain *) e);
-			LedPrefsNode *n = led_prefs_chain_to_node(setup_get_prefs(), c);
-                        xml = led_prefs_node_to_buffer(setup_get_prefs(), n);
-			led_prefs_node_free(n);
+						if(!(xml = chain_dump((NiftyconfChain *) e)))
+						{
+								NFT_LOG(L_ERROR, "Failed to dump Chain element");
+								return;
+						}
+
+						LedChain *c = chain_niftyled((NiftyconfChain *) e);
 
                         /* don't cut from hardware elements */
                         if(led_chain_parent_is_hardware(c))
@@ -142,38 +147,39 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
                         /* remove element? */
                         if(cut)
                         {
-				/* get parent tile of this chain */
-				LedTile *t = led_chain_get_parent_tile(c);
-				NiftyconfTile *tile = led_tile_get_privdata(t);
-				chain_of_tile_destroy(tile);
-
+								/* get parent tile of this chain */
+								LedTile *t = led_chain_get_parent_tile(c);
+								NiftyconfTile *tile = led_tile_get_privdata(t);
+								chain_of_tile_destroy(tile);
                                 setup_tree_refresh();
-				/* hide properties */
-				setup_props_hide();
+
+								/* hide properties */
+								setup_props_hide();
                         }
                         break;
                 }
 
-		case LED_T:
-		{
-			Led *l = led_niftyled((NiftyconfLed *) e);
-			LedPrefsNode *n = led_prefs_led_to_node(setup_get_prefs(), l);
-			xml = led_prefs_node_to_buffer(setup_get_prefs(), n);
-			led_prefs_node_free(n);
+				case LED_T:
+				{
+						if(!(xml = led_dump((NiftyconfLed *) e)))
+						{
+								NFT_LOG(L_ERROR, "Failed to dump Led element");
+								return;
+						}
 
-			/* remove element? */
-			if(cut)
-			{
-				NFT_TODO();
-				//led_unregister((NiftyconfLed *) e);
-				//setup_tree_refresh();
-			}
-		}
+						/* remove element? */
+						if(cut)
+						{
+							NFT_TODO();
+							//led_unregister((NiftyconfLed *) e);
+							//setup_tree_refresh();
+						}
+				}
 
-		default:
-		{
-			NFT_LOG(L_ERROR, "Attempt to cut/copy unknown element. This shouldn't happen?!");
-		}
+				default:
+				{
+						NFT_LOG(L_ERROR, "Attempt to cut/copy unknown element. This shouldn't happen?!");
+				}
         }
 
 

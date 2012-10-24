@@ -43,6 +43,7 @@
 
 #include <gtk/gtk.h>
 #include "elements/niftyconf-led.h"
+#include "elements/niftyconf-setup.h"
 #include "renderer/niftyconf-renderer.h"
 #include "renderer/niftyconf-renderer-led.h"
 
@@ -110,6 +111,22 @@ Led *led_niftyled(NiftyconfLed *l)
                 return NULL;
 
         return l->l;
+}
+
+
+/** dump element definition to printable string - use free() to deallacote the result */
+char *led_dump(NiftyconfLed *led)
+{
+		Led *l = led_niftyled(led);
+		LedPrefsNode *n;
+		if(!(n = led_prefs_led_to_node(setup_get_prefs(), l)))
+				return NULL;
+
+		char *result = NULL;
+		result = led_prefs_node_to_buffer(setup_get_prefs(), n);
+		led_prefs_node_free(n);
+
+		return result;
 }
 
 

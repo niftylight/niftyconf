@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -45,10 +45,12 @@
 #define _NIFTYCONF_LOG_H
 
 
-gboolean 	log_init();
-void		log_deinit();
+gboolean 		log_init();
+void					log_deinit();
 const char *	log_loglevels();
-void            log_show(gboolean visible);
-void 		log_alert_show(char *message, ...);
+void            		log_show(gboolean visible);
+void 				log_alert_show(char *message, ...);
+gboolean 		log_dialog_yesno(char *title, char *message, ...);
+
 
 #endif /* _NIFTYCONF_LOG_H */

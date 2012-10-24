@@ -70,6 +70,22 @@ struct _NiftyconfHardware
 /******************************************************************************
  ******************************************************************************/
 
+/** dump element definition to printable string - use free() to deallacote the result */
+char *hardware_dump(NiftyconfHardware *hardware)
+{
+		LedHardware *h = hardware_niftyled(hardware);
+		LedPrefsNode *n;
+		if(!(n = led_prefs_hardware_to_node(setup_get_prefs(), h)))
+				return NULL;
+
+		char *result = NULL;
+		result = led_prefs_node_to_buffer(setup_get_prefs(), n);
+		led_prefs_node_free(n);
+
+		return result;
+}
+
+
 /** getter for boolean value whether element is currently highlighted */
 gboolean hardware_tree_get_highlighted(NiftyconfHardware *h)
 {

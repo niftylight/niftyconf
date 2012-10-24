@@ -47,6 +47,7 @@
 #include "ui/niftyconf-setup-props.h"
 #include "elements/niftyconf-led.h"
 #include "elements/niftyconf-chain.h"
+#include "elements/niftyconf-setup.h"
 #include "renderer/niftyconf-renderer-chain.h"
 
 
@@ -78,6 +79,21 @@ struct _NiftyconfChain
 /******************************************************************************
  ******************************************************************************/
 
+
+/** dump element definition to printable string - use free() to deallacote the result */
+char *chain_dump(NiftyconfChain *chain)
+{
+		LedChain *c = chain_niftyled(chain);
+		LedPrefsNode *n;
+		if(!(n = led_prefs_chain_to_node(setup_get_prefs(), c)))
+				return NULL;
+
+		char *result = NULL;
+		result = led_prefs_node_to_buffer(setup_get_prefs(), n);
+		led_prefs_node_free(n);
+
+		return result;
+}
 
 
 /** getter for renderer */

@@ -562,6 +562,7 @@ void setup_tree_do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer e))
         _do_foreach_iter(m, &iter, func);
 }
 
+
 /** run function on every selected tree-element (multiple selections) */
 void setup_tree_do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer element))
 {
@@ -1056,6 +1057,21 @@ G_MODULE_EXPORT gboolean on_popup_paste_element(GtkWidget *w, GdkEventButton *e,
 }
 
 
+/** menu-entry selected */
+G_MODULE_EXPORT gboolean on_popup_import_element(GtkWidget *w, GdkEventButton *e, gpointer u)
+{
+		gtk_widget_show(GTK_WIDGET(setup_ui("filechooserdialog_import")));
+		return true;
+}
+
+/** menu-entry selected */
+G_MODULE_EXPORT gboolean on_popup_export_element(GtkWidget *w, GdkEventButton *e, gpointer u)
+{
+		gtk_widget_show(GTK_WIDGET(setup_ui("filechooserdialog_export")));
+		return true;
+}
+
+
 /** create & show setup-tree popup menu */
 static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
@@ -1101,6 +1117,28 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), paste_menu);
         g_signal_connect(paste_menu, "button-press-event",
                                 (GCallback) on_popup_paste_element, NULL);
+
+		/* generate "import" menuitem */
+		GtkWidget *import_menu = gtk_image_menu_item_new_with_label("Import");
+        gtk_image_menu_item_set_image(
+                        GTK_IMAGE_MENU_ITEM(import_menu),
+                        gtk_image_new_from_stock(
+                                        "gtk-open",
+                                        GTK_ICON_SIZE_MENU));
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), import_menu);
+        g_signal_connect(import_menu, "button-press-event",
+                                (GCallback) on_popup_import_element, NULL);
+
+		/* generate "export" menuitem */
+		GtkWidget *export_menu = gtk_image_menu_item_new_with_label("Export");
+        gtk_image_menu_item_set_image(
+                        GTK_IMAGE_MENU_ITEM(export_menu),
+                        gtk_image_new_from_stock(
+                                        "gtk-save",
+                                        GTK_ICON_SIZE_MENU));
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), export_menu);
+        g_signal_connect(export_menu, "button-press-event",
+                                (GCallback) on_popup_export_element, NULL);
 
         /* generate "add hardware" menuitem (will be added toplevel only) */
         GtkWidget *add_hw = gtk_image_menu_item_new_with_label("Add hardware");
@@ -1188,8 +1226,6 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                         gtk_widget_set_sensitive(remove_chain, FALSE);
                         gtk_widget_set_sensitive(remove_tile, FALSE);
 
-                        /* generate "initialize/deinitialize hw" menuitem */
-
 
                         /* generate "info" menuitem */
                         GtkWidget *info_hw = gtk_image_menu_item_new_with_label("Plugin info");
@@ -1228,6 +1264,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
                         gtk_widget_set_sensitive(remove_chain, FALSE);
                         gtk_widget_set_sensitive(add_tile, FALSE);
                         gtk_widget_set_sensitive(remove_tile, FALSE);
+
                         break;
                 }
 

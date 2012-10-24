@@ -48,24 +48,24 @@
 
 
 /* GUI model functions */
-gboolean        	setup_tree_init();
-void					setup_tree_deinit();
-GtkWidget *     setup_tree_get_widget();
-GtkTreeView *	setup_tree_view();
+gboolean        			setup_tree_init();
+void							setup_tree_deinit();
+GtkWidget *    			setup_tree_get_widget();
+GtkTreeView *			setup_tree_view();
 NIFTYLED_TYPE		setup_tree_current_element_type();
 
 
 /* GUI functions */
-void            setup_tree_clear();
-void            setup_tree_refresh();
-void            setup_tree_do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer e));
-void            setup_tree_do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer element));
-void            setup_tree_do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer element));
-void            setup_tree_get_last_selected_element(NIFTYLED_TYPE *t, gpointer *element);
-void		   setup_tree_get_first_selected_element(NIFTYLED_TYPE *t, gpointer *element);
-void 	    setup_tree_highlight_only(NIFTYLED_TYPE t, gpointer element);
+void            				setup_tree_clear();
+void            				setup_tree_refresh();
+void            				setup_tree_get_last_selected_element(NIFTYLED_TYPE *t, gpointer *element);
+void		   					setup_tree_get_first_selected_element(NIFTYLED_TYPE *t, gpointer *element);
+void 	   		 			setup_tree_highlight_only(NIFTYLED_TYPE t, gpointer element);
 
 /* model functions */
+void            				setup_tree_do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer e));
+void            				setup_tree_do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer element));
+void            				setup_tree_do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer element));
 
 
 

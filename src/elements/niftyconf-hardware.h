@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -52,24 +52,25 @@ typedef struct _NiftyconfHardware NiftyconfHardware;
 
 
 /* GUI model functions */
-gboolean                hardware_init();
-void			hardware_deinit();
-NiftyconfHardware *     hardware_register_to_gui(LedHardware *h);
+gboolean                		hardware_init();
+void								hardware_deinit();
+NiftyconfHardware *	hardware_register_to_gui(LedHardware *h);
 NiftyconfHardware *	hardware_register_to_gui_and_niftyled(LedHardware *h);
-void                    hardware_unregister_from_gui(NiftyconfHardware *h);
-NiftyconfHardware *	hardware_new(const char *name, const char *family, 
-                                      const char *id, LedCount ledcount, 
-                                      const char *pixelformat);
-void            	hardware_destroy(NiftyconfHardware *hw);
+void                    			hardware_unregister_from_gui(NiftyconfHardware *h);
+NiftyconfHardware *	hardware_new(const char *name, const char *family,
+                                      	const char *id, LedCount ledcount,
+                                      	const char *pixelformat);
+void            					hardware_destroy(NiftyconfHardware *hw);
 
 /* GUI functions */
-gboolean                hardware_tree_get_highlighted(NiftyconfHardware *h);
-gboolean                hardware_tree_get_collapsed(NiftyconfHardware *h);
-void                    hardware_tree_set_highlighted(NiftyconfHardware *h, gboolean is_highlighted);
-void                    hardware_tree_set_collapsed(NiftyconfHardware *h, gboolean is_collapsed);
+gboolean                		hardware_tree_get_highlighted(NiftyconfHardware *h);
+gboolean                		hardware_tree_get_collapsed(NiftyconfHardware *h);
+void                    			hardware_tree_set_highlighted(NiftyconfHardware *h, gboolean is_highlighted);
+void                    			hardware_tree_set_collapsed(NiftyconfHardware *h, gboolean is_collapsed);
 
 /* model functions */
-LedHardware *           hardware_niftyled(NiftyconfHardware *h);
+LedHardware *           	hardware_niftyled(NiftyconfHardware *h);
+char *							hardware_dump(NiftyconfHardware *h);
 
 
 #endif /* _NIFTYCONF_HARDWARE_H */

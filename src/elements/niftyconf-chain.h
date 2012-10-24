@@ -52,27 +52,25 @@ typedef struct _NiftyconfChain NiftyconfChain;
 
 
 /* GUI model functions */
-gboolean                chain_init();
-NiftyconfChain *        chain_register_to_gui(LedChain *c);
-void                    chain_unregister_from_gui(NiftyconfChain *c);
-void                    chain_register_leds_to_gui(NiftyconfChain *c);
-void                    chain_unregister_leds_from_gui(NiftyconfChain *c);
-gboolean chain_of_tile_new(NIFTYLED_TYPE parent_t,
-                           	  gpointer parent_element,
-                                  LedCount length,
-                                  const char *pixelformat);
-void            	chain_of_tile_destroy(NiftyconfTile *tile);
+gboolean               		chain_init();
+NiftyconfChain *        	chain_register_to_gui(LedChain *c);
+void                    			chain_unregister_from_gui(NiftyconfChain *c);
+void                    			chain_register_leds_to_gui(NiftyconfChain *c);
+void                    			chain_unregister_leds_from_gui(NiftyconfChain *c);
+gboolean 					chain_of_tile_new(NIFTYLED_TYPE parent_t,
+                           	  				gpointer parent_element, LedCount length, const char *pixelformat);
+void            					chain_of_tile_destroy(NiftyconfTile *tile);
 
 
 /* GUI functions */
-void                    chain_tree_set_highlighted(NiftyconfChain *c, gboolean is_highlighted);
-gboolean                chain_tree_get_highlighted(NiftyconfChain *c);
-NiftyconfRenderer *chain_get_renderer(NiftyconfChain *c);
+void                    			chain_tree_set_highlighted(NiftyconfChain *c, gboolean is_highlighted);
+gboolean                		chain_tree_get_highlighted(NiftyconfChain *c);
+NiftyconfRenderer *	chain_get_renderer(NiftyconfChain *c);
 
 
 /* model functions */
-LedChain *              chain_niftyled(NiftyconfChain *c);
-
+LedChain *              		chain_niftyled(NiftyconfChain *c);
+char *							chain_dump(NiftyconfChain *chain);
 
 
 #endif /* _NIFTYCONF_CHAIN_H */

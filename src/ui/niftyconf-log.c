@@ -51,6 +51,8 @@
 
 
 
+/** maximum length of log messages in bytes */
+#define MAX_MSG_SIZE	2048
 
 /** GtkBuilder for this module */
 static GtkBuilder *_ui;
@@ -133,14 +135,70 @@ static void _logger(void *userdata,
  ******************************************************************************/
 
 /**
+ *  show yes/no dialog and wat for answer
+ */
+gboolean log_dialog_yesno(char *title, char *message, ...)
+{
+		if(!message)
+			NFT_LOG_NULL(false);
+
+		/* allocate mem to build message */
+		char *tmp;
+		if(!(tmp = alloca(MAX_MSG_SIZE)))
+		{
+				NFT_LOG_PERROR("alloca");
+				return false;
+		}
+
+		/* build message */
+		va_list ap;
+		va_start(ap, message);
+
+		/* print log-string */
+		if(vsnprintf((char *) tmp, MAX_MSG_SIZE, message, ap) < 0)
+		{
+				NFT_LOG_PERROR("vsnprintf");
+				return false;
+		}
+
+		va_end(ap);
+
+
+		/* Create the widgets */
+		GtkWidget *dialog, *label, *content_area;
+		dialog = gtk_dialog_new_with_buttons (title,
+											 NULL,
+											 0,
+		                                     GTK_STOCK_NO,
+                                             GTK_RESPONSE_REJECT,
+											 GTK_STOCK_YES,
+											 GTK_RESPONSE_ACCEPT,
+											 NULL);
+		content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+		label = gtk_label_new(tmp);
+
+		/* Add the label, and show everything we've added to the dialog. */
+		gtk_container_add(GTK_CONTAINER (content_area), label);
+		gtk_widget_show_all (dialog);
+
+		/* wait for answer */
+		gboolean result = false;
+		if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
+				result = true;
+
+		gtk_widget_destroy(dialog);
+
+		return result;
+}
+
+
+/**
  * show alert/error message
  *
  * @param message printable text that will be presented to the user
  */
 void log_alert_show(char *message, ...)
 {
-#define MAX_MSG_SIZE	2048
-
 		/* just hide when message is NULL */
 		if(!message)
 		{

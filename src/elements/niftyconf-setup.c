@@ -41,6 +41,9 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <niftyled.h>
 #include <gtk/gtk.h>
 #include "ui/niftyconf-setup-props.h"
@@ -131,6 +134,31 @@ gboolean setup_save(gchar *filename)
 	{
 		log_alert_show("Failed to create preferences from current setup.");
 		return FALSE;
+	}
+
+	/* file existing? */
+	struct stat sts;
+	if(stat(filename, &sts) == -1)
+	{
+			/* continue if stat error was caused because file doesn't exist */
+			if(errno != ENOENT)
+			{
+					log_alert_show("Failed to access \"%s\" - %s", filename, strerror(errno));
+					return false;
+			}
+	}
+	/* stat succeeded, file exists */
+	else
+	{
+			/* remove old file? */
+			if(!log_dialog_yesno("Overwrite", "A file named \"%s\" already exists.\nOverwrite?", filename))
+					return false;
+
+			if(unlink(filename) == -1)
+			{
+					log_alert_show("Failed to remove old version of \"%s\" - %s", filename, strerror(errno));
+					return false;
+			}
 	}
 
 	/* save */
@@ -233,39 +261,38 @@ gboolean setup_init()
         GtkFileFilter *filter = GTK_FILE_FILTER(UI("filefilter"));
         gtk_file_filter_add_mime_type(filter, "application/xml");
         gtk_file_filter_add_mime_type(filter, "text/xml");
-		gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(UI("filechooserdialog_save")), filter);
 
-	/* build "plugin" combobox for "add hardware" dialog */
-	unsigned int p;
-	for(p = 0; p < led_hardware_plugin_total_count(); p++)
-	{
-		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(UI("hardware_add_plugin_combobox")),
-		                               led_hardware_plugin_get_family_by_n(p));
-	}
-	gtk_combo_box_set_active(GTK_COMBO_BOX(UI("hardware_add_plugin_combobox")), 0);
+		/* build "plugin" combobox for "add hardware" dialog */
+		unsigned int p;
+		for(p = 0; p < led_hardware_plugin_total_count(); p++)
+		{
+				gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(UI("hardware_add_plugin_combobox")),
+										   led_hardware_plugin_get_family_by_n(p));
+		}
+		gtk_combo_box_set_active(GTK_COMBO_BOX(UI("hardware_add_plugin_combobox")), 0);
 
-	/* initialize pixel-format module */
-	led_pixel_format_new();
+		/* initialize pixel-format module */
+		led_pixel_format_new();
 
-	/* build "pixelformat" combobox for "add hardware" dialog */
-	size_t f;
-	for(f = led_pixel_format_get_n_formats(); f > 0; f--)
-	{
-		const char *format = led_pixel_format_to_string(led_pixel_format_get_nth(f-1));
-		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(UI("hardware_add_pixelformat_comboboxtext")),
-		                               format);
-		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(UI("chain_add_pixelformat_comboboxtext")),
-		                               format);
-	}
-	gtk_combo_box_set_active(GTK_COMBO_BOX(UI("hardware_add_pixelformat_comboboxtext")), 0);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(UI("chain_add_pixelformat_comboboxtext")), 0);
+		/* build "pixelformat" combobox for "add hardware" dialog */
+		size_t f;
+		for(f = led_pixel_format_get_n_formats(); f > 0; f--)
+		{
+				const char *format = led_pixel_format_to_string(led_pixel_format_get_nth(f-1));
+				gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(UI("hardware_add_pixelformat_comboboxtext")),
+										   format);
+				gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(UI("chain_add_pixelformat_comboboxtext")),
+										   format);
+		}
+		gtk_combo_box_set_active(GTK_COMBO_BOX(UI("hardware_add_pixelformat_comboboxtext")), 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(UI("chain_add_pixelformat_comboboxtext")), 0);
 
-        /* start with fresh empty setup */
-	_setup = led_setup_new();
+		/* start with fresh empty setup */
+		_setup = led_setup_new();
 
-        //g_object_unref(ui);
+		//g_object_unref(ui);
 
-        return TRUE;
+		return TRUE;
 }
 
 
@@ -393,6 +420,204 @@ G_MODULE_EXPORT void on_setup_open_clicked(GtkButton *b, gpointer u)
 osoc_exit:
 	g_free(filename);
 }
+
+/** "export" button in filechooser clicked */
+G_MODULE_EXPORT void on_setup_export_clicked(GtkButton *b, gpointer u)
+{
+		/* filename for export file */
+		char *filename;
+        if(!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(UI("filechooserdialog_export")))))
+		{
+				NFT_LOG(L_ERROR, "No filename received from dialog.");
+				return;
+		}
+
+		/* dumped element */
+		char *xml = NULL;
+
+		/* get currently selected element */
+		NIFTYLED_TYPE t;
+        gpointer e;
+        setup_tree_get_first_selected_element(&t, &e);
+
+		switch(t)
+		{
+				/** nothing selected - whole setup */
+				case LED_INVALID_T:
+				{
+						NFT_LOG(L_INFO, "Exporting LedSetup");
+
+						if(!setup_save(filename))
+						{
+								log_alert_show("Error while saving file \"%s\"", filename);
+								goto osec_error;
+						}
+
+						goto osec_exit;
+				}
+
+
+				/* hardware */
+				case LED_HARDWARE_T:
+				{
+						NFT_LOG(L_INFO, "Exporting LedHardware");
+						NiftyconfHardware *h = (NiftyconfHardware *) e;
+
+						/* dump element */
+						if(!(xml = hardware_dump(h)))
+						{
+								log_alert_show("Error while dumping Hardware element.");
+								goto osec_error;
+						}
+
+						break;
+				}
+
+
+				/* tile */
+				case LED_TILE_T:
+				{
+						NFT_LOG(L_INFO, "Exporting LedTile");
+						NiftyconfTile *t = (NiftyconfTile *) e;
+
+						/* dump element */
+						if(!(xml = tile_dump(t)))
+						{
+								log_alert_show("Error while dumping Tile element.");
+								goto osec_error;
+						}
+
+						break;
+				}
+
+				/* chain */
+				case LED_CHAIN_T:
+				{
+						NFT_LOG(L_INFO, "Exporting LedChain");
+						NiftyconfChain *c = (NiftyconfChain *) e;
+
+						/* dump element */
+						if(!(xml = chain_dump(c)))
+						{
+								log_alert_show("Error while dumping Chain element.");
+								goto osec_error;
+						}
+
+						break;
+				}
+
+				default:
+				{
+						log_alert_show("Unhandled NIFTYLED_TYPE %d (currently selected element). This is a bug.", t);
+						g_error("Unhandled NIFTYLED_TYPE %d (currently selected element). This is a bug.", t);
+						break;
+				}
+		}
+
+		/* save dump? */
+		if(xml)
+		{
+				int fd;
+				if((fd = open(filename, O_EXCL | O_CREAT | O_WRONLY)) == -1 )
+				{
+						/* file already existing? */
+						if(errno == EEXIST)
+						{
+								/* overwrite file? */
+								if(log_dialog_yesno("Overwrite", "A file named \"%s\" already exists.\nOverwrite?", filename))
+								{
+										fd = open(filename, O_WRONLY | O_TRUNC);
+								}
+								else
+								{
+										/* user said "no" */
+										goto osec_error;
+								}
+						}
+
+						/* error occured? */
+						if(fd == -1)
+						{
+								log_alert_show("Failed to save \"%s\": %s", filename, strerror(errno));
+								goto osec_error;
+						}
+				}
+
+				/* write dump into file */
+				ssize_t length = strlen(xml);
+				ssize_t written;
+				if((written = write(fd, xml, length)) != length)
+				{
+						log_alert_show("Only %d of %d bytes written!", written, length);
+				}
+
+				close(fd);
+		}
+
+osec_exit:
+		gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_export")));
+
+osec_error:
+		return;
+}
+
+
+/** "cancel" button in filechooser clicked */
+G_MODULE_EXPORT void on_setup_export_cancel_clicked(GtkButton *b, gpointer u)
+{
+		gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_export")));
+}
+
+
+/** "cancel" button in filechooser clicked */
+G_MODULE_EXPORT void on_setup_import_cancel_clicked(GtkButton *b, gpointer u)
+{
+		gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_import")));
+}
+
+
+/** "import" button in filechooser clicked */
+G_MODULE_EXPORT void on_setup_import_clicked(GtkButton *b, gpointer u)
+{
+		/* get currently selected element */
+		NIFTYLED_TYPE t;
+        gpointer e;
+        setup_tree_get_first_selected_element(&t, &e);
+
+		switch(t)
+		{
+				case LED_INVALID_T:
+				{
+						NFT_LOG(L_INFO, "Importing Setup");
+						break;
+				}
+
+				case LED_HARDWARE_T:
+				{
+						NFT_LOG(L_INFO, "Importing Hardware element");
+						break;
+				}
+
+				case LED_TILE_T:
+				{
+						NFT_LOG(L_INFO, "Importing Tile element");
+						break;
+				}
+
+				case LED_CHAIN_T:
+				{
+						NFT_LOG(L_INFO, "Importing Chain element");
+						break;
+				}
+
+				default:
+				{
+						NFT_LOG(L_ERROR, "Unhandled element type %d. This is a bug.", t);
+						break;
+				}
+		}
+}
+
 
 /** add hardware "add" clicked */
 G_MODULE_EXPORT void on_add_hardware_add_clicked(GtkButton *b, gpointer u)
