@@ -74,7 +74,7 @@ struct _NiftyconfTile
  ******************************************************************************/
 
 /** dump element definition to printable string - use free() to deallacote the result */
-char *tile_dump(NiftyconfTile *tile)
+char *tile_dump(NiftyconfTile *tile, gboolean encapsulation)
 {
 		LedTile *t = tile_niftyled(tile);
 		LedPrefsNode *n;
@@ -82,7 +82,11 @@ char *tile_dump(NiftyconfTile *tile)
 				return NULL;
 
 		char *result = NULL;
-		result = led_prefs_node_to_buffer(setup_get_prefs(), n);
+		if(encapsulation)
+				result = led_prefs_node_to_buffer_full(setup_get_prefs(), n);
+		else
+			result = led_prefs_node_to_buffer(setup_get_prefs(), n);
+
 		led_prefs_node_free(n);
 
 		return result;

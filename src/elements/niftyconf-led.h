@@ -63,7 +63,7 @@ NiftyconfRenderer *	led_get_renderer(NiftyconfLed *l);
 
 /* model functions */
 Led *           					led_niftyled(NiftyconfLed *l);
-char *							led_dump(NiftyconfLed *led);
+char *							led_dump(NiftyconfLed *led, gboolean encapsulation);
 
 
 

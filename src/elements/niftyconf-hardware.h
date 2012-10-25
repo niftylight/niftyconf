@@ -70,7 +70,7 @@ void                    			hardware_tree_set_collapsed(NiftyconfHardware *h, gbo
 
 /* model functions */
 LedHardware *           	hardware_niftyled(NiftyconfHardware *h);
-char *							hardware_dump(NiftyconfHardware *h);
+char *							hardware_dump(NiftyconfHardware *h, gboolean encapsulation);
 
 
 #endif /* _NIFTYCONF_HARDWARE_H */

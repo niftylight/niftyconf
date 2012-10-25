@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -52,18 +52,20 @@
 
 
 /* GUI model functions */
-gboolean        	setup_init();
-GtkWidget *     	setup_get_widget();
+gboolean     setup_init();
+GtkWidget *	setup_get_widget();
 
 /* GUI functions */
-gboolean        	setup_load(gchar *filename);
+gboolean     setup_load(gchar *filename);
+gboolean 	setup_save(gchar *filename);
+char *			setup_dump(gboolean encapsulation);
 void            	setup_cleanup();
 void 			setup_deinit();
 GObject *		setup_ui(const char *n);
 
 /* model functions */
-LedSetup *   		setup_get_current();
-LedPrefs *		setup_get_prefs();
+LedSetup *  setup_get_current();
+LedPrefs *	setup_get_prefs();
 
 
 

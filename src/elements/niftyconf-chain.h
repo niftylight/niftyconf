@@ -70,7 +70,7 @@ NiftyconfRenderer *	chain_get_renderer(NiftyconfChain *c);
 
 /* model functions */
 LedChain *              		chain_niftyled(NiftyconfChain *c);
-char *							chain_dump(NiftyconfChain *chain);
+char *							chain_dump(NiftyconfChain *chain, gboolean encapsulation);
 
 
 #endif /* _NIFTYCONF_CHAIN_H */

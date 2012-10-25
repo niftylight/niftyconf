@@ -107,8 +107,7 @@ GtkWidget *setup_get_widget()
 /** save setup to file */
 gboolean setup_save(gchar *filename)
 {
-	LedSetup *s;
-	if(!(s = setup_get_current()))
+	if(!_setup)
 	{
 		log_alert_show("There is no setup to save, yet");
 		return FALSE;
@@ -130,7 +129,7 @@ gboolean setup_save(gchar *filename)
 
 	/* create prefs-node from current setup */
 	LedPrefsNode *n;
-	if(!(n = led_prefs_setup_to_node(setup_get_prefs(), s)))
+	if(!(n = led_prefs_setup_to_node(_prefs, _setup)))
 	{
 		log_alert_show("Failed to create preferences from current setup.");
 		return FALSE;
@@ -162,7 +161,7 @@ gboolean setup_save(gchar *filename)
 	}
 
 	/* save */
-	if(!led_prefs_node_to_file(setup_get_prefs(), n, filename))
+	if(!led_prefs_node_to_file_full(_prefs, n, filename, false))
 	{
 		log_alert_show("Failed to save preferences to \"%s\"", filename);
 		return FALSE;
@@ -211,6 +210,28 @@ gboolean setup_load(gchar *filename)
         setup_tree_refresh();
 
         return TRUE;
+}
+
+
+/** dump element definition to printable string - use free() to deallacote the result */
+char *setup_dump(gboolean encapsulation)
+{
+		LedPrefsNode *n;
+		if(!(n = led_prefs_setup_to_node(_prefs, _setup)))
+		{
+				log_alert_show("Failed to create preferences from current setup.");
+				return NULL;
+		}
+
+		char *result = NULL;
+		if(encapsulation)
+				result = led_prefs_node_to_buffer_full(_prefs, n);
+		else
+			result = led_prefs_node_to_buffer(_prefs, n);
+
+		led_prefs_node_free(n);
+
+		return result;
 }
 
 
@@ -447,13 +468,13 @@ G_MODULE_EXPORT void on_setup_export_clicked(GtkButton *b, gpointer u)
 				{
 						NFT_LOG(L_INFO, "Exporting LedSetup");
 
-						if(!setup_save(filename))
+						if(!(xml = setup_dump(false)))
 						{
-								log_alert_show("Error while saving file \"%s\"", filename);
+								log_alert_show("Error while saving setup to \"%s\"", filename);
 								goto osec_error;
 						}
 
-						goto osec_exit;
+						break;
 				}
 
 
@@ -464,7 +485,7 @@ G_MODULE_EXPORT void on_setup_export_clicked(GtkButton *b, gpointer u)
 						NiftyconfHardware *h = (NiftyconfHardware *) e;
 
 						/* dump element */
-						if(!(xml = hardware_dump(h)))
+						if(!(xml = hardware_dump(h, false)))
 						{
 								log_alert_show("Error while dumping Hardware element.");
 								goto osec_error;
@@ -481,7 +502,7 @@ G_MODULE_EXPORT void on_setup_export_clicked(GtkButton *b, gpointer u)
 						NiftyconfTile *t = (NiftyconfTile *) e;
 
 						/* dump element */
-						if(!(xml = tile_dump(t)))
+						if(!(xml = tile_dump(t, false)))
 						{
 								log_alert_show("Error while dumping Tile element.");
 								goto osec_error;
@@ -497,7 +518,7 @@ G_MODULE_EXPORT void on_setup_export_clicked(GtkButton *b, gpointer u)
 						NiftyconfChain *c = (NiftyconfChain *) e;
 
 						/* dump element */
-						if(!(xml = chain_dump(c)))
+						if(!(xml = chain_dump(c, false)))
 						{
 								log_alert_show("Error while dumping Chain element.");
 								goto osec_error;
@@ -554,7 +575,6 @@ G_MODULE_EXPORT void on_setup_export_clicked(GtkButton *b, gpointer u)
 				close(fd);
 		}
 
-osec_exit:
 		gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_export")));
 
 osec_error:
@@ -584,6 +604,7 @@ G_MODULE_EXPORT void on_setup_import_clicked(GtkButton *b, gpointer u)
         gpointer e;
         setup_tree_get_first_selected_element(&t, &e);
 
+		/* currently selected element to import into */
 		switch(t)
 		{
 				case LED_INVALID_T:
