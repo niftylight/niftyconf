@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
-		 *
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -97,6 +97,7 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 								NFT_LOG(L_ERROR, "Failed to dump Hardware element");
 								return;
 						}
+						break;
 				}
 
 				case LED_HARDWARE_T:
@@ -140,10 +141,10 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 				}
 
 				case LED_CHAIN_T:
+								NFT_LOG(L_ERROR, "Failed to dump Chain element");
 				{
 						if(!(xml = chain_dump((NiftyconfChain *) e, true)))
 						{
-								NFT_LOG(L_ERROR, "Failed to dump Chain element");
 								return;
 						}
 
@@ -183,6 +184,7 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 								//led_unregister((NiftyconfLed *) e);
 								//setup_tree_refresh();
 						}
+						break;
 				}
 
 				default:

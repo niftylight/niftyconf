@@ -90,9 +90,9 @@ char *chain_dump(NiftyconfChain *chain, gboolean encapsulation)
 
 		char *result = NULL;
 		if(encapsulation)
-				result = led_prefs_node_to_buffer_full(setup_get_prefs(), n);
-		else
 			result = led_prefs_node_to_buffer(setup_get_prefs(), n);
+		else
+			result = led_prefs_node_to_buffer_light(setup_get_prefs(), n);
 
 		led_prefs_node_free(n);
 

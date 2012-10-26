@@ -161,7 +161,7 @@ gboolean setup_save(gchar *filename)
 	}
 
 	/* save */
-	if(!led_prefs_node_to_file_full(_prefs, n, filename, false))
+	if(!led_prefs_node_to_file(_prefs, n, filename, false))
 	{
 		log_alert_show("Failed to save preferences to \"%s\"", filename);
 		return FALSE;
@@ -171,10 +171,11 @@ gboolean setup_save(gchar *filename)
 	return TRUE;
 }
 
+
 /** load new setup from file */
 gboolean setup_load(gchar *filename)
 {
-        /* load file */
+    /* load file */
 	LedPrefsNode *n;
 	if(!(n = led_prefs_node_from_file(_prefs, filename)))
 		return FALSE;
@@ -225,9 +226,9 @@ char *setup_dump(gboolean encapsulation)
 
 		char *result = NULL;
 		if(encapsulation)
-				result = led_prefs_node_to_buffer_full(_prefs, n);
-		else
 			result = led_prefs_node_to_buffer(_prefs, n);
+		else
+			result = led_prefs_node_to_buffer_light(_prefs, n);
 
 		led_prefs_node_free(n);
 
