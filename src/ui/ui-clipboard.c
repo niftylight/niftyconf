@@ -41,6 +41,9 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <niftyled.h>
 #include <gtk/gtk.h>
 #include "ui/ui-setup-props.h"
@@ -80,35 +83,46 @@ static GtkClipboard *_clipboard;
  ******************************************************************************/
 
 
-/** cut/copy to buffer */
-static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
+/** cut/copy node */
+static LedPrefsNode *_cut_or_copy_node(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 {
 		NFT_LOG(L_DEBUG, cut ? "Cutting element (type: %d / ptr: %p)..." : "Copying element (type: %d / ptr: %p)...",
 		        t, e);
 
 
 
-		const char *xml = NULL;
+		LedPrefsNode *n = NULL;
 		switch(t)
 		{
 				case LED_SETUP_T:
 				{
-						if(!(xml = setup_dump(true)))
+						
+						if(!(n = led_prefs_setup_to_node(setup_get_prefs(), setup_get_current())))
 						{
-								NFT_LOG(L_ERROR, "Failed to dump Hardware element");
-								return;
+								ui_log_alert_show("Failed to create preferences from current setup.");
+								return NULL;
+						}
+
+						/* also remove element? */
+						if(cut)
+						{
+								led_setup_destroy(setup_get_current());
+								setup_set_current(led_setup_new());
+								ui_setup_tree_refresh();
+								ui_setup_props_hide();
 						}
 						break;
 				}
 
 				case LED_HARDWARE_T:
 				{
-						if(!(xml = hardware_dump((NiftyconfHardware *) e, true)))
+						LedHardware *h = hardware_niftyled((NiftyconfHardware *) e);
+						if(!(n = led_prefs_hardware_to_node(setup_get_prefs(), h)))
 						{
-								NFT_LOG(L_ERROR, "Failed to dump Hardware element");
-								return;
+							ui_log_alert_show("Failed to create preferences from current setup.");
+							return NULL;
 						}
-
+												
 						/* also remove element? */
 						if(cut)
 						{
@@ -123,11 +137,9 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 
 				case LED_TILE_T:
 				{
-						if(!(xml = tile_dump((NiftyconfTile *) e, true)))
-						{
-								NFT_LOG(L_ERROR, "Failed to dump Tile element");
-								return;
-						}
+						LedTile *t = tile_niftyled((NiftyconfTile *) e);
+						if(!(n = led_prefs_tile_to_node(setup_get_prefs(), t)))
+								return NULL;
 
 						/* remove element? */
 						if(cut)
@@ -142,14 +154,13 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 				}
 
 				case LED_CHAIN_T:
-								NFT_LOG(L_ERROR, "Failed to dump Chain element");
 				{
-						if(!(xml = chain_dump((NiftyconfChain *) e, true)))
-						{
-								return;
-						}
-
 						LedChain *c = chain_niftyled((NiftyconfChain *) e);
+						if(!(n = led_prefs_chain_to_node(setup_get_prefs(), c)))
+						{
+								NFT_LOG(L_ERROR, "Failed to dump Chain element");
+								return NULL;
+						}
 
 						/* don't cut from hardware elements */
 						if(led_chain_parent_is_hardware(c))
@@ -172,12 +183,10 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 
 				case LED_T:
 				{
-						if(!(xml = led_dump((NiftyconfLed *) e, true)))
-						{
-								NFT_LOG(L_ERROR, "Failed to dump Led element");
-								return;
-						}
-
+						Led *l = led_niftyled((NiftyconfLed *) e);
+						if(!(n = led_prefs_led_to_node(setup_get_prefs(), l)))
+								return NULL;
+										
 						/* remove element? */
 						if(cut)
 						{
@@ -195,18 +204,7 @@ static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 		}
 
 
-		if(!xml)
-				return;
-
-		/* set the clipboard text */
-		gtk_clipboard_set_text(_clipboard, xml, -1);
-
-		/* store the clipboard text */
-		gtk_clipboard_store(_clipboard);
-
-		NFT_LOG(L_VERY_NOISY, "%s", xml);
-
-		free((void *) xml);
+		return n;
 }
 
 
@@ -305,7 +303,7 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 										}
 
 										/* append new tile to parent */
-										if(!led_tile_append_child(pt, t))
+										if(!led_tile_list_append_child(pt, t))
 										{
 												ui_log_alert_show("Failed to append Tile to parent Tile");
 												led_tile_destroy(t);
@@ -470,7 +468,23 @@ NftResult ui_clipboard_cut_current_selection()
 		/* highlight only this element */
 		ui_setup_tree_highlight_only(t, e);
 
-		_cut_or_copy_element(t, e, TRUE);
+		LedPrefsNode *n;
+		if(!(n = _cut_or_copy_node(t, e, TRUE)))
+			return NFT_FAILURE;
+
+		char *xml;
+		if(!(xml = led_prefs_node_to_buffer(n)))
+				return NFT_FAILURE;
+		
+		/* set the clipboard text */
+		gtk_clipboard_set_text(_clipboard, xml, -1);
+
+		/* store the clipboard text */
+		gtk_clipboard_store(_clipboard);
+
+		NFT_LOG(L_VERY_NOISY, "%s", xml);
+
+		free((void *) xml);
 
 		return NFT_SUCCESS;
 }
@@ -494,8 +508,24 @@ NftResult ui_clipboard_copy_current_selection()
 		/* highlight only this element */
 		ui_setup_tree_highlight_only(t, e);
 
-		_cut_or_copy_element(t, e, FALSE);
+		LedPrefsNode *n;
+		if(!(n = _cut_or_copy_node(t, e, FALSE)))
+			return NFT_FAILURE;
 
+		char *xml;
+		if(!(xml = led_prefs_node_to_buffer(n)))
+				return NFT_FAILURE;
+		
+		/* set the clipboard text */
+		gtk_clipboard_set_text(_clipboard, xml, -1);
+
+		/* store the clipboard text */
+		gtk_clipboard_store(_clipboard);
+
+		NFT_LOG(L_VERY_NOISY, "%s", xml);
+
+		free((void *) xml);
+		
 		return NFT_SUCCESS;
 }
 
@@ -538,6 +568,57 @@ NftResult ui_clipboard_paste_current_selection()
 		g_free(xml);
 		
 		return NFT_SUCCESS;
+}
+
+
+/** copy element to file */
+NftResult ui_clipboard_copy_to_file(const char *filename)
+{
+		/* get currently selected element */
+		NIFTYLED_TYPE t;
+        gpointer e;
+        ui_setup_tree_get_first_selected_element(&t, &e);
+
+		/* if nothing is selected, copy complete setup */
+		if(t == LED_INVALID_T)
+		{
+				e = setup_get_current();
+				t = LED_SETUP_T;
+		}
+
+		/* highlight only this element */
+		ui_setup_tree_highlight_only(t, e);
+
+		LedPrefsNode *n;
+		if(!(n = _cut_or_copy_node(t, e, FALSE)))
+			return NFT_FAILURE;
+
+		/* file existing? */
+		struct stat sts;
+		if(stat(filename, &sts) == -1)
+		{
+				/* continue if stat error was caused because file doesn't exist */
+				if(errno != ENOENT)
+				{
+						ui_log_alert_show("Failed to access \"%s\" - %s", filename, strerror(errno));
+						return NFT_FAILURE;
+				}
+		}
+		/* stat succeeded, file exists */
+		else
+		{
+				/* remove old file? */
+				if(!ui_log_dialog_yesno("Overwrite", "A file named \"%s\" already exists.\nOverwrite?", filename))
+						return NFT_FAILURE;
+
+				if(unlink(filename) == -1)
+				{
+						ui_log_alert_show("Failed to remove old version of \"%s\" - %s", filename, strerror(errno));
+						return NFT_FAILURE;
+				}
+		}
+		
+		return led_prefs_node_to_file_light(n, filename, true);
 }
 
 

@@ -557,132 +557,13 @@ G_MODULE_EXPORT void on_setup_export_clicked(GtkButton *b, gpointer u)
 				return;
 		}
 
-		/* dumped element */
-		char *xml = NULL;
-
-		/* get currently selected element */
-		NIFTYLED_TYPE t;
-        gpointer e;
-        ui_setup_tree_get_first_selected_element(&t, &e);
-
-		switch(t)
+		if(!ui_clipboard_copy_to_file(filename))
 		{
-				/** nothing selected - whole setup */
-				case LED_INVALID_T:
-				{
-						NFT_LOG(L_INFO, "Exporting LedSetup");
-
-						if(!(xml = setup_dump(false)))
-						{
-								ui_log_alert_show("Error while saving setup to \"%s\"", filename);
-								goto osec_error;
-						}
-
-						break;
-				}
-
-
-				/* hardware */
-				case LED_HARDWARE_T:
-				{
-						NFT_LOG(L_INFO, "Exporting LedHardware");
-						NiftyconfHardware *h = (NiftyconfHardware *) e;
-
-						/* dump element */
-						if(!(xml = hardware_dump(h, false)))
-						{
-								ui_log_alert_show("Error while dumping Hardware element.");
-								goto osec_error;
-						}
-
-						break;
-				}
-
-
-				/* tile */
-				case LED_TILE_T:
-				{
-						NFT_LOG(L_INFO, "Exporting LedTile");
-						NiftyconfTile *t = (NiftyconfTile *) e;
-
-						/* dump element */
-						if(!(xml = tile_dump(t, false)))
-						{
-								ui_log_alert_show("Error while dumping Tile element.");
-								goto osec_error;
-						}
-
-						break;
-				}
-
-				/* chain */
-				case LED_CHAIN_T:
-				{
-						NFT_LOG(L_INFO, "Exporting LedChain");
-						NiftyconfChain *c = (NiftyconfChain *) e;
-
-						/* dump element */
-						if(!(xml = chain_dump(c, false)))
-						{
-								ui_log_alert_show("Error while dumping Chain element.");
-								goto osec_error;
-						}
-
-						break;
-				}
-
-				default:
-				{
-						ui_log_alert_show("Unhandled NIFTYLED_TYPE %d (currently selected element). This is a bug.", t);
-						g_error("Unhandled NIFTYLED_TYPE %d (currently selected element). This is a bug.", t);
-						break;
-				}
+				ui_log_alert_show("Failed to copy element to file \"%s\"", filename);
+				return;
 		}
-
-		/* save dump? */
-		if(xml)
-		{
-				int fd;
-				if((fd = open(filename, O_EXCL | O_CREAT | O_WRONLY)) == -1 )
-				{
-						/* file already existing? */
-						if(errno == EEXIST)
-						{
-								/* overwrite file? */
-								if(ui_log_dialog_yesno("Overwrite", "A file named \"%s\" already exists.\nOverwrite?", filename))
-								{
-										fd = open(filename, O_WRONLY | O_TRUNC);
-								}
-								else
-								{
-										/* user said "no" */
-										goto osec_error;
-								}
-						}
-
-						/* error occured? */
-						if(fd == -1)
-						{
-								ui_log_alert_show("Failed to save \"%s\": %s", filename, strerror(errno));
-								goto osec_error;
-						}
-				}
-
-				/* write dump into file */
-				ssize_t length = strlen(xml);
-				ssize_t written;
-				if((written = write(fd, xml, length)) != length)
-				{
-						ui_log_alert_show("Only %d of %d bytes written!", written, length);
-				}
-
-				close(fd);
-		}
-
+		
 		gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_export")));
-
-osec_error:
-		return;
 }
 
 

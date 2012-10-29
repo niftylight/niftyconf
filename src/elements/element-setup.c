@@ -113,27 +113,6 @@ void setup_set_prefs(LedPrefs *p)
 	_prefs = p;
 }
 
-/** dump element definition to printable string - use free() to deallacote the result */
-char *setup_dump(gboolean encapsulation)
-{
-		LedPrefsNode *n;
-		if(!(n = led_prefs_setup_to_node(_prefs, _setup)))
-		{
-				ui_log_alert_show("Failed to create preferences from current setup.");
-				return NULL;
-		}
-
-		char *result = NULL;
-		if(encapsulation)
-			result = led_prefs_node_to_buffer(n);
-		else
-			result = led_prefs_node_to_buffer_light(n);
-
-		led_prefs_node_free(n);
-
-		return result;
-}
-
 
 /** cleanup previously loaded setup */
 void setup_cleanup()

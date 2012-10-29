@@ -287,7 +287,7 @@ gboolean tile_of_tile_new(NiftyconfTile *parent)
                 return FALSE;
 
         LedTile *tile = tile_niftyled(parent);
-        led_tile_append_child(tile, n);
+        led_tile_list_append_child(tile, n);
 
         /* register new tile to gui */
         tile_register_to_gui(n);

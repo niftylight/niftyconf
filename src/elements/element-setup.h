@@ -53,7 +53,6 @@
 
 
 /* GUI functions */
-char *			setup_dump(gboolean encapsulation);
 void            	setup_cleanup();
 
 /* model functions */
