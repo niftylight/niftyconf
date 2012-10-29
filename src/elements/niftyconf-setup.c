@@ -63,7 +63,8 @@ static GtkBuilder *_ui;
 static LedPrefs *_prefs;
 /** current niftyled setup */
 static LedSetup *_setup;
-
+/** current filename */
+static const char *_current_filename;
 
 
 
@@ -117,7 +118,7 @@ gboolean setup_save(gchar *filename)
 	if(!filename)
 	{
 		/* try to get current filename */
-		if(!(filename = (gchar *) led_prefs_current_filename(setup_get_prefs())))
+		if(!(filename = (gchar *) _current_filename))
 		{
 			/* show "save-as" dialog */
 			gtk_widget_show(GTK_WIDGET(UI("filechooserdialog_save")));
@@ -175,20 +176,20 @@ gboolean setup_save(gchar *filename)
 /** load new setup from file */
 gboolean setup_load(gchar *filename)
 {
-    /* load file */
-	LedPrefsNode *n;
-	if(!(n = led_prefs_node_from_file(_prefs, filename)))
-		return FALSE;
+		/* load file */
+		LedPrefsNode *n;
+		if(!(n = led_prefs_node_from_file(_prefs, filename)))
+			return FALSE;
 
+		/* build setup from prefs node */
         LedSetup *s;
         if(!(s = led_prefs_setup_from_node(_prefs, n)))
                 return FALSE;
 
-
         /* cleanup previously loaded setup */
         if(_setup)
                 setup_cleanup();
-
+				
         /* initialize our element descriptor and set as
            privdata in niftyled model */
         LedHardware *h;
@@ -207,6 +208,9 @@ gboolean setup_load(gchar *filename)
         /* save new settings */
         _setup = s;
 
+		/* save as current filename */
+		_current_filename = led_prefs_node_get_filename(n);
+		
         /* update ui */
         setup_tree_refresh();
 
@@ -251,7 +255,8 @@ void setup_cleanup()
 
         led_setup_destroy(_setup);
         setup_tree_clear();
-	_setup = NULL;
+		_setup = NULL;
+		_current_filename = NULL;
 }
 
 

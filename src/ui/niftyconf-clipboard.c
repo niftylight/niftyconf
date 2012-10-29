@@ -83,7 +83,8 @@ static GtkClipboard *_clipboard;
 /** cut/copy to buffer */
 static void _cut_or_copy_element(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
 {
-		NFT_LOG(L_DEBUG, cut ? "Cutting element..." : "Copying element...");
+		NFT_LOG(L_DEBUG, cut ? "Cutting element (type: %d / ptr: %p)..." : "Copying element (type: %d / ptr: %p)...",
+		        t, e);
 
 
 
