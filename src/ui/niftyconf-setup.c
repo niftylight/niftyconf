@@ -546,3 +546,423 @@ G_MODULE_EXPORT void on_chain_add_pixelformat_comboboxtext_changed(GtkComboBox *
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("chain_add_ledcount_spinbutton")), (gdouble) minimum);
 	}
 }
+
+
+/** menuitem "new" selected */
+G_MODULE_EXPORT void on_setup_menuitem_new_activate(GtkMenuItem *i, gpointer d)
+{
+        LedSetup *s;
+        if(!(s = led_setup_new()))
+        {
+                NFT_LOG(L_ERROR, "Failed to create new settings descriptor.");
+                return;
+        }
+
+        setup_cleanup();
+
+        /* save new settings */
+        _setup = s;
+}
+
+/** menuitem "open" selected */
+G_MODULE_EXPORT void on_setup_menuitem_open_activate(GtkMenuItem *i, gpointer d)
+{
+        gtk_widget_show(GTK_WIDGET(UI("filechooserdialog_load")));
+}
+
+
+/** menuitem "save" selected */
+G_MODULE_EXPORT void on_setup_menuitem_save_activate(GtkMenuItem *i, gpointer d)
+{
+        if(!setup_save(NULL))
+        {
+                NFT_LOG(L_ERROR, "Error while saving current setup.");
+                return;
+        }
+}
+
+
+/** menuitem "save as" selected */
+G_MODULE_EXPORT void on_setup_menuitem_save_as_activate(GtkMenuItem *i, gpointer d)
+{
+	gtk_widget_show(GTK_WIDGET(UI("filechooserdialog_save")));
+}
+
+
+/** "save" button in filechooser clicked */
+G_MODULE_EXPORT void on_setup_save_save_clicked(GtkButton *b, gpointer u)
+{
+        char *filename;
+        if(!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(UI("filechooserdialog_save")))))
+	{
+		NFT_LOG(L_ERROR, "No filename received from dialog.");
+                return;
+	}
+
+        if(!setup_save(filename))
+        {
+                NFT_LOG(L_ERROR, "Error while saving file \"%s\"", filename);
+                goto osssc_exit;
+        }
+
+        gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_save")));
+
+osssc_exit:
+	g_free(filename);
+}
+
+
+/** "cancel" button in filechooser clicked */
+G_MODULE_EXPORT void on_setup_save_cancel_clicked(GtkButton *b, gpointer u)
+{
+	gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_save")));
+}
+
+
+/** "cancel" button in filechooser clicked */
+G_MODULE_EXPORT void on_setup_open_cancel_clicked(GtkButton *b, gpointer u)
+{
+        gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_load")));
+}
+
+/** "open" button in filechooser clicked */
+G_MODULE_EXPORT void on_setup_open_clicked(GtkButton *b, gpointer u)
+{
+        char *filename;
+        if(!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(UI("filechooserdialog_load")))))
+	{
+		log_alert_show("No filename given?");
+                return;
+	}
+
+        if(!setup_load(filename))
+        {
+                log_alert_show("Error while loading file \"%s\"", filename);
+                goto osoc_exit;
+        }
+
+        gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_load")));
+
+osoc_exit:
+	g_free(filename);
+}
+
+/** "export" button in filechooser clicked */
+G_MODULE_EXPORT void on_setup_export_clicked(GtkButton *b, gpointer u)
+{
+		/* filename for export file */
+		char *filename;
+        if(!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(UI("filechooserdialog_export")))))
+		{
+				NFT_LOG(L_ERROR, "No filename received from dialog.");
+				return;
+		}
+
+		/* dumped element */
+		char *xml = NULL;
+
+		/* get currently selected element */
+		NIFTYLED_TYPE t;
+        gpointer e;
+        setup_tree_get_first_selected_element(&t, &e);
+
+		switch(t)
+		{
+				/** nothing selected - whole setup */
+				case LED_INVALID_T:
+				{
+						NFT_LOG(L_INFO, "Exporting LedSetup");
+
+						if(!(xml = setup_dump(false)))
+						{
+								log_alert_show("Error while saving setup to \"%s\"", filename);
+								goto osec_error;
+						}
+
+						break;
+				}
+
+
+				/* hardware */
+				case LED_HARDWARE_T:
+				{
+						NFT_LOG(L_INFO, "Exporting LedHardware");
+						NiftyconfHardware *h = (NiftyconfHardware *) e;
+
+						/* dump element */
+						if(!(xml = hardware_dump(h, false)))
+						{
+								log_alert_show("Error while dumping Hardware element.");
+								goto osec_error;
+						}
+
+						break;
+				}
+
+
+				/* tile */
+				case LED_TILE_T:
+				{
+						NFT_LOG(L_INFO, "Exporting LedTile");
+						NiftyconfTile *t = (NiftyconfTile *) e;
+
+						/* dump element */
+						if(!(xml = tile_dump(t, false)))
+						{
+								log_alert_show("Error while dumping Tile element.");
+								goto osec_error;
+						}
+
+						break;
+				}
+
+				/* chain */
+				case LED_CHAIN_T:
+				{
+						NFT_LOG(L_INFO, "Exporting LedChain");
+						NiftyconfChain *c = (NiftyconfChain *) e;
+
+						/* dump element */
+						if(!(xml = chain_dump(c, false)))
+						{
+								log_alert_show("Error while dumping Chain element.");
+								goto osec_error;
+						}
+
+						break;
+				}
+
+				default:
+				{
+						log_alert_show("Unhandled NIFTYLED_TYPE %d (currently selected element). This is a bug.", t);
+						g_error("Unhandled NIFTYLED_TYPE %d (currently selected element). This is a bug.", t);
+						break;
+				}
+		}
+
+		/* save dump? */
+		if(xml)
+		{
+				int fd;
+				if((fd = open(filename, O_EXCL | O_CREAT | O_WRONLY)) == -1 )
+				{
+						/* file already existing? */
+						if(errno == EEXIST)
+						{
+								/* overwrite file? */
+								if(log_dialog_yesno("Overwrite", "A file named \"%s\" already exists.\nOverwrite?", filename))
+								{
+										fd = open(filename, O_WRONLY | O_TRUNC);
+								}
+								else
+								{
+										/* user said "no" */
+										goto osec_error;
+								}
+						}
+
+						/* error occured? */
+						if(fd == -1)
+						{
+								log_alert_show("Failed to save \"%s\": %s", filename, strerror(errno));
+								goto osec_error;
+						}
+				}
+
+				/* write dump into file */
+				ssize_t length = strlen(xml);
+				ssize_t written;
+				if((written = write(fd, xml, length)) != length)
+				{
+						log_alert_show("Only %d of %d bytes written!", written, length);
+				}
+
+				close(fd);
+		}
+
+		gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_export")));
+
+osec_error:
+		return;
+}
+
+
+/** "cancel" button in filechooser clicked */
+G_MODULE_EXPORT void on_setup_export_cancel_clicked(GtkButton *b, gpointer u)
+{
+		gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_export")));
+}
+
+
+/** "cancel" button in filechooser clicked */
+G_MODULE_EXPORT void on_setup_import_cancel_clicked(GtkButton *b, gpointer u)
+{
+		gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_import")));
+}
+
+
+/** "import" button in filechooser clicked */
+G_MODULE_EXPORT void on_setup_import_clicked(GtkButton *b, gpointer u)
+{
+		/* get currently selected element */
+		NIFTYLED_TYPE t;
+        gpointer e;
+        setup_tree_get_first_selected_element(&t, &e);
+
+		/* currently selected element to import into */
+		switch(t)
+		{
+				case LED_INVALID_T:
+				{
+						NFT_LOG(L_INFO, "Importing Setup");
+						break;
+				}
+
+				case LED_HARDWARE_T:
+				{
+						NFT_LOG(L_INFO, "Importing Hardware element");
+						break;
+				}
+
+				case LED_TILE_T:
+				{
+						NFT_LOG(L_INFO, "Importing Tile element");
+						break;
+				}
+
+				case LED_CHAIN_T:
+				{
+						NFT_LOG(L_INFO, "Importing Chain element");
+						break;
+				}
+
+				default:
+				{
+						NFT_LOG(L_ERROR, "Unhandled element type %d. This is a bug.", t);
+						break;
+				}
+		}
+}
+
+
+/** add hardware "add" clicked */
+G_MODULE_EXPORT void on_add_hardware_add_clicked(GtkButton *b, gpointer u)
+{
+	/* add new hardware */
+	NiftyconfHardware *h;
+        if(!(h = hardware_new(
+                  gtk_entry_get_text(GTK_ENTRY(UI("hardware_add_name_entry"))),
+                  gtk_combo_box_get_active_text(GTK_COMBO_BOX(UI("hardware_add_plugin_combobox"))),
+		  gtk_entry_get_text(GTK_ENTRY(UI("hardware_add_id_entry"))),
+                  gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(UI("hardware_add_ledcount_spinbutton"))),
+                  gtk_combo_box_get_active_text(GTK_COMBO_BOX(UI("hardware_add_pixelformat_comboboxtext"))))))
+		return;
+
+	/* hide window */
+	gtk_widget_set_visible(GTK_WIDGET(UI("hardware_add_window")), FALSE);
+
+        /** @todo refresh our menu */
+
+	/* refresh tree */
+        setup_tree_refresh();
+
+}
+
+/** add hardware "cancel" clicked */
+G_MODULE_EXPORT void on_add_hardware_cancel_clicked(GtkButton *b, gpointer u)
+{
+	gtk_widget_set_visible(GTK_WIDGET(UI("hardware_add_window")), FALSE);
+}
+
+
+/** add hardware window close */
+G_MODULE_EXPORT gboolean on_add_hardware_window_delete_event(GtkWidget *w, GdkEvent *e)
+{
+	gtk_widget_set_visible(GTK_WIDGET(UI("hardware_add_window")), FALSE);
+        return TRUE;
+}
+
+
+/** add hardware "pixelformat" changed */
+G_MODULE_EXPORT void on_hardware_add_pixelformat_comboboxtext_changed(GtkComboBox *w, gpointer u)
+{
+	LedPixelFormat *f;
+	if(!(f = led_pixel_format_from_string(gtk_combo_box_get_active_text(w))))
+	{
+		/* invalid pixel format? */
+		gtk_widget_set_sensitive(GTK_WIDGET(UI("hardware_add_ledcount_spinbutton")), false);
+		return;
+	}
+
+	gtk_widget_set_sensitive(GTK_WIDGET(UI("hardware_add_ledcount_spinbutton")), true);
+
+	/* set minimum for "ledcount" spinbutton according to format */
+	size_t minimum = led_pixel_format_get_n_components(f);
+	gtk_adjustment_set_lower(GTK_ADJUSTMENT(UI("ledcount_adjustment")), (gdouble) minimum);
+	if(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(UI("hardware_add_ledcount_spinbutton"))) < minimum)
+	{
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("hardware_add_ledcount_spinbutton")), (gdouble) minimum);
+	}
+}
+
+
+/** add chain "add" clicked */
+G_MODULE_EXPORT void on_add_chain_add_clicked(GtkButton *b, gpointer u)
+{
+
+	/* get parent element */
+	NIFTYLED_TYPE t;
+	gpointer element;
+	setup_tree_get_first_selected_element (&t, &element);
+
+        /* add new chain */
+       if(!chain_of_tile_new(t, element,
+                         gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(UI("chain_add_ledcount_spinbutton"))),
+                         gtk_combo_box_get_active_text (GTK_COMBO_BOX(UI("chain_add_pixelformat_comboboxtext")))))
+		return;
+
+	/* hide dialog */
+	gtk_widget_set_visible(GTK_WIDGET(UI("chain_add_window")), FALSE);
+
+        /* refresh tree */
+        setup_tree_refresh();
+
+}
+
+
+/** add chain "cancel" clicked */
+G_MODULE_EXPORT void on_add_chain_cancel_clicked(GtkButton *b, gpointer u)
+{
+	gtk_widget_set_visible(GTK_WIDGET(UI("chain_add_window")), FALSE);
+}
+
+
+/** add chain window close */
+G_MODULE_EXPORT gboolean on_add_chain_window_delete_event(GtkWidget *w, GdkEvent *e)
+{
+	gtk_widget_set_visible(GTK_WIDGET(UI("chain_add_window")), FALSE);
+        return TRUE;
+}
+
+
+/** add chain "pixelformat" changed */
+G_MODULE_EXPORT void on_chain_add_pixelformat_comboboxtext_changed(GtkComboBox *w, gpointer u)
+{
+	LedPixelFormat *f;
+	if(!(f = led_pixel_format_from_string(gtk_combo_box_get_active_text(w))))
+	{
+		/* invalid pixel format? */
+		gtk_widget_set_sensitive(GTK_WIDGET(UI("chain_add_ledcount_spinbutton")), false);
+		return;
+	}
+
+	gtk_widget_set_sensitive(GTK_WIDGET(UI("chain_add_ledcount_spinbutton")), true);
+
+	/* set minimum for "ledcount" spinbutton according to format */
+	size_t minimum = led_pixel_format_get_n_components(f);
+	gtk_adjustment_set_lower(GTK_ADJUSTMENT(UI("ledcount_adjustment")), (gdouble) minimum);
+	if(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(UI("chain_add_ledcount_spinbutton"))) < minimum)
+	{
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("chain_add_ledcount_spinbutton")), (gdouble) minimum);
+	}
+}
