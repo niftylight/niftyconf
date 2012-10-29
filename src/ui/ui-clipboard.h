@@ -52,6 +52,7 @@ void		ui_clipboard_deinit();
 NftResult 	ui_clipboard_cut_current_selection();
 NftResult 	ui_clipboard_copy_current_selection();
 NftResult 	ui_clipboard_paste_current_selection();
+NftResult 	ui_clipboard_paste_from_file(const char *filename);
 
 
 /* GUI functions */

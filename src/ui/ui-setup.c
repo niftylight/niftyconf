@@ -50,6 +50,7 @@
 #include "ui/ui-setup-props.h"
 #include "ui/ui-setup-tree.h"
 #include "ui/ui-setup-ledlist.h"
+#include "ui/ui-clipboard.h"
 #include "elements/element-setup.h"
 #include "elements/element-hardware.h"
 #include "ui/ui.h"
@@ -702,43 +703,20 @@ G_MODULE_EXPORT void on_setup_import_cancel_clicked(GtkButton *b, gpointer u)
 /** "import" button in filechooser clicked */
 G_MODULE_EXPORT void on_setup_import_clicked(GtkButton *b, gpointer u)
 {
-		/* get currently selected element */
-		NIFTYLED_TYPE t;
-        gpointer e;
-        ui_setup_tree_get_first_selected_element(&t, &e);
-
-		/* currently selected element to import into */
-		switch(t)
+		/* filename for export file */
+		char *filename;
+        if(!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(UI("filechooserdialog_import")))))
 		{
-				case LED_INVALID_T:
-				{
-						NFT_LOG(L_INFO, "Importing Setup");
-						break;
-				}
-
-				case LED_HARDWARE_T:
-				{
-						NFT_LOG(L_INFO, "Importing Hardware element");
-						break;
-				}
-
-				case LED_TILE_T:
-				{
-						NFT_LOG(L_INFO, "Importing Tile element");
-						break;
-				}
-
-				case LED_CHAIN_T:
-				{
-						NFT_LOG(L_INFO, "Importing Chain element");
-						break;
-				}
-
-				default:
-				{
-						NFT_LOG(L_ERROR, "Unhandled element type %d. This is a bug.", t);
-						break;
-				}
+				ui_log_alert_show("No filename received from dialog.");
+				return;
 		}
+
+		if(!ui_clipboard_paste_from_file(filename))
+		{
+				ui_log_alert_show("Failed to paste content of \"%s\"", filename);
+				return;
+		}
+
+		gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_import")));
 }
 
