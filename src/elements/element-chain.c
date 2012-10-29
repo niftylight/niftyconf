@@ -42,13 +42,13 @@
  */
 
 #include <gtk/gtk.h>
-#include "ui/niftyconf-ui.h"
-#include "ui/niftyconf-log.h"
-#include "ui/niftyconf-setup-props.h"
-#include "elements/niftyconf-led.h"
-#include "elements/niftyconf-chain.h"
-#include "elements/niftyconf-setup.h"
-#include "renderer/niftyconf-renderer-chain.h"
+#include "ui/ui.h"
+#include "ui/ui-log.h"
+#include "ui/ui-setup-props.h"
+#include "elements/element-led.h"
+#include "elements/element-chain.h"
+#include "elements/element-setup.h"
+#include "renderer/renderer-chain.h"
 
 
 
@@ -90,9 +90,9 @@ char *chain_dump(NiftyconfChain *chain, gboolean encapsulation)
 
 		char *result = NULL;
 		if(encapsulation)
-			result = led_prefs_node_to_buffer(setup_get_prefs(), n);
+			result = led_prefs_node_to_buffer(n);
 		else
-			result = led_prefs_node_to_buffer_light(setup_get_prefs(), n);
+			result = led_prefs_node_to_buffer_light(n);
 
 		led_prefs_node_free(n);
 
@@ -232,7 +232,7 @@ gboolean chain_of_tile_new(NIFTYLED_TYPE parent_t,
         /* can only add chains to tiles */
         if(parent_t != LED_TILE_T)
 	{
-		log_alert_show("Can only add Chain to Tiles");
+		ui_log_alert_show("Can only add Chain to Tiles");
                 return FALSE;
 	}
 
@@ -242,7 +242,7 @@ gboolean chain_of_tile_new(NIFTYLED_TYPE parent_t,
         LedChain *n;
         if(!(n = led_chain_new(length, pixelformat)))
 	{
-		log_alert_show("Failed to create new chain \"%s\" (%d)", pixelformat, length);
+		ui_log_alert_show("Failed to create new chain \"%s\" (%d)", pixelformat, length);
                 return FALSE;
 	}
 
@@ -253,7 +253,7 @@ gboolean chain_of_tile_new(NIFTYLED_TYPE parent_t,
         /* register chain to gui */
         if(!chain_register_to_gui(n))
 	{
-		log_alert_show("Failed to register new chain to GUI. This is a bug. Expect the unexpected.");
+		ui_log_alert_show("Failed to register new chain to GUI. This is a bug. Expect the unexpected.");
 		return FALSE;
 	}
 

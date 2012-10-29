@@ -41,33 +41,24 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _NIFTYCONF_SETUP_H
-#define _NIFTYCONF_SETUP_H
-
-#include <niftyled.h>
-#include "elements/niftyconf-tile.h"
-#include "elements/niftyconf-chain.h"
-#include "elements/niftyconf-hardware.h"
+#ifndef _UI_CLIPBOARD_H
+#define _UI_CLIPBOARD_H
 
 
 
 /* GUI model functions */
-gboolean     setup_init();
-GtkWidget *	setup_get_widget();
+gboolean	ui_clipboard_init();
+void		ui_clipboard_deinit();
+NftResult 	ui_clipboard_cut_current_selection();
+NftResult 	ui_clipboard_copy_current_selection();
+NftResult 	ui_clipboard_paste_current_selection();
+
 
 /* GUI functions */
-gboolean     setup_load(gchar *filename);
-gboolean 	setup_save(gchar *filename);
-char *			setup_dump(gboolean encapsulation);
-void            	setup_cleanup();
-void 			setup_deinit();
-GObject *		setup_ui(const char *n);
+
 
 /* model functions */
-LedSetup *  setup_get_current();
-LedPrefs *	setup_get_prefs();
 
 
 
-
-#endif /* _NIFTYCONF_SETUP_H */
+#endif /* _UI_CLIPBOARD_H */

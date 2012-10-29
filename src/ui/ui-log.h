@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -41,31 +41,16 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _NIFTYCONF_SETUP_H
-#define _NIFTYCONF_SETUP_H
-
-#include <niftyled.h>
-#include "elements/niftyconf-tile.h"
-#include "elements/niftyconf-chain.h"
-#include "elements/niftyconf-hardware.h"
+#ifndef _UI_LOG_H
+#define _UI_LOG_H
 
 
-
-/* GUI model functions */
-gboolean        	setup_init();
-GtkWidget *     	setup_get_widget();
-
-/* GUI functions */
-gboolean        	setup_load(gchar *filename);
-void            	setup_cleanup();
-void 			setup_deinit();
-GObject *		setup_ui(const char *n);
-
-/* model functions */
-LedSetup *   		setup_get_current();
-LedPrefs *		setup_get_prefs();
+gboolean 		ui_log_init();
+void					ui_log_deinit();
+const char *	ui_log_loglevels();
+void            		ui_log_show(gboolean visible);
+void 				ui_log_alert_show(char *message, ...);
+gboolean 		ui_log_dialog_yesno(char *title, char *message, ...);
 
 
-
-
-#endif /* _NIFTYCONF_SETUP_H */
+#endif /* _UI_LOG_H */

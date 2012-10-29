@@ -41,39 +41,29 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _NIFTYCONF_TILE_H
-#define _NIFTYCONF_TILE_H
+#ifndef _NIFTYCONF_SETUP_H
+#define _NIFTYCONF_SETUP_H
 
 #include <niftyled.h>
-#include "renderer/niftyconf-renderer.h"
-#include "niftyconf-hardware.h"
+#include "elements/element-tile.h"
+#include "elements/element-chain.h"
+#include "elements/element-hardware.h"
 
 
-typedef struct _NiftyconfTile NiftyconfTile;
-
-
-
-/* GUI model functions */
-gboolean        				tile_init();
-void								tile_deinit();
-NiftyconfTile *				tile_register_to_gui(LedTile *t);
-void            					tile_unregister_from_gui(NiftyconfTile *t);
-gboolean       				tile_of_hardware_new(NiftyconfHardware *parent);
-gboolean       				tile_of_tile_new(NiftyconfTile *parent);
-void           					tile_destroy(NiftyconfTile *tile);
 
 
 /* GUI functions */
-gboolean        				tile_tree_get_collapsed(NiftyconfTile *t);
-gboolean        				tile_tree_get_highlighted(NiftyconfTile *t);
-void            					tile_tree_set_collapsed(NiftyconfTile *t, gboolean is_collapsed);
-void            					tile_tree_set_highlighted(NiftyconfTile *t, gboolean is_highlighted);
-
+char *			setup_dump(gboolean encapsulation);
+void            	setup_cleanup();
 
 /* model functions */
-NiftyconfRenderer *	tile_get_renderer(NiftyconfTile *t);
-LedTile *       				tile_niftyled(NiftyconfTile *t);
-char *							tile_dump(NiftyconfTile *tile, gboolean encapsulation);
+LedSetup *  setup_get_current();
+void 		setup_set_current(LedSetup *s);
+const char *setup_get_current_filename();
+void 		setup_set_current_filename(const char *filename);
+LedPrefs *	setup_get_prefs();
+void 		setup_set_prefs(LedPrefs *p);
 
 
-#endif /* _NIFTYCONF_TILE_H */
+
+#endif /* _NIFTYCONF_SETUP_H */

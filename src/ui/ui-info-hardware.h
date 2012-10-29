@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -41,21 +41,24 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _NIFTYCONF_ABOUT_H
-#define _NIFTYCONF_ABOUT_H
+#ifndef _UI_INFO_HARDWARE_H
+#define _UI_INFO_HARDWARE_H
+
+#include "elements/element-hardware.h"
 
 
 /* GUI model functions */
-gboolean                about_init();
-void			about_deinit();
+gboolean                ui_info_hardware_init();
+void			ui_info_hardware_deinit();
 
 
 /* GUI functions */
-void                    about_set_visible(gboolean visible);
+void                    ui_info_hardware_set(NiftyconfHardware *hardware);
+void                    ui_info_hardware_set_visible(gboolean visible);
 
 
 /* model functions */
 
 
 
-#endif /* _NIFTYCONF_INFO_HARDWARE_H */
+#endif /* _UI_INFO_HARDWARE_H */

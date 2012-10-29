@@ -41,32 +41,31 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _NIFTYCONF_SETUP_TREE_H
-#define _NIFTYCONF_SETUP_TREE_H
+#ifndef _NIFTYCONF_LED_H
+#define _NIFTYCONF_LED_H
 
 #include <niftyled.h>
+#include "elements/element-chain.h"
+
+typedef struct _NiftyconfLed NiftyconfLed;
 
 
 /* GUI model functions */
-gboolean        			setup_tree_init();
-void							setup_tree_deinit();
-GtkWidget *    			setup_tree_get_widget();
-GtkTreeView *			setup_tree_view();
-NIFTYLED_TYPE		setup_tree_current_element_type();
-
+gboolean        				led_init();
+void								led_deinit();
+NiftyconfLed *  			led_register_to_gui(Led *l);
+void            					led_unregister_from_gui(NiftyconfLed *l);
 
 /* GUI functions */
-void            				setup_tree_clear();
-void            				setup_tree_refresh();
-void            				setup_tree_get_last_selected_element(NIFTYLED_TYPE *t, gpointer *element);
-void		   					setup_tree_get_first_selected_element(NIFTYLED_TYPE *t, gpointer *element);
-void 	   		 			setup_tree_highlight_only(NIFTYLED_TYPE t, gpointer element);
+gboolean        				led_get_highlighted(NiftyconfLed *l);
+void            					led_set_highlighted(NiftyconfLed *l, gboolean is_highlighted);
+NiftyconfRenderer *	led_get_renderer(NiftyconfLed *l);
 
 /* model functions */
-void            				setup_tree_do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer e));
-void            				setup_tree_do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer element));
-void            				setup_tree_do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer element));
+Led *           					led_niftyled(NiftyconfLed *l);
+char *							led_dump(NiftyconfLed *led, gboolean encapsulation);
 
 
 
-#endif /* _NIFTYCONF_SETUP_TREE_H */
+
+#endif /* _NIFTYCONF_LED_H */

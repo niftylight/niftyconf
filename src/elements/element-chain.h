@@ -41,24 +41,36 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _NIFTYCONF_CLIPBOARD_H
-#define _NIFTYCONF_CLIPBOARD_H
+#ifndef _NIFTYCONF_CHAIN_H
+#define _NIFTYCONF_CHAIN_H
+
+#include <niftyled.h>
+#include "elements/element-tile.h"
+
+typedef struct _NiftyconfChain NiftyconfChain;
 
 
 
 /* GUI model functions */
-gboolean	clipboard_init();
-void		clipboard_deinit();
-NftResult 	clipboard_cut_current_selection();
-NftResult 	clipboard_copy_current_selection();
-NftResult 	clipboard_paste_current_selection();
+gboolean               		chain_init();
+NiftyconfChain *        	chain_register_to_gui(LedChain *c);
+void                    			chain_unregister_from_gui(NiftyconfChain *c);
+void                    			chain_register_leds_to_gui(NiftyconfChain *c);
+void                    			chain_unregister_leds_from_gui(NiftyconfChain *c);
+gboolean 					chain_of_tile_new(NIFTYLED_TYPE parent_t,
+                           	  				gpointer parent_element, LedCount length, const char *pixelformat);
+void            					chain_of_tile_destroy(NiftyconfTile *tile);
 
 
 /* GUI functions */
+void                    			chain_tree_set_highlighted(NiftyconfChain *c, gboolean is_highlighted);
+gboolean                		chain_tree_get_highlighted(NiftyconfChain *c);
+NiftyconfRenderer *	chain_get_renderer(NiftyconfChain *c);
 
 
 /* model functions */
+LedChain *              		chain_niftyled(NiftyconfChain *c);
+char *							chain_dump(NiftyconfChain *chain, gboolean encapsulation);
 
 
-
-#endif /* _NIFTYCONF_CLIPBOARD_H */
+#endif /* _NIFTYCONF_CHAIN_H */

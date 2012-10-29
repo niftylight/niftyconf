@@ -43,10 +43,10 @@
 
 #include <gtk/gtk.h>
 #include <niftyled.h>
-#include "elements/niftyconf-tile.h"
-#include "elements/niftyconf-chain.h"
-#include "renderer/niftyconf-renderer.h"
-#include "renderer/niftyconf-renderer-chain.h"
+#include "elements/element-tile.h"
+#include "elements/element-chain.h"
+#include "renderer/renderer.h"
+#include "renderer/renderer-chain.h"
 
 
 

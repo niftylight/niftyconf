@@ -43,13 +43,13 @@
 
 #include <math.h>
 #include <gtk/gtk.h>
-#include "ui/niftyconf-ui.h"
-#include "ui/niftyconf-log.h"
-#include "ui/niftyconf-setup-tree.h"
-#include "ui/niftyconf-setup-props.h"
-#include "ui/niftyconf-setup-ledlist.h"
-#include "elements/niftyconf-setup.h"
-#include "renderer/niftyconf-renderer-setup.h"
+#include "ui/ui.h"
+#include "ui/ui-log.h"
+#include "ui/ui-setup-tree.h"
+#include "ui/ui-setup-props.h"
+#include "ui/ui-setup-ledlist.h"
+#include "elements/element-setup.h"
+#include "renderer/renderer-setup.h"
 
 
 
@@ -89,14 +89,14 @@ static void _widget_set_error_background(GtkWidget *w, gboolean error)
 /**
  * getter for widget
  */
-GtkWidget *setup_props_get_widget()
+GtkWidget *ui_setup_props_get_widget()
 {
         return GTK_WIDGET(UI("box_props"));
 }
 
 
 /** show hardware props */
-void setup_props_hardware_show(NiftyconfHardware *h)
+void ui_setup_props_hardware_show(NiftyconfHardware *h)
 {
         current_hw = h;
 
@@ -117,7 +117,7 @@ void setup_props_hardware_show(NiftyconfHardware *h)
 
 
 /** show tile props */
-void setup_props_tile_show(NiftyconfTile *t)
+void ui_setup_props_tile_show(NiftyconfTile *t)
 {
         current_tile = t;
 
@@ -138,7 +138,7 @@ void setup_props_tile_show(NiftyconfTile *t)
 
 
 /** show chain props */
-void setup_props_chain_show(NiftyconfChain *c)
+void ui_setup_props_chain_show(NiftyconfChain *c)
 {
         current_chain = c;
 
@@ -157,7 +157,7 @@ void setup_props_chain_show(NiftyconfChain *c)
 
 
 /** show led props */
-void setup_props_led_show(NiftyconfLed *l)
+void ui_setup_props_led_show(NiftyconfLed *l)
 {
         current_led = l;
 
@@ -175,7 +175,7 @@ void setup_props_led_show(NiftyconfLed *l)
 
 
 /** hide all props */
-void setup_props_hide()
+void ui_setup_props_hide()
 {
         gtk_widget_hide(GTK_WIDGET(UI("frame_hardware")));
         gtk_widget_hide(GTK_WIDGET(UI("frame_tile")));
@@ -185,7 +185,7 @@ void setup_props_hide()
 
 
 /** initialize led module */
-gboolean setup_props_init()
+gboolean ui_setup_props_init()
 {
         _ui = ui_builder("niftyconf-setup-props.ui");
 
@@ -194,13 +194,13 @@ gboolean setup_props_init()
 
 
 /** deinitialize this module */
-void setup_props_deinit()
+void ui_setup_props_deinit()
 {
 	g_object_unref(_ui);
 }
 
 /** show "hardware initialized" image */
-void setup_props_hardware_initialized_image(gboolean is_initialized)
+void ui_setup_props_hardware_initialized_image(gboolean is_initialized)
 {
 	/* show correct image */
 	gtk_widget_set_visible(GTK_WIDGET(UI("image_initialized")), is_initialized);
@@ -311,7 +311,7 @@ G_MODULE_EXPORT void on_spinbutton_chain_ledcount_changed(GtkSpinButton *s, gpoi
                 return;
 
         /* remove all current LEDs */
-        setup_ledlist_clear();
+        ui_setup_ledlist_clear();
 
         /* unregister all LEDs from chain */
         chain_unregister_leds_from_gui(current_chain);
@@ -353,7 +353,7 @@ G_MODULE_EXPORT void on_spinbutton_chain_ledcount_changed(GtkSpinButton *s, gpoi
         chain_register_leds_to_gui(current_chain);
 
         /* refresh view */
-        setup_ledlist_refresh(current_chain);
+        ui_setup_ledlist_refresh(current_chain);
 
 	/* redraw */
 	renderer_setup_redraw();
@@ -442,7 +442,7 @@ G_MODULE_EXPORT void on_spinbutton_tile_rotation_changed(GtkSpinButton *s, gpoin
         }
 
         /* refresh view */
-        setup_props_tile_show(current_tile);
+        ui_setup_props_tile_show(current_tile);
 
 	/* redraw */
 	renderer_setup_redraw();
@@ -473,7 +473,7 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_x_changed(GtkSpinButton *s, gpoint
         }
 
         /* refresh view */
-        setup_props_tile_show(current_tile);
+        ui_setup_props_tile_show(current_tile);
 
 	/* redraw */
 	renderer_setup_redraw();
@@ -504,7 +504,7 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_y_changed(GtkSpinButton *s, gpoint
         }
 
         /* refresh view */
-        setup_props_tile_show(current_tile);
+        ui_setup_props_tile_show(current_tile);
 
 	/* redraw */
 	renderer_setup_redraw();
@@ -530,7 +530,7 @@ G_MODULE_EXPORT void on_entry_hardware_name_changed(GtkEditable *e, gpointer u)
         }
 
         /* refresh view */
-        setup_tree_refresh();
+        ui_setup_tree_refresh();
 
 }
 
@@ -593,12 +593,12 @@ G_MODULE_EXPORT void on_togglebutton_hardware_init_toggled(GtkToggleButton *b, g
 
 		if(!(led_hardware_init(h, id, ledcount, pixelformat)))
 		{
-			log_alert_show("Failed to initialize hardware.");
+			ui_log_alert_show("Failed to initialize hardware.");
 			return;
 		}
 
 		/* show correct image */
-		setup_props_hardware_initialized_image(TRUE);
+		ui_setup_props_hardware_initialized_image(TRUE);
 
 		/* update ID (it might have changed) */
 		gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_id")), led_hardware_get_id(h));
@@ -610,6 +610,6 @@ G_MODULE_EXPORT void on_togglebutton_hardware_init_toggled(GtkToggleButton *b, g
 		led_hardware_deinit(h);
 
 		/* show correct image */
-		setup_props_hardware_initialized_image(FALSE);
+		ui_setup_props_hardware_initialized_image(FALSE);
 	}
 }

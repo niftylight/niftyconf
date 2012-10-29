@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -41,31 +41,30 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _NIFTYCONF_LED_H
-#define _NIFTYCONF_LED_H
+#ifndef _UI_SETUP_H
+#define _UI_SETUP_H
 
 #include <niftyled.h>
-#include "elements/niftyconf-chain.h"
+#include "elements/element-tile.h"
+#include "elements/element-chain.h"
+#include "elements/element-hardware.h"
 
-typedef struct _NiftyconfLed NiftyconfLed;
 
 
 /* GUI model functions */
-gboolean        				led_init();
-void								led_deinit();
-NiftyconfLed *  			led_register_to_gui(Led *l);
-void            					led_unregister_from_gui(NiftyconfLed *l);
+gboolean        	ui_setup_init();
+GtkWidget *     	ui_setup_get_widget();
 
 /* GUI functions */
-gboolean        				led_get_highlighted(NiftyconfLed *l);
-void            					led_set_highlighted(NiftyconfLed *l, gboolean is_highlighted);
-NiftyconfRenderer *	led_get_renderer(NiftyconfLed *l);
+gboolean        	ui_setup_load(gchar *filename);
+gboolean 	ui_setup_save(gchar *filename);
+void 			ui_setup_deinit();
+GObject *		ui_setup(const char *n);
 
 /* model functions */
-Led *           					led_niftyled(NiftyconfLed *l);
-char *							led_dump(NiftyconfLed *led, gboolean encapsulation);
 
 
 
 
-#endif /* _NIFTYCONF_LED_H */
+
+#endif /* _UI_SETUP_H */

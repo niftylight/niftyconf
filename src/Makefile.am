@@ -1,24 +1,24 @@
 
 EXTRA_DIST = \
-	elements/niftyconf-chain.h \
-	elements/niftyconf-tile.h \
-	elements/niftyconf-hardware.h \
-	elements/niftyconf-led.h \
-	elements/niftyconf-setup.h \
-	renderer/niftyconf-renderer-chain.h \
-	renderer/niftyconf-renderer.h \
-	renderer/niftyconf-renderer-led.h \
-	renderer/niftyconf-renderer-setup.h \
-	renderer/niftyconf-renderer-tile.h \
-	ui/niftyconf-about.h \
-	ui/niftyconf-setup-ledlist.h \
-	ui/niftyconf-clipboard.h \
-	ui/niftyconf-setup-props.h \
-	ui/niftyconf-info-hardware.h \
-	ui/niftyconf-setup-tree.h \
-	ui/niftyconf-log.h \
-	ui/niftyconf-ui.h \
-	ui/niftyconf-setup.h \
+	elements/element-chain.h \
+	elements/element-tile.h \
+	elements/element-hardware.h \
+	elements/element-led.h \
+	elements/element-setup.h \
+	renderer/renderer-chain.h \
+	renderer/renderer.h \
+	renderer/renderer-led.h \
+	renderer/renderer-setup.h \
+	renderer/renderer-tile.h \
+	ui/ui-about.h \
+	ui/ui-setup-ledlist.h \
+	ui/ui-clipboard.h \
+	ui/ui-setup-props.h \
+	ui/ui-info-hardware.h \
+	ui/ui-setup-tree.h \
+	ui/ui-log.h \
+	ui/ui.h \
+	ui/ui-setup.h \
 	niftyconf.h
 
 
@@ -27,29 +27,30 @@ bin_PROGRAMS = \
 
 niftyconf_SOURCES = \
 	niftyconf.c \
-	ui/niftyconf-ui.c \
-	ui/niftyconf-about.c \
-	ui/niftyconf-log.c \
-	ui/niftyconf-clipboard.c \
-	ui/niftyconf-info-hardware.c \
-	ui/niftyconf-setup-props.c \
-	ui/niftyconf-setup-tree.c \
-	ui/niftyconf-setup-ledlist.c \
-	elements/niftyconf-led.c \
-	elements/niftyconf-chain.c \
-	elements/niftyconf-tile.c \
-	elements/niftyconf-hardware.c \
-	elements/niftyconf-setup.c \
-	renderer/niftyconf-renderer.c \
-	renderer/niftyconf-renderer-setup.c \
-	renderer/niftyconf-renderer-tile.c \
-	renderer/niftyconf-renderer-chain.c \
-	renderer/niftyconf-renderer-led.c
+	ui/ui.c \
+	ui/ui-about.c \
+	ui/ui-log.c \
+	ui/ui-clipboard.c \
+	ui/ui-info-hardware.c \
+	ui/ui-setup.c \
+	ui/ui-setup-props.c \
+	ui/ui-setup-tree.c \
+	ui/ui-setup-ledlist.c \
+	elements/element-led.c \
+	elements/element-chain.c \
+	elements/element-tile.c \
+	elements/element-hardware.c \
+	elements/element-setup.c \
+	renderer/renderer.c \
+	renderer/renderer-setup.c \
+	renderer/renderer-tile.c \
+	renderer/renderer-chain.c \
+	renderer/renderer-led.c
 
 
 
 niftyconf_INCLUDES = \
-	-I .
+	-I. -I..
 
 niftyconf_CFLAGS = \
 	-DDATADIR=\""$(datadir)"\" \

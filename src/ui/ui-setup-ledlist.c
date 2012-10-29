@@ -42,10 +42,10 @@
  */
 
 #include <gtk/gtk.h>
-#include "ui/niftyconf-ui.h"
-#include "ui/niftyconf-setup-props.h"
-#include "elements/niftyconf-led.h"
-#include "elements/niftyconf-chain.h"
+#include "ui/ui.h"
+#include "ui/ui-setup-props.h"
+#include "elements/element-led.h"
+#include "elements/element-chain.h"
 
 
 
@@ -83,8 +83,8 @@ static void _element_selected(GtkTreeModel *m, GtkTreePath *p, GtkTreeIter *i, g
         gtk_tree_model_get(m, i, C_CHAIN_LED, &n, C_CHAIN_ELEMENT, &element,  -1);
         NiftyconfLed *l = (NiftyconfLed *) element;
 
-        setup_props_hide();
-        setup_props_led_show(l);
+        ui_setup_props_hide();
+        ui_setup_props_led_show(l);
 }
 
 
@@ -113,27 +113,27 @@ static void _build(NiftyconfChain *c)
  ******************************************************************************/
 
 /** getter for list widget */
-GtkWidget *setup_ledlist_get_widget()
+GtkWidget *ui_setup_ledlist_get_widget()
 {
         return GTK_WIDGET(UI("box"));
 }
 
 
 /** clear list */
-void setup_ledlist_clear()
+void ui_setup_ledlist_clear()
 {
         gtk_list_store_clear(GTK_LIST_STORE(UI("liststore")));
 }
 
 
 /** rebuild list */
-void setup_ledlist_refresh(NiftyconfChain *c)
+void ui_setup_ledlist_refresh(NiftyconfChain *c)
 {
         if(!c)
                 return;
 
         /* clear ledlist */
-        setup_ledlist_clear();
+        ui_setup_ledlist_clear();
 
         _build(c);
 
@@ -144,7 +144,7 @@ void setup_ledlist_refresh(NiftyconfChain *c)
 
 
 /** initialize this module */
-gboolean setup_ledlist_init()
+gboolean ui_setup_ledlist_init()
 {
         _ui = ui_builder("niftyconf-setup-ledlist.ui");
 
@@ -164,13 +164,13 @@ gboolean setup_ledlist_init()
 }
 
 /** deinitialize this module */
-void setup_ledlist_deinit()
+void ui_setup_ledlist_deinit()
 {
 	g_object_unref(_ui);
 }
 
 /** run function on every selected tree-element (multiple selections) */
-void setup_ledlist_do_foreach_selected_element(void (*func)(LedCount pos, NiftyconfLed *led))
+void ui_setup_ledlist_do_foreach_selected_element(void (*func)(LedCount pos, NiftyconfLed *led))
 {
         /* get current treeview selection */
         GtkTreeSelection *selection;

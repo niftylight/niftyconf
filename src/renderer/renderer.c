@@ -44,10 +44,10 @@
 
 #include <gtk/gtk.h>
 #include <niftyled.h>
-#include "ui/niftyconf-ui.h"
-#include "elements/niftyconf-setup.h"
-#include "elements/niftyconf-tile.h"
-#include "renderer/niftyconf-renderer.h"
+#include "ui/ui.h"
+#include "elements/element-setup.h"
+#include "elements/element-tile.h"
+#include "renderer/renderer.h"
 
 
 

@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -41,15 +41,21 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _NIFTYCONF_UI_H
-#define _NIFTYCONF_UI_H
+#ifndef _UI_ABOUT_H
+#define _UI_ABOUT_H
 
 
-/** helper macro to get object from GtkBuilder - "_ui" must be defined */
-#define UI(name) (gtk_builder_get_object(_ui, name))
+/* GUI model functions */
+gboolean                ui_about_init();
+void			ui_about_deinit();
 
 
-GtkBuilder *    ui_builder(gchar *file);
+/* GUI functions */
+void                    ui_about_set_visible(gboolean visible);
 
 
-#endif /* _NIFTYCONF_UI_H */
+/* model functions */
+
+
+
+#endif /* _UI_INFO_HARDWARE_H */

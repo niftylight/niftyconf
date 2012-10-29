@@ -41,24 +41,15 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _NIFTYCONF_INFO_HARDWARE_H
-#define _NIFTYCONF_INFO_HARDWARE_H
-
-#include "elements/niftyconf-hardware.h"
+#ifndef _UI_H
+#define _UI_H
 
 
-/* GUI model functions */
-gboolean                info_hardware_init();
-void			info_hardware_deinit();
+/** helper macro to get object from GtkBuilder - "_ui" must be defined */
+#define UI(name) (gtk_builder_get_object(_ui, name))
 
 
-/* GUI functions */
-void                    info_hardware_set(NiftyconfHardware *hardware);
-void                    info_hardware_set_visible(gboolean visible);
+GtkBuilder *    ui_builder(gchar *file);
 
 
-/* model functions */
-
-
-
-#endif /* _NIFTYCONF_INFO_HARDWARE_H */
+#endif /* _UI_H */

@@ -43,20 +43,21 @@
 
 #include <gtk/gtk.h>
 #include <niftyled.h>
-#include "elements/niftyconf-hardware.h"
-#include "elements/niftyconf-tile.h"
-#include "elements/niftyconf-chain.h"
-#include "elements/niftyconf-led.h"
-#include "elements/niftyconf-setup.h"
-#include "ui/niftyconf-about.h"
-#include "ui/niftyconf-ui.h"
-#include "ui/niftyconf-log.h"
-#include "ui/niftyconf-clipboard.h"
-#include "ui/niftyconf-setup-props.h"
-#include "ui/niftyconf-setup-tree.h"
-#include "ui/niftyconf-setup-ledlist.h"
-#include "ui/niftyconf-info-hardware.h"
-#include "renderer/niftyconf-renderer.h"
+#include "elements/element-hardware.h"
+#include "elements/element-tile.h"
+#include "elements/element-chain.h"
+#include "elements/element-led.h"
+#include "elements/element-setup.h"
+#include "ui/ui-about.h"
+#include "ui/ui.h"
+#include "ui/ui-log.h"
+#include "ui/ui-clipboard.h"
+#include "ui/ui-setup.h"
+#include "ui/ui-setup-props.h"
+#include "ui/ui-setup-tree.h"
+#include "ui/ui-setup-ledlist.h"
+#include "ui/ui-info-hardware.h"
+#include "renderer/renderer.h"
 #include "config.h"
 
 
@@ -76,7 +77,7 @@ static GtkBuilder *_ui;
 static gboolean _parse_cmdline_args(int argc, char *argv[], gchar **setupfile)
 {
         static gchar loglevelmsg[1024];
-        g_snprintf(loglevelmsg, sizeof(loglevelmsg), "define loglevel (%s)", log_loglevels());
+        g_snprintf(loglevelmsg, sizeof(loglevelmsg), "define loglevel (%s)", ui_log_loglevels());
         static gchar *loglevel;
         static gchar *sf;
         static GOptionEntry entries[] =
@@ -165,7 +166,7 @@ int main (int argc, char *argv[])
                 return -1;
 
         /* initialize modules */
-        if(!log_init())
+        if(!ui_log_init())
                 g_error("Failed to initialize \"log\" module");
 	if(!renderer_init())
 		g_error("Failed to initialize \"renderer\" module");
@@ -177,21 +178,21 @@ int main (int argc, char *argv[])
                 g_error("Failed to initialize \"tile\" module");
         if(!hardware_init())
                 g_error("Failed to initialize \"hardware\" module");
-        if(!info_hardware_init())
+        if(!ui_info_hardware_init())
                 g_error("Failed to initialize \"info-hardware\" module");
-        if(!setup_init())
+        if(!ui_setup_init())
                 g_error("Failed to initialize \"setup\" module");
-        if(!clipboard_init())
+        if(!ui_clipboard_init())
                 g_error("Failed to initialize \"clipboard\" module");
-	if(!about_init())
+	if(!ui_about_init())
 		g_error("Failed to initialize \"about\" module");
 
         /* build our ui */
         _ui = ui_builder("niftyconf.ui");
         GtkBox *box_setup = GTK_BOX(UI("box_setup"));
-        gtk_box_pack_start(box_setup, setup_get_widget(), TRUE, TRUE, 0);
+        gtk_box_pack_start(box_setup, ui_setup_get_widget(), TRUE, TRUE, 0);
         GtkBox *box_chain = GTK_BOX(UI("box_chain"));
-        gtk_box_pack_start(box_chain, setup_ledlist_get_widget(), TRUE, TRUE, 0);
+        gtk_box_pack_start(box_chain, ui_setup_ledlist_get_widget(), TRUE, TRUE, 0);
 	GtkBox *box_canvas = GTK_BOX(UI("box_canvas"));
 	gtk_box_pack_start(box_canvas, renderer_get_widget(), TRUE, TRUE, 0);
 
@@ -199,7 +200,7 @@ int main (int argc, char *argv[])
         /* load setup file if any given from commandline */
         if(setupfile)
         {
-                if(!setup_load(setupfile))
+                if(!ui_setup_load(setupfile))
                 {
                         g_warning("Failed to initialize setup from \"%s\"",
                                   setupfile);
@@ -215,15 +216,15 @@ int main (int argc, char *argv[])
 
 	g_object_unref(_ui);
 
-	about_deinit();
-	clipboard_deinit();
-	setup_deinit();
-	info_hardware_deinit();
+	ui_about_deinit();
+	ui_clipboard_deinit();
+	ui_setup_deinit();
+	ui_info_hardware_deinit();
 	hardware_deinit();
 	tile_deinit();
 	led_deinit();
 	renderer_deinit();
-	log_deinit();
+	ui_log_deinit();
 
 
         return 0;
@@ -251,21 +252,21 @@ G_MODULE_EXPORT void on_niftyconf_menu_quit_activate(GtkMenuItem *i, gpointer d)
 /** menuitem "collapse all" activated */
 G_MODULE_EXPORT void on_niftyconf_menu_tree_collapse_activate(GtkWidget *i, gpointer u)
 {
-		gtk_tree_view_collapse_all(setup_tree_view());
+		gtk_tree_view_collapse_all(ui_setup_tree_view());
 }
 
 
 /** menuitem "expand all" activated */
 G_MODULE_EXPORT void on_niftyconf_menu_tree_expand_activate(GtkWidget *i, gpointer u)
 {
-		gtk_tree_view_expand_all(setup_tree_view());
+		gtk_tree_view_expand_all(ui_setup_tree_view());
 }
 
 
 /** menuitem "show log-window" toggled */
 G_MODULE_EXPORT void on_niftyconf_menu_log_window_activate(GtkWidget *i, gpointer u)
 {
-        log_show(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(i)));
+        ui_log_show(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(i)));
 }
 
 /** menu-entry selected */
@@ -274,7 +275,7 @@ G_MODULE_EXPORT void on_niftyconf_menu_add_hardware_activate(GtkWidget *i, gpoin
 	/* rebuild plugin combobox */
 	//gtk_combo_box_
 	/* show "add hardware" dialog */
-	gtk_widget_set_visible(GTK_WIDGET(setup_ui("hardware_add_window")), TRUE);
+	gtk_widget_set_visible(GTK_WIDGET(ui_setup("hardware_add_window")), TRUE);
 }
 
 /** menu-entry selected */
@@ -282,7 +283,7 @@ G_MODULE_EXPORT void on_niftyconf_menu_add_tile_activate(GtkWidget *i, gpointer 
 {
         NIFTYLED_TYPE t;
         gpointer e;
-        setup_tree_get_last_selected_element(&t, &e);
+        ui_setup_tree_get_last_selected_element(&t, &e);
 
 
         /* different possible element types */
@@ -311,14 +312,14 @@ G_MODULE_EXPORT void on_niftyconf_menu_add_tile_activate(GtkWidget *i, gpointer 
         /** @todo refresh our menu */
 
         /* refresh tree */
-        setup_tree_refresh();
+        ui_setup_tree_refresh();
 }
 
 
 /** menu-entry selected */
 G_MODULE_EXPORT void on_niftyconf_menu_add_chain_activate(GtkWidget *i, gpointer u)
 {
-       gtk_widget_set_visible(GTK_WIDGET(setup_ui("chain_add_window")), TRUE);
+       gtk_widget_set_visible(GTK_WIDGET(ui_setup("chain_add_window")), TRUE);
 }
 
 
@@ -336,13 +337,13 @@ static void _foreach_remove_hardware(NIFTYLED_TYPE t, gpointer e)
 G_MODULE_EXPORT void on_niftyconf_menu_remove_hardware_activate(GtkWidget *i, gpointer u)
 {
         /* remove all currently selected elements */
-        setup_tree_do_foreach_selected_element(_foreach_remove_hardware);
+        ui_setup_tree_do_foreach_selected_element(_foreach_remove_hardware);
 
         /* refresh tree */
-        setup_tree_refresh();
+        ui_setup_tree_refresh();
 
 	/* hide properties */
-	setup_props_hide();
+	ui_setup_props_hide();
 }
 
 
@@ -360,13 +361,13 @@ static void _foreach_remove_tile(NIFTYLED_TYPE t, gpointer e)
 G_MODULE_EXPORT void on_niftyconf_menu_remove_tile_activate(GtkWidget *i, gpointer u)
 {
         /* remove all currently selected elements */
-        setup_tree_do_foreach_selected_element(_foreach_remove_tile);
+        ui_setup_tree_do_foreach_selected_element(_foreach_remove_tile);
 
         /* refresh tree */
-        setup_tree_refresh();
+        ui_setup_tree_refresh();
 
 	/* hide properties */
-	setup_props_hide();
+	ui_setup_props_hide();
 }
 
 
@@ -385,13 +386,13 @@ static void _foreach_remove_chain(NIFTYLED_TYPE type, gpointer e)
 G_MODULE_EXPORT void on_niftyconf_menu_remove_chain_activate(GtkWidget *i, gpointer u)
 {
         /* remove all currently selected elements */
-        setup_tree_do_foreach_selected_element(_foreach_remove_chain);
+        ui_setup_tree_do_foreach_selected_element(_foreach_remove_chain);
 
         /* refresh tree */
-        setup_tree_refresh();
+        ui_setup_tree_refresh();
 
 	/* hide properties */
-	setup_props_hide();
+	ui_setup_props_hide();
 }
 
 
@@ -399,39 +400,39 @@ G_MODULE_EXPORT void on_niftyconf_menu_remove_chain_activate(GtkWidget *i, gpoin
 /** menu-entry selected */
 G_MODULE_EXPORT void on_niftyconf_menu_cut_activate(GtkWidget *i, gpointer u)
 {
-        clipboard_cut_current_selection();
+        ui_clipboard_cut_current_selection();
 }
 
 
 /** menu-entry selected */
 G_MODULE_EXPORT void on_niftyconf_menu_copy_activate(GtkWidget *i, gpointer u)
 {
-	clipboard_copy_current_selection();
+	ui_clipboard_copy_current_selection();
 }
 
 
 /** menu-entry selected */
 G_MODULE_EXPORT void on_niftyconf_menu_paste_activate(GtkWidget *i, gpointer u)
 {
-	clipboard_paste_current_selection();
+	ui_clipboard_paste_current_selection();
 }
 
 /** menu-entry selected */
 G_MODULE_EXPORT void on_niftyconf_menu_import_activate(GtkWidget *i, gpointer u)
 {
-		gtk_widget_show(GTK_WIDGET(setup_ui("filechooserdialog_import")));
+		gtk_widget_show(GTK_WIDGET(ui_setup("filechooserdialog_import")));
 }
 
 
 /** menu-entry selected */
 G_MODULE_EXPORT void on_niftyconf_menu_export_activate(GtkWidget *i, gpointer u)
 {
-		gtk_widget_show(GTK_WIDGET(setup_ui("filechooserdialog_export")));
+		gtk_widget_show(GTK_WIDGET(ui_setup("filechooserdialog_export")));
 }
 
 
 /** menu-entry selected */
 G_MODULE_EXPORT void on_niftyconf_menu_help_about_activate(GtkWidget *i, gpointer u)
 {
-	about_set_visible(TRUE);
+	ui_about_set_visible(TRUE);
 }

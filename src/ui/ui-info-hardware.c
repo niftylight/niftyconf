@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -42,9 +42,14 @@
  */
 
 #include <gtk/gtk.h>
-#include <niftyled.h>
-#include "elements/niftyconf-led.h"
-#include "renderer/niftyconf-renderer.h"
+#include "ui/ui.h"
+#include "elements/element-hardware.h"
+
+
+
+
+/** GtkBuilder for this module */
+static GtkBuilder *_ui;
 
 
 
@@ -60,105 +65,62 @@
 /******************************************************************************
  ******************************************************************************/
 
-/** allocate new renderer for a Chain */
-NiftyconfRenderer *renderer_led_new(NiftyconfLed *led)
+/** set info */
+void ui_info_hardware_set(NiftyconfHardware *hardware)
 {
-	if(!led)
-		NFT_LOG_NULL(NULL);
+        LedHardware *h = hardware_niftyled(hardware);
 
-        return renderer_new(LED_T, led, renderer_scale_factor(), renderer_scale_factor());
+        gtk_link_button_set_uri(GTK_LINK_BUTTON(UI("linkbutton_family")),
+                                led_hardware_plugin_get_url(h));
+        gtk_button_set_label(GTK_BUTTON(UI("linkbutton_family")),
+                                led_hardware_plugin_get_family(h));
+        gtk_label_set_text(GTK_LABEL(UI("label_description")),
+                                led_hardware_plugin_get_description(h));
+        gtk_label_set_text(GTK_LABEL(UI("label_author")),
+                                led_hardware_plugin_get_author(h));
+        gtk_label_set_text(GTK_LABEL(UI("label_license")),
+                                led_hardware_plugin_get_license(h));
+        gchar version[64];
+        g_snprintf(version, sizeof(version), "v%d.%d.%d",
+                        led_hardware_plugin_get_version_major(h),
+                        led_hardware_plugin_get_version_minor(h),
+                        led_hardware_plugin_get_version_micro(h));
+        gtk_label_set_text(GTK_LABEL(UI("label_version")), version);
 }
 
 
-/** draw Led using cairo */
-void renderer_led_redraw(NiftyconfLed *led)
+/** show/hide window */
+void ui_info_hardware_set_visible(gboolean visible)
 {
-	if(!led)
-		NFT_LOG_NULL();
+        gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);
+        gtk_widget_show(GTK_WIDGET(UI("window")));
+}
 
 
-	/* get this led */
-	Led *l = led_niftyled(led);
-
-	/* get renderer of this chain */
-	NiftyconfRenderer *r = led_get_renderer(led);
-
-	/* get cairo surface of this renderer */
-       	cairo_surface_t *s = renderer_get_surface(r);
-
-
-	 /* create context for drawing */
-        cairo_t *cr = cairo_create(s);
-
-         /* disable antialiasing */
-        cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-
-        /* clear surface */
-        cairo_set_source_rgba (cr, 0, 0, 0, 0);
-        cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-        cairo_paint (cr);
-        cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
+/** initialize setup tree module */
+gboolean  ui_info_hardware_init()
+{
+        if(!(_ui = ui_builder("niftyconf-info-hardware.ui")))
+                return FALSE;
+        
+        return TRUE;
+}
 
 
-        double x = 0;
-        double y = 0;
-        double w = cairo_image_surface_get_width(s)/3;
-        double h = cairo_image_surface_get_height(s);
-
-
-	/* @todo dynamic components */
-        switch(led_get_component(l))
-        {
-		/* red */
-                case 0:
-                {
-                        cairo_set_source_rgb(cr,1,0,0);
-                        break;
-                }
-
-		/* green */
-                case 1:
-                {
-                        cairo_set_source_rgb(cr,0,1,0);
-                        x += w;
-                        break;
-                }
-
-		/* blue */
-                case 2:
-                {
-                        cairo_set_source_rgb(cr,0,0,1);
-                        x += (w*2);
-                        break;
-                }
-        }
-
-
-        /* draw rectangle */
-        cairo_rectangle(cr, x, y, w, h);
-        cairo_fill(cr);
-        cairo_stroke(cr);
-
-        /* draw outline */
-        cairo_set_line_width (cr, 1);
-        cairo_set_source_rgb(cr, 0.5, 0.5, 0.5);
-        cairo_rectangle(cr, 0, 0, renderer_scale_factor(), renderer_scale_factor());
-        cairo_stroke(cr);
-
-
-        /* is led currently highlighted? */
-        if(led_get_highlighted(led))
-        {
-                cairo_set_source_rgba(cr, 1,1,1,0.5);
-                cairo_set_line_width (cr, 1);
-                cairo_rectangle(cr, x, y, w, h);
-                cairo_fill(cr);
-        }
-
-        cairo_destroy(cr);
+/** deinitialize this module */
+void ui_info_hardware_deinit()
+{
+	g_object_unref(_ui);
 }
 
 
 /******************************************************************************
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
+
+/** close main window */
+G_MODULE_EXPORT gboolean on_info_hardware_window_delete_event(GtkWidget *w, GdkEvent *e)
+{
+        gtk_widget_set_visible(w, FALSE);
+        return TRUE;
+}

@@ -42,10 +42,13 @@
  */
 
 #include <gtk/gtk.h>
-#include <niftyled.h>
-#include "elements/niftyconf-led.h"
-#include "renderer/niftyconf-renderer.h"
-#include "renderer/niftyconf-renderer-led.h"
+#include "ui/ui.h"
+#include "config.h"
+
+
+/** GtkBuilder for this module */
+static GtkBuilder *_ui;
+
 
 
 
@@ -60,84 +63,56 @@
 /******************************************************************************
  ******************************************************************************/
 
-/** allocate new renderer for a Chain */
-NiftyconfRenderer *renderer_chain_new(NiftyconfChain *chain)
+
+
+/** show/hide window */
+void ui_about_set_visible(gboolean visible)
 {
-	if(!chain)
-		NFT_LOG_NULL(NULL);
-
-	/* dimensions of cairo surface */
-	LedChain *c = chain_niftyled(chain);
-        int width = (led_chain_get_max_x(c)+1)*renderer_scale_factor();
-        int height = (led_chain_get_max_y(c)+1)*renderer_scale_factor();
-
-        return renderer_new(LED_CHAIN_T, chain, width, height);
+        gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);
+        gtk_widget_show(GTK_WIDGET(UI("window")));
 }
 
 
-/** draw Chain using cairo */
-void renderer_chain_redraw(NiftyconfChain *chain)
+/** initialize setup tree module */
+gboolean  ui_about_init()
 {
-	if(!chain)
-		NFT_LOG_NULL();
+        if(!(_ui = ui_builder("niftyconf-about.ui")))
+                return FALSE;
+
+	GtkAboutDialog *d;
+	d = GTK_ABOUT_DIALOG(UI("window"));
+	gtk_about_dialog_set_program_name(d, PACKAGE_NAME);
+	gtk_about_dialog_set_version(d, PACKAGE_VERSION);
+	gtk_about_dialog_set_website(d, PACKAGE_URL);
+	gtk_link_button_set_uri(GTK_LINK_BUTTON(UI("linkbutton_bugreport")), PACKAGE_BUGREPORT);
+        return TRUE;
+}
 
 
-	/* get this chain */
-	LedChain *c = chain_niftyled(chain);
-
-	/* get renderer of this chain */
-	NiftyconfRenderer *r = chain_get_renderer(chain);
-
-	/* if dimensions of our chain changed, resize renderer surface */
-	int width = (led_chain_get_max_x(c)+1)*renderer_scale_factor();
-	int height = (led_chain_get_max_y(c)+1)*renderer_scale_factor();
-	if(!renderer_resize(r, width, height))
-	{
-		g_error("Failed to resize renderer to %dx%d", width, height);
-		return;
-	}
-
-	/* get cairo surface of this renderer */
-       	cairo_surface_t *s = renderer_get_surface(r);
-
-	 /* create context for drawing */
-        cairo_t *cr = cairo_create(s);
-
-        /* disable antialiasing */
-        cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-
-        /* clear surface */
-        cairo_set_source_rgba(cr, 0,0,0,1);
-        cairo_rectangle(cr,
-                        0, 0,
-                        (double) cairo_image_surface_get_width(s),
-                        (double) cairo_image_surface_get_height(s));
-        cairo_fill(cr);
-
-
-        /* set line-width */
-        cairo_set_line_width (cr, 1);
-
-
-
-        /* walk all LEDs */
-        int i;
-        for(i = 0; i < led_chain_get_ledcount(c); i++)
-        {
-		Led *l = led_chain_get_nth(c, i);
-                NiftyconfLed *led = led_get_privdata(l);
-		NiftyconfRenderer *lr = led_get_renderer(led);
-                renderer_led_redraw(led);
-                cairo_set_source_surface(cr, renderer_get_surface(lr),
-                                         (double) led_get_x(l)*renderer_scale_factor(),
-                                         (double) led_get_y(l)*renderer_scale_factor());
-                cairo_paint(cr);
-        }
-
-        cairo_destroy(cr);
+/** deinitialize this module */
+void ui_about_deinit()
+{
+	g_object_unref(_ui);
 }
 
 
 /******************************************************************************
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
+
+/** hide dialog */
+void  on_about_dialog_closed(GtkDialog *arg0, gpointer   user_data)
+{
+
+		gtk_widget_set_visible(GTK_WIDGET(arg0), FALSE);
+}
+
+
+/** hide dialog */
+G_MODULE_EXPORT gboolean on_about_dialog_response(GtkDialog *dialog,
+                                                        gint       response_id,
+                                                        gpointer   user_data)
+{
+        	gtk_widget_set_visible(GTK_WIDGET(dialog), FALSE);
+        	return TRUE;
+}

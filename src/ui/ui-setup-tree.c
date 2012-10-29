@@ -45,15 +45,16 @@
 #include <niftyled.h>
 #include <gtk/gtk.h>
 #include "niftyconf.h"
-#include "ui/niftyconf-ui.h"
-#include "ui/niftyconf-setup-props.h"
-#include "ui/niftyconf-setup-tree.h"
-#include "ui/niftyconf-setup-ledlist.h"
-#include "ui/niftyconf-info-hardware.h"
-#include "ui/niftyconf-clipboard.h"
-#include "ui/niftyconf-log.h"
-#include "elements/niftyconf-setup.h"
-#include "renderer/niftyconf-renderer-setup.h"
+#include "ui/ui.h"
+#include "ui/ui-setup.h"
+#include "ui/ui-setup-props.h"
+#include "ui/ui-setup-tree.h"
+#include "ui/ui-setup-ledlist.h"
+#include "ui/ui-info-hardware.h"
+#include "ui/ui-clipboard.h"
+#include "ui/ui-log.h"
+#include "elements/element-setup.h"
+#include "renderer/renderer-setup.h"
 
 
 
@@ -301,7 +302,7 @@ gboolean _foreach_element_refresh_highlight(GtkTreeModel *model, GtkTreePath *pa
 /** foreach: function to process an element that is currently selected */
 static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer e)
 {
-        setup_props_hide();
+        ui_setup_props_hide();
 
         switch(t)
         {
@@ -321,13 +322,13 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer e)
                         hardware_tree_set_highlighted((NiftyconfHardware *) e, TRUE);
 
                         /* show hardware properties */
-                        setup_props_hardware_show((NiftyconfHardware *) e);
+                        ui_setup_props_hardware_show((NiftyconfHardware *) e);
 
                         /* redraw everything */
                         //setup_redraw();
 
                         /* clear led-list */
-                        setup_ledlist_clear();
+                        ui_setup_ledlist_clear();
                         break;
                 }
 
@@ -352,14 +353,14 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer e)
                         /* highlight tile */
                         tile_tree_set_highlighted((NiftyconfTile *) e, TRUE);
 
-                        setup_props_tile_show((NiftyconfTile *) e);
+                        ui_setup_props_tile_show((NiftyconfTile *) e);
 
 
                         /* redraw everything */
                         //setup_redraw();
 
                         /* clear led-list */
-                        setup_ledlist_clear();
+                        ui_setup_ledlist_clear();
                         break;
                 }
 
@@ -376,13 +377,13 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer e)
                         /* highlight chain */
                         chain_tree_set_highlighted((NiftyconfChain *) e, TRUE);
 
-                        setup_props_chain_show((NiftyconfChain *) e);
+                        ui_setup_props_chain_show((NiftyconfChain *) e);
 
                         /* redraw everything */
                         //setup_redraw();
 
                         /* display led-list */
-                        setup_ledlist_refresh((NiftyconfChain *) e);
+                        ui_setup_ledlist_refresh((NiftyconfChain *) e);
 
                         break;
                 }
@@ -469,7 +470,7 @@ static void _foreach_set_current_element(NIFTYLED_TYPE t, gpointer e)
                         current_hw = (NiftyconfHardware *) e;
 
                         /* refresh info view */
-                        info_hardware_set(current_hw);
+                        ui_info_hardware_set(current_hw);
                         break;
                 }
 
@@ -553,7 +554,7 @@ static void _tree_build()
  ******************************************************************************/
 
 /** run function on every tree-element */
-void setup_tree_do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer e))
+void ui_setup_tree_do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer e))
 {
         /* get model */
         GtkTreeModel *m = gtk_tree_view_get_model(GTK_TREE_VIEW(UI("treeview")));
@@ -564,7 +565,7 @@ void setup_tree_do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer e))
 
 
 /** run function on every selected tree-element (multiple selections) */
-void setup_tree_do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer element))
+void ui_setup_tree_do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer element))
 {
         /* get current treeview selection */
         GtkTreeSelection *selection;
@@ -600,7 +601,7 @@ void setup_tree_do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpoint
 
 
 /** run function on last selected element */
-void setup_tree_do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer element))
+void ui_setup_tree_do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer element))
 {
         /* get current treeview selection */
         GtkTreeSelection *selection;
@@ -626,7 +627,7 @@ void setup_tree_do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpoin
 
 
 /** get last of currently selected elements */
-void setup_tree_get_last_selected_element(NIFTYLED_TYPE *t, gpointer *element)
+void ui_setup_tree_get_last_selected_element(NIFTYLED_TYPE *t, gpointer *element)
 {
         *t = LED_INVALID_T;
         *element = NULL;
@@ -656,7 +657,7 @@ void setup_tree_get_last_selected_element(NIFTYLED_TYPE *t, gpointer *element)
 
 
 /** get first of currently selected elements */
-void setup_tree_get_first_selected_element(NIFTYLED_TYPE *t, gpointer *element)
+void ui_setup_tree_get_first_selected_element(NIFTYLED_TYPE *t, gpointer *element)
 {
 	*t = LED_INVALID_T;
 	*element = NULL;
@@ -686,20 +687,20 @@ void setup_tree_get_first_selected_element(NIFTYLED_TYPE *t, gpointer *element)
 
 
 /** unselect all but this element */
-void setup_tree_highlight_only(NIFTYLED_TYPE t, gpointer element)
+void ui_setup_tree_highlight_only(NIFTYLED_TYPE t, gpointer element)
 {
 		/* unselect all elements */
-		setup_tree_do_foreach_element(_foreach_unhighlight_element);
+		ui_setup_tree_do_foreach_element(_foreach_unhighlight_element);
 
 		/* highlight this element */
 		_foreach_highlight_element(t, element);
 
-		setup_tree_refresh();
+		ui_setup_tree_refresh();
 }
 
 
 /** clear setup tree */
-void setup_tree_clear()
+void ui_setup_tree_clear()
 {
         if(!GTK_TREE_STORE(UI("treestore")))
                 return;
@@ -709,10 +710,10 @@ void setup_tree_clear()
 
 
 /** refresh setup-tree to reflect changes to the setup */
-void setup_tree_refresh()
+void ui_setup_tree_refresh()
 {
         /* clear tree */
-        setup_tree_clear();
+        ui_setup_tree_clear();
 
         /* rebuild tree */
         _tree_build();
@@ -723,28 +724,28 @@ void setup_tree_refresh()
 
 
 /** getter for our widget */
-GtkWidget *setup_tree_get_widget()
+GtkWidget *ui_setup_tree_get_widget()
 {
         return GTK_WIDGET(UI("box"));
 }
 
 
 /** getter for treeview */
-GtkTreeView *setup_tree_view()
+GtkTreeView *ui_setup_tree_view()
 {
 		return GTK_TREE_VIEW(UI("treeview"));
 }
 
 
 /** get type of currently selected element */
-NIFTYLED_TYPE setup_tree_current_element_type()
+NIFTYLED_TYPE ui_setup_tree_current_element_type()
 {
 	return current_type;
 }
 
 
 /** initialize setup tree module */
-gboolean  setup_tree_init()
+gboolean  ui_setup_tree_init()
 {
         if(!(_ui = ui_builder("niftyconf-setup-tree.ui")))
                 return FALSE;
@@ -767,7 +768,7 @@ gboolean  setup_tree_init()
 
 
 /** deinitialize this module */
-void setup_tree_deinit()
+void ui_setup_tree_deinit()
 {
 	g_object_unref(_ui);
 }
@@ -849,19 +850,19 @@ G_MODULE_EXPORT void on_setup_treeview_cursor_changed(GtkTreeView *tv, gpointer 
         GtkTreeSelection *s = gtk_tree_view_get_selection(tv);
         if(gtk_tree_selection_count_selected_rows(s) <= 0)
         {
-                setup_props_hide();
+                ui_setup_props_hide();
                 return;
         }
 
 
         /* unhighlight all rows */
-        setup_tree_do_foreach_element(_foreach_unhighlight_element);
+        ui_setup_tree_do_foreach_element(_foreach_unhighlight_element);
 
         /* set currently active element */
-        setup_tree_do_for_last_selected_element(_foreach_set_current_element);
+        ui_setup_tree_do_for_last_selected_element(_foreach_set_current_element);
 
         /* process all selected elements */
-        setup_tree_do_foreach_selected_element(_foreach_element_selected);
+        ui_setup_tree_do_foreach_selected_element(_foreach_element_selected);
 
 	/* redraw */
 	renderer_setup_redraw();
@@ -878,13 +879,13 @@ G_MODULE_EXPORT gboolean on_popup_remove_hardware(GtkWidget *w, GdkEventButton *
                 return FALSE;
 
         /* remove all currently selected elements */
-        setup_tree_do_foreach_selected_element(_foreach_remove_hardware);
+        ui_setup_tree_do_foreach_selected_element(_foreach_remove_hardware);
 
         /* refresh tree */
-        setup_tree_refresh();
+        ui_setup_tree_refresh();
 
 	/* hide properties */
-	setup_props_hide();
+	ui_setup_props_hide();
 
         return TRUE;
 
@@ -899,13 +900,13 @@ G_MODULE_EXPORT gboolean on_popup_remove_tile(GtkWidget *w, GdkEventButton *e, g
                 return FALSE;
 
         /* remove all currently selected elements */
-        setup_tree_do_foreach_selected_element(_foreach_remove_tile);
+        ui_setup_tree_do_foreach_selected_element(_foreach_remove_tile);
 
         /* refresh tree */
-        setup_tree_refresh();
+        ui_setup_tree_refresh();
 
 	/* hide properties */
-	setup_props_hide();
+	ui_setup_props_hide();
 
         return TRUE;
 
@@ -920,13 +921,13 @@ G_MODULE_EXPORT gboolean on_popup_remove_chain(GtkWidget *w, GdkEventButton *e, 
                 return FALSE;
 
         /* remove all currently selected elements */
-        setup_tree_do_foreach_selected_element(_foreach_remove_chain);
+        ui_setup_tree_do_foreach_selected_element(_foreach_remove_chain);
 
         /* refresh tree */
-        setup_tree_refresh();
+        ui_setup_tree_refresh();
 
 	/* hide properties */
-	setup_props_hide();
+	ui_setup_props_hide();
 
         return TRUE;
 
@@ -941,7 +942,7 @@ G_MODULE_EXPORT gboolean on_popup_add_hardware(GtkWidget *w, GdkEventButton *e, 
                 return FALSE;
 
 	/* show "add hardware" window */
-        gtk_widget_set_visible(GTK_WIDGET(setup_ui("hardware_add_window")), TRUE);
+        gtk_widget_set_visible(GTK_WIDGET(ui_setup("hardware_add_window")), TRUE);
 
         return TRUE;
 }
@@ -956,7 +957,7 @@ G_MODULE_EXPORT gboolean on_popup_add_tile(GtkWidget *w, GdkEventButton *e, gpoi
 
 
         /* set currently active element */
-        setup_tree_do_for_last_selected_element(_foreach_set_current_element);
+        ui_setup_tree_do_for_last_selected_element(_foreach_set_current_element);
 
 
         /* different possible element types */
@@ -984,7 +985,7 @@ G_MODULE_EXPORT gboolean on_popup_add_tile(GtkWidget *w, GdkEventButton *e, gpoi
 
 
         /* refresh tree */
-        setup_tree_refresh();
+        ui_setup_tree_refresh();
 
         return TRUE;
 }
@@ -998,7 +999,7 @@ G_MODULE_EXPORT gboolean on_popup_add_chain(GtkWidget *w, GdkEventButton *e, gpo
                 return FALSE;
 
 	/* show "add hardware" window */
-        gtk_widget_set_visible(GTK_WIDGET(setup_ui("chain_add_window")), TRUE);
+        gtk_widget_set_visible(GTK_WIDGET(ui_setup("chain_add_window")), TRUE);
 
         return TRUE;
 }
@@ -1011,7 +1012,7 @@ G_MODULE_EXPORT gboolean on_popup_info_hardware(GtkWidget *w, GdkEventButton *e,
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
                 return FALSE;
 
-        info_hardware_set_visible(TRUE);
+        ui_info_hardware_set_visible(TRUE);
 
         return TRUE;
 }
@@ -1025,7 +1026,7 @@ G_MODULE_EXPORT gboolean on_popup_cut_element(GtkWidget *w, GdkEventButton *e, g
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
                 return FALSE;
 
-	clipboard_cut_current_selection();
+	ui_clipboard_cut_current_selection();
 
         return TRUE;
 }
@@ -1038,7 +1039,7 @@ G_MODULE_EXPORT gboolean on_popup_copy_element(GtkWidget *w, GdkEventButton *e, 
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
                 return FALSE;
 
-        clipboard_copy_current_selection();
+        ui_clipboard_copy_current_selection();
 
         return TRUE;
 }
@@ -1051,7 +1052,7 @@ G_MODULE_EXPORT gboolean on_popup_paste_element(GtkWidget *w, GdkEventButton *e,
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
                 return FALSE;
 
-        clipboard_paste_current_selection();
+        ui_clipboard_paste_current_selection();
 
         return TRUE;
 }
@@ -1060,14 +1061,14 @@ G_MODULE_EXPORT gboolean on_popup_paste_element(GtkWidget *w, GdkEventButton *e,
 /** menu-entry selected */
 G_MODULE_EXPORT gboolean on_popup_import_element(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
-		gtk_widget_show(GTK_WIDGET(setup_ui("filechooserdialog_import")));
+		gtk_widget_show(GTK_WIDGET(ui_setup("filechooserdialog_import")));
 		return true;
 }
 
 /** menu-entry selected */
 G_MODULE_EXPORT gboolean on_popup_export_element(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
-		gtk_widget_show(GTK_WIDGET(setup_ui("filechooserdialog_export")));
+		gtk_widget_show(GTK_WIDGET(ui_setup("filechooserdialog_export")));
 		return true;
 }
 
@@ -1077,7 +1078,7 @@ static void _tree_popup_menu(GtkWidget *w, GdkEventButton *e, gpointer u)
 {
 
         /* set currently active element */
-        setup_tree_do_for_last_selected_element(_foreach_set_current_element);
+        ui_setup_tree_do_for_last_selected_element(_foreach_set_current_element);
 
 
         /* create new popup menu */

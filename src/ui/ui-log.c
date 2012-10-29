@@ -45,8 +45,8 @@
 #include <gtk/gtk.h>
 #include <niftyled.h>
 #include "niftyconf.h"
-#include "niftyconf-ui.h"
-#include "niftyconf-log.h"
+#include "ui/ui.h"
+#include "ui/ui-log.h"
 
 
 
@@ -137,7 +137,7 @@ static void _logger(void *userdata,
 /**
  *  show yes/no dialog and wat for answer
  */
-gboolean log_dialog_yesno(char *title, char *message, ...)
+gboolean ui_log_dialog_yesno(char *title, char *message, ...)
 {
 		if(!message)
 			NFT_LOG_NULL(false);
@@ -197,7 +197,7 @@ gboolean log_dialog_yesno(char *title, char *message, ...)
  *
  * @param message printable text that will be presented to the user
  */
-void log_alert_show(char *message, ...)
+void ui_log_alert_show(char *message, ...)
 {
 		/* just hide when message is NULL */
 		if(!message)
@@ -240,7 +240,7 @@ void log_alert_show(char *message, ...)
 /**
  * show/hide log window
  */
-void log_show(gboolean visible)
+void ui_log_show(gboolean visible)
 {
         gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);
 }
@@ -248,7 +248,7 @@ void log_show(gboolean visible)
 /**
  * build a string with valid loglevels
  */
-const char *log_loglevels()
+const char *ui_log_loglevels()
 {
         static char s[1024];
 
@@ -267,7 +267,7 @@ const char *log_loglevels()
 /**
  * initialize module
  */
-gboolean log_init()
+gboolean ui_log_init()
 {
         _ui = ui_builder("niftyconf-log.ui");
 
@@ -289,7 +289,7 @@ gboolean log_init()
 
 
 /** deinitialize this module */
-void log_deinit()
+void ui_log_deinit()
 {
 	g_object_unref(_ui);
 }
@@ -301,7 +301,7 @@ void log_deinit()
 /** close main window */
 G_MODULE_EXPORT gboolean on_log_window_delete_event(GtkWidget *w, GdkEvent *e)
 {
-        log_show(FALSE);
+        ui_log_show(FALSE);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(niftyconf_ui("item_log_win")), FALSE);
         return TRUE;
 }
@@ -309,7 +309,7 @@ G_MODULE_EXPORT gboolean on_log_window_delete_event(GtkWidget *w, GdkEvent *e)
 /** close alert dialog */
 G_MODULE_EXPORT gboolean on_alert_dialog_delete_event(GtkWidget *w, GdkEvent *e)
 {
-	log_alert_show(NULL);
+	ui_log_alert_show(NULL);
 	return TRUE;
 }
 

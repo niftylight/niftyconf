@@ -42,10 +42,10 @@
  */
 
 #include <gtk/gtk.h>
-#include "elements/niftyconf-hardware.h"
-#include "elements/niftyconf-chain.h"
-#include "elements/niftyconf-setup.h"
-#include "ui/niftyconf-log.h"
+#include "elements/element-hardware.h"
+#include "elements/element-chain.h"
+#include "elements/element-setup.h"
+#include "ui/ui-log.h"
 
 
 
@@ -80,9 +80,9 @@ char *hardware_dump(NiftyconfHardware *hardware, gboolean encapsulation)
 
 		char *result = NULL;
 		if(encapsulation)
-				result = led_prefs_node_to_buffer(setup_get_prefs(), n);
+				result = led_prefs_node_to_buffer(n);
 		else
-				result = led_prefs_node_to_buffer_light(setup_get_prefs(), n);
+				result = led_prefs_node_to_buffer_light(n);
 
 		led_prefs_node_free(n);
 
@@ -235,7 +235,7 @@ NiftyconfHardware *hardware_register_to_gui_and_niftyled(LedHardware *h)
         NiftyconfHardware *hardware;
         if(!(hardware = hardware_register_to_gui(h)))
         {
-                log_alert_show("Failed to register hardware to GUI");
+                ui_log_alert_show("Failed to register hardware to GUI");
                 led_hardware_destroy(h);
                 return NULL;
         }
@@ -269,14 +269,14 @@ NiftyconfHardware *hardware_new(const char *name, const char *family,
         LedHardware *h;
         if(!(h = led_hardware_new(name, family)))
         {
-                log_alert_show("Failed to create new hardware \"%s\" (%s)", name, family);
+                ui_log_alert_show("Failed to create new hardware \"%s\" (%s)", name, family);
                 return FALSE;
         }
 
 	/* try to initialize hardware */
 	if(!led_hardware_init(h, id, ledcount, pixelformat))
 	{
-		log_alert_show("Failed to initialize new hardware \"%s\". Not connected?", id);
+		ui_log_alert_show("Failed to initialize new hardware \"%s\". Not connected?", id);
 	}
 
 	/* add hardware to model */

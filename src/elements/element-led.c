@@ -42,10 +42,10 @@
  */
 
 #include <gtk/gtk.h>
-#include "elements/niftyconf-led.h"
-#include "elements/niftyconf-setup.h"
-#include "renderer/niftyconf-renderer.h"
-#include "renderer/niftyconf-renderer-led.h"
+#include "elements/element-led.h"
+#include "elements/element-setup.h"
+#include "renderer/renderer.h"
+#include "renderer/renderer-led.h"
 
 
 /** one element */
@@ -124,9 +124,9 @@ char *led_dump(NiftyconfLed *led, gboolean encapsulation)
 
 		char *result = NULL;
 		if(encapsulation)
-			result = led_prefs_node_to_buffer(setup_get_prefs(), n);
+			result = led_prefs_node_to_buffer(n);
 		else
-			result = led_prefs_node_to_buffer_light(setup_get_prefs(), n);
+			result = led_prefs_node_to_buffer_light(n);
 
 		led_prefs_node_free(n);
 

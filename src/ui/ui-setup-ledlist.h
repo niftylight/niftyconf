@@ -41,25 +41,25 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _NIFTYCONF_SETUP_LEDLIST_H
-#define _NIFTYCONF_SETUP_LEDLIST_H
+#ifndef _UI_SETUP_LEDLIST_H
+#define _UI_SETUP_LEDLIST_H
 
-#include "elements/niftyconf-chain.h"
+#include "elements/element-chain.h"
 
 
 
 /* GUI model functions */
-gboolean             setup_ledlist_init();
-void						setup_ledlist_deinit();
-GtkWidget *         setup_ledlist_get_widget();
+gboolean             ui_setup_ledlist_init();
+void						ui_setup_ledlist_deinit();
+GtkWidget *         ui_setup_ledlist_get_widget();
 
 
 /* GUI functions */
-void                    setup_ledlist_refresh(NiftyconfChain *c);
-void                    setup_ledlist_clear();
+void                    ui_setup_ledlist_refresh(NiftyconfChain *c);
+void                    ui_setup_ledlist_clear();
 
 /* model functions */
-void 					setup_ledlist_do_foreach_selected_element(void (*func)(NiftyconfLed *led));
+void 					ui_setup_ledlist_do_foreach_selected_element(void (*func)(NiftyconfLed *led));
 
 
-#endif /* _NIFTYCONF_SETUP_LEDLIST_H */
+#endif /* _UI_SETUP_LEDLIST_H */

@@ -41,15 +41,26 @@
  * Boston, MA 02111-1307, USA.
  */
 
+
+#include <niftyled.h>
 #include <gtk/gtk.h>
-#include "niftyconf-ui.h"
-#include "config.h"
+#include "ui/ui-setup-props.h"
+#include "ui/ui-setup-tree.h"
+#include "ui/ui-setup-ledlist.h"
+#include "elements/element-setup.h"
+#include "elements/element-hardware.h"
+#include "ui/ui.h"
+#include "ui/ui-log.h"
 
 
-/** GtkBuilder for this module */
-static GtkBuilder *_ui;
 
 
+/** current niftyled settings context */
+static LedPrefs *_prefs;
+/** current niftyled setup */
+static LedSetup *_setup;
+/** current filename */
+static char *_current_filename;
 
 
 
@@ -60,59 +71,101 @@ static GtkBuilder *_ui;
 
 
 
+
 /******************************************************************************
  ******************************************************************************/
 
 
-
-/** show/hide window */
-void about_set_visible(gboolean visible)
+/** getter for current setup */
+LedSetup *setup_get_current()
 {
-        gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);
-        gtk_widget_show(GTK_WIDGET(UI("window")));
+        return _setup;
+}
+
+void setup_set_current(LedSetup *s)
+{
+		_setup = s;
+}
+
+/** getter for current filename */
+const char *setup_get_current_filename()
+{
+		return _current_filename;
+}
+
+/** setup set current filename */
+void setup_set_current_filename(const char *filename)
+{
+		if(_current_filename)
+				free(_current_filename);
+		
+		_current_filename = strdup(filename);
+}
+
+/** getter for current preference context */
+LedPrefs *setup_get_prefs()
+{
+	return _prefs;
+}
+
+void setup_set_prefs(LedPrefs *p)
+{
+	_prefs = p;
+}
+
+/** dump element definition to printable string - use free() to deallacote the result */
+char *setup_dump(gboolean encapsulation)
+{
+		LedPrefsNode *n;
+		if(!(n = led_prefs_setup_to_node(_prefs, _setup)))
+		{
+				ui_log_alert_show("Failed to create preferences from current setup.");
+				return NULL;
+		}
+
+		char *result = NULL;
+		if(encapsulation)
+			result = led_prefs_node_to_buffer(n);
+		else
+			result = led_prefs_node_to_buffer_light(n);
+
+		led_prefs_node_free(n);
+
+		return result;
 }
 
 
-/** initialize setup tree module */
-gboolean  about_init()
+/** cleanup previously loaded setup */
+void setup_cleanup()
 {
-        if(!(_ui = ui_builder("niftyconf-about.ui")))
-                return FALSE;
+        /* free all hardware nodes */
+        LedHardware *h;
+        for(h = led_setup_get_hardware(_setup);
+            h;
+            h = led_hardware_list_get_next(h))
+        {
+				/* unregister all tiles of hardware */
+				LedTile *t;
+                for(t = led_hardware_get_tile(h);
+                    t;
+                    t = led_tile_list_get_next(t))
+                {
+                        tile_unregister_from_gui(led_tile_get_privdata(t));
+                }
 
-	GtkAboutDialog *d;
-	d = GTK_ABOUT_DIALOG(UI("window"));
-	gtk_about_dialog_set_program_name(d, PACKAGE_NAME);
-	gtk_about_dialog_set_version(d, PACKAGE_VERSION);
-	gtk_about_dialog_set_website(d, PACKAGE_URL);
-	gtk_link_button_set_uri(GTK_LINK_BUTTON(UI("linkbutton_bugreport")), PACKAGE_BUGREPORT);
-        return TRUE;
+				/* unregister chain of hardware */
+                chain_unregister_from_gui(led_chain_get_privdata(led_hardware_get_chain(h)));
+				
+				/* unregister hardware */
+                hardware_unregister_from_gui(led_hardware_get_privdata(h));
+        }
+
+        led_setup_destroy(_setup);
+        ui_setup_tree_clear();
+		_setup = NULL;
+		free(_current_filename);
+		_current_filename = NULL;
 }
 
 
-/** deinitialize this module */
-void about_deinit()
-{
-	g_object_unref(_ui);
-}
 
-
-/******************************************************************************
- ***************************** CALLBACKS **************************************
- ******************************************************************************/
-
-/** hide dialog */
-void  on_about_dialog_closed(GtkDialog *arg0, gpointer   user_data)
-{
-
-		gtk_widget_set_visible(GTK_WIDGET(arg0), FALSE);
-}
-
-
-/** hide dialog */
-G_MODULE_EXPORT gboolean on_about_dialog_response(GtkDialog *dialog,
-                                                        gint       response_id,
-                                                        gpointer   user_data)
-{
-        	gtk_widget_set_visible(GTK_WIDGET(dialog), FALSE);
-        	return TRUE;
-}

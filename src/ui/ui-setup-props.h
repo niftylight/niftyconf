@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -41,36 +41,30 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _NIFTYCONF_CHAIN_H
-#define _NIFTYCONF_CHAIN_H
+#ifndef _UI_SETUP_PROPS_H
+#define _UI_SETUP_PROPS_H
 
-#include <niftyled.h>
-#include "niftyconf-tile.h"
-
-typedef struct _NiftyconfChain NiftyconfChain;
-
+#include "elements/element-hardware.h"
+#include "elements/element-tile.h"
+#include "elements/element-chain.h"
+#include "elements/element-led.h"
 
 
 /* GUI model functions */
-gboolean               		chain_init();
-NiftyconfChain *        	chain_register_to_gui(LedChain *c);
-void                    			chain_unregister_from_gui(NiftyconfChain *c);
-void                    			chain_register_leds_to_gui(NiftyconfChain *c);
-void                    			chain_unregister_leds_from_gui(NiftyconfChain *c);
-gboolean 					chain_of_tile_new(NIFTYLED_TYPE parent_t,
-                           	  				gpointer parent_element, LedCount length, const char *pixelformat);
-void            					chain_of_tile_destroy(NiftyconfTile *tile);
-
+gboolean        ui_setup_props_init();
+void		ui_setup_props_deinit();
+GtkWidget *     ui_setup_props_get_widget();
 
 /* GUI functions */
-void                    			chain_tree_set_highlighted(NiftyconfChain *c, gboolean is_highlighted);
-gboolean                		chain_tree_get_highlighted(NiftyconfChain *c);
-NiftyconfRenderer *	chain_get_renderer(NiftyconfChain *c);
-
+void 		ui_setup_props_hardware_initialized_image(gboolean is_initialized);
+void            ui_setup_props_hardware_show(NiftyconfHardware *h);
+void            ui_setup_props_tile_show(NiftyconfTile *t);
+void            ui_setup_props_chain_show(NiftyconfChain *c);
+void            ui_setup_props_led_show(NiftyconfLed *l);
+void            ui_setup_props_hide();
 
 /* model functions */
-LedChain *              		chain_niftyled(NiftyconfChain *c);
-char *							chain_dump(NiftyconfChain *chain, gboolean encapsulation);
 
 
-#endif /* _NIFTYCONF_CHAIN_H */
+
+#endif /* _UI_SETUP_PROPS_H */

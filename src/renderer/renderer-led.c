@@ -43,9 +43,8 @@
 
 #include <gtk/gtk.h>
 #include <niftyled.h>
-#include "elements/niftyconf-setup.h"
-#include "renderer/niftyconf-renderer.h"
-#include "renderer/niftyconf-renderer-tile.h"
+#include "elements/element-led.h"
+#include "renderer/renderer.h"
 
 
 
@@ -61,31 +60,102 @@
 /******************************************************************************
  ******************************************************************************/
 
-/** draw complete setup using cairo */
-void renderer_setup_redraw()
+/** allocate new renderer for a Chain */
+NiftyconfRenderer *renderer_led_new(NiftyconfLed *led)
 {
-	/* redraw toplevel tiles */
-        LedHardware *h;
-        for(h = led_setup_get_hardware(setup_get_current());
-            h;
-            h = led_hardware_list_get_next(h))
+	if(!led)
+		NFT_LOG_NULL(NULL);
+
+        return renderer_new(LED_T, led, renderer_scale_factor(), renderer_scale_factor());
+}
+
+
+/** draw Led using cairo */
+void renderer_led_redraw(NiftyconfLed *led)
+{
+	if(!led)
+		NFT_LOG_NULL();
+
+
+	/* get this led */
+	Led *l = led_niftyled(led);
+
+	/* get renderer of this chain */
+	NiftyconfRenderer *r = led_get_renderer(led);
+
+	/* get cairo surface of this renderer */
+       	cairo_surface_t *s = renderer_get_surface(r);
+
+
+	 /* create context for drawing */
+        cairo_t *cr = cairo_create(s);
+
+         /* disable antialiasing */
+        cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
+
+        /* clear surface */
+        cairo_set_source_rgba (cr, 0, 0, 0, 0);
+        cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+        cairo_paint (cr);
+        cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
+
+
+        double x = 0;
+        double y = 0;
+        double w = cairo_image_surface_get_width(s)/3;
+        double h = cairo_image_surface_get_height(s);
+
+
+	/* @todo dynamic components */
+        switch(led_get_component(l))
         {
-                /* redraw all tiles of this hardware */
-                LedTile *t;
-                for(t = led_hardware_get_tile(h);
-                    t;
-                    t = led_tile_list_get_next(t))
+		/* red */
+                case 0:
                 {
-                        renderer_tile_redraw(led_tile_get_privdata(t));
+                        cairo_set_source_rgb(cr,1,0,0);
+                        break;
                 }
 
-                /* redraw chain of this hardware */
-                led_hardware_list_refresh_mapping(h);
-                //chain_redraw(led_chain_get_privdata(led_hardware_get_chain(h)));
+		/* green */
+                case 1:
+                {
+                        cairo_set_source_rgb(cr,0,1,0);
+                        x += w;
+                        break;
+                }
+
+		/* blue */
+                case 2:
+                {
+                        cairo_set_source_rgb(cr,0,0,1);
+                        x += (w*2);
+                        break;
+                }
         }
 
-	/* expose drawingarea */
-	renderer_redraw();
+
+        /* draw rectangle */
+        cairo_rectangle(cr, x, y, w, h);
+        cairo_fill(cr);
+        cairo_stroke(cr);
+
+        /* draw outline */
+        cairo_set_line_width (cr, 1);
+        cairo_set_source_rgb(cr, 0.5, 0.5, 0.5);
+        cairo_rectangle(cr, 0, 0, renderer_scale_factor(), renderer_scale_factor());
+        cairo_stroke(cr);
+
+
+        /* is led currently highlighted? */
+        if(led_get_highlighted(led))
+        {
+                cairo_set_source_rgba(cr, 1,1,1,0.5);
+                cairo_set_line_width (cr, 1);
+                cairo_rectangle(cr, x, y, w, h);
+                cairo_fill(cr);
+        }
+
+        cairo_destroy(cr);
 }
 
 
