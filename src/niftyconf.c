@@ -42,6 +42,7 @@
  */
 
 #include <gtk/gtk.h>
+#include <gconf/gconf-client.h>
 #include <niftyled.h>
 #include "elements/element-hardware.h"
 #include "elements/element-tile.h"
@@ -64,6 +65,7 @@
 
 /** GtkBuilder for this module (check data/ directory) */
 static GtkBuilder *_ui;
+static GConfClient *_gconf;
 
 
 /******************************************************************************
@@ -71,6 +73,57 @@ static GtkBuilder *_ui;
  ******************************************************************************/
 
 
+
+/** save current window size & position */
+static void _save_window_attributes()
+{
+        gint width, height;
+        gtk_window_get_size(GTK_WINDOW(UI("window")), &width, &height);
+        gint x, y;
+        gtk_window_get_position(GTK_WINDOW(UI("window")), &x, &y);
+        gconf_client_set_int(_gconf,
+                        "/apps/"PACKAGE_NAME"/ui/window.width",
+                        width,
+                        NULL);
+        gconf_client_set_int(_gconf,
+                        "/apps/"PACKAGE_NAME"/ui/window.height",
+                        height,
+                        NULL);
+        gconf_client_set_int(_gconf,
+                        "/apps/"PACKAGE_NAME"/ui/window.x",
+                        x,
+                        NULL);
+        gconf_client_set_int(_gconf,
+                        "/apps/"PACKAGE_NAME"/ui/window.y",
+                        y,
+                        NULL);
+}
+
+
+/** restore previous window size & position */
+static void _load_window_attributes()
+{
+        gint x = 0, y = 0, width = 0, height = 0;
+        x = gconf_client_get_int(_gconf, 
+                        "/apps/"PACKAGE_NAME"/ui/window.x", 
+                        NULL);
+        y = gconf_client_get_int(_gconf, 
+                        "/apps/"PACKAGE_NAME"/ui/window.y", 
+                        NULL);
+        width = gconf_client_get_int(_gconf, 
+                        "/apps/"PACKAGE_NAME"/ui/window.width", 
+                        NULL);
+        height = gconf_client_get_int(_gconf, 
+                        "/apps/"PACKAGE_NAME"/ui/window.height", 
+                        NULL);
+
+
+        if(width > 0 && height > 0)
+                gtk_window_resize(GTK_WINDOW(UI("window")), width, height);
+        if(x > 0 && y > 0)
+                gtk_window_move(GTK_WINDOW(UI("window")), x, y);
+
+}
 
 
 /** parse commandline arguments */
@@ -153,8 +206,8 @@ int main (int argc, char *argv[])
         //gtk_set_locale();
         gtk_init (&argc, &argv);
 
-	/* check version */
-	NFT_LED_CHECK_VERSION;
+		/* check version */
+		NFT_LED_CHECK_VERSION;
 
         /* set default loglevel */
         nft_log_level_set(L_INFO);
@@ -165,11 +218,18 @@ int main (int argc, char *argv[])
         if(!_parse_cmdline_args(argc, argv, &setupfile))
                 return -1;
 
+		/* initialize GConf client */
+		_gconf = gconf_client_get_default();
+        gconf_client_add_dir(_gconf,
+                       "/apps/"PACKAGE_NAME"/ui",
+                       GCONF_CLIENT_PRELOAD_NONE,
+                       NULL);
+
         /* initialize modules */
         if(!ui_log_init())
                 g_error("Failed to initialize \"log\" module");
-	if(!renderer_init())
-		g_error("Failed to initialize \"renderer\" module");
+		if(!renderer_init())
+			g_error("Failed to initialize \"renderer\" module");
         if(!led_init())
                 g_error("Failed to initialize \"led\" module");
         if(!chain_init())
@@ -184,8 +244,8 @@ int main (int argc, char *argv[])
                 g_error("Failed to initialize \"setup\" module");
         if(!ui_clipboard_init())
                 g_error("Failed to initialize \"clipboard\" module");
-	if(!ui_about_init())
-		g_error("Failed to initialize \"about\" module");
+		if(!ui_about_init())
+			g_error("Failed to initialize \"about\" module");
 
         /* build our ui */
         _ui = ui_builder("niftyconf.ui");
@@ -193,8 +253,8 @@ int main (int argc, char *argv[])
         gtk_box_pack_start(box_setup, ui_setup_get_widget(), TRUE, TRUE, 0);
         GtkBox *box_chain = GTK_BOX(UI("box_chain"));
         gtk_box_pack_start(box_chain, ui_setup_ledlist_get_widget(), TRUE, TRUE, 0);
-	GtkBox *box_canvas = GTK_BOX(UI("box_canvas"));
-	gtk_box_pack_start(box_canvas, renderer_get_widget(), TRUE, TRUE, 0);
+		GtkBox *box_canvas = GTK_BOX(UI("box_canvas"));
+		gtk_box_pack_start(box_canvas, renderer_get_widget(), TRUE, TRUE, 0);
 
 
         /* load setup file if any given from commandline */
@@ -209,22 +269,23 @@ int main (int argc, char *argv[])
                 g_free(setupfile);
         }
 
+		/* restore window size & position */
+		_load_window_attributes();
 
+		/* main loop... */
+		gtk_main();
+			
+		g_object_unref(_ui);
 
-        /* main loop... */
-        gtk_main();
-
-	g_object_unref(_ui);
-
-	ui_about_deinit();
-	ui_clipboard_deinit();
-	ui_setup_deinit();
-	ui_info_hardware_deinit();
-	hardware_deinit();
-	tile_deinit();
-	led_deinit();
-	renderer_deinit();
-	ui_log_deinit();
+		ui_about_deinit();
+		ui_clipboard_deinit();
+		ui_setup_deinit();
+		ui_info_hardware_deinit();
+		hardware_deinit();
+		tile_deinit();
+		led_deinit();
+		renderer_deinit();
+		ui_log_deinit();
 
 
         return 0;
@@ -238,9 +299,14 @@ int main (int argc, char *argv[])
 /** close main window */
 G_MODULE_EXPORT gboolean on_niftyconf_window_delete_event(GtkWidget *w, GdkEvent *e)
 {
+	/* store window size & position */
+	_save_window_attributes();
+
+	/* bye bye */
 	gtk_main_quit();
-        return FALSE;
+    return FALSE;
 }
+
 
 /** menuitem "quit" selected */
 G_MODULE_EXPORT void on_niftyconf_menu_quit_activate(GtkMenuItem *i, gpointer d)
