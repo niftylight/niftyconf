@@ -1,24 +1,12 @@
+#############
+# niftyconf Makefile.am
+# v0.4 - (c) Daniel Hiepler (2010-2012)
+
 
 EXTRA_DIST = \
-	elements/element-chain.h \
-	elements/element-tile.h \
-	elements/element-hardware.h \
-	elements/element-led.h \
-	elements/element-setup.h \
-	renderer/renderer-chain.h \
-	renderer/renderer.h \
-	renderer/renderer-led.h \
-	renderer/renderer-setup.h \
-	renderer/renderer-tile.h \
-	ui/ui-about.h \
-	ui/ui-setup-ledlist.h \
-	ui/ui-clipboard.h \
-	ui/ui-setup-props.h \
-	ui/ui-info-hardware.h \
-	ui/ui-setup-tree.h \
-	ui/ui-log.h \
-	ui/ui.h \
-	ui/ui-setup.h \
+	elements \
+	renderer \
+	ui \
 	niftyconf.h
 
 
@@ -49,12 +37,14 @@ niftyconf_SOURCES = \
 
 
 
+
 niftyconf_INCLUDES = \
 	-I. -I..
 
 niftyconf_CFLAGS = \
-	-DDATADIR=\""$(datadir)"\" \
-	$(WARNING_CFLAGS) \
+	-std=c99 -D_BSD_SOURCE \
+	-DDATADIR=\"$(datadir)\" \
+	-Wall -Wextra -Werror -Wno-unused-parameter \
 	$(NIFTYCONF_CFLAGS)
 
 niftyconf_LDADD = $(NIFTYCONF_LIBS)
@@ -62,3 +52,12 @@ niftyconf_LDFLAGS = $(NIFTYCONF_LIBS)
 
 
 
+
+if ENABLE_GPROF
+	niftyconf_CFLAGS += -pg
+	niftyconf_LDFLAGS += -pg
+endif
+
+if ENABLE_DEBUG
+	niftyonf_CFLAGS += -DDEBUG
+endif

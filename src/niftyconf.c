@@ -137,7 +137,7 @@ static gboolean _parse_cmdline_args(int argc, char *argv[], gchar **setupfile)
         {
                 { "config", 'c', 0, G_OPTION_ARG_FILENAME, &sf, "Initialize setup from XML config file", NULL },
                 { "loglevel", 'l', 0, G_OPTION_ARG_STRING, &loglevel, loglevelmsg, NULL },
-                { NULL }
+                { NULL, 0, 0, 0, NULL, NULL, NULL }
         };
 
 

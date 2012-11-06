@@ -121,7 +121,7 @@ void renderer_chain_redraw(NiftyconfChain *chain)
 
 
         /* walk all LEDs */
-        int i;
+        LedCount i;
         for(i = 0; i < led_chain_get_ledcount(c); i++)
         {
 		Led *l = led_chain_get_nth(c, i);

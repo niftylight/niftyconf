@@ -304,7 +304,7 @@ G_MODULE_EXPORT void on_spinbutton_chain_ledcount_changed(GtkSpinButton *s, gpoi
         LedChain *chain = chain_niftyled(current_chain);
 
         /* get new ledcount */
-        int ledcount = gtk_spin_button_get_value_as_int(s);
+        LedCount ledcount = (LedCount) gtk_spin_button_get_value_as_int(s);
 
         /* ledcount really changed? */
         if(led_chain_get_ledcount(chain) == ledcount)

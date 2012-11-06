@@ -1,65 +1,63 @@
+#############
 # niftyconf configure.ac
-# v0.1 - Daniel Hiepler (2010-2012)
+# v0.4 - (c) Daniel Hiepler (2010-2012)
 
 
 
-# versioning
-m4_define([niftyconf_major_version], [0])
-m4_define([niftyconf_minor_version], [0])
-m4_define([niftyconf_micro_version], [1])
-
-
-m4_define(niftyconf_datestamp,
-          m4_esyscmd(date +%Y%m%d | tr -d '\n\r'))
-          
-m4_define([niftyconf_version],
-          [niftyconf_major_version.niftyconf_minor_version.niftyconf_micro_version])
-
-m4_define(niftyconf_full_version,
-          niftyconf_version[-]niftyconf_datestamp)
-
-          
-          
-
-# ---------------
-#  autoconf init
-# ---------------
-
-AC_INIT([niftyconf],
-        [niftyconf_version],
+# --------------------------------
+#    initialization
+# --------------------------------
+AC_INIT([niftyconf], 
+		m4_esyscmd([./version --short]),
         [http://github.com/niftylight/niftyconf/issues],
         [niftyconf],
-        [http://wiki.niftylight.de/Niftyconf])
-        
-AC_PREREQ([2.64])
-AC_COPYRIGHT([
-  Copyright (C) 2002-2012 Daniel Hiepler
-])
+        [http://wiki.niftylight.de/AC_PACKAGE_NAME])
 
+AC_COPYRIGHT([Copyright (C) 2002-2012 Daniel Hiepler])        
 
+AM_INIT_AUTOMAKE([1.11 color-tests dist-bzip2 tar-ustar parallel-tests silent-rules -Wno-portability -Wall])
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_SRCDIR([configure.ac])
-AC_CONFIG_AUX_DIR(.)
 
-AM_INIT_AUTOMAKE([1.11 no-define -Wno-portability tar-ustar no-dist-gzip dist-xz])
- 
-# Support silent build rules. Disable
-# by either passing --disable-silent-rules to configure or passing V=1
-# to make
-AM_SILENT_RULES([yes])
 
-# --------------
-#  dependencies
-# --------------
+# --------------------------------
+#    information on the package
+# --------------------------------
+# infos
+PACKAGE_DESCRIPTION="niftyled setup configuration GUI"
+PACKAGE_DESCRIPTION_LONG="GUI to create a niftyled setup file"
 
-# Check for programs
-AC_PROG_CC
+AC_SUBST([PACKAGE_DESCRIPTION], [${PACKAGE_DESCRIPTION}], [package description])
+AC_SUBST([PACKAGE_DESCRIPTION_LONG], [${PACKAGE_DESCRIPTION_LONG}], [long package description])
+AC_DEFINE_UNQUOTED(PACKAGE_DESCRIPTION, "${PACKAGE_DESCRIPTION}", [package description])
+AC_DEFINE_UNQUOTED(PACKAGE_DESCRIPTION_LONG, "${PACKAGE_DESCRIPTION_LONG}", [long package description])
+
+# versioning (s. version script)
+AC_SUBST([PACKAGE_MAJOR_VERSION], m4_esyscmd([./version --major]), [major version])
+AC_SUBST([PACKAGE_MINOR_VERSION], m4_esyscmd([./version --minor]), [minor version])
+AC_SUBST([PACKAGE_MICRO_VERSION], m4_esyscmd([./version --micro]), [micro version])
+AC_SUBST([PACKAGE_GIT_VERSION], m4_esyscmd([./version --git]), [git version])
+
+         
+# --------------------------------
+#    checks for programs
+# --------------------------------
+AM_PROG_CC_C_O
 AC_HEADER_STDC
 AM_PATH_GLIB_2_0
 
+PKG_PROG_PKG_CONFIG([0.14])
+if test -z "${PKG_CONFIG}"; then
+  AC_MSG_ERROR([*** pkg-config not found. See http://www.freedesktop.org/software/pkgconfig/ or check your distribution.])
+fi
+
+          
+
+# --------------------------------
+#    checks for libraries
+# --------------------------------
 # minimum versions
 NIFTYLED_REQUIRED=0.1.0
+GTK_REQUIRED=2.2
 
 
 # ---------------------
@@ -68,56 +66,82 @@ NIFTYLED_REQUIRED=0.1.0
 PKG_CHECK_MODULES(NIFTYCONF, 
 [
         cairo
-        gtk+-2.0 >= 2.2
+        gtk+-2.0 >= $GTK_REQUIRED
 		gconf-2.0
         gmodule-2.0 
         niftyled >= $NIFTYLED_REQUIRED
 ])
-
 AC_SUBST(NIFTYCONF_CFLAGS)
 AC_SUBST(NIFTYCONF_LIBS)
 
 
+# --------------------------------
+#    checks for header files
+# --------------------------------
 
 
-# -----------------------
-#  ./configure arguments
-# -----------------------
-
-# enable debug
-AC_ARG_ENABLE(debug,
-  AS_HELP_STRING([--disable-debug],
-                 [compile without debug code]),
-    enable_debug=$enableval, enable_debug=yes )
-
-if test x$enable_debug = xyes; then
-  AC_DEFINE(ENABLE_DEBUG, [], [debugging code enabled])
-  CFLAGS="-g -O0"
-fi
-
-# enable gprof
-AC_ARG_ENABLE(gprof,
-            AS_HELP_STRING([--enable-gprof=@<:@no/yes@:>@],
-            [build with support for gprof]),,
-            [enable_gprof=no])
-if test "x$enable_gprof" != "xno" ; then
-    CFLAGS="$CFLAGS -pg"
-    LDFLAGS="$LDFLAGS -pg"
-fi
+# --------------------------------
+#    checks for types
+# --------------------------------
 
 
-
-# ---------------
-#  compile flags
-# ---------------
-WARNING_CFLAGS="-Wall -Wreturn-type -Wswitch -Wuninitialized -Wparentheses -Wpointer-arith -Winline"
-CFLAGS="-std=c99 -D_BSD_SOURCE $CFLAGS"
-AC_SUBST(WARNING_CFLAGS)
-AC_SUBST(CFLAGS)
-AC_SUBST(LDFLAGS)
+# --------------------------------
+#    checks for structures
+# --------------------------------
 
 
+# --------------------------------
+#    checks for compiler characteristics
+# --------------------------------
 
+
+# --------------------------------
+#    checks for library functions
+# --------------------------------
+
+
+# --------------------------------
+#    checks for system services
+# --------------------------------
+
+
+# --------------------------------
+#   compile process
+# --------------------------------
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+
+
+# --------------------------------
+# Arguments for configure-script
+# --------------------------------
+AC_ARG_ENABLE(
+        debug,
+		AS_HELP_STRING([--enable-debug], [enable debugging, default: no]),
+		[case "${enableval}" in
+             yes) debug=true ;;
+             no)  debug=false ;;
+             *)   AC_MSG_ERROR([bad value ${enableval} for --enable-debug]) ;;
+		esac],
+		[debug=false])
+AM_CONDITIONAL(ENABLE_DEBUG, test x$debug = xtrue)
+
+AC_ARG_ENABLE(
+        gprof,
+		AS_HELP_STRING([--enable-gprof], [enable profiling, default: no]),
+		[case "${enableval}" in
+             yes) debug=true ;;
+             no)  debug=false ;;
+             *)   AC_MSG_ERROR([bad value ${enableval} for --enable-gprof]) ;;
+		esac],
+		[debug=false])
+AM_CONDITIONAL(ENABLE_GPROF, test x$gprof = xtrue)
+
+
+
+# --------------------------------
+# Output
+# --------------------------------
+AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
    Makefile
    data/niftyconf.desktop
@@ -132,11 +156,17 @@ AC_OUTPUT
 
 echo "
 Configure summary:
+    Package.....................:  ${PACKAGE_STRING}
+    Description.................:  ${PACKAGE_DESCRIPTION}
+    Revision....................:  ${PACKAGE_GIT_VERSION}
+    URL.........................:  ${PACKAGE_URL}
+    Bugreports..................:  ${PACKAGE_BUGREPORT}
+    Capture mechanisms..........:  ${CAPTURE}
 
-        Version.....................:  niftyconf_version
-        Build.......................:  niftyconf_datestamp
-	Compiler....................:  ${CC}
-	Compiler Flags..............:  ${CFLAGS} ${WARNING_CFLAGS} ${NIFTYCONF_CFLAGS}
-	Linker Flags................:  ${LDFLAGS} ${NIFTYCONF_LIBS}
-	Prefix......................:  ${prefix}
+    Install prefix..............:  ${prefix}
+    C compiler..................:  ${CC}
+    C++ compiler................:  ${CPP}
+    System CFLAGS...............:  ${CFLAGS}
+    System CXXFLAGS.............:  ${CXXFLAGS}
+    System LDFLAGS..............:  ${LDFLAGS}
 "

@@ -261,7 +261,7 @@ gboolean ui_setup_init()
 	gtk_file_filter_add_mime_type(filter, "text/xml");
 
 	/* build "plugin" combobox for "add hardware" dialog */
-	unsigned int p;
+	int p;
 	for(p = 0; p < led_hardware_plugin_total_count(); p++)
 	{
 		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(UI("hardware_add_plugin_combobox")),
@@ -475,9 +475,9 @@ G_MODULE_EXPORT void on_hardware_add_pixelformat_comboboxtext_changed(GtkComboBo
 	gtk_widget_set_sensitive(GTK_WIDGET(UI("hardware_add_ledcount_spinbutton")), true);
 
 	/* set minimum for "ledcount" spinbutton according to format */
-	size_t minimum = led_pixel_format_get_n_components(f);
-	gtk_adjustment_set_lower(GTK_ADJUSTMENT(UI("ledcount_adjustment")), (gdouble) minimum);
-	if(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(UI("hardware_add_ledcount_spinbutton"))) < minimum)
+	LedCount minimum = led_pixel_format_get_n_components(f);
+	gtk_adjustment_set_lower(GTK_ADJUSTMENT(UI("ledcount_adjustment")), minimum);
+	if((LedCount) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(UI("hardware_add_ledcount_spinbutton"))) < minimum)
 	{
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("hardware_add_ledcount_spinbutton")), (gdouble) minimum);
 	}
@@ -539,7 +539,7 @@ G_MODULE_EXPORT void on_chain_add_pixelformat_comboboxtext_changed(GtkComboBox *
 	/* set minimum for "ledcount" spinbutton according to format */
 	size_t minimum = led_pixel_format_get_n_components(f);
 	gtk_adjustment_set_lower(GTK_ADJUSTMENT(UI("ledcount_adjustment")), (gdouble) minimum);
-	if(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(UI("chain_add_ledcount_spinbutton"))) < minimum)
+	if((size_t) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(UI("chain_add_ledcount_spinbutton"))) < minimum)
 	{
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("chain_add_ledcount_spinbutton")), (gdouble) minimum);
 	}
