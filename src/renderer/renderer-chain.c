@@ -55,7 +55,11 @@
  ****************************** STATIC FUNCTIONS ******************************
  ******************************************************************************/
 
-
+/** renderer for chains */
+static NftResult _render_chain(cairo_surface_t *s, gpointer element)
+{
+	return NFT_SUCCESS;
+}
 
 /******************************************************************************
  ******************************************************************************/
@@ -63,78 +67,78 @@
 /** allocate new renderer for a Chain */
 NiftyconfRenderer *renderer_chain_new(NiftyconfChain *chain)
 {
-	if(!chain)
-		NFT_LOG_NULL(NULL);
+		if(!chain)
+				NFT_LOG_NULL(NULL);
 
-	/* dimensions of cairo surface */
-	LedChain *c = chain_niftyled(chain);
-        int width = (led_chain_get_max_x(c)+1)*renderer_scale_factor();
-        int height = (led_chain_get_max_y(c)+1)*renderer_scale_factor();
+		/* dimensions of cairo surface */
+		LedChain *c = chain_niftyled(chain);
+		int width = (led_chain_get_max_x(c)+1)*renderer_scale_factor();
+		int height = (led_chain_get_max_y(c)+1)*renderer_scale_factor();
 
-        return renderer_new(LED_CHAIN_T, chain, width, height);
+		return renderer_new(LED_CHAIN_T, chain, &_render_chain, width, height);
 }
 
 
 /** draw Chain using cairo */
 void renderer_chain_redraw(NiftyconfChain *chain)
 {
-	if(!chain)
-		NFT_LOG_NULL();
+		if(!chain)
+				NFT_LOG_NULL();
 
 
-	/* get this chain */
-	LedChain *c = chain_niftyled(chain);
+		/* get this chain */
+		LedChain *c = chain_niftyled(chain);
 
-	/* get renderer of this chain */
-	NiftyconfRenderer *r = chain_get_renderer(chain);
+		/* get renderer of this chain */
+		NiftyconfRenderer *r = chain_get_renderer(chain);
 
-	/* if dimensions of our chain changed, resize renderer surface */
-	int width = (led_chain_get_max_x(c)+1)*renderer_scale_factor();
-	int height = (led_chain_get_max_y(c)+1)*renderer_scale_factor();
-	if(!renderer_resize(r, width, height))
-	{
-		g_error("Failed to resize renderer to %dx%d", width, height);
-		return;
-	}
+		/* if dimensions of our chain changed, resize renderer surface */
+		int width = (led_chain_get_max_x(c)+1)*renderer_scale_factor();
+		int height = (led_chain_get_max_y(c)+1)*renderer_scale_factor();
+		if(!renderer_resize(r, width, height))
+		{
+				g_error("Failed to resize renderer to %dx%d", width, height);
+				return;
+		}
 
-	/* get cairo surface of this renderer */
-       	cairo_surface_t *s = renderer_get_surface(r);
+		/* get cairo surface of this renderer */
+		cairo_surface_t *s = renderer_get_surface(r);
 
-	 /* create context for drawing */
-        cairo_t *cr = cairo_create(s);
+		/* create context for drawing */
+		cairo_t *cr = cairo_create(s);
 
-        /* disable antialiasing */
-        cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
+		/* disable antialiasing */
+		cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
 
-        /* clear surface */
-        cairo_set_source_rgba(cr, 0,0,0,1);
-        cairo_rectangle(cr,
-                        0, 0,
-                        (double) cairo_image_surface_get_width(s),
-                        (double) cairo_image_surface_get_height(s));
-        cairo_fill(cr);
-
-
-        /* set line-width */
-        cairo_set_line_width (cr, 1);
+		/* clear surface */
+		cairo_set_source_rgba(cr, 0,0,0,1);
+		cairo_rectangle(cr,
+		                0, 0,
+		                (double) cairo_image_surface_get_width(s),
+		                (double) cairo_image_surface_get_height(s));
+		cairo_fill(cr);
 
 
+		/* set line-width */
+		cairo_set_line_width (cr, 1);
 
-        /* walk all LEDs */
-        LedCount i;
-        for(i = 0; i < led_chain_get_ledcount(c); i++)
-        {
-		Led *l = led_chain_get_nth(c, i);
-                NiftyconfLed *led = led_get_privdata(l);
-		NiftyconfRenderer *lr = led_get_renderer(led);
-                renderer_led_redraw(led);
-                cairo_set_source_surface(cr, renderer_get_surface(lr),
-                                         (double) led_get_x(l)*renderer_scale_factor(),
-                                         (double) led_get_y(l)*renderer_scale_factor());
-                cairo_paint(cr);
-        }
 
-        cairo_destroy(cr);
+
+		/* walk all LEDs */
+		LedCount i;
+		for(i = 0; i < led_chain_get_ledcount(c); i++)
+		{
+				Led *l = led_chain_get_nth(c, i);
+				NiftyconfLed *led = led_get_privdata(l);
+				NiftyconfRenderer *lr = led_get_renderer(led);
+				renderer_led_redraw(led);
+				cairo_set_source_surface(cr, renderer_get_surface(lr),
+				                         (double) led_get_x(l)*renderer_scale_factor(),
+				                         (double) led_get_y(l)*renderer_scale_factor());
+				cairo_paint(cr);
+		}
+
+		cairo_destroy(cr);
 }
 
 

@@ -46,12 +46,12 @@
 
 
 /* GUI model functions */
-gboolean                ui_about_init();
-void			ui_about_deinit();
+gboolean	ui_about_init();
+void		ui_about_deinit();
 
 
 /* GUI functions */
-void                    ui_about_set_visible(gboolean visible);
+void        ui_about_set_visible(gboolean visible);
 
 
 /* model functions */

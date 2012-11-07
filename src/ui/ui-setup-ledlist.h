@@ -49,17 +49,17 @@
 
 
 /* GUI model functions */
-gboolean             ui_setup_ledlist_init();
-void						ui_setup_ledlist_deinit();
-GtkWidget *         ui_setup_ledlist_get_widget();
+gboolean    ui_setup_ledlist_init();
+void		ui_setup_ledlist_deinit();
+GtkWidget *	ui_setup_ledlist_get_widget();
 
 
 /* GUI functions */
-void                    ui_setup_ledlist_refresh(NiftyconfChain *c);
-void                    ui_setup_ledlist_clear();
+void        ui_setup_ledlist_refresh(NiftyconfChain *c);
+void        ui_setup_ledlist_clear();
 
 /* model functions */
-void 					ui_setup_ledlist_do_foreach_selected_element(void (*func)(NiftyconfLed *led));
+void 		ui_setup_ledlist_do_foreach_selected_element(void (*func)(NiftyconfLed *led));
 
 
 #endif /* _UI_SETUP_LEDLIST_H */

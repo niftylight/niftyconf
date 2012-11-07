@@ -51,12 +51,12 @@
 /** one element */
 struct _NiftyconfLed
 {
-        /** niftyled descriptor */
-        Led *l;
-        /** renderer */
-	NiftyconfRenderer *renderer;
-	/** true if element is currently highlighted */
-        gboolean highlight;
+		/** niftyled descriptor */
+		Led *l;
+		/** renderer */
+		NiftyconfRenderer *renderer;
+		/** true if element is currently highlighted */
+		gboolean highlight;
 };
 
 
@@ -75,30 +75,30 @@ struct _NiftyconfLed
 /** getter for renderer */
 NiftyconfRenderer *led_get_renderer(NiftyconfLed *l)
 {
-	if(!l)
-		NFT_LOG_NULL(NULL);
+		if(!l)
+				NFT_LOG_NULL(NULL);
 
-	return l->renderer;
+		return l->renderer;
 }
 
 
 /** getter for boolean value whether element is currently highlighted */
 gboolean led_get_highlighted(NiftyconfLed *l)
 {
-        if(!l)
-                NFT_LOG_NULL(FALSE);
+		if(!l)
+				NFT_LOG_NULL(FALSE);
 
-        return l->highlight;
+		return l->highlight;
 }
 
 
 /* setter for boolean value whether element is currently highlighted */
 void led_set_highlighted(NiftyconfLed *l, gboolean is_highlighted)
 {
-        if(!l)
-                NFT_LOG_NULL();
+		if(!l)
+				NFT_LOG_NULL();
 
-        l->highlight = is_highlighted;
+		l->highlight = is_highlighted;
 }
 
 
@@ -107,10 +107,10 @@ void led_set_highlighted(NiftyconfLed *l, gboolean is_highlighted)
  */
 Led *led_niftyled(NiftyconfLed *l)
 {
-        if(!l)
-                return NULL;
+		if(!l)
+				return NULL;
 
-        return l->l;
+		return l->l;
 }
 
 
@@ -124,9 +124,9 @@ char *led_dump(NiftyconfLed *led, gboolean encapsulation)
 
 		char *result = NULL;
 		if(encapsulation)
-			result = led_prefs_node_to_buffer(n);
+				result = led_prefs_node_to_buffer(n);
 		else
-			result = led_prefs_node_to_buffer_light(n);
+				result = led_prefs_node_to_buffer_light(n);
 
 		led_prefs_node_free(n);
 
@@ -139,28 +139,28 @@ char *led_dump(NiftyconfLed *led, gboolean encapsulation)
  */
 NiftyconfLed *led_register_to_gui(Led *l)
 {
-        NiftyconfLed *n;
-        if(!(n = calloc(1, sizeof(NiftyconfLed))))
-        {
-                g_error("calloc: %s", strerror(errno));
-                return NULL;
-        }
+		NiftyconfLed *n;
+		if(!(n = calloc(1, sizeof(NiftyconfLed))))
+		{
+				g_error("calloc: %s", strerror(errno));
+				return NULL;
+		}
 
-        /* save descriptor */
-        n->l = l;
+		/* save descriptor */
+		n->l = l;
 
-	/* allocate renderer */
-	if(!(n->renderer = renderer_led_new(n)))
-	{
-		g_error("Failed to allocate renderer for Led");
-		led_unregister_from_gui(n);
-		return NULL;
-	}
+		/* allocate renderer */
+		if(!(n->renderer = renderer_led_new(n)))
+		{
+				g_error("Failed to allocate renderer for Led");
+				led_unregister_from_gui(n);
+				return NULL;
+		}
 
-        /* register descriptor as niftyled privdata */
-        led_set_privdata(l, n);
+		/* register descriptor as niftyled privdata */
+		led_set_privdata(l, n);
 
-	return n;
+		return n;
 }
 
 
@@ -169,15 +169,15 @@ NiftyconfLed *led_register_to_gui(Led *l)
  */
 void led_unregister_from_gui(NiftyconfLed *l)
 {
-        if(!l)
-                return;
+		if(!l)
+				return;
 
-	/* destroy renderer of this tile */
-	renderer_destroy(l->renderer);
+		/* destroy renderer of this tile */
+		renderer_destroy(l->renderer);
 
-        led_set_privdata(l->l, NULL);
+		led_set_privdata(l->l, NULL);
 
-        free(l);
+		free(l);
 }
 
 
@@ -186,7 +186,7 @@ void led_unregister_from_gui(NiftyconfLed *l)
  */
 gboolean led_init()
 {
-        return TRUE;
+		return TRUE;
 }
 
 

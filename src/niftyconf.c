@@ -238,6 +238,8 @@ int main (int argc, char *argv[])
                 g_error("Failed to initialize \"tile\" module");
         if(!hardware_init())
                 g_error("Failed to initialize \"hardware\" module");
+		if(!setup_init())
+				g_error("Failed to initialize \"setup\" module");
         if(!ui_info_hardware_init())
                 g_error("Failed to initialize \"info-hardware\" module");
         if(!ui_setup_init())
@@ -281,6 +283,7 @@ int main (int argc, char *argv[])
 		ui_clipboard_deinit();
 		ui_setup_deinit();
 		ui_info_hardware_deinit();
+		setup_deinit();
 		hardware_deinit();
 		tile_deinit();
 		led_deinit();

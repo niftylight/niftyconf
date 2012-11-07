@@ -52,12 +52,12 @@
 /** one Hardware element */
 struct _NiftyconfHardware
 {
-        /** niftyled hardware descriptor */
-        LedHardware *h;
-        /** true if element is currently highlighted */
-        gboolean highlight;
-        /** true if element tree is currently collapsed */
-        gboolean collapsed;
+		/** niftyled hardware descriptor */
+		LedHardware *h;
+		/** true if element is currently highlighted */
+		gboolean highlight;
+		/** true if element tree is currently collapsed */
+		gboolean collapsed;
 };
 
 
@@ -93,20 +93,20 @@ char *hardware_dump(NiftyconfHardware *hardware, gboolean encapsulation)
 /** getter for boolean value whether element is currently highlighted */
 gboolean hardware_tree_get_highlighted(NiftyconfHardware *h)
 {
-        if(!h)
-                NFT_LOG_NULL(FALSE);
+		if(!h)
+				NFT_LOG_NULL(FALSE);
 
-        return h->highlight;
+		return h->highlight;
 }
 
 
 /* setter for boolean value whether element is currently highlighted */
 void hardware_tree_set_highlighted(NiftyconfHardware *h, gboolean is_highlighted)
 {
-        if(!h)
-                NFT_LOG_NULL();
+		if(!h)
+				NFT_LOG_NULL();
 
-        h->highlight = is_highlighted;
+		h->highlight = is_highlighted;
 }
 
 
@@ -116,10 +116,10 @@ void hardware_tree_set_highlighted(NiftyconfHardware *h, gboolean is_highlighted
  */
 gboolean hardware_tree_get_collapsed(NiftyconfHardware *h)
 {
-        if(!h)
-                NFT_LOG_NULL(FALSE);
+		if(!h)
+				NFT_LOG_NULL(FALSE);
 
-        return h->collapsed;
+		return h->collapsed;
 }
 
 
@@ -129,10 +129,10 @@ gboolean hardware_tree_get_collapsed(NiftyconfHardware *h)
  */
 void hardware_tree_set_collapsed(NiftyconfHardware *h, gboolean is_collapsed)
 {
-        if(!h)
-                NFT_LOG_NULL();
+		if(!h)
+				NFT_LOG_NULL();
 
-        h->collapsed = is_collapsed;
+		h->collapsed = is_collapsed;
 }
 
 
@@ -141,10 +141,10 @@ void hardware_tree_set_collapsed(NiftyconfHardware *h, gboolean is_collapsed)
  */
 LedHardware *hardware_niftyled(NiftyconfHardware *h)
 {
-        if(!h)
-                return NULL;
+		if(!h)
+				return NULL;
 
-        return h->h;
+		return h->h;
 }
 
 
@@ -153,44 +153,44 @@ LedHardware *hardware_niftyled(NiftyconfHardware *h)
  */
 NiftyconfHardware *hardware_register_to_gui(LedHardware *h)
 {
-        NiftyconfHardware *n;
-        if(!(n = calloc(1, sizeof(NiftyconfHardware))))
-        {
-                g_error("calloc: %s", strerror(errno));
-                return NULL;
-        }
+		NiftyconfHardware *n;
+		if(!(n = calloc(1, sizeof(NiftyconfHardware))))
+		{
+				g_error("calloc: %s", strerror(errno));
+				return NULL;
+		}
 
-        /* refresh tile->chain mapping */
-        led_hardware_refresh_mapping(h);
+		/* refresh tile->chain mapping */
+		led_hardware_refresh_mapping(h);
 
-        /* save LedHardware descriptor */
-        n->h = h;
+		/* save LedHardware descriptor */
+		n->h = h;
 
-        /* default hardware is collapsed... */
-        n->collapsed = TRUE;
-	/* ...not highlighted */
-        n->highlight = FALSE;
+		/* default hardware is collapsed... */
+		n->collapsed = TRUE;
+		/* ...not highlighted */
+		n->highlight = FALSE;
 
-	/* register tiles of hardware */
-	LedTile *t;
-	for(t = led_hardware_get_tile(h);
-	      t;
-	      t = led_tile_list_get_next(t))
-	{
-		tile_register_to_gui(t);
-	}
+		/* register tiles of hardware */
+		LedTile *t;
+		for(t = led_hardware_get_tile(h);
+		    t;
+		    t = led_tile_list_get_next(t))
+		{
+				tile_register_to_gui(t);
+		}
 
-	/* register chain of hardware */
-	LedChain *c;
-	if((c = led_hardware_get_chain(h)))
-	{
-		chain_register_to_gui(c);
-	}
+		/* register chain of hardware */
+		LedChain *c;
+		if((c = led_hardware_get_chain(h)))
+		{
+				chain_register_to_gui(c);
+		}
 
-        /* register Hardware descriptor as LedHardware privdata */
-        led_hardware_set_privdata(h, n);
+		/* register Hardware descriptor as LedHardware privdata */
+		led_hardware_set_privdata(h, n);
 
-	return n;
+		return n;
 }
 
 
@@ -199,30 +199,30 @@ NiftyconfHardware *hardware_register_to_gui(LedHardware *h)
  */
 void hardware_unregister_from_gui(NiftyconfHardware *h)
 {
-        if(!h)
-                NFT_LOG_NULL();
+		if(!h)
+				NFT_LOG_NULL();
 
-	/* unregister chain of hardware */
-	LedChain *c;
-	if((c = led_hardware_get_chain(h->h)))
-	{
-		NiftyconfChain *chain = led_chain_get_privdata(c);
-		chain_unregister_from_gui(chain);
-	}
+		/* unregister chain of hardware */
+		LedChain *c;
+		if((c = led_hardware_get_chain(h->h)))
+		{
+				NiftyconfChain *chain = led_chain_get_privdata(c);
+				chain_unregister_from_gui(chain);
+		}
 
-	/* unregister tiles of hardware */
-	LedTile *t;
-	for(t = led_hardware_get_tile(h->h);
-	      t;
-	      t = led_tile_list_get_next(t))
-	{
-		NiftyconfTile *tile = led_tile_get_privdata(t);
-		tile_unregister_from_gui(tile);
-	}
+		/* unregister tiles of hardware */
+		LedTile *t;
+		for(t = led_hardware_get_tile(h->h);
+		    t;
+		    t = led_tile_list_get_next(t))
+		{
+				NiftyconfTile *tile = led_tile_get_privdata(t);
+				tile_unregister_from_gui(tile);
+		}
 
-        led_hardware_set_privdata(h->h, NULL);
+		led_hardware_set_privdata(h->h, NULL);
 
-        free(h);
+		free(h);
 }
 
 
@@ -231,30 +231,30 @@ void hardware_unregister_from_gui(NiftyconfHardware *h)
  */
 NiftyconfHardware *hardware_register_to_gui_and_niftyled(LedHardware *h)
 {
-        /* register hardware to gui */
-        NiftyconfHardware *hardware;
-        if(!(hardware = hardware_register_to_gui(h)))
-        {
-                ui_log_alert_show("Failed to register hardware to GUI");
-                led_hardware_destroy(h);
-                return NULL;
-        }
+		/* register hardware to gui */
+		NiftyconfHardware *hardware;
+		if(!(hardware = hardware_register_to_gui(h)))
+		{
+				ui_log_alert_show("Failed to register hardware to GUI");
+				led_hardware_destroy(h);
+				return NULL;
+		}
 
 
-	/* get last hardware node */
-	LedHardware *last = led_setup_get_hardware(setup_get_current());
-	if(!last)
-	{
-		/* first hardware in setup */
-		led_setup_set_hardware(setup_get_current(), h);
-	}
-	else
-	{
-		/* append to end of setup */
-		led_hardware_list_append_head(last, h);
-	}
+		/* get last hardware node */
+		LedHardware *last = led_setup_get_hardware(setup_get_current());
+		if(!last)
+		{
+				/* first hardware in setup */
+				led_setup_set_hardware(setup_get_current(), h);
+		}
+		else
+		{
+				/* append to end of setup */
+				led_hardware_list_append_head(last, h);
+		}
 
-	return hardware;
+		return hardware;
 }
 
 
@@ -262,25 +262,25 @@ NiftyconfHardware *hardware_register_to_gui_and_niftyled(LedHardware *h)
  * create new hardware element in setup
  */
 NiftyconfHardware *hardware_new(const char *name, const char *family,
-                                      const char *id, LedCount ledcount,
-                                      const char *pixelformat)
+                                const char *id, LedCount ledcount,
+                                const char *pixelformat)
 {
-        /* create new niftyled hardware */
-        LedHardware *h;
-        if(!(h = led_hardware_new(name, family)))
-        {
-                ui_log_alert_show("Failed to create new hardware \"%s\" (%s)", name, family);
-                return FALSE;
-        }
+		/* create new niftyled hardware */
+		LedHardware *h;
+		if(!(h = led_hardware_new(name, family)))
+		{
+				ui_log_alert_show("Failed to create new hardware \"%s\" (%s)", name, family);
+				return FALSE;
+		}
 
-	/* try to initialize hardware */
-	if(!led_hardware_init(h, id, ledcount, pixelformat))
-	{
-		ui_log_alert_show("Failed to initialize new hardware \"%s\". Not connected?", id);
-	}
+		/* try to initialize hardware */
+		if(!led_hardware_init(h, id, ledcount, pixelformat))
+		{
+				ui_log_alert_show("Failed to initialize new hardware \"%s\". Not connected?", id);
+		}
 
-	/* add hardware to model */
-	return hardware_register_to_gui_and_niftyled(h);
+		/* add hardware to model */
+		return hardware_register_to_gui_and_niftyled(h);
 
 }
 
@@ -290,12 +290,12 @@ NiftyconfHardware *hardware_new(const char *name, const char *family,
  */
 void hardware_destroy(NiftyconfHardware *hw)
 {
-        LedHardware *h = hardware_niftyled(hw);
+		LedHardware *h = hardware_niftyled(hw);
 
-        /* unregister hardware */
-        hardware_unregister_from_gui(hw);
+		/* unregister hardware */
+		hardware_unregister_from_gui(hw);
 
-        led_hardware_destroy(h);
+		led_hardware_destroy(h);
 }
 
 
@@ -304,7 +304,7 @@ void hardware_destroy(NiftyconfHardware *hw)
  */
 gboolean hardware_init()
 {
-        return TRUE;
+		return TRUE;
 }
 
 /** deinitialize this module */

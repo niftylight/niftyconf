@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- *
+		 *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -22,14 +22,14 @@
  *
  * Alternatively, the contents of this file may be used under the
  * GNU Lesser General Public License Version 2.1 (the "LGPL"), in
- * which case the following provisions apply instead of the ones
+		 * which case the following provisions apply instead of the ones
  * mentioned above:
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
  * version 2 of the License, or (at your option) any later version.
- *
+		 *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -52,25 +52,25 @@ typedef struct _NiftyconfChain NiftyconfChain;
 
 
 /* GUI model functions */
-gboolean               		chain_init();
-NiftyconfChain *        	chain_register_to_gui(LedChain *c);
-void                    			chain_unregister_from_gui(NiftyconfChain *c);
-void                    			chain_register_leds_to_gui(NiftyconfChain *c);
-void                    			chain_unregister_leds_from_gui(NiftyconfChain *c);
-gboolean 					chain_of_tile_new(NIFTYLED_TYPE parent_t,
-                           	  				gpointer parent_element, LedCount length, const char *pixelformat);
-void            					chain_of_tile_destroy(NiftyconfTile *tile);
+gboolean            chain_init();
+NiftyconfChain *    chain_register_to_gui(LedChain *c);
+void                chain_unregister_from_gui(NiftyconfChain *c);
+void                chain_register_leds_to_gui(NiftyconfChain *c);
+void                chain_unregister_leds_from_gui(NiftyconfChain *c);
+gboolean 			chain_of_tile_new(NIFTYLED_TYPE parent_t,
+					                  gpointer parent_element, LedCount length, const char *pixelformat);
+void            	chain_of_tile_destroy(NiftyconfTile *tile);
 
 
 /* GUI functions */
-void                    			chain_tree_set_highlighted(NiftyconfChain *c, gboolean is_highlighted);
-gboolean                		chain_tree_get_highlighted(NiftyconfChain *c);
+void                chain_tree_set_highlighted(NiftyconfChain *c, gboolean is_highlighted);
+gboolean            chain_tree_get_highlighted(NiftyconfChain *c);
 NiftyconfRenderer *	chain_get_renderer(NiftyconfChain *c);
 
 
 /* model functions */
-LedChain *              		chain_niftyled(NiftyconfChain *c);
-char *							chain_dump(NiftyconfChain *chain, gboolean encapsulation);
+LedChain *          chain_niftyled(NiftyconfChain *c);
+char *				chain_dump(NiftyconfChain *chain, gboolean encapsulation);
 
 
 #endif /* _NIFTYCONF_CHAIN_H */

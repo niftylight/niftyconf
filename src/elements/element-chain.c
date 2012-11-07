@@ -55,12 +55,12 @@
 /** one element */
 struct _NiftyconfChain
 {
-        /** niftyled descriptor */
-        LedChain *c;
-	/** renderer */
-	NiftyconfRenderer *renderer;
-	/** true if element is currently highlighted */
-        gboolean highlight;
+		/** niftyled descriptor */
+		LedChain *c;
+		/** renderer */
+		NiftyconfRenderer *renderer;
+		/** true if element is currently highlighted */
+		gboolean highlight;
 };
 
 
@@ -90,9 +90,9 @@ char *chain_dump(NiftyconfChain *chain, gboolean encapsulation)
 
 		char *result = NULL;
 		if(encapsulation)
-			result = led_prefs_node_to_buffer(n);
+				result = led_prefs_node_to_buffer(n);
 		else
-			result = led_prefs_node_to_buffer_light(n);
+				result = led_prefs_node_to_buffer_light(n);
 
 		led_prefs_node_free(n);
 
@@ -103,190 +103,190 @@ char *chain_dump(NiftyconfChain *chain, gboolean encapsulation)
 /** getter for renderer */
 NiftyconfRenderer *chain_get_renderer(NiftyconfChain *c)
 {
-	if(!c)
-		NFT_LOG_NULL(NULL);
+		if(!c)
+				NFT_LOG_NULL(NULL);
 
-	return c->renderer;
+		return c->renderer;
 }
 
 
 /** getter for boolean value whether element is currently highlighted */
 gboolean chain_tree_get_highlighted(NiftyconfChain *c)
 {
-        if(!c)
-                NFT_LOG_NULL(FALSE);
+		if(!c)
+				NFT_LOG_NULL(FALSE);
 
-        return c->highlight;
+		return c->highlight;
 }
 
 
 /* setter for boolean value whether element is currently highlighted */
 void chain_tree_set_highlighted(NiftyconfChain *c, gboolean is_highlighted)
 {
-        if(!c)
-                NFT_LOG_NULL();
+		if(!c)
+				NFT_LOG_NULL();
 
-        c->highlight = is_highlighted;
+		c->highlight = is_highlighted;
 }
 
 
 /** getter for libniftyled object */
 LedChain *chain_niftyled(NiftyconfChain *c)
 {
-        if(!c)
-                return NULL;
+		if(!c)
+				return NULL;
 
-        return c->c;
+		return c->c;
 }
 
 
 /** unregister all LEDs of a chain */
 void chain_unregister_leds_from_gui(NiftyconfChain *c)
 {
-        if(!c)
-                NFT_LOG_NULL();
+		if(!c)
+				NFT_LOG_NULL();
 
-        /* free all LEDs of chain */
-        if(c->c)
-        {
-                LedCount i;
-                for(i = 0; i < led_chain_get_ledcount(c->c); i++)
-                {
-			Led *l = led_chain_get_nth(c->c, i);
-			NiftyconfLed *led = led_get_privdata(l);
-                        led_unregister_from_gui(led);
-                }
-        }
+		/* free all LEDs of chain */
+		if(c->c)
+		{
+				LedCount i;
+				for(i = 0; i < led_chain_get_ledcount(c->c); i++)
+				{
+						Led *l = led_chain_get_nth(c->c, i);
+						NiftyconfLed *led = led_get_privdata(l);
+						led_unregister_from_gui(led);
+				}
+		}
 }
 
 /** register all LEDs of a chain */
 void chain_register_leds_to_gui(NiftyconfChain *c)
 {
-        /* allocate all LEDs of chain */
-        LedCount i;
-        for(i = 0; i < led_chain_get_ledcount(c->c); i++)
-        {
-                led_register_to_gui(led_chain_get_nth(c->c, i));
-        }
+		/* allocate all LEDs of chain */
+		LedCount i;
+		for(i = 0; i < led_chain_get_ledcount(c->c); i++)
+		{
+				led_register_to_gui(led_chain_get_nth(c->c, i));
+		}
 }
 
 
 /** allocate new element */
 NiftyconfChain *chain_register_to_gui(LedChain *c)
 {
-        NiftyconfChain *n;
-        if(!(n = calloc(1, sizeof(NiftyconfChain))))
-        {
-                g_error("calloc: %s", strerror(errno));
-                return NULL;
-        }
+		NiftyconfChain *n;
+		if(!(n = calloc(1, sizeof(NiftyconfChain))))
+		{
+				g_error("calloc: %s", strerror(errno));
+				return NULL;
+		}
 
-        /* save descriptor */
-        n->c = c;
+		/* save descriptor */
+		n->c = c;
 
-	/* not highlighted */
-	n->highlight = FALSE;
+		/* not highlighted */
+		n->highlight = FALSE;
 
-        /* register descriptor as niftyled privdata */
-        led_chain_set_privdata(c, n);
+		/* register descriptor as niftyled privdata */
+		led_chain_set_privdata(c, n);
 
-        chain_register_leds_to_gui(n);
+		chain_register_leds_to_gui(n);
 
-	/* allocate renderer */
-	if(!(n->renderer = renderer_chain_new(n)))
-	{
-		g_error("Failed to allocate renderer for Chain");
-		chain_unregister_from_gui(n);
-		return NULL;
-	}
+		/* allocate renderer */
+		if(!(n->renderer = renderer_chain_new(n)))
+		{
+				g_error("Failed to allocate renderer for Chain");
+				chain_unregister_from_gui(n);
+				return NULL;
+		}
 
-	return n;
+		return n;
 }
 
 
 /** free element */
 void chain_unregister_from_gui(NiftyconfChain *c)
 {
-        if(!c)
-                return;
+		if(!c)
+				return;
 
-	/* unregister all LEDs in this chain */
-        chain_unregister_leds_from_gui(c);
+		/* unregister all LEDs in this chain */
+		chain_unregister_leds_from_gui(c);
 
-	/* destroy renderer of this tile */
-	renderer_destroy(c->renderer);
+		/* destroy renderer of this tile */
+		renderer_destroy(c->renderer);
 
-        led_chain_set_privdata(c->c, NULL);
+		led_chain_set_privdata(c->c, NULL);
 
-        free(c);
+		free(c);
 }
 
 
 /** create new chain for tile */
 gboolean chain_of_tile_new(NIFTYLED_TYPE parent_t,
-                           	  gpointer parent_element,
-                                  LedCount length,
-                                  const char *pixelformat)
+                           gpointer parent_element,
+                           LedCount length,
+                           const char *pixelformat)
 {
 
-        /* can only add chains to tiles */
-        if(parent_t != LED_TILE_T)
-	{
-		ui_log_alert_show("Can only add Chain to Tiles");
-                return FALSE;
-	}
+		/* can only add chains to tiles */
+		if(parent_t != LED_TILE_T)
+		{
+				ui_log_alert_show("Can only add Chain to Tiles");
+				return FALSE;
+		}
 
-	NiftyconfTile *parent = (NiftyconfTile *) parent_element;
+		NiftyconfTile *parent = (NiftyconfTile *) parent_element;
 
-        /** create new chain @todo select format */
-        LedChain *n;
-        if(!(n = led_chain_new(length, pixelformat)))
-	{
-		ui_log_alert_show("Failed to create new chain \"%s\" (%d)", pixelformat, length);
-                return FALSE;
-	}
+		/** create new chain @todo select format */
+		LedChain *n;
+		if(!(n = led_chain_new(length, pixelformat)))
+		{
+				ui_log_alert_show("Failed to create new chain \"%s\" (%d)", pixelformat, length);
+				return FALSE;
+		}
 
-        /* attach chain to tile */
-        LedTile *tile = tile_niftyled(parent);
-        led_tile_set_chain(tile, n);
+		/* attach chain to tile */
+		LedTile *tile = tile_niftyled(parent);
+		led_tile_set_chain(tile, n);
 
-        /* register chain to gui */
-        if(!chain_register_to_gui(n))
-	{
-		ui_log_alert_show("Failed to register new chain to GUI. This is a bug. Expect the unexpected.");
-		return FALSE;
-	}
+		/* register chain to gui */
+		if(!chain_register_to_gui(n))
+		{
+				ui_log_alert_show("Failed to register new chain to GUI. This is a bug. Expect the unexpected.");
+				return FALSE;
+		}
 
-        return TRUE;
+		return TRUE;
 }
 
 
 /** remove chain from current setup */
 void chain_of_tile_destroy(NiftyconfTile *tile)
 {
-        /* get niftyled tile */
-        LedTile *t = tile_niftyled(tile);
+		/* get niftyled tile */
+		LedTile *t = tile_niftyled(tile);
 
-        /* if this tile has no chain, silently succeed */
-        LedChain *c;
-        if(!(c = led_tile_get_chain(t)))
-                return;
+		/* if this tile has no chain, silently succeed */
+		LedChain *c;
+		if(!(c = led_tile_get_chain(t)))
+				return;
 
-        /* unregister from tile */
-        led_tile_set_chain(t, NULL);
+		/* unregister from tile */
+		led_tile_set_chain(t, NULL);
 
-        /* unregister from gui */
-        NiftyconfChain *chain = led_chain_get_privdata(c);
-        chain_unregister_from_gui(chain);
-        //led_settings_chain_unlink(setup_get_current(), c);
-        led_chain_destroy(c);
+		/* unregister from gui */
+		NiftyconfChain *chain = led_chain_get_privdata(c);
+		chain_unregister_from_gui(chain);
+		//led_settings_chain_unlink(setup_get_current(), c);
+		led_chain_destroy(c);
 }
 
 
 /** initialize chain module */
 gboolean chain_init()
 {
-        return TRUE;
+		return TRUE;
 }
 
 

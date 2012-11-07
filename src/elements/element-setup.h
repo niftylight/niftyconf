@@ -53,16 +53,18 @@
 
 
 /* GUI functions */
-void            	setup_cleanup();
 
 /* model functions */
-LedSetup *  setup_get_current();
-void 		setup_set_current(LedSetup *s);
-const char *setup_get_current_filename();
-void 		setup_set_current_filename(const char *filename);
-LedPrefs *	setup_get_prefs();
-void 		setup_set_prefs(LedPrefs *p);
+gboolean 			setup_init();
+void				setup_deinit();
+NftResult 			setup_register_to_gui(LedSetup *s);
 
+void 				setup_set_current_filename(const char *filename);
+
+LedSetup *  		setup_get_current();
+const char *		setup_get_current_filename();
+LedPrefs *			setup_get_prefs();
+NiftyconfRenderer *	setup_get_renderer();
 
 
 #endif /* _NIFTYCONF_SETUP_H */

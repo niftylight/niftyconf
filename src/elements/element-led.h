@@ -51,19 +51,19 @@ typedef struct _NiftyconfLed NiftyconfLed;
 
 
 /* GUI model functions */
-gboolean        				led_init();
-void								led_deinit();
-NiftyconfLed *  			led_register_to_gui(Led *l);
-void            					led_unregister_from_gui(NiftyconfLed *l);
+gboolean        	led_init();
+void				led_deinit();
+NiftyconfLed *  	led_register_to_gui(Led *l);
+void            	led_unregister_from_gui(NiftyconfLed *l);
 
 /* GUI functions */
-gboolean        				led_get_highlighted(NiftyconfLed *l);
-void            					led_set_highlighted(NiftyconfLed *l, gboolean is_highlighted);
+gboolean        	led_get_highlighted(NiftyconfLed *l);
+void            	led_set_highlighted(NiftyconfLed *l, gboolean is_highlighted);
 NiftyconfRenderer *	led_get_renderer(NiftyconfLed *l);
 
 /* model functions */
-Led *           					led_niftyled(NiftyconfLed *l);
-char *							led_dump(NiftyconfLed *led, gboolean encapsulation);
+Led *           	led_niftyled(NiftyconfLed *l);
+char *				led_dump(NiftyconfLed *led, gboolean encapsulation);
 
 
 

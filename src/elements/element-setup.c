@@ -51,6 +51,7 @@
 #include "elements/element-hardware.h"
 #include "ui/ui.h"
 #include "ui/ui-log.h"
+#include "renderer/renderer.h"
 
 
 
@@ -61,13 +62,49 @@ static LedPrefs *_prefs;
 static LedSetup *_setup;
 /** current filename */
 static char *_current_filename;
-
+/** renderer for current setup */
+static NiftyconfRenderer *_renderer;
 
 
 
 /******************************************************************************
  ****************************** STATIC FUNCTIONS ******************************
  ******************************************************************************/
+
+/** unregister setup */
+static void _unregister()
+{
+		if(!_setup)
+				NFT_LOG_NULL();
+		
+		/* free all hardware nodes */
+		LedHardware *h;
+		for(h = led_setup_get_hardware(_setup);
+		    h;
+		    h = led_hardware_list_get_next(h))
+		{
+				/* unregister all tiles of hardware */
+				LedTile *t;
+				for(t = led_hardware_get_tile(h);
+				    t;
+				    t = led_tile_list_get_next(t))
+				{
+						tile_unregister_from_gui(led_tile_get_privdata(t));
+				}
+
+				/* unregister chain of hardware */
+				chain_unregister_from_gui(led_chain_get_privdata(led_hardware_get_chain(h)));
+
+				/* unregister hardware */
+				hardware_unregister_from_gui(led_hardware_get_privdata(h));
+		}
+
+		led_setup_destroy(_setup);
+
+		_setup = NULL;
+		free(_current_filename);
+		_current_filename = NULL;
+}
 
 
 
@@ -79,12 +116,14 @@ static char *_current_filename;
 /** getter for current setup */
 LedSetup *setup_get_current()
 {
-        return _setup;
+		return _setup;
 }
 
-void setup_set_current(LedSetup *s)
+
+/** getter for renderer of current setup */
+NiftyconfRenderer *setup_get_renderer()
 {
-		_setup = s;
+		return _renderer;
 }
 
 /** getter for current filename */
@@ -93,58 +132,88 @@ const char *setup_get_current_filename()
 		return _current_filename;
 }
 
-/** setup set current filename */
+/** setter for current filename */
 void setup_set_current_filename(const char *filename)
 {
-		if(_current_filename)
-				free(_current_filename);
-		
-		_current_filename = strdup(filename);
+	free(_current_filename);
+	_current_filename = strdup(filename);
 }
+
 
 /** getter for current preference context */
 LedPrefs *setup_get_prefs()
 {
-	return _prefs;
-}
-
-void setup_set_prefs(LedPrefs *p)
-{
-	_prefs = p;
+		return _prefs;
 }
 
 
-/** cleanup previously loaded setup */
-void setup_cleanup()
+/** register new setup */
+NftResult setup_register_to_gui(LedSetup *s)
 {
-        /* free all hardware nodes */
-        LedHardware *h;
-        for(h = led_setup_get_hardware(_setup);
-            h;
-            h = led_hardware_list_get_next(h))
-        {
-				/* unregister all tiles of hardware */
+		if(!s)
+				NFT_LOG_NULL(NFT_FAILURE);
+
+		/* previous setup? */
+		if(_setup)
+				_unregister();
+
+		/* initialize our element descriptor and set as
+		 privdata in niftyled model */
+		LedHardware *h;
+		for(h = led_setup_get_hardware(s);
+		    h;
+		    h = led_hardware_list_get_next(h))
+		{
+				/* create new hardware element */
+				if(!hardware_register_to_gui(h))
+				{
+						g_warning("failed to allocate new hardware element");
+						return FALSE;
+				}
+
+				/* create chain of this hardware */
+				if(!chain_register_to_gui(led_hardware_get_chain(h)))
+				{
+						g_warning("failed to allocate new chain element");
+						return FALSE;
+				}
+
+				/* walk all tiles belonging to this hardware & initialize */
 				LedTile *t;
-                for(t = led_hardware_get_tile(h);
-                    t;
-                    t = led_tile_list_get_next(t))
-                {
-                        tile_unregister_from_gui(led_tile_get_privdata(t));
-                }
+				for(t = led_hardware_get_tile(h);
+				    t;
+				    t = led_tile_list_get_next(t))
+				{
+						if(!tile_register_to_gui(t))
+						{
+								g_warning("failed to allocate new tile element");
+								return FALSE;
+						}
+				}
+		}
 
-				/* unregister chain of hardware */
-                chain_unregister_from_gui(led_chain_get_privdata(led_hardware_get_chain(h)));
-				
-				/* unregister hardware */
-                hardware_unregister_from_gui(led_hardware_get_privdata(h));
-        }
+		/* save new settings */
+		_setup = s;
 
-        led_setup_destroy(_setup);
-        ui_setup_tree_clear();
-		_setup = NULL;
-		free(_current_filename);
-		_current_filename = NULL;
+		return NFT_SUCCESS;
 }
 
+
+/** initialize this module */
+gboolean setup_init()
+{
+		/* initialize preference context */
+		if(!(_prefs = led_prefs_init()))
+				return false;
+
+		return true;
+}
+
+
+/** deinitialize this module */
+void setup_deinit()
+{
+		led_prefs_deinit(_prefs);
+}
 
 

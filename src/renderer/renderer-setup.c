@@ -64,28 +64,28 @@
 /** draw complete setup using cairo */
 void renderer_setup_redraw()
 {
-	/* redraw toplevel tiles */
-        LedHardware *h;
-        for(h = led_setup_get_hardware(setup_get_current());
-            h;
-            h = led_hardware_list_get_next(h))
-        {
-                /* redraw all tiles of this hardware */
-                LedTile *t;
-                for(t = led_hardware_get_tile(h);
-                    t;
-                    t = led_tile_list_get_next(t))
-                {
-                        renderer_tile_redraw(led_tile_get_privdata(t));
-                }
+		/* redraw toplevel tiles */
+		LedHardware *h;
+		for(h = led_setup_get_hardware(setup_get_current());
+		    h;
+		    h = led_hardware_list_get_next(h))
+		{
+				/* redraw all tiles of this hardware */
+				LedTile *t;
+				for(t = led_hardware_get_tile(h);
+				    t;
+				    t = led_tile_list_get_next(t))
+				{
+						renderer_tile_redraw(led_tile_get_privdata(t));
+				}
 
-                /* redraw chain of this hardware */
-                led_hardware_list_refresh_mapping(h);
-                //chain_redraw(led_chain_get_privdata(led_hardware_get_chain(h)));
-        }
+				/* redraw chain of this hardware */
+				led_hardware_list_refresh_mapping(h);
+				//chain_redraw(led_chain_get_privdata(led_hardware_get_chain(h)));
+		}
 
-	/* expose drawingarea */
-	renderer_redraw();
+		/* expose drawingarea */
+		//renderer_redraw();
 }
 
 
