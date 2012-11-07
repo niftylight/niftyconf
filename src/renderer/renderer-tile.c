@@ -58,62 +58,31 @@
  ******************************************************************************/
 
 /** renderer for tiles */
-static NftResult _render_tile(cairo_surface_t *s, gpointer element)
+static NftResult _render_tile(cairo_surface_t **s, gpointer element)
 {
-	return NFT_SUCCESS;
-}
-
-/******************************************************************************
- ******************************************************************************/
-
-/** allocate new renderer for a Tile */
-NiftyconfRenderer *renderer_tile_new(NiftyconfTile *tile)
-{
-		if(!tile)
-				NFT_LOG_NULL(NULL);
-
-		/* dimensions of cairo surface */
-		LedTile *t = tile_niftyled(tile);
-		gint width = led_tile_get_width(t)*renderer_scale_factor();
-		gint height = led_tile_get_height(t)*renderer_scale_factor();
-
-		return renderer_new(LED_TILE_T, tile, &_render_tile, width, height);
-}
-
-
-/** draw tile using cairo */
-void renderer_tile_redraw(NiftyconfTile *tile)
-{
-
-		if(!tile)
-				NFT_LOG_NULL();
-
-
+		if(!s || !element)
+				NFT_LOG_NULL(NFT_FAILURE);
+			
 		/* get this tile */
+		NiftyconfTile *tile = (NiftyconfTile *) element;
 		LedTile *t = tile_niftyled(tile);
-
-		/* get renderer of this tile */
-		NiftyconfRenderer *r = tile_get_renderer(tile);
-
+		
 		/* if dimensions changed, we need to allocate a new surface */
 		int width = led_tile_get_width(t)*renderer_scale_factor();
 		int height = led_tile_get_height(t)*renderer_scale_factor();
-		/*
-		 int width = led_tile_get_transformed_width(t)*renderer_scale_factor();
-		 int height = led_tile_get_transformed_height(t)*renderer_scale_factor();
-		 */
+		//~ int width = led_tile_get_transformed_width(t)*renderer_scale_factor();
+		//~ int height = led_tile_get_transformed_height(t)*renderer_scale_factor();
+
+		NiftyconfRenderer *r = tile_get_renderer(tile);
 		if(!renderer_resize(r, width, height))
 		{
 				g_error("Failed to resize renderer to %dx%d", width, height);
-				return;
+				return NFT_FAILURE;
 		}
 
 
-		/* get cairo surface of this renderer */
-		cairo_surface_t *s = renderer_get_surface(r);
-
 		/* create context for drawing */
-		cairo_t *cr = cairo_create(s);
+		cairo_t *cr = cairo_create(*s);
 
 		/* disable antialiasing */
 		cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
@@ -122,8 +91,8 @@ void renderer_tile_redraw(NiftyconfTile *tile)
 		cairo_set_source_rgba(cr, 0,0,0,1);
 		cairo_rectangle(cr,
 		                0, 0,
-		                (double) cairo_image_surface_get_width(s),
-		                (double) cairo_image_surface_get_height(s));
+		                (double) cairo_image_surface_get_width(*s),
+		                (double) cairo_image_surface_get_height(*s));
 		cairo_fill(cr);
 
 
@@ -136,10 +105,7 @@ void renderer_tile_redraw(NiftyconfTile *tile)
 		{
 				NiftyconfTile *ctt = (NiftyconfTile *) led_tile_get_privdata(ct);
 
-				/* redraw tile's surface */
-				renderer_tile_redraw(ctt);
-
-
+				
 				/* move to x/y */
 				cairo_translate(cr,
 				                (double) (led_tile_get_x(ct))*renderer_scale_factor(),
@@ -180,7 +146,6 @@ void renderer_tile_redraw(NiftyconfTile *tile)
 		{
 				/* redraw chain */
 				NiftyconfChain *ch = led_chain_get_privdata(chain);
-				renderer_chain_redraw(ch);
 
 				/* draw chain's surface to parent tile's surface */
 				cairo_set_source_surface(cr, renderer_get_surface(chain_get_renderer(ch)), 0,0);
@@ -202,6 +167,7 @@ void renderer_tile_redraw(NiftyconfTile *tile)
 				cairo_set_line_width (cr, 2);
 		}
 
+		
 		/* draw tile outlines */
 		cairo_rectangle(cr, 0, 0,
 		                (double) led_tile_get_transformed_width(t)*renderer_scale_factor(),
@@ -218,12 +184,13 @@ void renderer_tile_redraw(NiftyconfTile *tile)
 
 				cairo_rectangle(cr,
 				                0, 0,
-				                (double) cairo_image_surface_get_width(s),
-				                (double) cairo_image_surface_get_height(s));
+				                (double) cairo_image_surface_get_width(*s),
+				                (double) cairo_image_surface_get_height(*s));
 				cairo_fill(cr);
 		}
 
-		/* draw arrow (rectangle) to mark top */
+		
+		/* draw arrow to mark top */
 		cairo_set_source_rgba(cr, 1,1,1,1);
 
 		if(tile_tree_get_highlighted(tile))
@@ -245,8 +212,33 @@ void renderer_tile_redraw(NiftyconfTile *tile)
 		cairo_close_path(cr);
 		cairo_stroke(cr);
 
+
+		
 		cairo_destroy(cr);
+
+		
+		return NFT_SUCCESS;
 }
+
+/******************************************************************************
+ ******************************************************************************/
+
+/** allocate new renderer for a Tile */
+NiftyconfRenderer *renderer_tile_new(NiftyconfTile *tile)
+{
+		if(!tile)
+				NFT_LOG_NULL(NULL);
+
+		/* dimensions of cairo surface */
+		LedTile *t = tile_niftyled(tile);
+		gint width = led_tile_get_width(t)*renderer_scale_factor();
+		gint height = led_tile_get_height(t)*renderer_scale_factor();
+
+		return renderer_new(LED_TILE_T, tile, &_render_tile, width, height);
+}
+
+
+
 
 /******************************************************************************
  ***************************** CALLBACKS **************************************

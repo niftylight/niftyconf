@@ -52,6 +52,7 @@
 #include "ui/ui.h"
 #include "ui/ui-log.h"
 #include "renderer/renderer.h"
+#include "renderer/renderer-setup.h"
 
 
 
@@ -192,9 +193,20 @@ NftResult setup_register_to_gui(LedSetup *s)
 				}
 		}
 
-		/* save new settings */
+		/* save new setup */
 		_setup = s;
+		
+		/* allocate renderer */
+		if(!(_renderer = renderer_setup_new()))
+		{
+				g_error("Failed to allocate renderer for Setup");
+				_unregister();
+				return NFT_FAILURE;
+		}
 
+		/* initially draw setup */
+		renderer_damage(_renderer);
+		
 		return NFT_SUCCESS;
 }
 

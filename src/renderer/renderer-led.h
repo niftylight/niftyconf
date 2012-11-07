@@ -50,7 +50,7 @@ NiftyconfRenderer *	renderer_led_new(NiftyconfLed *led);
 
 
 /* GUI functions */
-void 				renderer_led_redraw(NiftyconfLed *led);
+
 
 
 /* model functions */

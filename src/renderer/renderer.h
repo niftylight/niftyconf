@@ -49,7 +49,7 @@
 
 
 typedef struct _NiftyconfRenderer NiftyconfRenderer;
-typedef NftResult (NiftyconfRenderFunc)(cairo_surface_t *s, gpointer element);
+typedef NftResult (NiftyconfRenderFunc)(cairo_surface_t **s, gpointer element);
 
 
 /* GUI model functions */

@@ -56,44 +56,20 @@
  ******************************************************************************/
 
 /** renderer for LEDs */
-static NftResult _render_led(cairo_surface_t *s, gpointer element)
+static NftResult _render_led(cairo_surface_t **s, gpointer element)
 {
-	return NFT_SUCCESS;
-}
-
-
-/******************************************************************************
- ******************************************************************************/
-
-/** allocate new renderer for a Chain */
-NiftyconfRenderer *renderer_led_new(NiftyconfLed *led)
-{
-		if(!led)
-				NFT_LOG_NULL(NULL);
-
-		return renderer_new(LED_T, led, &_render_led, renderer_scale_factor(), renderer_scale_factor());
-}
-
-
-/** draw Led using cairo */
-void renderer_led_redraw(NiftyconfLed *led)
-{
-		if(!led)
-				NFT_LOG_NULL();
-
+		if(!s || !*s || !element)
+					NFT_LOG_NULL(NFT_FAILURE);
 
 		/* get this led */
+		NiftyconfLed *led = (NiftyconfLed *) element;
 		Led *l = led_niftyled(led);
 
 		/* get renderer of this chain */
-		NiftyconfRenderer *r = led_get_renderer(led);
-
-		/* get cairo surface of this renderer */
-		cairo_surface_t *s = renderer_get_surface(r);
-
+		//NiftyconfRenderer *r = led_get_renderer(led);
 
 		/* create context for drawing */
-		cairo_t *cr = cairo_create(s);
+		cairo_t *cr = cairo_create(*s);
 
 		/* disable antialiasing */
 		cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
@@ -107,8 +83,8 @@ void renderer_led_redraw(NiftyconfLed *led)
 
 		double x = 0;
 		double y = 0;
-		double w = cairo_image_surface_get_width(s)/3;
-		double h = cairo_image_surface_get_height(s);
+		double w = cairo_image_surface_get_width(*s)/3;
+		double h = cairo_image_surface_get_height(*s);
 
 
 		/* @todo dynamic components */
@@ -161,7 +137,23 @@ void renderer_led_redraw(NiftyconfLed *led)
 		}
 
 		cairo_destroy(cr);
+		
+		return NFT_SUCCESS;
 }
+
+
+/******************************************************************************
+ ******************************************************************************/
+
+/** allocate new renderer for a Chain */
+NiftyconfRenderer *renderer_led_new(NiftyconfLed *led)
+{
+		if(!led)
+				NFT_LOG_NULL(NULL);
+
+		return renderer_new(LED_T, led, &_render_led, renderer_scale_factor(), renderer_scale_factor());
+}
+
 
 
 /******************************************************************************

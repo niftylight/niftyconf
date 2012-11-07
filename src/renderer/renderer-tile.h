@@ -50,7 +50,6 @@ NiftyconfRenderer *	renderer_tile_new(NiftyconfTile *tile);
 
 
 /* GUI functions */
-void 				renderer_tile_redraw(NiftyconfTile *tile);
 
 
 /* model functions */

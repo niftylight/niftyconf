@@ -50,7 +50,7 @@ NiftyconfRenderer *	renderer_chain_new(NiftyconfChain *chain);
 
 
 /* GUI functions */
-void 				renderer_chain_redraw(NiftyconfChain *chain);
+
 
 
 /* model functions */

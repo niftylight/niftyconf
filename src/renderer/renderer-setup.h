@@ -49,8 +49,8 @@
 
 
 /* GUI functions */
-void 			renderer_setup_redraw();
-
+NiftyconfRenderer *	renderer_setup_new();
+void renderer_setup_redraw();
 
 /* model functions */
 

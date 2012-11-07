@@ -128,7 +128,7 @@ cairo_surface_t *renderer_get_surface(NiftyconfRenderer *r)
 				/* do we have a renderer? */
 				if(r->render)
 				{
-						if(!r->render(r->surface, r->element))
+						if(!r->render(&r->surface, r->element))
 						{
 								NFT_LOG(L_ERROR, "%s renderer (%p) failed", 
 								        led_prefs_type_to_string(r->type),
@@ -373,13 +373,6 @@ gboolean on_renderer_expose_event(GtkWidget *w, GdkEventExpose *e, gpointer d)
 		gdouble pan_x, pan_y;
 		pan_x = ((double) a.width/2) + _r.view.pan_x+_r.view.pan_t_x;
 		pan_y = ((double) a.height/2) + _r.view.pan_y+_r.view.pan_t_y;
-
-
-		/* current LedSetup */
-		LedSetup *s;
-		if(!(s = setup_get_current()))
-				return FALSE;
-
 		
 		/* fill background */
 		cairo_set_source_rgb(cr, 0,0,0);
@@ -391,43 +384,21 @@ gboolean on_renderer_expose_event(GtkWidget *w, GdkEventExpose *e, gpointer d)
 
 		/* pan & scale */
 		cairo_translate(cr,
-		                pan_x-((double) led_setup_get_width(s)*_r.view.scale*_r.view.scale_factor)/2,
-		                pan_y-((double) led_setup_get_height(s)*_r.view.scale*_r.view.scale_factor)/2);
+		                pan_x-((double) led_setup_get_width(setup_get_current())*_r.view.scale*_r.view.scale_factor)/2,
+		                pan_y-((double) led_setup_get_height(setup_get_current())*_r.view.scale*_r.view.scale_factor)/2);
 		cairo_scale(cr, _r.view.scale, _r.view.scale);
 
-		/* walk through all hardware LED adapters */
-		LedHardware *h;
-		for(h = led_setup_get_hardware(s);
-		    h;
-		    h = led_hardware_list_get_next(h))
-		{
 
-				/* Walk all tiles of this hardware & draw their surface */
-				LedTile *t;
-				for(t = led_hardware_get_tile(h);
-				    t;
-				    t = led_tile_list_get_next(t))
-				{
+		/* renderer of current setup */
+		NiftyconfRenderer *r = setup_get_renderer();
 
-						/* check visibility */
-
-						/* get surface from tile */
-						NiftyconfTile *tile = (NiftyconfTile *) led_tile_get_privdata(t);
-
-						/* draw surface */
-						cairo_set_source_surface(cr, tile_get_renderer(tile)->surface,
-						                         (double) (led_tile_get_x(t)*_r.view.scale_factor),
-						                         (double) (led_tile_get_y(t)*_r.view.scale_factor));
-						cairo_paint(cr);
-				}
-
-				/* Draw chain of this hardware */
-				/*s = chain_get_surface(led_chain_get_privdata(led_hardware_get_chain(h)));
-				cairo_set_source_surface(cr, s, 0, 0);
-				cairo_paint(cr);*/
-
-		}
+		/* draw surface */
+		cairo_set_source_surface(cr, renderer_get_surface(r), 0, 0);
+								 
+		cairo_paint(cr);
 
 		cairo_destroy(cr);
+
+		
 		return FALSE;
 }

@@ -187,20 +187,23 @@ NiftyconfTile *tile_register_to_gui(LedTile *t)
         /* default hardware is collapsed */
         n->collapsed = TRUE;
         /* not highlighted */
-	n->highlight = FALSE;
+		n->highlight = FALSE;
 
-	/* allocate renderer */
-	if(!(n->renderer = renderer_tile_new(n)))
-	{
-		g_error("Failed to allocate renderer for Tile");
-		tile_unregister_from_gui(n);
-		return NULL;
-	}
+		/* allocate renderer */
+		if(!(n->renderer = renderer_tile_new(n)))
+		{
+			g_error("Failed to allocate renderer for Tile");
+			tile_unregister_from_gui(n);
+			return NULL;
+		}
 
-        /* register descriptor as niftyled privdata */
-        led_tile_set_privdata(t, n);
+		/* initially draw tile */
+		renderer_damage(n->renderer);
+		
+		/* register descriptor as niftyled privdata */
+		led_tile_set_privdata(t, n);
 
-	/* also allocate all children */
+		/* also allocate all children */
         LedTile *tile;
         for(tile = led_tile_get_child(t);
             tile;
