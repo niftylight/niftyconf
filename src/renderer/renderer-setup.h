@@ -45,14 +45,11 @@
 #define _NIFTYCONF_RENDERER_SETUP_H
 
 
-/* GUI model functions */
 
 
-/* GUI functions */
 NiftyconfRenderer *	renderer_setup_new();
-void renderer_setup_redraw();
+void 				renderer_setup_damage();
 
-/* model functions */
 
 
 

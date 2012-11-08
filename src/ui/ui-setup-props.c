@@ -50,6 +50,10 @@
 #include "ui/ui-setup-ledlist.h"
 #include "elements/element-setup.h"
 #include "renderer/renderer-setup.h"
+#include "renderer/renderer-tile.h"
+#include "renderer/renderer-chain.h"
+#include "renderer/renderer-led.h"
+
 
 
 
@@ -230,7 +234,8 @@ G_MODULE_EXPORT void on_spinbutton_led_x_changed(GtkSpinButton *s, gpointer u)
 				_widget_set_error_background(GTK_WIDGET(s), FALSE);
 
 		/* redraw */
-		renderer_setup_redraw();
+		renderer_led_damage(current_led);
+		renderer_all_queue_draw();
 }
 
 
@@ -251,7 +256,8 @@ G_MODULE_EXPORT void on_spinbutton_led_y_changed(GtkSpinButton *s, gpointer u)
 				_widget_set_error_background(GTK_WIDGET(s), FALSE);
 
 		/* redraw */
-		renderer_setup_redraw();
+		renderer_led_damage(current_led);
+		renderer_all_queue_draw();
 }
 
 
@@ -272,7 +278,8 @@ G_MODULE_EXPORT void on_spinbutton_led_component_changed(GtkSpinButton *s, gpoin
 				_widget_set_error_background(GTK_WIDGET(s), FALSE);
 
 		/* redraw */
-		renderer_setup_redraw();
+		renderer_led_damage(current_led);
+		renderer_all_queue_draw();
 }
 
 
@@ -293,7 +300,8 @@ G_MODULE_EXPORT void on_spinbutton_led_gain_changed(GtkSpinButton *s, gpointer u
 				_widget_set_error_background(GTK_WIDGET(s), FALSE);
 
 		/* redraw */
-		renderer_setup_redraw();
+		renderer_led_damage(current_led);
+		renderer_all_queue_draw();
 }
 
 
@@ -356,7 +364,8 @@ G_MODULE_EXPORT void on_spinbutton_chain_ledcount_changed(GtkSpinButton *s, gpoi
 		ui_setup_ledlist_refresh(current_chain);
 
 		/* redraw */
-		renderer_setup_redraw();
+		renderer_chain_damage(current_chain);
+		renderer_all_queue_draw();
 }
 
 
@@ -384,7 +393,8 @@ G_MODULE_EXPORT void on_spinbutton_tile_x_changed(GtkSpinButton *s, gpointer u)
 		}
 
 		/* redraw */
-		renderer_setup_redraw();
+		renderer_tile_damage(current_tile);
+		renderer_all_queue_draw();
 
 }
 
@@ -413,7 +423,8 @@ G_MODULE_EXPORT void on_spinbutton_tile_y_changed(GtkSpinButton *s, gpointer u)
 		}
 
 		/* redraw */
-		renderer_setup_redraw();
+		renderer_tile_damage(current_tile);
+		renderer_all_queue_draw();
 
 }
 
@@ -445,7 +456,8 @@ G_MODULE_EXPORT void on_spinbutton_tile_rotation_changed(GtkSpinButton *s, gpoin
 		ui_setup_props_tile_show(current_tile);
 
 		/* redraw */
-		renderer_setup_redraw();
+		renderer_tile_damage(current_tile);
+		renderer_all_queue_draw();
 }
 
 
@@ -476,7 +488,8 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_x_changed(GtkSpinButton *s, gpoint
 		ui_setup_props_tile_show(current_tile);
 
 		/* redraw */
-		renderer_setup_redraw();
+		renderer_tile_damage(current_tile);
+		renderer_all_queue_draw();
 }
 
 
@@ -507,7 +520,8 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_y_changed(GtkSpinButton *s, gpoint
 		ui_setup_props_tile_show(current_tile);
 
 		/* redraw */
-		renderer_setup_redraw();
+		renderer_tile_damage(current_tile);
+		renderer_all_queue_draw();
 }
 
 

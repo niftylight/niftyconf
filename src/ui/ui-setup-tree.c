@@ -55,7 +55,8 @@
 #include "ui/ui-log.h"
 #include "elements/element-setup.h"
 #include "renderer/renderer-setup.h"
-
+#include "renderer/renderer-tile.h"
+#include "renderer/renderer-chain.h"
 
 
 
@@ -324,8 +325,6 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer e)
 						/* show hardware properties */
 						ui_setup_props_hardware_show((NiftyconfHardware *) e);
 
-						/* redraw everything */
-						//setup_redraw();
 
 						/* clear led-list */
 						ui_setup_ledlist_clear();
@@ -342,13 +341,9 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer e)
 						/* disable non-tile related menus */
 						gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_hardware_remove")), FALSE);
 						gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_chain_add")), (gboolean) !led_tile_get_chain(
-						                                                                                                    tile_niftyled(
-						                                                                                                                  (NiftyconfTile *) e)));
+						                                                                      tile_niftyled((NiftyconfTile *) e)));
 						gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_chain_remove")), (gboolean) led_tile_get_chain(
-						                                                                                                      tile_niftyled(
-						                                                                                                                    (NiftyconfTile *) e)));
-
-
+						                                                                         tile_niftyled((NiftyconfTile *) e)));
 
 						/* highlight tile */
 						tile_tree_set_highlighted((NiftyconfTile *) e, TRUE);
@@ -357,7 +352,7 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer e)
 
 
 						/* redraw everything */
-						//setup_redraw();
+						renderer_tile_damage((NiftyconfTile *) e);
 
 						/* clear led-list */
 						ui_setup_ledlist_clear();
@@ -380,7 +375,7 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer e)
 						ui_setup_props_chain_show((NiftyconfChain *) e);
 
 						/* redraw everything */
-						//setup_redraw();
+						renderer_chain_damage((NiftyconfChain *) e);
 
 						/* display led-list */
 						ui_setup_ledlist_refresh((NiftyconfChain *) e);
@@ -409,13 +404,21 @@ static void _foreach_unhighlight_element(NIFTYLED_TYPE t, gpointer e)
 
 				case LED_TILE_T:
 				{
-						tile_tree_set_highlighted((NiftyconfTile *) e, FALSE);
+						if(tile_tree_get_highlighted((NiftyconfTile *) e))
+						{
+								tile_tree_set_highlighted((NiftyconfTile *) e, FALSE);
+								renderer_tile_damage((NiftyconfTile *) e);
+						}
 						break;
 				}
 
 				case LED_CHAIN_T:
 				{
-						chain_tree_set_highlighted((NiftyconfChain *) e, FALSE);
+						if(chain_tree_get_highlighted((NiftyconfChain *) e))
+						{
+								chain_tree_set_highlighted((NiftyconfChain *) e, FALSE);
+								renderer_chain_damage((NiftyconfChain *) e);
+						}
 						break;
 				}
 
@@ -719,7 +722,7 @@ void ui_setup_tree_refresh()
 		_tree_build();
 
 		/* redraw */
-		renderer_setup_redraw();
+		renderer_all_queue_draw();
 }
 
 
@@ -865,7 +868,7 @@ G_MODULE_EXPORT void on_setup_treeview_cursor_changed(GtkTreeView *tv, gpointer 
 		ui_setup_tree_do_foreach_selected_element(_foreach_element_selected);
 
 		/* redraw */
-		renderer_setup_redraw();
+		renderer_all_queue_draw();
 }
 
 

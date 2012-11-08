@@ -45,15 +45,9 @@
 #define _NIFTYCONF_RENDERER_LED_H
 
 
-/* GUI model functions */
 NiftyconfRenderer *	renderer_led_new(NiftyconfLed *led);
+void 				renderer_led_damage(NiftyconfLed *led);
 
-
-/* GUI functions */
-
-
-
-/* model functions */
 
 
 

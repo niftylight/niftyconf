@@ -133,32 +133,14 @@ NiftyconfRenderer *renderer_setup_new()
 }
 
 
-/** draw complete setup using cairo */
-void renderer_setup_redraw()
+/** damage setup renderer to queue re-render */
+void renderer_setup_damage()
 {
-		//~ /* redraw toplevel tiles */
-		//~ LedHardware *h;
-		//~ for(h = led_setup_get_hardware(setup_get_current());
-		    //~ h;
-		    //~ h = led_hardware_list_get_next(h))
-		//~ {
-				//~ /* redraw all tiles of this hardware */
-				//~ LedTile *t;
-				//~ for(t = led_hardware_get_tile(h);
-				    //~ t;
-				    //~ t = led_tile_list_get_next(t))
-				//~ {
-						//~ /renderer_tile_redraw(led_tile_get_privdata(t));
-				//~ }
-
-				//~ /* redraw chain of this hardware */
-				//~ led_hardware_list_refresh_mapping(h);
-				//~ //chain_redraw(led_chain_get_privdata(led_hardware_get_chain(h)));
-		//~ }
-
-		//~ /* expose drawingarea */
-		//~ //renderer_redraw();
+	renderer_damage(setup_get_renderer());
 }
+
+
+
 
 
 /******************************************************************************

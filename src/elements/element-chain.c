@@ -166,7 +166,7 @@ void chain_register_leds_to_gui(NiftyconfChain *c)
 		LedCount i;
 		for(i = 0; i < led_chain_get_ledcount(c->c); i++)
 		{
-				led_register_to_gui(led_chain_get_nth(c->c, i));
+				led_register_to_gui(led_chain_get_nth(c->c, i), c);
 		}
 }
 

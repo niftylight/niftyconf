@@ -238,7 +238,7 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 				}
 
 
-						/* LedTile */
+				/* LedTile */
 				case LED_TILE_T:
 				{
 						/* create tile from prefs node */
@@ -290,7 +290,7 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 										break;
 								}
 
-										/* paste tile to tile */
+								/* paste tile to tile */
 								case LED_TILE_T:
 								{
 										/* parent tile element */
@@ -329,7 +329,7 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 				}
 
 
-						/* LedChain */
+				/* LedChain */
 				case LED_CHAIN_T:
 				{
 						/* chains only go in tiles, pasting into hardware is not supported */
@@ -392,7 +392,7 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 						break;
 				}
 
-						/* LedSetup */
+				/* LedSetup */
 				case LED_SETUP_T:
 				{
 						/* create setup from prefs node */
@@ -431,7 +431,7 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 						break;
 				}
 
-						/* huh? */
+				/* huh? */
 				case LED_INVALID_T:
 				default:
 				{

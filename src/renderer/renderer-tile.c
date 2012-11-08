@@ -43,6 +43,7 @@
 
 #include <gtk/gtk.h>
 #include <niftyled.h>
+#include "elements/element-setup.h"
 #include "elements/element-tile.h"
 #include "elements/element-chain.h"
 #include "renderer/renderer.h"
@@ -97,7 +98,7 @@ static NftResult _render_tile(cairo_surface_t **s, gpointer element)
 
 
 
-		/* redraw children */
+		/* render children */
 		LedTile *ct;
 		for(ct = led_tile_get_child(t);
 		    ct;
@@ -220,8 +221,30 @@ static NftResult _render_tile(cairo_surface_t **s, gpointer element)
 		return NFT_SUCCESS;
 }
 
+
 /******************************************************************************
  ******************************************************************************/
+
+/** damage tile renderer to queue re-render */
+void renderer_tile_damage(NiftyconfTile *tile)
+{
+		LedTile *t = tile_niftyled(tile);
+
+		/* damage this tile's renderer */
+		renderer_damage(tile_get_renderer(tile));
+		
+		/* also damage parent tile... */
+		LedTile *pt;
+		if((pt = led_tile_get_parent(t)))
+		{
+				NiftyconfTile *ptile = led_tile_get_privdata(pt);
+				renderer_tile_damage(ptile);
+		}					
+					
+		/* ...and the setup that contains us */
+		renderer_damage(setup_get_renderer());
+}
+
 
 /** allocate new renderer for a Tile */
 NiftyconfRenderer *renderer_tile_new(NiftyconfTile *tile)

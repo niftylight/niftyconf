@@ -45,15 +45,9 @@
 #define _NIFTYCONF_RENDERER_CHAIN_H
 
 
-/* GUI model functions */
 NiftyconfRenderer *	renderer_chain_new(NiftyconfChain *chain);
+void 				renderer_chain_damage(NiftyconfChain *chain);
 
-
-/* GUI functions */
-
-
-
-/* model functions */
 
 
 

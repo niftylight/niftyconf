@@ -45,7 +45,7 @@
 #include <niftyled.h>
 #include "elements/element-led.h"
 #include "renderer/renderer.h"
-
+#include "renderer/renderer-chain.h"
 
 
 
@@ -144,6 +144,17 @@ static NftResult _render_led(cairo_surface_t **s, gpointer element)
 
 /******************************************************************************
  ******************************************************************************/
+
+/** damage led renderer to queue re-render */
+void renderer_led_damage(NiftyconfLed *led)
+{
+		/* damage this led's renderer */
+		renderer_damage(led_get_renderer(led));
+
+		/* also damage parent chain */
+		renderer_chain_damage(led_get_chain(led));
+}
+
 
 /** allocate new renderer for a Chain */
 NiftyconfRenderer *renderer_led_new(NiftyconfLed *led)

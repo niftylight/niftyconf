@@ -183,9 +183,6 @@ gboolean ui_setup_load(gchar *filename)
 		ui_setup_tree_refresh();
 
 
-		/* redraw new setup */
-		//setup_redraw();
-
 		return TRUE;
 }
 

@@ -57,6 +57,8 @@ struct _NiftyconfLed
 		NiftyconfRenderer *renderer;
 		/** true if element is currently highlighted */
 		gboolean highlight;
+		/** chain to which this LED belongs */
+		NiftyconfChain *chain;
 };
 
 
@@ -71,6 +73,16 @@ struct _NiftyconfLed
 
 /******************************************************************************
  ******************************************************************************/
+
+/** getter for parent chain */
+NiftyconfChain *led_get_chain(NiftyconfLed *l)
+{
+	if(!l)
+				NFT_LOG_NULL(NULL);
+
+	return l->chain;
+}
+
 
 /** getter for renderer */
 NiftyconfRenderer *led_get_renderer(NiftyconfLed *l)
@@ -137,7 +149,7 @@ char *led_dump(NiftyconfLed *led, gboolean encapsulation)
 /**
  * allocate new element
  */
-NiftyconfLed *led_register_to_gui(Led *l)
+NiftyconfLed *led_register_to_gui(Led *l, NiftyconfChain *chain)
 {
 		NiftyconfLed *n;
 		if(!(n = calloc(1, sizeof(NiftyconfLed))))
@@ -148,7 +160,8 @@ NiftyconfLed *led_register_to_gui(Led *l)
 
 		/* save descriptor */
 		n->l = l;
-
+		n->chain = chain;
+		
 		/* allocate renderer */
 		if(!(n->renderer = renderer_led_new(n)))
 		{

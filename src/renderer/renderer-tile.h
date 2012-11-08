@@ -45,14 +45,10 @@
 #define _NIFTYCONF_RENDERER_TILE_H
 
 
-/* GUI model functions */
+
 NiftyconfRenderer *	renderer_tile_new(NiftyconfTile *tile);
+void 				renderer_tile_damage(NiftyconfTile *tile);
 
-
-/* GUI functions */
-
-
-/* model functions */
 
 
 
