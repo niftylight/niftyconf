@@ -205,7 +205,7 @@ NftResult setup_register_to_gui(LedSetup *s)
 		}
 
 		/* initially draw setup */
-		renderer_damage(_renderer);
+		renderer_setup_damage();
 		
 		return NFT_SUCCESS;
 }

@@ -224,7 +224,7 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 						if(!(h = led_prefs_hardware_from_node(setup_get_prefs(), n)))
 						{
 								ui_log_alert_show("Failed to parse Hardware node from clipboard buffer");
-								goto cpe_exit;
+								return;
 						}
 
 						/* hardware nodes will always be pasted top-level, no matter
@@ -232,7 +232,7 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 						if(!hardware_register_to_gui_and_niftyled(h))
 						{
 								ui_log_alert_show("Failed to paste Hardware node");
-								goto cpe_exit;
+								return;
 						}
 						break;
 				}
@@ -246,7 +246,7 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 						if(!(t = led_prefs_tile_from_node(setup_get_prefs(), n)))
 						{
 								ui_log_alert_show("Failed to parse Tile node from clipboard buffer");
-								goto cpe_exit;
+								return;
 						}
 
 						switch(parent_t)
@@ -260,7 +260,7 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 										{
 												ui_log_alert_show("Failed to get Hardware node to paste to");
 												led_tile_destroy(t);
-												goto cpe_exit;
+												return;
 										}
 
 										/* does parent hardware already have a tile? */
@@ -271,7 +271,7 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 												{
 														ui_log_alert_show("Failed to append Tile to parent Hardware list of tiles");
 														led_tile_destroy(t);
-														goto cpe_exit;
+														return;
 												}
 										}
 										/* parent hardware doesn't have a tile, yet */
@@ -281,7 +281,7 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 												{
 														ui_log_alert_show("Failed to set Tile to parent Hardware");
 														led_tile_destroy(t);
-														goto cpe_exit;
+														return;
 												}
 										}
 
@@ -299,7 +299,7 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 										{
 												ui_log_alert_show("Failed to get Tile node to paste to");
 												led_tile_destroy(t);
-												goto cpe_exit;
+												return;
 										}
 
 										/* append new tile to parent */
@@ -307,7 +307,7 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 										{
 												ui_log_alert_show("Failed to append Tile to parent Tile");
 												led_tile_destroy(t);
-												goto cpe_exit;
+												return;
 										}
 
 										/* register tile to GUI */
@@ -344,14 +344,14 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 										if(!(pt = tile_niftyled((NiftyconfTile *) parent_element)))
 										{
 												ui_log_alert_show("Failed to get Tile node to paste to");
-												goto cpe_exit;
+												return;
 										}
 
 										/* does tile already have a chain? */
 										if(led_tile_get_chain(pt))
 										{
 												ui_log_alert_show("Selected Ttile already has a Chain. Please remove that Chain first.");
-												goto cpe_exit;
+												return;
 										}
 
 										/* create chain from prefs node */
@@ -359,7 +359,7 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 										if(!(c = led_prefs_chain_from_node(setup_get_prefs(), n)))
 										{
 												ui_log_alert_show("Failed to parse Chain node from clipboard buffer");
-												goto cpe_exit;
+												return;
 										}
 
 										/* set chain to parent tile */
@@ -367,7 +367,7 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 										{
 												ui_log_alert_show("Failed to attach Chain to selected Tile");
 												led_chain_destroy(c);
-												goto cpe_exit;
+												return;
 										}
 
 										/* register new chain to GUI */
@@ -376,7 +376,7 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 												ui_log_alert_show("Failed to register new Chain to GUI model");
 												led_chain_destroy(c);
 												led_tile_set_chain(pt, NULL);
-												goto cpe_exit;
+												return;
 										}
 
 										break;
@@ -400,20 +400,20 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 						if(!(s = led_prefs_setup_from_node(setup_get_prefs(), n)))
 						{
 								ui_log_alert_show("Failed to parse Niftyled node from clipboard buffer");
-								goto cpe_exit;
+								return;
 						}
 
 						/* no hardware node? */
 						LedHardware *h;
 						if(!(h = led_setup_get_hardware(s)))
-								goto cpe_exit;
+								return;
 
 						/* append hardware to current setup */
 						if(!(led_hardware_list_append_head(led_setup_get_hardware(setup_get_current()), h)))
 						{
 								ui_log_alert_show("Failed to append hardware from new Setup to this Setup.");
 								led_setup_destroy(s);
-								goto cpe_exit;
+								return;
 						}
 
 						/* register all hardware nodes to GUI */
@@ -422,7 +422,7 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 								if(!hardware_register_to_gui(h))
 								{
 										ui_log_alert_show("Failed to register new Hardware to GUI model");
-										goto cpe_exit;
+										return;
 								}
 						}
 
@@ -442,9 +442,11 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 		}
 
 
-		cpe_exit:
-				/* refresh whole tree view */
-				ui_setup_tree_refresh();
+		/* refresh whole tree view */
+		ui_setup_tree_refresh();
+
+		/* redraw view */
+		renderer_all_queue_draw();
 }
 
 

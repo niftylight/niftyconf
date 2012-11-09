@@ -201,7 +201,7 @@ NiftyconfChain *chain_register_to_gui(LedChain *c)
 		}
 
 		/* initially draw chain */
-		renderer_damage(n->renderer);
+		renderer_chain_damage(n);
 		
 		return n;
 }

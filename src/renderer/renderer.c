@@ -165,7 +165,7 @@ gboolean renderer_init()
 		/* initial scale */
 		_r.view.scale = 0.5;
 		_r.view.scale_delta = 0.1;
-		_r.view.scale_factor = 60;
+		_r.view.scale_factor = 10;
 
 		/* initialize drawingarea */
 		gtk_widget_set_app_paintable(GTK_WIDGET(UI("drawingarea")), TRUE);

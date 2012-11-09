@@ -184,6 +184,9 @@ NiftyconfTile *tile_register_to_gui(LedTile *t)
         /* save descriptor */
         n->t = t;
 
+		/* register descriptor as niftyled privdata */
+		led_tile_set_privdata(t, n);
+
         /* default hardware is collapsed */
         n->collapsed = TRUE;
         /* not highlighted */
@@ -198,11 +201,9 @@ NiftyconfTile *tile_register_to_gui(LedTile *t)
 		}
 
 		/* initially draw tile */
-		renderer_damage(n->renderer);
+		renderer_tile_damage(n);
 		
-		/* register descriptor as niftyled privdata */
-		led_tile_set_privdata(t, n);
-
+		
 		/* also allocate all children */
         LedTile *tile;
         for(tile = led_tile_get_child(t);

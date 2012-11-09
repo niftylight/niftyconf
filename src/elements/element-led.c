@@ -171,7 +171,7 @@ NiftyconfLed *led_register_to_gui(Led *l, NiftyconfChain *chain)
 		}
 
 		/* initially draw led */
-		renderer_damage(n->renderer);
+		renderer_led_damage(n);
 		
 		/* register descriptor as niftyled privdata */
 		led_set_privdata(l, n);

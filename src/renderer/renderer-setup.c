@@ -59,58 +59,86 @@
 /** renderer for setups */
 static NftResult _render_setup(cairo_surface_t **surface, gpointer element)
 {
-	/* setup to render */
-	LedSetup *s = (LedSetup *) element;
+		/* setup to render */
+		LedSetup *s = (LedSetup *) element;
 
-	/* if dimensions changed, we need to allocate a new surface */
-	int width = led_setup_get_width(s)*renderer_scale_factor();
-	int height = led_setup_get_height(s)*renderer_scale_factor();
-	 
-	if(!renderer_resize(setup_get_renderer(), width, height))
-	{
-			g_error("Failed to resize renderer to %dx%d", width, height);
-			return NFT_FAILURE;
-	}
+		/* if dimensions changed, we need to allocate a new surface */
+		int width = led_setup_get_width(s)*renderer_scale_factor();
+		int height = led_setup_get_height(s)*renderer_scale_factor();
+		 
+		if(!renderer_resize(setup_get_renderer(), width, height))
+		{
+				g_error("Failed to resize renderer to %dx%d", width, height);
+				return NFT_FAILURE;
+		}
+			
+		/* create context for drawing */
+		cairo_t *cr = cairo_create(*surface);
+
+		/* disable antialiasing */
+		cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
+
+		/* clear surface */
+		cairo_set_source_rgba(cr, 0.1,0.1,0.1,1);
+		cairo_rectangle(cr,
+						0, 0,
+						(double) cairo_image_surface_get_width(*surface),
+						(double) cairo_image_surface_get_height(*surface));
+		cairo_fill(cr);
 		
-	/* create context for drawing */
-	cairo_t *cr = cairo_create(*surface);
-		
-	/* walk through all hardware LED adapters */
-	LedHardware *h;
-	for(h = led_setup_get_hardware(s);
-		h;
-		h = led_hardware_list_get_next(h))
-	{
+		/* walk through all hardware LED adapters */
+		LedHardware *h;
+		for(h = led_setup_get_hardware(s);
+			h;
+			h = led_hardware_list_get_next(h))
+		{
 
-			/* Walk all tiles of this hardware & draw their surface */
-			LedTile *t;
-			for(t = led_hardware_get_tile(h);
-				t;
-				t = led_tile_list_get_next(t))
-			{
+				/* Walk all tiles of this hardware & draw their surface */
+				LedTile *t;
+				for(t = led_hardware_get_tile(h);
+					t;
+					t = led_tile_list_get_next(t))
+				{
+						/** @todo visibility? */
+						
+						/* get surface from tile */
+						NiftyconfTile *tile = (NiftyconfTile *) led_tile_get_privdata(t);
+						LedTile *t = tile_niftyled(tile);
 
-					/* check visibility */
 
-					/* get surface from tile */
-					NiftyconfTile *tile = (NiftyconfTile *) led_tile_get_privdata(t);
+						/* move to x/y */
+						cairo_translate(cr,
+										(double) (led_tile_get_x(t))*renderer_scale_factor(),
+										(double) (led_tile_get_y(t))*renderer_scale_factor());
 
-					/* draw surface */
-					cairo_set_source_surface(cr, renderer_get_surface(tile_get_renderer(tile)),
-											 (double) (led_tile_get_x(t)*renderer_scale_factor()),
-											 (double) (led_tile_get_y(t)*renderer_scale_factor()));
-					cairo_paint(cr);
-			}
+						/* rotate */
+						cairo_translate(cr,
+										(led_tile_get_pivot_x(t))*renderer_scale_factor(),
+										(led_tile_get_pivot_y(t))*renderer_scale_factor());
 
-			/* Draw chain of this hardware */
-			/*s = chain_get_surface(led_chain_get_privdata(led_hardware_get_chain(h)));
-			cairo_set_source_surface(cr, s, 0, 0);
-			cairo_paint(cr);*/
+						cairo_rotate(cr, led_tile_get_rotation(t));
+						cairo_translate(cr,
+										-(led_tile_get_pivot_x(t))*renderer_scale_factor(),
+										-(led_tile_get_pivot_y(t))*renderer_scale_factor());
+						
+						/* draw surface */
+						cairo_set_source_surface(cr, renderer_get_surface(tile_get_renderer(tile)), 0, 0);				
+						cairo_paint(cr);
+						
+						/* reset transformation matrix */
+						cairo_identity_matrix(cr);
+				}
 
-	}
+				/* Draw chain of this hardware */
+				/*s = chain_get_surface(led_chain_get_privdata(led_hardware_get_chain(h)));
+				cairo_set_source_surface(cr, s, 0, 0);
+				cairo_paint(cr);*/
 
-	cairo_destroy(cr);
-		
-	return NFT_SUCCESS;
+		}
+
+		cairo_destroy(cr);
+			
+		return NFT_SUCCESS;
 }
 
 
