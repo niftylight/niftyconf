@@ -104,7 +104,7 @@ NiftyconfRenderer *tile_get_renderer(NiftyconfTile *t)
 
 
 /** getter for boolean value whether element is currently highlighted */
-gboolean tile_tree_get_highlighted(NiftyconfTile *t)
+gboolean tile_get_highlighted(NiftyconfTile *t)
 {
         if(!t)
                 NFT_LOG_NULL(FALSE);
@@ -114,7 +114,7 @@ gboolean tile_tree_get_highlighted(NiftyconfTile *t)
 
 
 /* setter for boolean value whether element is currently highlighted */
-void tile_tree_set_highlighted(NiftyconfTile *t, gboolean is_highlighted)
+void tile_set_highlighted(NiftyconfTile *t, gboolean is_highlighted)
 {
         if(!t)
                 NFT_LOG_NULL();
@@ -127,7 +127,7 @@ void tile_tree_set_highlighted(NiftyconfTile *t, gboolean is_highlighted)
  * getter for boolean value whether element
  * tree is currently collapsed
  */
-gboolean tile_tree_get_collapsed(NiftyconfTile *t)
+gboolean tile_get_collapsed(NiftyconfTile *t)
 {
         if(!t)
                 NFT_LOG_NULL(FALSE);
@@ -140,7 +140,7 @@ gboolean tile_tree_get_collapsed(NiftyconfTile *t)
  * setter for boolean value whether element row in
  * tree is currently collapsed
  */
-void tile_tree_set_collapsed(NiftyconfTile *t, gboolean is_collapsed)
+void tile_set_collapsed(NiftyconfTile *t, gboolean is_collapsed)
 {
         if(!t)
                 NFT_LOG_NULL();

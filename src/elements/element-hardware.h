@@ -63,10 +63,10 @@ NiftyconfHardware *	hardware_new(const char *name, const char *family,
 void            	hardware_destroy(NiftyconfHardware *hw);
 
 /* GUI functions */
-gboolean            hardware_tree_get_highlighted(NiftyconfHardware *h);
-gboolean            hardware_tree_get_collapsed(NiftyconfHardware *h);
-void                hardware_tree_set_highlighted(NiftyconfHardware *h, gboolean is_highlighted);
-void                hardware_tree_set_collapsed(NiftyconfHardware *h, gboolean is_collapsed);
+gboolean            hardware_get_highlighted(NiftyconfHardware *h);
+gboolean            hardware_get_collapsed(NiftyconfHardware *h);
+void                hardware_set_highlighted(NiftyconfHardware *h, gboolean is_highlighted);
+void                hardware_set_collapsed(NiftyconfHardware *h, gboolean is_collapsed);
 
 /* model functions */
 LedHardware *       hardware_niftyled(NiftyconfHardware *h);

@@ -64,10 +64,10 @@ void           		tile_destroy(NiftyconfTile *tile);
 
 
 /* GUI functions */
-gboolean        	tile_tree_get_collapsed(NiftyconfTile *t);
-gboolean        	tile_tree_get_highlighted(NiftyconfTile *t);
-void            	tile_tree_set_collapsed(NiftyconfTile *t, gboolean is_collapsed);
-void            	tile_tree_set_highlighted(NiftyconfTile *t, gboolean is_highlighted);
+gboolean        	tile_get_collapsed(NiftyconfTile *t);
+gboolean        	tile_get_highlighted(NiftyconfTile *t);
+void            	tile_set_collapsed(NiftyconfTile *t, gboolean is_collapsed);
+void            	tile_set_highlighted(NiftyconfTile *t, gboolean is_highlighted);
 
 
 /* model functions */

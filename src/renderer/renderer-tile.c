@@ -155,7 +155,7 @@ static NftResult _render_tile(cairo_surface_t **s, gpointer element)
 
 
 
-		if(tile_tree_get_highlighted(tile))
+		if(tile_get_highlighted(tile))
 		{
 				/* set white */
 				cairo_set_source_rgba(cr, 1, 1, 0, 1);
@@ -178,7 +178,7 @@ static NftResult _render_tile(cairo_surface_t **s, gpointer element)
 
 
 		/* highlight... */
-		if(tile_tree_get_highlighted(tile))
+		if(tile_get_highlighted(tile))
 		{
 				cairo_set_line_width (cr, 1);
 				cairo_set_source_rgba(cr, 1,1,1,0.5);
@@ -194,7 +194,7 @@ static NftResult _render_tile(cairo_surface_t **s, gpointer element)
 		/* draw arrow to mark top */
 		cairo_set_source_rgba(cr, 1,1,1,1);
 
-		if(tile_tree_get_highlighted(tile))
+		if(tile_get_highlighted(tile))
 				cairo_set_line_width (cr, 8);
 		else
 				cairo_set_line_width (cr, 2);

@@ -223,13 +223,13 @@ gboolean _foreach_element_refresh_collapse(GtkTreeModel *model, GtkTreePath *pat
 		{
 				case LED_HARDWARE_T:
 				{
-						collapsed = hardware_tree_get_collapsed((NiftyconfHardware *) element);
+						collapsed = hardware_get_collapsed((NiftyconfHardware *) element);
 						break;
 				}
 
 				case LED_TILE_T:
 				{
-						collapsed = tile_tree_get_collapsed((NiftyconfTile *) element);
+						collapsed = tile_get_collapsed((NiftyconfTile *) element);
 						break;
 				}
 
@@ -264,21 +264,21 @@ gboolean _foreach_element_refresh_highlight(GtkTreeModel *model, GtkTreePath *pa
 		{
 				case LED_HARDWARE_T:
 				{
-						highlighted = hardware_tree_get_highlighted(
+						highlighted = hardware_get_highlighted(
 						                                            (NiftyconfHardware *) element);
 						break;
 				}
 
 				case LED_TILE_T:
 				{
-						highlighted = tile_tree_get_highlighted(
+						highlighted = tile_get_highlighted(
 						                                        (NiftyconfTile *) element);
 						break;
 				}
 
 				case LED_CHAIN_T:
 				{
-						highlighted = chain_tree_get_highlighted(
+						highlighted = chain_get_highlighted(
 						                                         (NiftyconfChain *) element);
 						break;
 				}
@@ -320,7 +320,7 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer e)
 						gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_chain_remove")), FALSE);
 
 						/* highlight hardware */
-						hardware_tree_set_highlighted((NiftyconfHardware *) e, TRUE);
+						hardware_set_highlighted((NiftyconfHardware *) e, TRUE);
 
 						/* show hardware properties */
 						ui_setup_props_hardware_show((NiftyconfHardware *) e);
@@ -346,7 +346,7 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer e)
 						                                                                         tile_niftyled((NiftyconfTile *) e)));
 
 						/* highlight tile */
-						tile_tree_set_highlighted((NiftyconfTile *) e, TRUE);
+						tile_set_highlighted((NiftyconfTile *) e, TRUE);
 
 						ui_setup_props_tile_show((NiftyconfTile *) e);
 
@@ -370,7 +370,7 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer e)
 						gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_chain_remove")), FALSE);
 
 						/* highlight chain */
-						chain_tree_set_highlighted((NiftyconfChain *) e, TRUE);
+						chain_set_highlighted((NiftyconfChain *) e, TRUE);
 
 						ui_setup_props_chain_show((NiftyconfChain *) e);
 
@@ -398,15 +398,15 @@ static void _foreach_unhighlight_element(NIFTYLED_TYPE t, gpointer e)
 		{
 				case LED_HARDWARE_T:
 				{
-						hardware_tree_set_highlighted((NiftyconfHardware *) e, FALSE);
+						hardware_set_highlighted((NiftyconfHardware *) e, FALSE);
 						break;
 				}
 
 				case LED_TILE_T:
 				{
-						if(tile_tree_get_highlighted((NiftyconfTile *) e))
+						if(tile_get_highlighted((NiftyconfTile *) e))
 						{
-								tile_tree_set_highlighted((NiftyconfTile *) e, FALSE);
+								tile_set_highlighted((NiftyconfTile *) e, FALSE);
 								renderer_tile_damage((NiftyconfTile *) e);
 						}
 						break;
@@ -414,9 +414,9 @@ static void _foreach_unhighlight_element(NIFTYLED_TYPE t, gpointer e)
 
 				case LED_CHAIN_T:
 				{
-						if(chain_tree_get_highlighted((NiftyconfChain *) e))
+						if(chain_get_highlighted((NiftyconfChain *) e))
 						{
-								chain_tree_set_highlighted((NiftyconfChain *) e, FALSE);
+								chain_set_highlighted((NiftyconfChain *) e, FALSE);
 								renderer_chain_damage((NiftyconfChain *) e);
 						}
 						break;
@@ -438,19 +438,19 @@ static void _foreach_highlight_element(NIFTYLED_TYPE t, gpointer e)
 		{
 				case LED_HARDWARE_T:
 				{
-						hardware_tree_set_highlighted((NiftyconfHardware *) e, TRUE);
+						hardware_set_highlighted((NiftyconfHardware *) e, TRUE);
 						break;
 				}
 
 				case LED_TILE_T:
 				{
-						tile_tree_set_highlighted((NiftyconfTile *) e, TRUE);
+						tile_set_highlighted((NiftyconfTile *) e, TRUE);
 						break;
 				}
 
 				case LED_CHAIN_T:
 				{
-						chain_tree_set_highlighted((NiftyconfChain *) e, TRUE);
+						chain_set_highlighted((NiftyconfChain *) e, TRUE);
 						break;
 				}
 
@@ -793,13 +793,13 @@ G_MODULE_EXPORT void on_setup_treeview_collapsed(GtkTreeView *tv,
 		{
 				case LED_HARDWARE_T:
 				{
-						hardware_tree_set_collapsed((NiftyconfHardware *) p, TRUE);
+						hardware_set_collapsed((NiftyconfHardware *) p, TRUE);
 						break;
 				}
 
 				case LED_TILE_T:
 				{
-						tile_tree_set_collapsed((NiftyconfTile *) p, TRUE);
+						tile_set_collapsed((NiftyconfTile *) p, TRUE);
 						break;
 				}
 
@@ -827,13 +827,13 @@ G_MODULE_EXPORT void on_setup_treeview_expanded(GtkTreeView *tv,
 		{
 				case LED_HARDWARE_T:
 				{
-						hardware_tree_set_collapsed((NiftyconfHardware *) p, FALSE);
+						hardware_set_collapsed((NiftyconfHardware *) p, FALSE);
 						break;
 				}
 
 				case LED_TILE_T:
 				{
-						tile_tree_set_collapsed((NiftyconfTile *) p, FALSE);
+						tile_set_collapsed((NiftyconfTile *) p, FALSE);
 						break;
 				}
 

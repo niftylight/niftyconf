@@ -111,7 +111,7 @@ NiftyconfRenderer *chain_get_renderer(NiftyconfChain *c)
 
 
 /** getter for boolean value whether element is currently highlighted */
-gboolean chain_tree_get_highlighted(NiftyconfChain *c)
+gboolean chain_get_highlighted(NiftyconfChain *c)
 {
 		if(!c)
 				NFT_LOG_NULL(FALSE);
@@ -121,7 +121,7 @@ gboolean chain_tree_get_highlighted(NiftyconfChain *c)
 
 
 /* setter for boolean value whether element is currently highlighted */
-void chain_tree_set_highlighted(NiftyconfChain *c, gboolean is_highlighted)
+void chain_set_highlighted(NiftyconfChain *c, gboolean is_highlighted)
 {
 		if(!c)
 				NFT_LOG_NULL();

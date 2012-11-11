@@ -91,7 +91,7 @@ char *hardware_dump(NiftyconfHardware *hardware, gboolean encapsulation)
 
 
 /** getter for boolean value whether element is currently highlighted */
-gboolean hardware_tree_get_highlighted(NiftyconfHardware *h)
+gboolean hardware_get_highlighted(NiftyconfHardware *h)
 {
 		if(!h)
 				NFT_LOG_NULL(FALSE);
@@ -101,7 +101,7 @@ gboolean hardware_tree_get_highlighted(NiftyconfHardware *h)
 
 
 /* setter for boolean value whether element is currently highlighted */
-void hardware_tree_set_highlighted(NiftyconfHardware *h, gboolean is_highlighted)
+void hardware_set_highlighted(NiftyconfHardware *h, gboolean is_highlighted)
 {
 		if(!h)
 				NFT_LOG_NULL();
@@ -114,7 +114,7 @@ void hardware_tree_set_highlighted(NiftyconfHardware *h, gboolean is_highlighted
  * getter for boolean value whether element row in
  * tree is currently collapsed
  */
-gboolean hardware_tree_get_collapsed(NiftyconfHardware *h)
+gboolean hardware_get_collapsed(NiftyconfHardware *h)
 {
 		if(!h)
 				NFT_LOG_NULL(FALSE);
@@ -127,7 +127,7 @@ gboolean hardware_tree_get_collapsed(NiftyconfHardware *h)
  * setter for boolean value whether element row in
  * tree is currently collapsed
  */
-void hardware_tree_set_collapsed(NiftyconfHardware *h, gboolean is_collapsed)
+void hardware_set_collapsed(NiftyconfHardware *h, gboolean is_collapsed)
 {
 		if(!h)
 				NFT_LOG_NULL();
