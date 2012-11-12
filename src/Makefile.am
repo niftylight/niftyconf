@@ -33,7 +33,8 @@ niftyconf_SOURCES = \
 	renderer/renderer-setup.c \
 	renderer/renderer-tile.c \
 	renderer/renderer-chain.c \
-	renderer/renderer-led.c
+	renderer/renderer-led.c \
+	prefs/prefs.c
 
 
 

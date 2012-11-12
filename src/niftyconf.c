@@ -58,6 +58,7 @@
 #include "ui/ui-setup-tree.h"
 #include "ui/ui-setup-ledlist.h"
 #include "ui/ui-info-hardware.h"
+#include "prefs/prefs.h"
 #include "renderer/renderer.h"
 #include "config.h"
 
@@ -68,61 +69,55 @@ static GtkBuilder *_ui;
 static GConfClient *_gconf;
 
 
+
 /******************************************************************************
  ****************************** STATIC FUNCTIONS ******************************
  ******************************************************************************/
 
 
-
-/** save current window size & position */
-static void _save_window_attributes()
+/** configure from preferences */
+static NftResult _this_from_prefs(NftPrefs *prefs, void **newObj, NftPrefsNode *node, void *userptr)
 {
-        gint width, height;
-        gtk_window_get_size(GTK_WINDOW(UI("window")), &width, &height);
-        gint x, y;
-        gtk_window_get_position(GTK_WINDOW(UI("window")), &x, &y);
-        gconf_client_set_int(_gconf,
-                        "/apps/"PACKAGE_NAME"/ui/window.width",
-                        width,
-                        NULL);
-        gconf_client_set_int(_gconf,
-                        "/apps/"PACKAGE_NAME"/ui/window.height",
-                        height,
-                        NULL);
-        gconf_client_set_int(_gconf,
-                        "/apps/"PACKAGE_NAME"/ui/window.x",
-                        x,
-                        NULL);
-        gconf_client_set_int(_gconf,
-                        "/apps/"PACKAGE_NAME"/ui/window.y",
-                        y,
-                        NULL);
+	gint x, y, width, height;
+		
+	if(!nft_prefs_node_prop_int_get(node, "x", &x))
+			return NFT_FAILURE;
+	if(!nft_prefs_node_prop_int_get(node, "y", &y))
+			return NFT_FAILURE;
+	if(!nft_prefs_node_prop_int_get(node, "width", &width))
+			return NFT_FAILURE;
+	if(!nft_prefs_node_prop_int_get(node, "height", &height))
+			return NFT_FAILURE;
+
+	if(width > 0 && height > 0)
+                gtk_window_resize(GTK_WINDOW(UI("window")), width, height);
+    if(x > 0 && y > 0)
+                gtk_window_move(GTK_WINDOW(UI("window")), x, y);
+
+	*newObj = NULL;
+		
+	return NFT_SUCCESS;
 }
 
 
-/** restore previous window size & position */
-static void _load_window_attributes()
+/** save configuration to preferences */
+static NftResult _this_to_prefs(NftPrefs *prefs, NftPrefsNode *newNode, void *obj, void *userptr)
 {
-        gint x = 0, y = 0, width = 0, height = 0;
-        x = gconf_client_get_int(_gconf, 
-                        "/apps/"PACKAGE_NAME"/ui/window.x", 
-                        NULL);
-        y = gconf_client_get_int(_gconf, 
-                        "/apps/"PACKAGE_NAME"/ui/window.y", 
-                        NULL);
-        width = gconf_client_get_int(_gconf, 
-                        "/apps/"PACKAGE_NAME"/ui/window.width", 
-                        NULL);
-        height = gconf_client_get_int(_gconf, 
-                        "/apps/"PACKAGE_NAME"/ui/window.height", 
-                        NULL);
+	gint x, y, width, height;
+    gtk_window_get_size(GTK_WINDOW(UI("window")), &width, &height);
+	gtk_window_get_position(GTK_WINDOW(UI("window")), &x, &y);
 
+		
+	if(!nft_prefs_node_prop_int_set(newNode, "x", x))
+				return NFT_FAILURE;
+	if(!nft_prefs_node_prop_int_set(newNode, "y", y))
+				return NFT_FAILURE;
+	if(!nft_prefs_node_prop_int_set(newNode, "width", width))
+				return NFT_FAILURE;
+	if(!nft_prefs_node_prop_int_set(newNode, "height", height))
+				return NFT_FAILURE;
 
-        if(width > 0 && height > 0)
-                gtk_window_resize(GTK_WINDOW(UI("window")), width, height);
-        if(x > 0 && y > 0)
-                gtk_window_move(GTK_WINDOW(UI("window")), x, y);
-
+	return NFT_SUCCESS;
 }
 
 
@@ -226,10 +221,12 @@ int main (int argc, char *argv[])
                        NULL);
 
         /* initialize modules */
+		if(!prefs_init())
+				g_error("Failed to initialize \"prefs\" module");
         if(!ui_log_init())
                 g_error("Failed to initialize \"log\" module");
 		if(!renderer_init())
-			g_error("Failed to initialize \"renderer\" module");
+				g_error("Failed to initialize \"renderer\" module");
         if(!led_init())
                 g_error("Failed to initialize \"led\" module");
         if(!chain_init())
@@ -247,8 +244,12 @@ int main (int argc, char *argv[])
         if(!ui_clipboard_init())
                 g_error("Failed to initialize \"clipboard\" module");
 		if(!ui_about_init())
-			g_error("Failed to initialize \"about\" module");
+				g_error("Failed to initialize \"about\" module");
 
+		/* register prefs class for this module */
+		if(!nft_prefs_class_register(prefs(), "niftyconf", _this_from_prefs, _this_to_prefs))
+				g_error("Failed to register prefs class for \"niftyconf\"");
+		
         /* build our ui */
         _ui = ui_builder("niftyconf.ui");
         GtkBox *box_setup = GTK_BOX(UI("box_setup"));
@@ -272,13 +273,16 @@ int main (int argc, char *argv[])
         }
 
 		/* restore window size & position */
-		_load_window_attributes();
+		prefs_load();
 
 		/* main loop... */
 		gtk_main();
-			
+
 		g_object_unref(_ui);
 
+		/* unregister prefs class */
+		nft_prefs_class_unregister(prefs(), "niftyconf");
+		
 		ui_about_deinit();
 		ui_clipboard_deinit();
 		ui_setup_deinit();
@@ -289,7 +293,7 @@ int main (int argc, char *argv[])
 		led_deinit();
 		renderer_deinit();
 		ui_log_deinit();
-
+		prefs_deinit();
 
         return 0;
 }
@@ -303,7 +307,7 @@ int main (int argc, char *argv[])
 G_MODULE_EXPORT gboolean on_niftyconf_window_delete_event(GtkWidget *w, GdkEvent *e)
 {
 	/* store window size & position */
-	_save_window_attributes();
+	prefs_save();
 
 	/* bye bye */
 	gtk_main_quit();
