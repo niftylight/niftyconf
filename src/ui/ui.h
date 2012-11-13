@@ -49,7 +49,7 @@
 #define UI(name) (gtk_builder_get_object(_ui, name))
 
 
-GtkBuilder *    ui_builder(gchar *file);
+GtkBuilder                     *ui_builder(gchar * file);
 
 
 #endif /* _UI_H */

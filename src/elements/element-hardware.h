@@ -52,25 +52,23 @@ typedef struct _NiftyconfHardware NiftyconfHardware;
 
 
 /* GUI model functions */
-gboolean            hardware_init();
-void				hardware_deinit();
-NiftyconfHardware *	hardware_register_to_gui(LedHardware *h);
-NiftyconfHardware *	hardware_register_to_gui_and_niftyled(LedHardware *h);
-void                hardware_unregister_from_gui(NiftyconfHardware *h);
-NiftyconfHardware *	hardware_new(const char *name, const char *family,
-                               	const char *id, LedCount ledcount,
-                               	const char *pixelformat);
-void            	hardware_destroy(NiftyconfHardware *hw);
+gboolean                        hardware_init();
+void                            hardware_deinit();
+NiftyconfHardware              *hardware_register_to_gui(LedHardware * h);
+NiftyconfHardware              *hardware_register_to_gui_and_niftyled(LedHardware * h);
+void                            hardware_unregister_from_gui(NiftyconfHardware * h);
+NiftyconfHardware              *hardware_new(const char *name, const char *family, const char *id, LedCount ledcount, const char *pixelformat);
+void                            hardware_destroy(NiftyconfHardware * hw);
 
 /* GUI functions */
-gboolean            hardware_get_highlighted(NiftyconfHardware *h);
-gboolean            hardware_get_collapsed(NiftyconfHardware *h);
-void                hardware_set_highlighted(NiftyconfHardware *h, gboolean is_highlighted);
-void                hardware_set_collapsed(NiftyconfHardware *h, gboolean is_collapsed);
+gboolean                        hardware_get_highlighted(NiftyconfHardware * h);
+gboolean                        hardware_get_collapsed(NiftyconfHardware * h);
+void                            hardware_set_highlighted(NiftyconfHardware * h, gboolean is_highlighted);
+void                            hardware_set_collapsed(NiftyconfHardware * h, gboolean is_collapsed);
 
 /* model functions */
-LedHardware *       hardware_niftyled(NiftyconfHardware *h);
-char *				hardware_dump(NiftyconfHardware *h, gboolean encapsulation);
+LedHardware                    *hardware_niftyled(NiftyconfHardware * h);
+char                           *hardware_dump(NiftyconfHardware * h, gboolean encapsulation);
 
 
 #endif /* _NIFTYCONF_HARDWARE_H */

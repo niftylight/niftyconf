@@ -58,39 +58,38 @@
 /**
  * build UI
  */
-GtkBuilder *ui_builder(gchar *file)
+GtkBuilder *ui_builder(gchar * file)
 {
-		/* create ui */        
-		GtkBuilder *ui;
-		if(!(ui = gtk_builder_new()))
-		{
-				g_error("Failed to create GtkBuilder");
-		}
+        /* create ui */
+        GtkBuilder *ui;
+        if(!(ui = gtk_builder_new()))
+        {
+                g_error("Failed to create GtkBuilder");
+        }
 
-		/* try to load from datadir */
-		gchar *s = g_build_filename(DATADIR, PACKAGE_NAME, file, NULL);
-		if(gtk_builder_add_from_file(ui, s, NULL) == 0)
-		{
-				/* try to load from source dir */
-				gchar *s2 = g_build_filename("./data", file, NULL);
+        /* try to load from datadir */
+        gchar *s = g_build_filename(DATADIR, PACKAGE_NAME, file, NULL);
+        if(gtk_builder_add_from_file(ui, s, NULL) == 0)
+        {
+                /* try to load from source dir */
+                gchar *s2 = g_build_filename("./data", file, NULL);
 
-				GError *error = NULL;
-				if(gtk_builder_add_from_file(ui, s2, &error) == 0)
-				{
-						g_error("Failed to add UI from \"%s\" or \"%s\": %s", 
-						        s, s2, error->message);
-						g_error_free(error);
-						g_free(s2);
-						g_free(s);
-						return NULL;
-				}
-				g_free(s2);
-		}
-		g_free(s);
+                GError *error = NULL;
+                if(gtk_builder_add_from_file(ui, s2, &error) == 0)
+                {
+                        g_error("Failed to add UI from \"%s\" or \"%s\": %s",
+                                s, s2, error->message);
+                        g_error_free(error);
+                        g_free(s2);
+                        g_free(s);
+                        return NULL;
+                }
+                g_free(s2);
+        }
+        g_free(s);
 
-		/* connect signals defined in XML file */
-		gtk_builder_connect_signals(ui, NULL);
+        /* connect signals defined in XML file */
+        gtk_builder_connect_signals(ui, NULL);
 
-		return ui;
+        return ui;
 }
-

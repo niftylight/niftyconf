@@ -49,22 +49,22 @@
 
 
 typedef struct _NiftyconfRenderer NiftyconfRenderer;
-typedef NftResult (NiftyconfRenderFunc)(cairo_surface_t **s, gpointer element);
+typedef                         NftResult(NiftyconfRenderFunc) (cairo_surface_t ** s, gpointer element);
 
 
 /* GUI model functions */
-NiftyconfRenderer *	renderer_new(NIFTYLED_TYPE type, gpointer element, NiftyconfRenderFunc *render, gint width, gint height);
-void 				renderer_destroy(NiftyconfRenderer *r);
+NiftyconfRenderer              *renderer_new(NIFTYLED_TYPE type, gpointer element, NiftyconfRenderFunc * render, gint width, gint height);
+void                            renderer_destroy(NiftyconfRenderer * r);
 
 /* GUI functions */
-gboolean 			renderer_init();
-void 				renderer_deinit();
-GtkWidget *			renderer_get_widget();
-void 				renderer_all_queue_draw();
-void                renderer_damage(NiftyconfRenderer *r);
-gdouble				renderer_scale_factor();
-gboolean 			renderer_resize(NiftyconfRenderer *r, gint width, gint height);
-cairo_surface_t *	renderer_get_surface(NiftyconfRenderer *r);
+gboolean                        renderer_init();
+void                            renderer_deinit();
+GtkWidget                      *renderer_get_widget();
+void                            renderer_all_queue_draw();
+void                            renderer_damage(NiftyconfRenderer * r);
+gdouble                         renderer_scale_factor();
+gboolean                        renderer_resize(NiftyconfRenderer * r, gint width, gint height);
+cairo_surface_t                *renderer_get_surface(NiftyconfRenderer * r);
 
 /* model functions */
 

@@ -49,31 +49,31 @@
 #include "elements/element-hardware.h"
 
 
-typedef struct _NiftyconfTile NiftyconfTile;
+typedef struct _NiftyconfTile   NiftyconfTile;
 
 
 
 /* GUI model functions */
-gboolean        	tile_init();
-void				tile_deinit();
-NiftyconfTile *		tile_register_to_gui(LedTile *t);
-void            	tile_unregister_from_gui(NiftyconfTile *t);
-gboolean       		tile_of_hardware_new(NiftyconfHardware *parent);
-gboolean       		tile_of_tile_new(NiftyconfTile *parent);
-void           		tile_destroy(NiftyconfTile *tile);
+gboolean                        tile_init();
+void                            tile_deinit();
+NiftyconfTile                  *tile_register_to_gui(LedTile * t);
+void                            tile_unregister_from_gui(NiftyconfTile * t);
+gboolean                        tile_of_hardware_new(NiftyconfHardware * parent);
+gboolean                        tile_of_tile_new(NiftyconfTile * parent);
+void                            tile_destroy(NiftyconfTile * tile);
 
 
 /* GUI functions */
-gboolean        	tile_get_collapsed(NiftyconfTile *t);
-gboolean        	tile_get_highlighted(NiftyconfTile *t);
-void            	tile_set_collapsed(NiftyconfTile *t, gboolean is_collapsed);
-void            	tile_set_highlighted(NiftyconfTile *t, gboolean is_highlighted);
+gboolean                        tile_get_collapsed(NiftyconfTile * t);
+gboolean                        tile_get_highlighted(NiftyconfTile * t);
+void                            tile_set_collapsed(NiftyconfTile * t, gboolean is_collapsed);
+void                            tile_set_highlighted(NiftyconfTile * t, gboolean is_highlighted);
 
 
 /* model functions */
-NiftyconfRenderer *	tile_get_renderer(NiftyconfTile *t);
-LedTile *       	tile_niftyled(NiftyconfTile *t);
-char *				tile_dump(NiftyconfTile *tile, gboolean encapsulation);
+NiftyconfRenderer              *tile_get_renderer(NiftyconfTile * t);
+LedTile                        *tile_niftyled(NiftyconfTile * t);
+char                           *tile_dump(NiftyconfTile * tile, gboolean encapsulation);
 
 
 #endif /* _NIFTYCONF_TILE_H */

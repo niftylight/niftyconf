@@ -63,59 +63,63 @@ static NftPrefs *_prefs;
 /** getter */
 NftPrefs *prefs()
 {
-	return _prefs;
+        return _prefs;
 }
 
 
 /** load preferences */
 gboolean prefs_load()
 {
-	NftPrefsNode *setup;
-	if(!(setup = nft_prefs_node_from_file(_filename)))
-				return false;
-		
-	NftPrefsNode *n;
-	for(n = nft_prefs_node_get_first_child(setup); n; n = nft_prefs_node_get_next(n))
-	{
-		if(!nft_prefs_obj_from_node(_prefs, n, NULL))
-				return false;
-	}
+        NftPrefsNode *setup;
+        if(!(setup = nft_prefs_node_from_file(_filename)))
+                return false;
 
-	return true;
+        NftPrefsNode *n;
+        for(n = nft_prefs_node_get_first_child(setup); n;
+            n = nft_prefs_node_get_next(n))
+        {
+                if(!nft_prefs_obj_from_node(_prefs, n, NULL))
+                        return false;
+        }
+
+        return true;
 }
 
 
 /** save preferences */
 gboolean prefs_save()
 {
-	/* create preferences */
-	NftPrefsNode *setup = nft_prefs_node_alloc("preferences");
+        /* create preferences */
+        NftPrefsNode *setup = nft_prefs_node_alloc("preferences");
 
-	/* create ui prefs */
-	NftPrefsNode *niftyconf = nft_prefs_obj_to_node(_prefs, "niftyconf", NULL, NULL);
+        /* create ui prefs */
+        NftPrefsNode *niftyconf =
+                nft_prefs_obj_to_node(_prefs, "niftyconf", NULL, NULL);
 
-	/* add nodes to prefs */
-	nft_prefs_node_add_child(setup, niftyconf);
+        /* add nodes to prefs */
+        nft_prefs_node_add_child(setup, niftyconf);
 
-	return nft_prefs_node_to_file(setup, _filename, true);
+        return nft_prefs_node_to_file(setup, _filename, true);
 }
 
 
 /** initialize preferences */
 gboolean prefs_init()
 {
-	if(!(_prefs = nft_prefs_init()))
-				return false;
+        if(!(_prefs = nft_prefs_init()))
+                return false;
 
-	if(snprintf(_filename, sizeof(_filename), "%s/"PREFS_FILENAME, getenv("HOME")) < 0)			
-			return false;
-	
-	return true;
+        if(snprintf
+           (_filename, sizeof(_filename), "%s/" PREFS_FILENAME,
+            getenv("HOME")) < 0)
+                return false;
+
+        return true;
 }
 
 
 /** deinitialize preferences */
 void prefs_deinit()
 {
-	nft_prefs_deinit(_prefs);
+        nft_prefs_deinit(_prefs);
 }

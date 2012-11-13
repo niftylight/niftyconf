@@ -52,14 +52,14 @@
 
 
 /* GUI model functions */
-gboolean    ui_setup_init();
-GtkWidget * ui_setup_get_widget();
+gboolean                        ui_setup_init();
+GtkWidget                      *ui_setup_get_widget();
 
 /* GUI functions */
-gboolean    ui_setup_load(gchar *filename);
-gboolean	ui_setup_save(gchar *filename);
-void 		ui_setup_deinit();
-GObject *	ui_setup(const char *n);
+gboolean                        ui_setup_load(gchar * filename);
+gboolean                        ui_setup_save(gchar * filename);
+void                            ui_setup_deinit();
+GObject                        *ui_setup(const char *n);
 
 /* model functions */
 

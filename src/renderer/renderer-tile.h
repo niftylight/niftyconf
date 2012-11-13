@@ -46,8 +46,8 @@
 
 
 
-NiftyconfRenderer *	renderer_tile_new(NiftyconfTile *tile);
-void 				renderer_tile_damage(NiftyconfTile *tile);
+NiftyconfRenderer              *renderer_tile_new(NiftyconfTile * tile);
+void                            renderer_tile_damage(NiftyconfTile * tile);
 
 
 

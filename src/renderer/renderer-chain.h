@@ -45,8 +45,8 @@
 #define _NIFTYCONF_RENDERER_CHAIN_H
 
 
-NiftyconfRenderer *	renderer_chain_new(NiftyconfChain *chain);
-void 				renderer_chain_damage(NiftyconfChain *chain);
+NiftyconfRenderer              *renderer_chain_new(NiftyconfChain * chain);
+void                            renderer_chain_damage(NiftyconfChain * chain);
 
 
 

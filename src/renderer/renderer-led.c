@@ -56,89 +56,90 @@
  ******************************************************************************/
 
 /** renderer for LEDs */
-static NftResult _render_led(cairo_surface_t **s, gpointer element)
+static NftResult _render_led(cairo_surface_t ** s, gpointer element)
 {
-		if(!s || !*s || !element)
-					NFT_LOG_NULL(NFT_FAILURE);
+        if(!s || !*s || !element)
+                NFT_LOG_NULL(NFT_FAILURE);
 
-		/* get this led */
-		NiftyconfLed *led = (NiftyconfLed *) element;
-		Led *l = led_niftyled(led);
+        /* get this led */
+        NiftyconfLed *led = (NiftyconfLed *) element;
+        Led *l = led_niftyled(led);
 
-		/* get renderer of this chain */
-		//NiftyconfRenderer *r = led_get_renderer(led);
+        /* get renderer of this chain */
+        // NiftyconfRenderer *r = led_get_renderer(led);
 
-		/* create context for drawing */
-		cairo_t *cr = cairo_create(*s);
+        /* create context for drawing */
+        cairo_t *cr = cairo_create(*s);
 
-		/* disable antialiasing */
-		cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
+        /* disable antialiasing */
+        cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
 
-		/* clear surface */
-		cairo_set_source_rgba (cr, 0, 0, 0, 0);
-		cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-		cairo_paint (cr);
-		cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
-
-
-		double x = 0;
-		double y = 0;
-		double w = cairo_image_surface_get_width(*s)/3;
-		double h = cairo_image_surface_get_height(*s);
+        /* clear surface */
+        cairo_set_source_rgba(cr, 0, 0, 0, 0);
+        cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+        cairo_paint(cr);
+        cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
 
 
-		/* @todo dynamic components */
-		switch(led_get_component(l))
-		{
-				/* red */
-				case 0:
-				{
-						cairo_set_source_rgb(cr,1,0,0);
-						break;
-				}
-
-						/* green */
-				case 1:
-				{
-						cairo_set_source_rgb(cr,0,1,0);
-						x += w;
-						break;
-				}
-
-						/* blue */
-				case 2:
-				{
-						cairo_set_source_rgb(cr,0,0,1);
-						x += (w*2);
-						break;
-				}
-		}
+        double x = 0;
+        double y = 0;
+        double w = cairo_image_surface_get_width(*s) / 3;
+        double h = cairo_image_surface_get_height(*s);
 
 
-		/* draw rectangle */
-		cairo_rectangle(cr, x, y, w, h);
-		cairo_fill(cr);
-		cairo_stroke(cr);
+        /* @todo dynamic components */
+        switch (led_get_component(l))
+        {
+                        /* red */
+                case 0:
+                {
+                        cairo_set_source_rgb(cr, 1, 0, 0);
+                        break;
+                }
 
-		/* draw outline */
-		cairo_set_line_width (cr, 1);
-		cairo_set_source_rgb(cr, 0.5, 0.5, 0.5);
-		cairo_rectangle(cr, 0, 0, renderer_scale_factor(), renderer_scale_factor());
-		cairo_stroke(cr);
+                        /* green */
+                case 1:
+                {
+                        cairo_set_source_rgb(cr, 0, 1, 0);
+                        x += w;
+                        break;
+                }
+
+                        /* blue */
+                case 2:
+                {
+                        cairo_set_source_rgb(cr, 0, 0, 1);
+                        x += (w * 2);
+                        break;
+                }
+        }
 
 
-		/* is led currently highlighted? */
-		if(led_get_highlighted(led))
-		{
-				cairo_set_source_rgba(cr, 1,1,1,0.5);
-				cairo_set_line_width (cr, 1);
-				cairo_rectangle(cr, x, y, w, h);
-				cairo_fill(cr);
-		}
+        /* draw rectangle */
+        cairo_rectangle(cr, x, y, w, h);
+        cairo_fill(cr);
+        cairo_stroke(cr);
 
-		cairo_destroy(cr);
-		
-		return NFT_SUCCESS;
+        /* draw outline */
+        cairo_set_line_width(cr, 1);
+        cairo_set_source_rgb(cr, 0.5, 0.5, 0.5);
+        cairo_rectangle(cr, 0, 0, renderer_scale_factor(),
+                        renderer_scale_factor());
+        cairo_stroke(cr);
+
+
+        /* is led currently highlighted? */
+        if(led_get_highlighted(led))
+        {
+                cairo_set_source_rgba(cr, 1, 1, 1, 0.5);
+                cairo_set_line_width(cr, 1);
+                cairo_rectangle(cr, x, y, w, h);
+                cairo_fill(cr);
+        }
+
+        cairo_destroy(cr);
+
+        return NFT_SUCCESS;
 }
 
 
@@ -146,23 +147,24 @@ static NftResult _render_led(cairo_surface_t **s, gpointer element)
  ******************************************************************************/
 
 /** damage led renderer to queue re-render */
-void renderer_led_damage(NiftyconfLed *led)
+void renderer_led_damage(NiftyconfLed * led)
 {
-		/* damage this led's renderer */
-		renderer_damage(led_get_renderer(led));
+        /* damage this led's renderer */
+        renderer_damage(led_get_renderer(led));
 
-		/* also damage parent chain */
-		renderer_chain_damage(led_get_chain(led));
+        /* also damage parent chain */
+        renderer_chain_damage(led_get_chain(led));
 }
 
 
 /** allocate new renderer for a Chain */
-NiftyconfRenderer *renderer_led_new(NiftyconfLed *led)
+NiftyconfRenderer *renderer_led_new(NiftyconfLed * led)
 {
-		if(!led)
-				NFT_LOG_NULL(NULL);
+        if(!led)
+                NFT_LOG_NULL(NULL);
 
-		return renderer_new(LED_T, led, &_render_led, renderer_scale_factor(), renderer_scale_factor());
+        return renderer_new(LED_T, led, &_render_led, renderer_scale_factor(),
+                            renderer_scale_factor());
 }
 
 

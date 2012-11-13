@@ -48,7 +48,7 @@
 /* GUI model functions */
 
 /* GUI functions */
-GObject *	niftyconf_ui(const char *n);
+GObject                        *niftyconf_ui(const char *n);
 
 /* model functions */
 

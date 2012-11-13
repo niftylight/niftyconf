@@ -51,17 +51,17 @@
 
 
 /* GUI model functions */
-gboolean    ui_setup_props_init();
-void		ui_setup_props_deinit();
-GtkWidget *	ui_setup_props_get_widget();
+gboolean                        ui_setup_props_init();
+void                            ui_setup_props_deinit();
+GtkWidget                      *ui_setup_props_get_widget();
 
 /* GUI functions */
-void 		ui_setup_props_hardware_initialized_image(gboolean is_initialized);
-void        ui_setup_props_hardware_show(NiftyconfHardware *h);
-void        ui_setup_props_tile_show(NiftyconfTile *t);
-void        ui_setup_props_chain_show(NiftyconfChain *c);
-void        ui_setup_props_led_show(NiftyconfLed *l);
-void        ui_setup_props_hide();
+void                            ui_setup_props_hardware_initialized_image(gboolean is_initialized);
+void                            ui_setup_props_hardware_show(NiftyconfHardware * h);
+void                            ui_setup_props_tile_show(NiftyconfTile * t);
+void                            ui_setup_props_chain_show(NiftyconfChain * c);
+void                            ui_setup_props_led_show(NiftyconfLed * l);
+void                            ui_setup_props_hide();
 
 /* model functions */
 

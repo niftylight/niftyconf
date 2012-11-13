@@ -48,13 +48,13 @@
 
 
 /* GUI model functions */
-gboolean                ui_info_hardware_init();
-void			ui_info_hardware_deinit();
+gboolean                        ui_info_hardware_init();
+void                            ui_info_hardware_deinit();
 
 
 /* GUI functions */
-void                    ui_info_hardware_set(NiftyconfHardware *hardware);
-void                    ui_info_hardware_set_visible(gboolean visible);
+void                            ui_info_hardware_set(NiftyconfHardware * hardware);
+void                            ui_info_hardware_set_visible(gboolean visible);
 
 
 /* model functions */

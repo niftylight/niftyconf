@@ -48,24 +48,24 @@
 
 
 /* GUI model functions */
-gboolean        ui_setup_tree_init();
-void			ui_setup_tree_deinit();
-GtkWidget *    	ui_setup_tree_get_widget();
-GtkTreeView *	ui_setup_tree_view();
-NIFTYLED_TYPE	ui_setup_tree_current_element_type();
+gboolean                        ui_setup_tree_init();
+void                            ui_setup_tree_deinit();
+GtkWidget                      *ui_setup_tree_get_widget();
+GtkTreeView                    *ui_setup_tree_view();
+NIFTYLED_TYPE                   ui_setup_tree_current_element_type();
 
 
 /* GUI functions */
-void            ui_setup_tree_clear();
-void            ui_setup_tree_refresh();
-void            ui_setup_tree_get_last_selected_element(NIFTYLED_TYPE *t, gpointer *element);
-void		   	ui_setup_tree_get_first_selected_element(NIFTYLED_TYPE *t, gpointer *element);
-void 	   		ui_setup_tree_highlight_only(NIFTYLED_TYPE t, gpointer element);
+void                            ui_setup_tree_clear();
+void                            ui_setup_tree_refresh();
+void                            ui_setup_tree_get_last_selected_element(NIFTYLED_TYPE * t, gpointer * element);
+void                            ui_setup_tree_get_first_selected_element(NIFTYLED_TYPE * t, gpointer * element);
+void                            ui_setup_tree_highlight_only(NIFTYLED_TYPE t, gpointer element);
 
 /* model functions */
-void            ui_setup_tree_do_foreach_element(void (*func)(NIFTYLED_TYPE t, gpointer e));
-void            ui_setup_tree_do_foreach_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer element));
-void            ui_setup_tree_do_for_last_selected_element(void (*func)(NIFTYLED_TYPE t, gpointer element));
+void                            ui_setup_tree_do_foreach_element(void (*func) (NIFTYLED_TYPE t, gpointer e));
+void                            ui_setup_tree_do_foreach_selected_element(void (*func) (NIFTYLED_TYPE t, gpointer element));
+void                            ui_setup_tree_do_for_last_selected_element(void (*func) (NIFTYLED_TYPE t, gpointer element));
 
 
 

@@ -47,8 +47,8 @@
 
 
 
-NiftyconfRenderer *	renderer_setup_new();
-void 				renderer_setup_damage();
+NiftyconfRenderer              *renderer_setup_new();
+void                            renderer_setup_damage();
 
 
 

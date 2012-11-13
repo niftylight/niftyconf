@@ -47,11 +47,11 @@
 
 
 
-gboolean	prefs_init();
-void		prefs_deinit();
-gboolean	prefs_load();
-gboolean	prefs_save();
-NftPrefs *	prefs();
+gboolean                        prefs_init();
+void                            prefs_deinit();
+gboolean                        prefs_load();
+gboolean                        prefs_save();
+NftPrefs                       *prefs();
 
 
 #endif /* _NIFTYCONF_PREFS_H */

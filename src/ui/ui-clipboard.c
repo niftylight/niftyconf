@@ -84,369 +84,430 @@ static GtkClipboard *_clipboard;
 
 
 /** cut/copy node */
-static LedPrefsNode *_cut_or_copy_node(NIFTYLED_TYPE t, gpointer *e, gboolean cut)
+static LedPrefsNode *_cut_or_copy_node(NIFTYLED_TYPE t, gpointer * e,
+                                       gboolean cut)
 {
-		NFT_LOG(L_DEBUG, cut ? "Cutting element (type: %d / ptr: %p)..." : "Copying element (type: %d / ptr: %p)...",
-		        t, e);
+        NFT_LOG(L_DEBUG,
+                cut ? "Cutting element (type: %d / ptr: %p)..." :
+                "Copying element (type: %d / ptr: %p)...", t, e);
 
 
 
-		LedPrefsNode *n = NULL;
-		switch(t)
-		{
-				case LED_SETUP_T:
-				{
+        LedPrefsNode *n = NULL;
+        switch (t)
+        {
+                case LED_SETUP_T:
+                {
 
-						if(!(n = led_prefs_setup_to_node(setup_get_prefs(), setup_get_current())))
-						{
-								ui_log_alert_show("Failed to create preferences from current setup.");
-								return NULL;
-						}
+                        if(!
+                           (n =
+                            led_prefs_setup_to_node(setup_get_prefs(),
+                                                    setup_get_current())))
+                        {
+                                ui_log_alert_show
+                                        ("Failed to create preferences from current setup.");
+                                return NULL;
+                        }
 
-						/* also remove element? */
-						if(cut)
-						{
-								led_setup_destroy(setup_get_current());
-								setup_register_to_gui(led_setup_new());
-								ui_setup_tree_refresh();
-								ui_setup_props_hide();
-						}
-						break;
-				}
+                        /* also remove element? */
+                        if(cut)
+                        {
+                                led_setup_destroy(setup_get_current());
+                                setup_register_to_gui(led_setup_new());
+                                ui_setup_tree_refresh();
+                                ui_setup_props_hide();
+                        }
+                        break;
+                }
 
-				case LED_HARDWARE_T:
-				{
-						LedHardware *h = hardware_niftyled((NiftyconfHardware *) e);
-						if(!(n = led_prefs_hardware_to_node(setup_get_prefs(), h)))
-						{
-								ui_log_alert_show("Failed to create preferences from current setup.");
-								return NULL;
-						}
+                case LED_HARDWARE_T:
+                {
+                        LedHardware *h =
+                                hardware_niftyled((NiftyconfHardware *) e);
+                        if(!
+                           (n =
+                            led_prefs_hardware_to_node(setup_get_prefs(), h)))
+                        {
+                                ui_log_alert_show
+                                        ("Failed to create preferences from current setup.");
+                                return NULL;
+                        }
 
-						/* also remove element? */
-						if(cut)
-						{
-								hardware_destroy((NiftyconfHardware *) e);
-								ui_setup_tree_refresh();
+                        /* also remove element? */
+                        if(cut)
+                        {
+                                hardware_destroy((NiftyconfHardware *) e);
+                                ui_setup_tree_refresh();
 
-								/* hide properties */
-								ui_setup_props_hide();
-						}
-						break;
-				}
+                                /* hide properties */
+                                ui_setup_props_hide();
+                        }
+                        break;
+                }
 
-				case LED_TILE_T:
-				{
-						LedTile *t = tile_niftyled((NiftyconfTile *) e);
-						if(!(n = led_prefs_tile_to_node(setup_get_prefs(), t)))
-								return NULL;
+                case LED_TILE_T:
+                {
+                        LedTile *t = tile_niftyled((NiftyconfTile *) e);
+                        if(!
+                           (n = led_prefs_tile_to_node(setup_get_prefs(), t)))
+                                return NULL;
 
-						/* remove element? */
-						if(cut)
-						{
-								tile_destroy((NiftyconfTile *) e);
-								ui_setup_tree_refresh();
+                        /* remove element? */
+                        if(cut)
+                        {
+                                tile_destroy((NiftyconfTile *) e);
+                                ui_setup_tree_refresh();
 
-								/* hide properties */
-								ui_setup_props_hide();
-						}
-						break;
-				}
+                                /* hide properties */
+                                ui_setup_props_hide();
+                        }
+                        break;
+                }
 
-				case LED_CHAIN_T:
-				{
-						LedChain *c = chain_niftyled((NiftyconfChain *) e);
-						if(!(n = led_prefs_chain_to_node(setup_get_prefs(), c)))
-						{
-								NFT_LOG(L_ERROR, "Failed to dump Chain element");
-								return NULL;
-						}
+                case LED_CHAIN_T:
+                {
+                        LedChain *c = chain_niftyled((NiftyconfChain *) e);
+                        if(!
+                           (n =
+                            led_prefs_chain_to_node(setup_get_prefs(), c)))
+                        {
+                                NFT_LOG(L_ERROR,
+                                        "Failed to dump Chain element");
+                                return NULL;
+                        }
 
-						/* don't cut from hardware elements */
-						if(led_chain_parent_is_hardware(c))
-								break;
+                        /* don't cut from hardware elements */
+                        if(led_chain_parent_is_hardware(c))
+                                break;
 
-						/* remove element? */
-						if(cut)
-						{
-								/* get parent tile of this chain */
-								LedTile *t = led_chain_get_parent_tile(c);
-								NiftyconfTile *tile = led_tile_get_privdata(t);
-								chain_of_tile_destroy(tile);
-								ui_setup_tree_refresh();
+                        /* remove element? */
+                        if(cut)
+                        {
+                                /* get parent tile of this chain */
+                                LedTile *t = led_chain_get_parent_tile(c);
+                                NiftyconfTile *tile =
+                                        led_tile_get_privdata(t);
+                                chain_of_tile_destroy(tile);
+                                ui_setup_tree_refresh();
 
-								/* hide properties */
-								ui_setup_props_hide();
-						}
-						break;
-				}
+                                /* hide properties */
+                                ui_setup_props_hide();
+                        }
+                        break;
+                }
 
-				case LED_T:
-				{
-						Led *l = led_niftyled((NiftyconfLed *) e);
-						if(!(n = led_prefs_led_to_node(setup_get_prefs(), l)))
-								return NULL;
+                case LED_T:
+                {
+                        Led *l = led_niftyled((NiftyconfLed *) e);
+                        if(!(n = led_prefs_led_to_node(setup_get_prefs(), l)))
+                                return NULL;
 
-						/* remove element? */
-						if(cut)
-						{
-								NFT_TODO();
-								//led_unregister((NiftyconfLed *) e);
-								//setup_tree_refresh();
-						}
-						break;
-				}
+                        /* remove element? */
+                        if(cut)
+                        {
+                                NFT_TODO();
+                                // led_unregister((NiftyconfLed *) e);
+                                // setup_tree_refresh();
+                        }
+                        break;
+                }
 
-				default:
-				{
-						NFT_LOG(L_ERROR, "Attempt to cut/copy unknown element. This shouldn't happen?!");
-				}
-		}
+                default:
+                {
+                        NFT_LOG(L_ERROR,
+                                "Attempt to cut/copy unknown element. This shouldn't happen?!");
+                }
+        }
 
 
-		return n;
+        return n;
 }
 
 
 /** paste element from clipboard */
-static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent_element)
+static void _paste_node(LedPrefsNode * n, NIFTYLED_TYPE parent_t,
+                        gpointer parent_element)
 {
 
-		/* handle different element types */
-		switch(led_prefs_node_get_type(n))
-		{
-				/* LedHardware */
-				case LED_HARDWARE_T:
-				{
+        /* handle different element types */
+        switch (led_prefs_node_get_type(n))
+        {
+                        /* LedHardware */
+                case LED_HARDWARE_T:
+                {
 
-						/* create hardware from prefs node */
-						LedHardware *h;
-						if(!(h = led_prefs_hardware_from_node(setup_get_prefs(), n)))
-						{
-								ui_log_alert_show("Failed to parse Hardware node from clipboard buffer");
-								return;
-						}
+                        /* create hardware from prefs node */
+                        LedHardware *h;
+                        if(!
+                           (h =
+                            led_prefs_hardware_from_node(setup_get_prefs(),
+                                                         n)))
+                        {
+                                ui_log_alert_show
+                                        ("Failed to parse Hardware node from clipboard buffer");
+                                return;
+                        }
 
-						/* hardware nodes will always be pasted top-level, no matter
-						 what is currently selected */
-						if(!hardware_register_to_gui_and_niftyled(h))
-						{
-								ui_log_alert_show("Failed to paste Hardware node");
-								return;
-						}
-						break;
-				}
-
-
-				/* LedTile */
-				case LED_TILE_T:
-				{
-						/* create tile from prefs node */
-						LedTile *t;
-						if(!(t = led_prefs_tile_from_node(setup_get_prefs(), n)))
-						{
-								ui_log_alert_show("Failed to parse Tile node from clipboard buffer");
-								return;
-						}
-
-						switch(parent_t)
-						{
-								/* paste tile to hardware */
-								case LED_HARDWARE_T:
-								{
-										/* parent hardware element */
-										LedHardware *h;
-										if(!(h = hardware_niftyled((NiftyconfHardware *) parent_element)))
-										{
-												ui_log_alert_show("Failed to get Hardware node to paste to");
-												led_tile_destroy(t);
-												return;
-										}
-
-										/* does parent hardware already have a tile? */
-										LedTile *pt;
-										if((pt = led_hardware_get_tile(h)))
-										{
-												if(!led_tile_list_append_head(pt, t))
-												{
-														ui_log_alert_show("Failed to append Tile to parent Hardware list of tiles");
-														led_tile_destroy(t);
-														return;
-												}
-										}
-										/* parent hardware doesn't have a tile, yet */
-										else
-										{
-												if(!led_hardware_set_tile(h, t))
-												{
-														ui_log_alert_show("Failed to set Tile to parent Hardware");
-														led_tile_destroy(t);
-														return;
-												}
-										}
-
-										/* register tile to GUI */
-										tile_register_to_gui(t);
-										break;
-								}
-
-								/* paste tile to tile */
-								case LED_TILE_T:
-								{
-										/* parent tile element */
-										LedTile *pt;
-										if(!(pt = tile_niftyled((NiftyconfTile *) parent_element)))
-										{
-												ui_log_alert_show("Failed to get Tile node to paste to");
-												led_tile_destroy(t);
-												return;
-										}
-
-										/* append new tile to parent */
-										if(!led_tile_list_append_child(pt, t))
-										{
-												ui_log_alert_show("Failed to append Tile to parent Tile");
-												led_tile_destroy(t);
-												return;
-										}
-
-										/* register tile to GUI */
-										tile_register_to_gui(t);
-										break;
-								}
-
-								default:
-								{
-										ui_log_alert_show("Tile nodes can only be pasted to Hardware or other Tiles");
-
-										/* destroy created tile */
-										led_tile_destroy(t);
-										break;
-								}
-						}
-
-						break;
-				}
+                        /* hardware nodes will always be pasted top-level, no
+                         * matter what is currently selected */
+                        if(!hardware_register_to_gui_and_niftyled(h))
+                        {
+                                ui_log_alert_show
+                                        ("Failed to paste Hardware node");
+                                return;
+                        }
+                        break;
+                }
 
 
-				/* LedChain */
-				case LED_CHAIN_T:
-				{
-						/* chains only go in tiles, pasting into hardware is not supported */
-						switch(parent_t)
-						{
+                        /* LedTile */
+                case LED_TILE_T:
+                {
+                        /* create tile from prefs node */
+                        LedTile *t;
+                        if(!
+                           (t =
+                            led_prefs_tile_from_node(setup_get_prefs(), n)))
+                        {
+                                ui_log_alert_show
+                                        ("Failed to parse Tile node from clipboard buffer");
+                                return;
+                        }
 
-								/* paste chain into tile */
-								case LED_TILE_T:
-								{
-										/* parent tile element */
-										LedTile *pt;
-										if(!(pt = tile_niftyled((NiftyconfTile *) parent_element)))
-										{
-												ui_log_alert_show("Failed to get Tile node to paste to");
-												return;
-										}
+                        switch (parent_t)
+                        {
+                                        /* paste tile to hardware */
+                                case LED_HARDWARE_T:
+                                {
+                                        /* parent hardware element */
+                                        LedHardware *h;
+                                        if(!
+                                           (h =
+                                            hardware_niftyled((NiftyconfHardware *) parent_element)))
+                                        {
+                                                ui_log_alert_show
+                                                        ("Failed to get Hardware node to paste to");
+                                                led_tile_destroy(t);
+                                                return;
+                                        }
 
-										/* does tile already have a chain? */
-										if(led_tile_get_chain(pt))
-										{
-												ui_log_alert_show("Selected Ttile already has a Chain. Please remove that Chain first.");
-												return;
-										}
+                                        /* does parent hardware already have a
+                                         * tile? */
+                                        LedTile *pt;
+                                        if((pt = led_hardware_get_tile(h)))
+                                        {
+                                                if(!led_tile_list_append_head
+                                                   (pt, t))
+                                                {
+                                                        ui_log_alert_show
+                                                                ("Failed to append Tile to parent Hardware list of tiles");
+                                                        led_tile_destroy(t);
+                                                        return;
+                                                }
+                                        }
+                                        /* parent hardware doesn't have a tile, 
+                                         * yet */
+                                        else
+                                        {
+                                                if(!led_hardware_set_tile
+                                                   (h, t))
+                                                {
+                                                        ui_log_alert_show
+                                                                ("Failed to set Tile to parent Hardware");
+                                                        led_tile_destroy(t);
+                                                        return;
+                                                }
+                                        }
 
-										/* create chain from prefs node */
-										LedChain *c;
-										if(!(c = led_prefs_chain_from_node(setup_get_prefs(), n)))
-										{
-												ui_log_alert_show("Failed to parse Chain node from clipboard buffer");
-												return;
-										}
+                                        /* register tile to GUI */
+                                        tile_register_to_gui(t);
+                                        break;
+                                }
 
-										/* set chain to parent tile */
-										if(!(led_tile_set_chain(pt, c)))
-										{
-												ui_log_alert_show("Failed to attach Chain to selected Tile");
-												led_chain_destroy(c);
-												return;
-										}
+                                        /* paste tile to tile */
+                                case LED_TILE_T:
+                                {
+                                        /* parent tile element */
+                                        LedTile *pt;
+                                        if(!
+                                           (pt =
+                                            tile_niftyled((NiftyconfTile *)
+                                                          parent_element)))
+                                        {
+                                                ui_log_alert_show
+                                                        ("Failed to get Tile node to paste to");
+                                                led_tile_destroy(t);
+                                                return;
+                                        }
 
-										/* register new chain to GUI */
-										if(!chain_register_to_gui(c))
-										{
-												ui_log_alert_show("Failed to register new Chain to GUI model");
-												led_chain_destroy(c);
-												led_tile_set_chain(pt, NULL);
-												return;
-										}
+                                        /* append new tile to parent */
+                                        if(!led_tile_list_append_child(pt, t))
+                                        {
+                                                ui_log_alert_show
+                                                        ("Failed to append Tile to parent Tile");
+                                                led_tile_destroy(t);
+                                                return;
+                                        }
 
-										break;
-								}
+                                        /* register tile to GUI */
+                                        tile_register_to_gui(t);
+                                        break;
+                                }
 
-								default:
-								{
-										ui_log_alert_show("Chains can only be pasted into Tiles");
-										break;
-								}
-						}
+                                default:
+                                {
+                                        ui_log_alert_show
+                                                ("Tile nodes can only be pasted to Hardware or other Tiles");
 
-						break;
-				}
+                                        /* destroy created tile */
+                                        led_tile_destroy(t);
+                                        break;
+                                }
+                        }
 
-				/* LedSetup */
-				case LED_SETUP_T:
-				{
-						/* create setup from prefs node */
-						LedSetup *s;
-						if(!(s = led_prefs_setup_from_node(setup_get_prefs(), n)))
-						{
-								ui_log_alert_show("Failed to parse Niftyled node from clipboard buffer");
-								return;
-						}
-
-						/* no hardware node? */
-						LedHardware *h;
-						if(!(h = led_setup_get_hardware(s)))
-								return;
-
-						/* append hardware to current setup */
-						if(!(led_hardware_list_append_head(led_setup_get_hardware(setup_get_current()), h)))
-						{
-								ui_log_alert_show("Failed to append hardware from new Setup to this Setup.");
-								led_setup_destroy(s);
-								return;
-						}
-
-						/* register all hardware nodes to GUI */
-						for(h = led_setup_get_hardware(s); h; h = led_hardware_list_get_next(h))
-						{
-								if(!hardware_register_to_gui(h))
-								{
-										ui_log_alert_show("Failed to register new Hardware to GUI model");
-										return;
-								}
-						}
-
-						led_setup_set_hardware(s, NULL);
-						led_setup_destroy(s);
-						break;
-				}
-
-				/* huh? */
-				case LED_INVALID_T:
-				default:
-				{
-						ui_log_alert_show("Unhandled element type \"%s\"",
-						                  nft_prefs_node_get_name(n));
-						return;
-				}
-		}
+                        break;
+                }
 
 
-		/* refresh whole tree view */
-		ui_setup_tree_refresh();
+                        /* LedChain */
+                case LED_CHAIN_T:
+                {
+                        /* chains only go in tiles, pasting into hardware is
+                         * not supported */
+                        switch (parent_t)
+                        {
 
-		/* redraw view */
-		renderer_all_queue_draw();
+                                        /* paste chain into tile */
+                                case LED_TILE_T:
+                                {
+                                        /* parent tile element */
+                                        LedTile *pt;
+                                        if(!
+                                           (pt =
+                                            tile_niftyled((NiftyconfTile *)
+                                                          parent_element)))
+                                        {
+                                                ui_log_alert_show
+                                                        ("Failed to get Tile node to paste to");
+                                                return;
+                                        }
+
+                                        /* does tile already have a chain? */
+                                        if(led_tile_get_chain(pt))
+                                        {
+                                                ui_log_alert_show
+                                                        ("Selected Ttile already has a Chain. Please remove that Chain first.");
+                                                return;
+                                        }
+
+                                        /* create chain from prefs node */
+                                        LedChain *c;
+                                        if(!
+                                           (c =
+                                            led_prefs_chain_from_node
+                                            (setup_get_prefs(), n)))
+                                        {
+                                                ui_log_alert_show
+                                                        ("Failed to parse Chain node from clipboard buffer");
+                                                return;
+                                        }
+
+                                        /* set chain to parent tile */
+                                        if(!(led_tile_set_chain(pt, c)))
+                                        {
+                                                ui_log_alert_show
+                                                        ("Failed to attach Chain to selected Tile");
+                                                led_chain_destroy(c);
+                                                return;
+                                        }
+
+                                        /* register new chain to GUI */
+                                        if(!chain_register_to_gui(c))
+                                        {
+                                                ui_log_alert_show
+                                                        ("Failed to register new Chain to GUI model");
+                                                led_chain_destroy(c);
+                                                led_tile_set_chain(pt, NULL);
+                                                return;
+                                        }
+
+                                        break;
+                                }
+
+                                default:
+                                {
+                                        ui_log_alert_show
+                                                ("Chains can only be pasted into Tiles");
+                                        break;
+                                }
+                        }
+
+                        break;
+                }
+
+                        /* LedSetup */
+                case LED_SETUP_T:
+                {
+                        /* create setup from prefs node */
+                        LedSetup *s;
+                        if(!
+                           (s =
+                            led_prefs_setup_from_node(setup_get_prefs(), n)))
+                        {
+                                ui_log_alert_show
+                                        ("Failed to parse Niftyled node from clipboard buffer");
+                                return;
+                        }
+
+                        /* no hardware node? */
+                        LedHardware *h;
+                        if(!(h = led_setup_get_hardware(s)))
+                                return;
+
+                        /* append hardware to current setup */
+                        if(!
+                           (led_hardware_list_append_head
+                            (led_setup_get_hardware(setup_get_current()), h)))
+                        {
+                                ui_log_alert_show
+                                        ("Failed to append hardware from new Setup to this Setup.");
+                                led_setup_destroy(s);
+                                return;
+                        }
+
+                        /* register all hardware nodes to GUI */
+                        for(h = led_setup_get_hardware(s); h;
+                            h = led_hardware_list_get_next(h))
+                        {
+                                if(!hardware_register_to_gui(h))
+                                {
+                                        ui_log_alert_show
+                                                ("Failed to register new Hardware to GUI model");
+                                        return;
+                                }
+                        }
+
+                        led_setup_set_hardware(s, NULL);
+                        led_setup_destroy(s);
+                        break;
+                }
+
+                        /* huh? */
+                case LED_INVALID_T:
+                default:
+                {
+                        ui_log_alert_show("Unhandled element type \"%s\"",
+                                          nft_prefs_node_get_name(n));
+                        return;
+                }
+        }
+
+
+        /* refresh whole tree view */
+        ui_setup_tree_refresh();
+
+        /* redraw view */
+        renderer_all_queue_draw();
 }
 
 
@@ -456,208 +517,216 @@ static void _paste_node(LedPrefsNode *n, NIFTYLED_TYPE parent_t, gpointer parent
 /** cut currently selected element to clipboard */
 NftResult ui_clipboard_cut_current_selection()
 {
-		/* get currently selected element */
-		NIFTYLED_TYPE t;
-		gpointer e;
-		ui_setup_tree_get_first_selected_element(&t, &e);
+        /* get currently selected element */
+        NIFTYLED_TYPE t;
+        gpointer e;
+        ui_setup_tree_get_first_selected_element(&t, &e);
 
-		if(t == LED_INVALID_T)
-		{
-				NFT_LOG(L_DEBUG, "could not get first selected element from tree (nothing selected?)");
-				return NFT_FAILURE;
-		}
+        if(t == LED_INVALID_T)
+        {
+                NFT_LOG(L_DEBUG,
+                        "could not get first selected element from tree (nothing selected?)");
+                return NFT_FAILURE;
+        }
 
-		/* highlight only this element */
-		ui_setup_tree_highlight_only(t, e);
+        /* highlight only this element */
+        ui_setup_tree_highlight_only(t, e);
 
-		LedPrefsNode *n;
-		if(!(n = _cut_or_copy_node(t, e, TRUE)))
-				return NFT_FAILURE;
+        LedPrefsNode *n;
+        if(!(n = _cut_or_copy_node(t, e, TRUE)))
+                return NFT_FAILURE;
 
-		char *xml;
-		if(!(xml = led_prefs_node_to_buffer(n)))
-				return NFT_FAILURE;
+        char *xml;
+        if(!(xml = led_prefs_node_to_buffer(n)))
+                return NFT_FAILURE;
 
-		/* set the clipboard text */
-		gtk_clipboard_set_text(_clipboard, xml, -1);
+        /* set the clipboard text */
+        gtk_clipboard_set_text(_clipboard, xml, -1);
 
-		/* store the clipboard text */
-		gtk_clipboard_store(_clipboard);
+        /* store the clipboard text */
+        gtk_clipboard_store(_clipboard);
 
-		NFT_LOG(L_VERY_NOISY, "%s", xml);
+        NFT_LOG(L_VERY_NOISY, "%s", xml);
 
-		free((void *) xml);
+        free((void *) xml);
 
-		return NFT_SUCCESS;
+        return NFT_SUCCESS;
 }
 
 
 /** copy currently selected element to clipboard */
 NftResult ui_clipboard_copy_current_selection()
 {
-		/* get currently selected element */
-		NIFTYLED_TYPE t;
-		gpointer e;
-		ui_setup_tree_get_first_selected_element(&t, &e);
+        /* get currently selected element */
+        NIFTYLED_TYPE t;
+        gpointer e;
+        ui_setup_tree_get_first_selected_element(&t, &e);
 
-		/* if nothing is selected, copy complete setup */
-		if(t == LED_INVALID_T)
-		{
-				e = setup_get_current();
-				t = LED_SETUP_T;
-		}
+        /* if nothing is selected, copy complete setup */
+        if(t == LED_INVALID_T)
+        {
+                e = setup_get_current();
+                t = LED_SETUP_T;
+        }
 
-		/* highlight only this element */
-		ui_setup_tree_highlight_only(t, e);
+        /* highlight only this element */
+        ui_setup_tree_highlight_only(t, e);
 
-		LedPrefsNode *n;
-		if(!(n = _cut_or_copy_node(t, e, FALSE)))
-				return NFT_FAILURE;
+        LedPrefsNode *n;
+        if(!(n = _cut_or_copy_node(t, e, FALSE)))
+                return NFT_FAILURE;
 
-		char *xml;
-		if(!(xml = led_prefs_node_to_buffer(n)))
-				return NFT_FAILURE;
+        char *xml;
+        if(!(xml = led_prefs_node_to_buffer(n)))
+                return NFT_FAILURE;
 
-		/* set the clipboard text */
-		gtk_clipboard_set_text(_clipboard, xml, -1);
+        /* set the clipboard text */
+        gtk_clipboard_set_text(_clipboard, xml, -1);
 
-		/* store the clipboard text */
-		gtk_clipboard_store(_clipboard);
+        /* store the clipboard text */
+        gtk_clipboard_store(_clipboard);
 
-		NFT_LOG(L_VERY_NOISY, "%s", xml);
+        NFT_LOG(L_VERY_NOISY, "%s", xml);
 
-		free((void *) xml);
+        free((void *) xml);
 
-		return NFT_SUCCESS;
+        return NFT_SUCCESS;
 }
 
 
 /** paste element in clipboard after currently (or end of rootlist) */
 NftResult ui_clipboard_paste_current_selection()
 {
-		/* get currently selected element */
-		NIFTYLED_TYPE t;
-		gpointer e;
-		ui_setup_tree_get_first_selected_element(&t, &e);
+        /* get currently selected element */
+        NIFTYLED_TYPE t;
+        gpointer e;
+        ui_setup_tree_get_first_selected_element(&t, &e);
 
-		/* paste to setup if no element selected */
-		if(t == LED_INVALID_T)
-		{
-				e = setup_get_current();
-				t = LED_SETUP_T;
-		}
+        /* paste to setup if no element selected */
+        if(t == LED_INVALID_T)
+        {
+                e = setup_get_current();
+                t = LED_SETUP_T;
+        }
 
-		/* get XML data from clipboard */
-		gchar *xml;
-		if(!(xml = gtk_clipboard_wait_for_text(_clipboard)))
-		{
-				NFT_LOG(L_ERROR, "received NULL from clipboard?");
-				return NFT_FAILURE;
-		}
+        /* get XML data from clipboard */
+        gchar *xml;
+        if(!(xml = gtk_clipboard_wait_for_text(_clipboard)))
+        {
+                NFT_LOG(L_ERROR, "received NULL from clipboard?");
+                return NFT_FAILURE;
+        }
 
-		/* parse buffer to LedPrefsNode */
-		LedPrefsNode *n;
-		if(!(n = led_prefs_node_from_buffer(xml, strlen(xml))))
-		{
-				NFT_LOG(L_ERROR, "failed to parse XML from clipboard");
-				g_free(xml);
-				return NFT_FAILURE;
-		}
+        /* parse buffer to LedPrefsNode */
+        LedPrefsNode *n;
+        if(!(n = led_prefs_node_from_buffer(xml, strlen(xml))))
+        {
+                NFT_LOG(L_ERROR, "failed to parse XML from clipboard");
+                g_free(xml);
+                return NFT_FAILURE;
+        }
 
-		_paste_node(n, t, e);
+        _paste_node(n, t, e);
 
-		led_prefs_node_free(n);
-		g_free(xml);
+        led_prefs_node_free(n);
+        g_free(xml);
 
-		return NFT_SUCCESS;
+        return NFT_SUCCESS;
 }
 
 
 /** copy element to file */
 NftResult ui_clipboard_copy_to_file(const char *filename)
 {
-		/* get currently selected element */
-		NIFTYLED_TYPE t;
-		gpointer e;
-		ui_setup_tree_get_first_selected_element(&t, &e);
+        /* get currently selected element */
+        NIFTYLED_TYPE t;
+        gpointer e;
+        ui_setup_tree_get_first_selected_element(&t, &e);
 
-		/* if nothing is selected, copy complete setup */
-		if(t == LED_INVALID_T)
-		{
-				e = setup_get_current();
-				t = LED_SETUP_T;
-		}
+        /* if nothing is selected, copy complete setup */
+        if(t == LED_INVALID_T)
+        {
+                e = setup_get_current();
+                t = LED_SETUP_T;
+        }
 
-		/* highlight only this element */
-		ui_setup_tree_highlight_only(t, e);
+        /* highlight only this element */
+        ui_setup_tree_highlight_only(t, e);
 
-		LedPrefsNode *n;
-		if(!(n = _cut_or_copy_node(t, e, FALSE)))
-				return NFT_FAILURE;
+        LedPrefsNode *n;
+        if(!(n = _cut_or_copy_node(t, e, FALSE)))
+                return NFT_FAILURE;
 
-		/* file existing? */
-		struct stat sts;
-		if(stat(filename, &sts) == -1)
-		{
-				/* continue if stat error was caused because file doesn't exist */
-				if(errno != ENOENT)
-				{
-						ui_log_alert_show("Failed to access \"%s\" - %s", filename, strerror(errno));
-						return NFT_FAILURE;
-				}
-		}
-		/* stat succeeded, file exists */
-		else
-		{
-				/* remove old file? */
-				if(!ui_log_dialog_yesno("Overwrite", "A file named \"%s\" already exists.\nOverwrite?", filename))
-						return NFT_FAILURE;
+        /* file existing? */
+        struct stat sts;
+        if(stat(filename, &sts) == -1)
+        {
+                /* continue if stat error was caused because file doesn't exist 
+                 */
+                if(errno != ENOENT)
+                {
+                        ui_log_alert_show("Failed to access \"%s\" - %s",
+                                          filename, strerror(errno));
+                        return NFT_FAILURE;
+                }
+        }
+        /* stat succeeded, file exists */
+        else
+        {
+                /* remove old file? */
+                if(!ui_log_dialog_yesno
+                   ("Overwrite",
+                    "A file named \"%s\" already exists.\nOverwrite?",
+                    filename))
+                        return NFT_FAILURE;
 
-				if(unlink(filename) == -1)
-				{
-						ui_log_alert_show("Failed to remove old version of \"%s\" - %s", filename, strerror(errno));
-						return NFT_FAILURE;
-				}
-		}
+                if(unlink(filename) == -1)
+                {
+                        ui_log_alert_show
+                                ("Failed to remove old version of \"%s\" - %s",
+                                 filename, strerror(errno));
+                        return NFT_FAILURE;
+                }
+        }
 
-		return led_prefs_node_to_file_light(n, filename, true);
+        return led_prefs_node_to_file_light(n, filename, true);
 }
 
 
 /** paste element from a file */
 NftResult ui_clipboard_paste_from_file(const char *filename)
 {
-		/* get currently selected element */
-		NIFTYLED_TYPE t;
-		gpointer e;
-		ui_setup_tree_get_first_selected_element(&t, &e);
+        /* get currently selected element */
+        NIFTYLED_TYPE t;
+        gpointer e;
+        ui_setup_tree_get_first_selected_element(&t, &e);
 
-		LedPrefsNode *n;
-		if(!(n = led_prefs_node_from_file(filename)))
-		{
-				NFT_LOG(L_ERROR, "failed to parse XML from \"%s\"", filename);
-				return NFT_FAILURE;
-		}
+        LedPrefsNode *n;
+        if(!(n = led_prefs_node_from_file(filename)))
+        {
+                NFT_LOG(L_ERROR, "failed to parse XML from \"%s\"", filename);
+                return NFT_FAILURE;
+        }
 
-		_paste_node(n, t, e);
+        _paste_node(n, t, e);
 
-		led_prefs_node_free(n);
+        led_prefs_node_free(n);
 
-		return NFT_SUCCESS;
+        return NFT_SUCCESS;
 }
 
 
 /** initialize this module */
 gboolean ui_clipboard_init()
 {
-		/* get clipboard */
-		if(!(_clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD)))
-				return FALSE;
+        /* get clipboard */
+        if(!(_clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD)))
+                return FALSE;
 
-		/* initialize clipboard */
-		gtk_clipboard_set_can_store(_clipboard, NULL, 0);
+        /* initialize clipboard */
+        gtk_clipboard_set_can_store(_clipboard, NULL, 0);
 
-		return TRUE;
+        return TRUE;
 }
 
 
