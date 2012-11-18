@@ -101,11 +101,16 @@ static void _tree_append_chain(GtkTreeStore * s, LedChain * c,
         if(!chain)
                 return;
 
+		/* create name */
+		char title[64];
+		snprintf(title, sizeof(title), "%ld LED chain", 
+		            led_chain_get_ledcount(c));
+		
         GtkTreeIter i;
         gtk_tree_store_append(s, &i, parent);
         gtk_tree_store_set(s, &i,
                            C_SETUP_TYPE, LED_CHAIN_T,
-                           C_SETUP_TITLE, "chain",
+                           C_SETUP_TITLE, title,
                            C_SETUP_ELEMENT, (gpointer) chain, -1);
 }
 
@@ -120,11 +125,16 @@ static void _tree_append_tile(GtkTreeStore * s, LedTile * t,
         if(!tile)
                 return;
 
+		/* create name */
+		char title[64];
+		snprintf(title, sizeof(title), "%dx%d tile", 
+		            led_tile_get_width(t), led_tile_get_height(t));
+		
         GtkTreeIter i;
         gtk_tree_store_append(s, &i, parent);
         gtk_tree_store_set(s, &i,
                            C_SETUP_TYPE, LED_TILE_T,
-                           C_SETUP_TITLE, "tile",
+                           C_SETUP_TITLE, title,
                            C_SETUP_ELEMENT, (gpointer) tile, -1);
 
         /* append chain if there is one */

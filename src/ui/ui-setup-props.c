@@ -286,6 +286,9 @@ G_MODULE_EXPORT void on_spinbutton_led_x_changed(GtkSpinButton * s,
         else
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
 
+		/* refresh tree */
+		ui_setup_tree_refresh();
+		
         /* redraw */
         renderer_led_damage(current_led);
         renderer_all_queue_draw();
@@ -309,6 +312,9 @@ G_MODULE_EXPORT void on_spinbutton_led_y_changed(GtkSpinButton * s,
         else
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
 
+		/* refresh tree */
+		ui_setup_tree_refresh();
+		
         /* redraw */
         renderer_led_damage(current_led);
         renderer_all_queue_draw();
@@ -417,7 +423,8 @@ G_MODULE_EXPORT void on_spinbutton_chain_ledcount_changed(GtkSpinButton * s,
         /* re-register (less or more) LEDs in chain */
         chain_register_leds_to_gui(current_chain);
 
-        /* refresh view */
+		/* refresh tree */
+		ui_setup_tree_refresh();
         ui_setup_ledlist_refresh(current_chain);
 
         /* redraw */
@@ -450,6 +457,9 @@ G_MODULE_EXPORT void on_spinbutton_tile_x_changed(GtkSpinButton * s,
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
         }
 
+		/* refresh tree */
+		ui_setup_tree_refresh();
+		
         /* redraw */
         renderer_tile_damage(current_tile);
         renderer_all_queue_draw();
@@ -481,6 +491,9 @@ G_MODULE_EXPORT void on_spinbutton_tile_y_changed(GtkSpinButton * s,
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
         }
 
+		/* refresh tree */
+		ui_setup_tree_refresh();
+		
         /* redraw */
         renderer_tile_damage(current_tile);
         renderer_all_queue_draw();
@@ -511,10 +524,13 @@ G_MODULE_EXPORT void on_spinbutton_tile_rotation_changed(GtkSpinButton * s,
         {
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
         }
-
+		
         /* refresh view */
         ui_setup_props_tile_show(current_tile);
 
+		/* refresh tree */
+		ui_setup_tree_refresh();
+		
         /* redraw */
         renderer_tile_damage(current_tile);
         renderer_all_queue_draw();
@@ -548,6 +564,9 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_x_changed(GtkSpinButton * s,
         /* refresh view */
         ui_setup_props_tile_show(current_tile);
 
+		/* refresh tree */
+		ui_setup_tree_refresh();
+		
         /* redraw */
         renderer_tile_damage(current_tile);
         renderer_all_queue_draw();
@@ -581,6 +600,9 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_y_changed(GtkSpinButton * s,
         /* refresh view */
         ui_setup_props_tile_show(current_tile);
 
+		/* refresh tree */
+		ui_setup_tree_refresh();
+		
         /* redraw */
         renderer_tile_damage(current_tile);
         renderer_all_queue_draw();
