@@ -248,7 +248,7 @@ void renderer_tile_damage(NiftyconfTile * tile)
 
         /* also damage parent tile... */
         LedTile *pt;
-        if((pt = led_tile_get_parent(t)))
+        if((pt = led_tile_get_parent_tile(t)))
         {
                 NiftyconfTile *ptile = led_tile_get_privdata(pt);
                 renderer_tile_damage(ptile);
