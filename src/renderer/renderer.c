@@ -103,21 +103,24 @@ static GtkBuilder *_ui;
  ******************************************************************************/
 
 /** getter for scaling factor */
-gdouble renderer_scale_factor()
+gdouble renderer_scale_factor(
+        )
 {
         return _r.view.scale_factor;
 }
 
 
 /** getter for widget */
-GtkWidget *renderer_get_widget()
+GtkWidget *renderer_get_widget(
+        )
 {
         return GTK_WIDGET(UI("drawingarea"));
 }
 
 
 /** getter for cairo surface */
-cairo_surface_t *renderer_get_surface(NiftyconfRenderer * r)
+cairo_surface_t *renderer_get_surface(
+        NiftyconfRenderer * r)
 {
         if(!r)
                 NFT_LOG_NULL(NULL);
@@ -148,7 +151,8 @@ cairo_surface_t *renderer_get_surface(NiftyconfRenderer * r)
 
 
 /** queue this renderers surface for update */
-void renderer_damage(NiftyconfRenderer * r)
+void renderer_damage(
+        NiftyconfRenderer * r)
 {
         if(!r)
                 NFT_LOG_NULL();
@@ -158,7 +162,8 @@ void renderer_damage(NiftyconfRenderer * r)
 
 
 /** initialize this module */
-gboolean renderer_init()
+gboolean renderer_init(
+        )
 {
         /* build ui */
         _ui = ui_builder("niftyconf-renderer.ui");
@@ -176,17 +181,20 @@ gboolean renderer_init()
 
 
 /** deinitialize this module */
-void renderer_deinit()
+void renderer_deinit(
+        )
 {
         g_object_unref(_ui);
 }
 
 
 /** allocate new renderer */
-NiftyconfRenderer *renderer_new(NIFTYLED_TYPE type,
-                                gpointer element,
-                                NiftyconfRenderFunc * render,
-                                gint width, gint height)
+NiftyconfRenderer *renderer_new(
+        NIFTYLED_TYPE type,
+        gpointer element,
+        NiftyconfRenderFunc * render,
+        gint width,
+        gint height)
 {
         if(!element)
                 NFT_LOG_NULL(NULL);
@@ -202,9 +210,8 @@ NiftyconfRenderer *renderer_new(NIFTYLED_TYPE type,
         n->element = element;
         n->render = render;
 
-        if(!
-           (n->surface =
-            cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height)))
+        if(!(n->surface =
+             cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height)))
         {
                 g_error("failed to create cairo surface (%dx%d)",
                         width, height);
@@ -218,7 +225,8 @@ NiftyconfRenderer *renderer_new(NIFTYLED_TYPE type,
 
 
 /** destroy renderer */
-void renderer_destroy(NiftyconfRenderer * r)
+void renderer_destroy(
+        NiftyconfRenderer * r)
 {
         if(!r)
                 NFT_LOG_NULL();
@@ -234,7 +242,10 @@ void renderer_destroy(NiftyconfRenderer * r)
 
 
 /** resize surface of renderer */
-gboolean renderer_resize(NiftyconfRenderer * r, int width, int height)
+gboolean renderer_resize(
+        NiftyconfRenderer * r,
+        int width,
+        int height)
 {
         if(!r || !r->surface)
                 NFT_LOG_NULL(FALSE);
@@ -247,9 +258,8 @@ gboolean renderer_resize(NiftyconfRenderer * r, int width, int height)
         /* destroy old surface */
         cairo_surface_destroy(r->surface);
 
-        if(!
-           (r->surface =
-            cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height)))
+        if(!(r->surface =
+             cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height)))
                 return FALSE;
 
         /* queue renderer for update */
@@ -260,7 +270,8 @@ gboolean renderer_resize(NiftyconfRenderer * r, int width, int height)
 
 
 /** queue redraw (manually expose) */
-void renderer_all_queue_draw()
+void renderer_all_queue_draw(
+        )
 {
         gtk_widget_queue_draw(GTK_WIDGET(UI("drawingarea")));
 }
@@ -273,8 +284,10 @@ void renderer_all_queue_draw()
 /**
  * mousebutton pressed above drawingarea
  */
-gboolean on_renderer_button_press_event(GtkWidget * w,
-                                        GdkEventButton * ev, gpointer u)
+gboolean on_renderer_button_press_event(
+        GtkWidget * w,
+        GdkEventButton * ev,
+        gpointer u)
 {
         /* save coordinates */
         _r.view.mouse_hold_x = ev->x;
@@ -287,8 +300,10 @@ gboolean on_renderer_button_press_event(GtkWidget * w,
 /**
  * mousebutton released above drawingarea
  */
-gboolean on_renderer_button_release_event(GtkWidget * w,
-                                          GdkEvent * ev, gpointer u)
+gboolean on_renderer_button_release_event(
+        GtkWidget * w,
+        GdkEvent * ev,
+        gpointer u)
 {
         _r.view.pan_x += _r.view.pan_t_x;
         _r.view.pan_y += _r.view.pan_t_y;
@@ -301,8 +316,10 @@ gboolean on_renderer_button_release_event(GtkWidget * w,
 /**
  * mouse moved above drawingarea
  */
-gboolean on_renderer_motion_notify_event(GtkWidget * w,
-                                         GdkEventMotion * ev, gpointer u)
+gboolean on_renderer_motion_notify_event(
+        GtkWidget * w,
+        GdkEventMotion * ev,
+        gpointer u)
 {
         /* mousebutton pressed? */
         if(ev->state & GDK_BUTTON1_MASK)
@@ -320,8 +337,10 @@ gboolean on_renderer_motion_notify_event(GtkWidget * w,
 /**
  * mousewheel turned
  */
-gboolean on_renderer_scroll_event(GtkWidget * w,
-                                  GdkEventScroll * ev, gpointer u)
+gboolean on_renderer_scroll_event(
+        GtkWidget * w,
+        GdkEventScroll * ev,
+        gpointer u)
 {
         switch (ev->direction)
         {
@@ -359,8 +378,10 @@ gboolean on_renderer_scroll_event(GtkWidget * w,
 /**
  * exposed event (redraw)
  */
-gboolean on_renderer_expose_event(GtkWidget * w, GdkEventExpose * e,
-                                  gpointer d)
+gboolean on_renderer_expose_event(
+        GtkWidget * w,
+        GdkEventExpose * e,
+        gpointer d)
 {
         /* create cairo context */
         cairo_t *cr;

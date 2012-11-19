@@ -46,6 +46,7 @@
 #include "elements/element-setup.h"
 #include "renderer/renderer.h"
 #include "renderer/renderer-led.h"
+#include "ui/ui-live-preview.h"
 
 
 /** one element */
@@ -75,7 +76,8 @@ struct _NiftyconfLed
  ******************************************************************************/
 
 /** getter for parent chain */
-NiftyconfChain *led_get_chain(NiftyconfLed * l)
+NiftyconfChain *led_get_chain(
+        NiftyconfLed * l)
 {
         if(!l)
                 NFT_LOG_NULL(NULL);
@@ -85,7 +87,8 @@ NiftyconfChain *led_get_chain(NiftyconfLed * l)
 
 
 /** getter for renderer */
-NiftyconfRenderer *led_get_renderer(NiftyconfLed * l)
+NiftyconfRenderer *led_get_renderer(
+        NiftyconfLed * l)
 {
         if(!l)
                 NFT_LOG_NULL(NULL);
@@ -95,7 +98,8 @@ NiftyconfRenderer *led_get_renderer(NiftyconfLed * l)
 
 
 /** getter for boolean value whether element is currently highlighted */
-gboolean led_get_highlighted(NiftyconfLed * l)
+gboolean led_get_highlighted(
+        NiftyconfLed * l)
 {
         if(!l)
                 NFT_LOG_NULL(FALSE);
@@ -105,19 +109,28 @@ gboolean led_get_highlighted(NiftyconfLed * l)
 
 
 /* setter for boolean value whether element is currently highlighted */
-void led_set_highlighted(NiftyconfLed * l, gboolean is_highlighted)
+void led_set_highlighted(
+        NiftyconfLed * l,
+        gboolean is_highlighted)
 {
         if(!l)
                 NFT_LOG_NULL();
 
         l->highlight = is_highlighted;
+
+		/* highlight real hardware */
+        if(is_highlighted)
+        {
+                ui_live_preview_highlight_led(l);
+        }
 }
 
 
 /**
  * getter for libniftyled object
  */
-Led *led_niftyled(NiftyconfLed * l)
+Led *led_niftyled(
+        NiftyconfLed * l)
 {
         if(!l)
                 return NULL;
@@ -127,7 +140,9 @@ Led *led_niftyled(NiftyconfLed * l)
 
 
 /** dump element definition to printable string - use free() to deallacote the result */
-char *led_dump(NiftyconfLed * led, gboolean encapsulation)
+char *led_dump(
+        NiftyconfLed * led,
+        gboolean encapsulation)
 {
         Led *l = led_niftyled(led);
         LedPrefsNode *n;
@@ -149,7 +164,9 @@ char *led_dump(NiftyconfLed * led, gboolean encapsulation)
 /**
  * allocate new element
  */
-NiftyconfLed *led_register_to_gui(Led * l, NiftyconfChain * chain)
+NiftyconfLed *led_register_to_gui(
+        Led * l,
+        NiftyconfChain * chain)
 {
         NiftyconfLed *n;
         if(!(n = calloc(1, sizeof(NiftyconfLed))))
@@ -183,7 +200,8 @@ NiftyconfLed *led_register_to_gui(Led * l, NiftyconfChain * chain)
 /**
  * free element
  */
-void led_unregister_from_gui(NiftyconfLed * l)
+void led_unregister_from_gui(
+        NiftyconfLed * l)
 {
         if(!l)
                 return;
@@ -200,14 +218,16 @@ void led_unregister_from_gui(NiftyconfLed * l)
 /**
  * initialize led module
  */
-gboolean led_init()
+gboolean led_init(
+        )
 {
         return TRUE;
 }
 
 
 /** deinitialize this module */
-void led_deinit()
+void led_deinit(
+        )
 {
 
 }

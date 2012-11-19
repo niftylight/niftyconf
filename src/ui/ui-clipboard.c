@@ -84,8 +84,10 @@ static GtkClipboard *_clipboard;
 
 
 /** cut/copy node */
-static LedPrefsNode *_cut_or_copy_node(NIFTYLED_TYPE t, gpointer * e,
-                                       gboolean cut)
+static LedPrefsNode *_cut_or_copy_node(
+        NIFTYLED_TYPE t,
+        gpointer * e,
+        gboolean cut)
 {
         NFT_LOG(L_DEBUG,
                 cut ? "Cutting element (type: %d / ptr: %p)..." :
@@ -99,10 +101,9 @@ static LedPrefsNode *_cut_or_copy_node(NIFTYLED_TYPE t, gpointer * e,
                 case LED_SETUP_T:
                 {
 
-                        if(!
-                           (n =
-                            led_prefs_setup_to_node(setup_get_prefs(),
-                                                    setup_get_current())))
+                        if(!(n = led_prefs_setup_to_node(setup_get_prefs(),
+                                                         setup_get_current
+                                                         ())))
                         {
                                 ui_log_alert_show
                                         ("Failed to create preferences from current setup.");
@@ -124,9 +125,8 @@ static LedPrefsNode *_cut_or_copy_node(NIFTYLED_TYPE t, gpointer * e,
                 {
                         LedHardware *h =
                                 hardware_niftyled((NiftyconfHardware *) e);
-                        if(!
-                           (n =
-                            led_prefs_hardware_to_node(setup_get_prefs(), h)))
+                        if(!(n = led_prefs_hardware_to_node(setup_get_prefs(),
+                                                            h)))
                         {
                                 ui_log_alert_show
                                         ("Failed to create preferences from current setup.");
@@ -148,8 +148,8 @@ static LedPrefsNode *_cut_or_copy_node(NIFTYLED_TYPE t, gpointer * e,
                 case LED_TILE_T:
                 {
                         LedTile *t = tile_niftyled((NiftyconfTile *) e);
-                        if(!
-                           (n = led_prefs_tile_to_node(setup_get_prefs(), t)))
+                        if(!(n = led_prefs_tile_to_node(setup_get_prefs(),
+                                                        t)))
                                 return NULL;
 
                         /* remove element? */
@@ -167,9 +167,8 @@ static LedPrefsNode *_cut_or_copy_node(NIFTYLED_TYPE t, gpointer * e,
                 case LED_CHAIN_T:
                 {
                         LedChain *c = chain_niftyled((NiftyconfChain *) e);
-                        if(!
-                           (n =
-                            led_prefs_chain_to_node(setup_get_prefs(), c)))
+                        if(!(n = led_prefs_chain_to_node(setup_get_prefs(),
+                                                         c)))
                         {
                                 NFT_LOG(L_ERROR,
                                         "Failed to dump Chain element");
@@ -225,8 +224,10 @@ static LedPrefsNode *_cut_or_copy_node(NIFTYLED_TYPE t, gpointer * e,
 
 
 /** paste element from clipboard */
-static void _paste_node(LedPrefsNode * n, NIFTYLED_TYPE parent_t,
-                        gpointer parent_element)
+static void _paste_node(
+        LedPrefsNode * n,
+        NIFTYLED_TYPE parent_t,
+        gpointer parent_element)
 {
 
         /* handle different element types */
@@ -238,10 +239,8 @@ static void _paste_node(LedPrefsNode * n, NIFTYLED_TYPE parent_t,
 
                         /* create hardware from prefs node */
                         LedHardware *h;
-                        if(!
-                           (h =
-                            led_prefs_hardware_from_node(setup_get_prefs(),
-                                                         n)))
+                        if(!(h = led_prefs_hardware_from_node(setup_get_prefs
+                                                              (), n)))
                         {
                                 ui_log_alert_show
                                         ("Failed to parse Hardware node from clipboard buffer");
@@ -265,9 +264,8 @@ static void _paste_node(LedPrefsNode * n, NIFTYLED_TYPE parent_t,
                 {
                         /* create tile from prefs node */
                         LedTile *t;
-                        if(!
-                           (t =
-                            led_prefs_tile_from_node(setup_get_prefs(), n)))
+                        if(!(t = led_prefs_tile_from_node(setup_get_prefs(),
+                                                          n)))
                         {
                                 ui_log_alert_show
                                         ("Failed to parse Tile node from clipboard buffer");
@@ -281,9 +279,7 @@ static void _paste_node(LedPrefsNode * n, NIFTYLED_TYPE parent_t,
                                 {
                                         /* parent hardware element */
                                         LedHardware *h;
-                                        if(!
-                                           (h =
-                                            hardware_niftyled((NiftyconfHardware *) parent_element)))
+                                        if(!(h = hardware_niftyled((NiftyconfHardware *) parent_element)))
                                         {
                                                 ui_log_alert_show
                                                         ("Failed to get Hardware node to paste to");
@@ -329,10 +325,9 @@ static void _paste_node(LedPrefsNode * n, NIFTYLED_TYPE parent_t,
                                 {
                                         /* parent tile element */
                                         LedTile *pt;
-                                        if(!
-                                           (pt =
-                                            tile_niftyled((NiftyconfTile *)
-                                                          parent_element)))
+                                        if(!(pt = tile_niftyled((NiftyconfTile
+                                                                 *)
+                                                                parent_element)))
                                         {
                                                 ui_log_alert_show
                                                         ("Failed to get Tile node to paste to");
@@ -382,10 +377,9 @@ static void _paste_node(LedPrefsNode * n, NIFTYLED_TYPE parent_t,
                                 {
                                         /* parent tile element */
                                         LedTile *pt;
-                                        if(!
-                                           (pt =
-                                            tile_niftyled((NiftyconfTile *)
-                                                          parent_element)))
+                                        if(!(pt = tile_niftyled((NiftyconfTile
+                                                                 *)
+                                                                parent_element)))
                                         {
                                                 ui_log_alert_show
                                                         ("Failed to get Tile node to paste to");
@@ -402,10 +396,8 @@ static void _paste_node(LedPrefsNode * n, NIFTYLED_TYPE parent_t,
 
                                         /* create chain from prefs node */
                                         LedChain *c;
-                                        if(!
-                                           (c =
-                                            led_prefs_chain_from_node
-                                            (setup_get_prefs(), n)))
+                                        if(!(c = led_prefs_chain_from_node
+                                             (setup_get_prefs(), n)))
                                         {
                                                 ui_log_alert_show
                                                         ("Failed to parse Chain node from clipboard buffer");
@@ -450,9 +442,8 @@ static void _paste_node(LedPrefsNode * n, NIFTYLED_TYPE parent_t,
                 {
                         /* create setup from prefs node */
                         LedSetup *s;
-                        if(!
-                           (s =
-                            led_prefs_setup_from_node(setup_get_prefs(), n)))
+                        if(!(s = led_prefs_setup_from_node(setup_get_prefs(),
+                                                           n)))
                         {
                                 ui_log_alert_show
                                         ("Failed to parse Niftyled node from clipboard buffer");
@@ -465,9 +456,9 @@ static void _paste_node(LedPrefsNode * n, NIFTYLED_TYPE parent_t,
                                 return;
 
                         /* append hardware to current setup */
-                        if(!
-                           (led_hardware_list_append_head
-                            (led_setup_get_hardware(setup_get_current()), h)))
+                        if(!(led_hardware_list_append_head
+                             (led_setup_get_hardware
+                              (setup_get_current()), h)))
                         {
                                 ui_log_alert_show
                                         ("Failed to append hardware from new Setup to this Setup.");
@@ -515,7 +506,8 @@ static void _paste_node(LedPrefsNode * n, NIFTYLED_TYPE parent_t,
  ******************************************************************************/
 
 /** cut currently selected element to clipboard */
-NftResult ui_clipboard_cut_current_selection()
+NftResult ui_clipboard_cut_current_selection(
+        )
 {
         /* get currently selected element */
         NIFTYLED_TYPE t;
@@ -555,7 +547,8 @@ NftResult ui_clipboard_cut_current_selection()
 
 
 /** copy currently selected element to clipboard */
-NftResult ui_clipboard_copy_current_selection()
+NftResult ui_clipboard_copy_current_selection(
+        )
 {
         /* get currently selected element */
         NIFTYLED_TYPE t;
@@ -595,7 +588,8 @@ NftResult ui_clipboard_copy_current_selection()
 
 
 /** paste element in clipboard after currently (or end of rootlist) */
-NftResult ui_clipboard_paste_current_selection()
+NftResult ui_clipboard_paste_current_selection(
+        )
 {
         /* get currently selected element */
         NIFTYLED_TYPE t;
@@ -636,7 +630,8 @@ NftResult ui_clipboard_paste_current_selection()
 
 
 /** copy element to file */
-NftResult ui_clipboard_copy_to_file(const char *filename)
+NftResult ui_clipboard_copy_to_file(
+        const char *filename)
 {
         /* get currently selected element */
         NIFTYLED_TYPE t;
@@ -694,7 +689,8 @@ NftResult ui_clipboard_copy_to_file(const char *filename)
 
 
 /** paste element from a file */
-NftResult ui_clipboard_paste_from_file(const char *filename)
+NftResult ui_clipboard_paste_from_file(
+        const char *filename)
 {
         /* get currently selected element */
         NIFTYLED_TYPE t;
@@ -717,7 +713,8 @@ NftResult ui_clipboard_paste_from_file(const char *filename)
 
 
 /** initialize this module */
-gboolean ui_clipboard_init()
+gboolean ui_clipboard_init(
+        )
 {
         /* get clipboard */
         if(!(_clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD)))
@@ -731,7 +728,8 @@ gboolean ui_clipboard_init()
 
 
 /** deinitialize this module */
-void ui_clipboard_deinit()
+void ui_clipboard_deinit(
+        )
 {
 
 }

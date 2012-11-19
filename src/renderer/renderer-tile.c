@@ -59,7 +59,9 @@
  ******************************************************************************/
 
 /** renderer for tiles */
-static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
+static NftResult _render_tile(
+        cairo_surface_t ** s,
+        gpointer element)
 {
         if(!s || !element)
                 NFT_LOG_NULL(NFT_FAILURE);
@@ -132,7 +134,8 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
                 /* adapt to new pivot */
                 /* cairo_translate(cr,
                  * (led_tile_get_pivot_y(ct)-led_tile_get_transformed_pivot_x(ct))*renderer_scale_factor(),
-                 * (led_tile_get_pivot_x(ct)-led_tile_get_transformed_pivot_y(ct))*renderer_scale_factor()); */
+                 * (led_tile_get_pivot_x(ct)-led_tile_get_transformed_pivot_y(ct))*renderer_scale_factor()); 
+                 */
 
                 /* draw */
                 cairo_set_source_surface(cr,
@@ -239,7 +242,8 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
  ******************************************************************************/
 
 /** damage tile renderer to queue re-render */
-void renderer_tile_damage(NiftyconfTile * tile)
+void renderer_tile_damage(
+        NiftyconfTile * tile)
 {
         LedTile *t = tile_niftyled(tile);
 
@@ -260,7 +264,8 @@ void renderer_tile_damage(NiftyconfTile * tile)
 
 
 /** allocate new renderer for a Tile */
-NiftyconfRenderer *renderer_tile_new(NiftyconfTile * tile)
+NiftyconfRenderer *renderer_tile_new(
+        NiftyconfTile * tile)
 {
         if(!tile)
                 NFT_LOG_NULL(NULL);

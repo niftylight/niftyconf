@@ -75,8 +75,11 @@ static GtkBuilder *_ui;
  ******************************************************************************/
 
 /** function to process an element that is currently selected */
-static void _element_selected(GtkTreeModel * m, GtkTreePath * p,
-                              GtkTreeIter * i, gpointer data)
+static void _element_selected(
+        GtkTreeModel * m,
+        GtkTreePath * p,
+        GtkTreeIter * i,
+        gpointer data)
 {
         /* get element represented by this row */
         gpointer *element;
@@ -91,7 +94,8 @@ static void _element_selected(GtkTreeModel * m, GtkTreePath * p,
 
 
 /** build list of Leds */
-static void _build(NiftyconfChain * c)
+static void _build(
+        NiftyconfChain * c)
 {
         /* rebuild */
         LedCount i;
@@ -113,21 +117,24 @@ static void _build(NiftyconfChain * c)
  ******************************************************************************/
 
 /** getter for list widget */
-GtkWidget *ui_setup_ledlist_get_widget()
+GtkWidget *ui_setup_ledlist_get_widget(
+        )
 {
         return GTK_WIDGET(UI("box"));
 }
 
 
 /** clear list */
-void ui_setup_ledlist_clear()
+void ui_setup_ledlist_clear(
+        )
 {
         gtk_list_store_clear(GTK_LIST_STORE(UI("liststore")));
 }
 
 
 /** rebuild list */
-void ui_setup_ledlist_refresh(NiftyconfChain * c)
+void ui_setup_ledlist_refresh(
+        NiftyconfChain * c)
 {
         if(!c)
                 return;
@@ -144,7 +151,8 @@ void ui_setup_ledlist_refresh(NiftyconfChain * c)
 
 
 /** initialize this module */
-gboolean ui_setup_ledlist_init()
+gboolean ui_setup_ledlist_init(
+        )
 {
         _ui = ui_builder("niftyconf-setup-ledlist.ui");
 
@@ -165,16 +173,16 @@ gboolean ui_setup_ledlist_init()
 }
 
 /** deinitialize this module */
-void ui_setup_ledlist_deinit()
+void ui_setup_ledlist_deinit(
+        )
 {
         g_object_unref(_ui);
 }
 
 /** run function on every selected tree-element (multiple selections) */
-void
-ui_setup_ledlist_do_foreach_selected_element(void (*func)
-                                             (LedCount pos,
-                                              NiftyconfLed * led))
+void ui_setup_ledlist_do_foreach_selected_element(
+        void (*func) (LedCount pos,
+                      NiftyconfLed * led))
 {
         /* get current treeview selection */
         GtkTreeSelection *selection;
@@ -218,8 +226,9 @@ ui_setup_ledlist_do_foreach_selected_element(void (*func)
 /**
  * user selected another row
  */
-G_MODULE_EXPORT void on_setup_ledlist_cursor_changed(GtkTreeView * tv,
-                                                     gpointer u)
+G_MODULE_EXPORT void on_setup_ledlist_cursor_changed(
+        GtkTreeView * tv,
+        gpointer u)
 {
         // GtkTreeModel *m = gtk_tree_view_get_model(tv);
 

@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -41,56 +41,22 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <gtk/gtk.h>
-#include "config.h"
+#ifndef _UI_LIVE_PREVIEW_H
+#define _UI_LIVE_PREVIEW_H
+
+
+#include "elements/element-setup.h"
+#include "elements/element-tile.h"
+#include "elements/element-chain.h"
+#include "elements/element-led.h"
 
 
 
-/******************************************************************************
- ****************************** STATIC FUNCTIONS ******************************
- ******************************************************************************/
+void                            ui_live_preview_clear();
+void                            ui_live_preview_highlight_hardware(NiftyconfHardware * h);
+void                            ui_live_preview_highlight_tile(NiftyconfTile * t);
+void                            ui_live_preview_highlight_led(NiftyconfLed * l);
+void                            ui_live_preview_show();
 
 
-
-/******************************************************************************
- ******************************************************************************/
-
-/**
- * build UI
- */
-GtkBuilder *ui_builder(
-        gchar * file)
-{
-        /* create ui */
-        GtkBuilder *ui;
-        if(!(ui = gtk_builder_new()))
-        {
-                g_error("Failed to create GtkBuilder");
-        }
-
-        /* try to load from datadir */
-        gchar *s = g_build_filename(DATADIR, PACKAGE_NAME, file, NULL);
-        if(gtk_builder_add_from_file(ui, s, NULL) == 0)
-        {
-                /* try to load from source dir */
-                gchar *s2 = g_build_filename("./data", file, NULL);
-
-                GError *error = NULL;
-                if(gtk_builder_add_from_file(ui, s2, &error) == 0)
-                {
-                        g_error("Failed to add UI from \"%s\" or \"%s\": %s",
-                                s, s2, error->message);
-                        g_error_free(error);
-                        g_free(s2);
-                        g_free(s);
-                        return NULL;
-                }
-                g_free(s2);
-        }
-        g_free(s);
-
-        /* connect signals defined in XML file */
-        gtk_builder_connect_signals(ui, NULL);
-
-        return ui;
-}
+#endif /* _UI_LIVE_PREVIEW_H */

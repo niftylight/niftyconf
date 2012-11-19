@@ -51,6 +51,7 @@
 #include "ui/ui-setup-tree.h"
 #include "ui/ui-setup-ledlist.h"
 #include "ui/ui-clipboard.h"
+#include "ui/ui-live-preview.h"
 #include "elements/element-setup.h"
 #include "elements/element-hardware.h"
 #include "ui/ui.h"
@@ -77,21 +78,24 @@ static GtkBuilder *_ui;
  ******************************************************************************/
 
 /** getter for GtkBuilder of this module */
-GObject *ui_setup(const char *n)
+GObject *ui_setup(
+        const char *n)
 {
         return UI(n);
 }
 
 
 /** getter for tree widget */
-GtkWidget *ui_setup_get_widget()
+GtkWidget *ui_setup_get_widget(
+        )
 {
         return GTK_WIDGET(UI("box"));
 }
 
 
 /** save setup to file */
-gboolean ui_setup_save(gchar * filename)
+gboolean ui_setup_save(
+        gchar * filename)
 {
         LedSetup *s;
         if(!(s = setup_get_current()))
@@ -117,9 +121,8 @@ gboolean ui_setup_save(gchar * filename)
 
         /* create prefs-node from current setup */
         LedPrefsNode *n;
-        if(!
-           (n =
-            led_prefs_setup_to_node(setup_get_prefs(), setup_get_current())))
+        if(!(n = led_prefs_setup_to_node(setup_get_prefs(),
+                                         setup_get_current())))
         {
                 ui_log_alert_show
                         ("Failed to create preferences from current setup.");
@@ -172,7 +175,8 @@ gboolean ui_setup_save(gchar * filename)
 
 
 /** load new setup from file */
-gboolean ui_setup_load(gchar * filename)
+gboolean ui_setup_load(
+        gchar * filename)
 {
         /* load file */
         LedPrefsNode *n;
@@ -194,14 +198,14 @@ gboolean ui_setup_load(gchar * filename)
         /* update ui */
         ui_setup_tree_refresh();
 
-
         return TRUE;
 }
 
 
 
 /** initialize setup module */
-gboolean ui_setup_init()
+gboolean ui_setup_init(
+        )
 {
         _ui = ui_builder("niftyconf-setup.ui");
 
@@ -285,8 +289,10 @@ gboolean ui_setup_init()
 
 
 /** deinitialize setup module */
-void ui_setup_deinit()
+void ui_setup_deinit(
+        )
 {
+
         /* deinitialize all modules used by this module */
         ui_setup_props_deinit();
         ui_setup_tree_deinit();
@@ -305,8 +311,9 @@ void ui_setup_deinit()
 
 
 /** menuitem "new" selected */
-G_MODULE_EXPORT void on_setup_menuitem_new_activate(GtkMenuItem * i,
-                                                    gpointer d)
+G_MODULE_EXPORT void on_setup_menuitem_new_activate(
+        GtkMenuItem * i,
+        gpointer d)
 {
         LedSetup *s;
         if(!(s = led_setup_new()))
@@ -321,16 +328,18 @@ G_MODULE_EXPORT void on_setup_menuitem_new_activate(GtkMenuItem * i,
 }
 
 /** menuitem "open" selected */
-G_MODULE_EXPORT void on_setup_menuitem_open_activate(GtkMenuItem * i,
-                                                     gpointer d)
+G_MODULE_EXPORT void on_setup_menuitem_open_activate(
+        GtkMenuItem * i,
+        gpointer d)
 {
         gtk_widget_show(GTK_WIDGET(UI("filechooserdialog_load")));
 }
 
 
 /** menuitem "save" selected */
-G_MODULE_EXPORT void on_setup_menuitem_save_activate(GtkMenuItem * i,
-                                                     gpointer d)
+G_MODULE_EXPORT void on_setup_menuitem_save_activate(
+        GtkMenuItem * i,
+        gpointer d)
 {
         if(!ui_setup_save(NULL))
         {
@@ -341,21 +350,23 @@ G_MODULE_EXPORT void on_setup_menuitem_save_activate(GtkMenuItem * i,
 
 
 /** menuitem "save as" selected */
-G_MODULE_EXPORT void on_setup_menuitem_save_as_activate(GtkMenuItem * i,
-                                                        gpointer d)
+G_MODULE_EXPORT void on_setup_menuitem_save_as_activate(
+        GtkMenuItem * i,
+        gpointer d)
 {
         gtk_widget_show(GTK_WIDGET(UI("filechooserdialog_save")));
 }
 
 
 /** "save" button in filechooser clicked */
-G_MODULE_EXPORT void on_setup_save_save_clicked(GtkButton * b, gpointer u)
+G_MODULE_EXPORT void on_setup_save_save_clicked(
+        GtkButton * b,
+        gpointer u)
 {
         char *filename;
-        if(!
-           (filename =
-            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER
-                                          (UI("filechooserdialog_save")))))
+        if(!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER
+                                                      (UI
+                                                       ("filechooserdialog_save")))))
         {
                 NFT_LOG(L_ERROR, "No filename received from dialog.");
                 return;
@@ -375,26 +386,31 @@ osssc_exit:
 
 
 /** "cancel" button in filechooser clicked */
-G_MODULE_EXPORT void on_setup_save_cancel_clicked(GtkButton * b, gpointer u)
+G_MODULE_EXPORT void on_setup_save_cancel_clicked(
+        GtkButton * b,
+        gpointer u)
 {
         gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_save")));
 }
 
 
 /** "cancel" button in filechooser clicked */
-G_MODULE_EXPORT void on_setup_open_cancel_clicked(GtkButton * b, gpointer u)
+G_MODULE_EXPORT void on_setup_open_cancel_clicked(
+        GtkButton * b,
+        gpointer u)
 {
         gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_load")));
 }
 
 /** "open" button in filechooser clicked */
-G_MODULE_EXPORT void on_setup_open_clicked(GtkButton * b, gpointer u)
+G_MODULE_EXPORT void on_setup_open_clicked(
+        GtkButton * b,
+        gpointer u)
 {
         char *filename;
-        if(!
-           (filename =
-            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER
-                                          (UI("filechooserdialog_load")))))
+        if(!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER
+                                                      (UI
+                                                       ("filechooserdialog_load")))))
         {
                 ui_log_alert_show("No filename given?");
                 return;
@@ -414,25 +430,26 @@ osoc_exit:
 }
 
 /** add hardware "add" clicked */
-G_MODULE_EXPORT void on_add_hardware_add_clicked(GtkButton * b, gpointer u)
+G_MODULE_EXPORT void on_add_hardware_add_clicked(
+        GtkButton * b,
+        gpointer u)
 {
         /* add new hardware */
         NiftyconfHardware *h;
-        if(!
-           (h =
-            hardware_new(gtk_entry_get_text
-                         (GTK_ENTRY(UI("hardware_add_name_entry"))),
-                         gtk_combo_box_get_active_text(GTK_COMBO_BOX
-                                                       (UI
-                                                        ("hardware_add_plugin_combobox"))),
-                         gtk_entry_get_text(GTK_ENTRY
-                                            (UI("hardware_add_id_entry"))),
-                         gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
-                                                          (UI
-                                                           ("hardware_add_ledcount_spinbutton"))),
-                         gtk_combo_box_get_active_text(GTK_COMBO_BOX
-                                                       (UI
-                                                        ("hardware_add_pixelformat_comboboxtext"))))))
+        if(!(h = hardware_new(gtk_entry_get_text
+                              (GTK_ENTRY(UI("hardware_add_name_entry"))),
+                              gtk_combo_box_get_active_text(GTK_COMBO_BOX
+                                                            (UI
+                                                             ("hardware_add_plugin_combobox"))),
+                              gtk_entry_get_text(GTK_ENTRY
+                                                 (UI
+                                                  ("hardware_add_id_entry"))),
+                              gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+                                                               (UI
+                                                                ("hardware_add_ledcount_spinbutton"))),
+                              gtk_combo_box_get_active_text(GTK_COMBO_BOX
+                                                            (UI
+                                                             ("hardware_add_pixelformat_comboboxtext"))))))
                 return;
 
         /* hide window */
@@ -446,15 +463,18 @@ G_MODULE_EXPORT void on_add_hardware_add_clicked(GtkButton * b, gpointer u)
 }
 
 /** add hardware "cancel" clicked */
-G_MODULE_EXPORT void on_add_hardware_cancel_clicked(GtkButton * b, gpointer u)
+G_MODULE_EXPORT void on_add_hardware_cancel_clicked(
+        GtkButton * b,
+        gpointer u)
 {
         gtk_widget_set_visible(GTK_WIDGET(UI("hardware_add_window")), FALSE);
 }
 
 
 /** add hardware window close */
-G_MODULE_EXPORT gboolean on_add_hardware_window_delete_event(GtkWidget * w,
-                                                             GdkEvent * e)
+G_MODULE_EXPORT gboolean on_add_hardware_window_delete_event(
+        GtkWidget * w,
+        GdkEvent * e)
 {
         gtk_widget_set_visible(GTK_WIDGET(UI("hardware_add_window")), FALSE);
         return TRUE;
@@ -462,13 +482,13 @@ G_MODULE_EXPORT gboolean on_add_hardware_window_delete_event(GtkWidget * w,
 
 
 /** add hardware "pixelformat" changed */
-G_MODULE_EXPORT void
-on_hardware_add_pixelformat_comboboxtext_changed(GtkComboBox * w, gpointer u)
+G_MODULE_EXPORT void on_hardware_add_pixelformat_comboboxtext_changed(
+        GtkComboBox * w,
+        gpointer u)
 {
         LedPixelFormat *f;
-        if(!
-           (f =
-            led_pixel_format_from_string(gtk_combo_box_get_active_text(w))))
+        if(!(f = led_pixel_format_from_string(gtk_combo_box_get_active_text
+                                              (w))))
         {
                 /* invalid pixel format? */
                 gtk_widget_set_sensitive(GTK_WIDGET
@@ -501,7 +521,9 @@ on_hardware_add_pixelformat_comboboxtext_changed(GtkComboBox * w, gpointer u)
 
 
 /** add chain "add" clicked */
-G_MODULE_EXPORT void on_add_chain_add_clicked(GtkButton * b, gpointer u)
+G_MODULE_EXPORT void on_add_chain_add_clicked(
+        GtkButton * b,
+        gpointer u)
 {
 
         /* get parent element */
@@ -529,15 +551,18 @@ G_MODULE_EXPORT void on_add_chain_add_clicked(GtkButton * b, gpointer u)
 
 
 /** add chain "cancel" clicked */
-G_MODULE_EXPORT void on_add_chain_cancel_clicked(GtkButton * b, gpointer u)
+G_MODULE_EXPORT void on_add_chain_cancel_clicked(
+        GtkButton * b,
+        gpointer u)
 {
         gtk_widget_set_visible(GTK_WIDGET(UI("chain_add_window")), FALSE);
 }
 
 
 /** add chain window close */
-G_MODULE_EXPORT gboolean on_add_chain_window_delete_event(GtkWidget * w,
-                                                          GdkEvent * e)
+G_MODULE_EXPORT gboolean on_add_chain_window_delete_event(
+        GtkWidget * w,
+        GdkEvent * e)
 {
         gtk_widget_set_visible(GTK_WIDGET(UI("chain_add_window")), FALSE);
         return TRUE;
@@ -545,14 +570,13 @@ G_MODULE_EXPORT gboolean on_add_chain_window_delete_event(GtkWidget * w,
 
 
 /** add chain "pixelformat" changed */
-G_MODULE_EXPORT void on_chain_add_pixelformat_comboboxtext_changed(GtkComboBox
-                                                                   * w,
-                                                                   gpointer u)
+G_MODULE_EXPORT void on_chain_add_pixelformat_comboboxtext_changed(
+        GtkComboBox * w,
+        gpointer u)
 {
         LedPixelFormat *f;
-        if(!
-           (f =
-            led_pixel_format_from_string(gtk_combo_box_get_active_text(w))))
+        if(!(f = led_pixel_format_from_string(gtk_combo_box_get_active_text
+                                              (w))))
         {
                 /* invalid pixel format? */
                 gtk_widget_set_sensitive(GTK_WIDGET
@@ -584,14 +608,15 @@ G_MODULE_EXPORT void on_chain_add_pixelformat_comboboxtext_changed(GtkComboBox
 
 
 /** "export" button in filechooser clicked */
-G_MODULE_EXPORT void on_setup_export_clicked(GtkButton * b, gpointer u)
+G_MODULE_EXPORT void on_setup_export_clicked(
+        GtkButton * b,
+        gpointer u)
 {
         /* filename for export file */
         char *filename;
-        if(!
-           (filename =
-            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER
-                                          (UI("filechooserdialog_export")))))
+        if(!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER
+                                                      (UI
+                                                       ("filechooserdialog_export")))))
         {
                 NFT_LOG(L_ERROR, "No filename received from dialog.");
                 return;
@@ -609,28 +634,33 @@ G_MODULE_EXPORT void on_setup_export_clicked(GtkButton * b, gpointer u)
 
 
 /** "cancel" button in filechooser clicked */
-G_MODULE_EXPORT void on_setup_export_cancel_clicked(GtkButton * b, gpointer u)
+G_MODULE_EXPORT void on_setup_export_cancel_clicked(
+        GtkButton * b,
+        gpointer u)
 {
         gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_export")));
 }
 
 
 /** "cancel" button in filechooser clicked */
-G_MODULE_EXPORT void on_setup_import_cancel_clicked(GtkButton * b, gpointer u)
+G_MODULE_EXPORT void on_setup_import_cancel_clicked(
+        GtkButton * b,
+        gpointer u)
 {
         gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_import")));
 }
 
 
 /** "import" button in filechooser clicked */
-G_MODULE_EXPORT void on_setup_import_clicked(GtkButton * b, gpointer u)
+G_MODULE_EXPORT void on_setup_import_clicked(
+        GtkButton * b,
+        gpointer u)
 {
         /* filename for export file */
         char *filename;
-        if(!
-           (filename =
-            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER
-                                          (UI("filechooserdialog_import")))))
+        if(!(filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER
+                                                      (UI
+                                                       ("filechooserdialog_import")))))
         {
                 ui_log_alert_show("No filename received from dialog.");
                 return;

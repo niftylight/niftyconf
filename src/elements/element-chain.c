@@ -81,7 +81,9 @@ struct _NiftyconfChain
 
 
 /** dump element definition to printable string - use free() to deallacote the result */
-char *chain_dump(NiftyconfChain * chain, gboolean encapsulation)
+char *chain_dump(
+        NiftyconfChain * chain,
+        gboolean encapsulation)
 {
         LedChain *c = chain_niftyled(chain);
         LedPrefsNode *n;
@@ -101,7 +103,8 @@ char *chain_dump(NiftyconfChain * chain, gboolean encapsulation)
 
 
 /** getter for renderer */
-NiftyconfRenderer *chain_get_renderer(NiftyconfChain * c)
+NiftyconfRenderer *chain_get_renderer(
+        NiftyconfChain * c)
 {
         if(!c)
                 NFT_LOG_NULL(NULL);
@@ -111,7 +114,8 @@ NiftyconfRenderer *chain_get_renderer(NiftyconfChain * c)
 
 
 /** getter for boolean value whether element is currently highlighted */
-gboolean chain_get_highlighted(NiftyconfChain * c)
+gboolean chain_get_highlighted(
+        NiftyconfChain * c)
 {
         if(!c)
                 NFT_LOG_NULL(FALSE);
@@ -121,7 +125,9 @@ gboolean chain_get_highlighted(NiftyconfChain * c)
 
 
 /* setter for boolean value whether element is currently highlighted */
-void chain_set_highlighted(NiftyconfChain * c, gboolean is_highlighted)
+void chain_set_highlighted(
+        NiftyconfChain * c,
+        gboolean is_highlighted)
 {
         if(!c)
                 NFT_LOG_NULL();
@@ -131,7 +137,8 @@ void chain_set_highlighted(NiftyconfChain * c, gboolean is_highlighted)
 
 
 /** getter for libniftyled object */
-LedChain *chain_niftyled(NiftyconfChain * c)
+LedChain *chain_niftyled(
+        NiftyconfChain * c)
 {
         if(!c)
                 return NULL;
@@ -141,7 +148,8 @@ LedChain *chain_niftyled(NiftyconfChain * c)
 
 
 /** unregister all LEDs of a chain */
-void chain_unregister_leds_from_gui(NiftyconfChain * c)
+void chain_unregister_leds_from_gui(
+        NiftyconfChain * c)
 {
         if(!c)
                 NFT_LOG_NULL();
@@ -160,7 +168,8 @@ void chain_unregister_leds_from_gui(NiftyconfChain * c)
 }
 
 /** register all LEDs of a chain */
-void chain_register_leds_to_gui(NiftyconfChain * c)
+void chain_register_leds_to_gui(
+        NiftyconfChain * c)
 {
         /* allocate all LEDs of chain */
         LedCount i;
@@ -172,7 +181,8 @@ void chain_register_leds_to_gui(NiftyconfChain * c)
 
 
 /** allocate new element */
-NiftyconfChain *chain_register_to_gui(LedChain * c)
+NiftyconfChain *chain_register_to_gui(
+        LedChain * c)
 {
         NiftyconfChain *n;
         if(!(n = calloc(1, sizeof(NiftyconfChain))))
@@ -208,7 +218,8 @@ NiftyconfChain *chain_register_to_gui(LedChain * c)
 
 
 /** free element */
-void chain_unregister_from_gui(NiftyconfChain * c)
+void chain_unregister_from_gui(
+        NiftyconfChain * c)
 {
         if(!c)
                 return;
@@ -226,9 +237,11 @@ void chain_unregister_from_gui(NiftyconfChain * c)
 
 
 /** create new chain for tile */
-gboolean chain_of_tile_new(NIFTYLED_TYPE parent_t,
-                           gpointer parent_element,
-                           LedCount length, const char *pixelformat)
+gboolean chain_of_tile_new(
+        NIFTYLED_TYPE parent_t,
+        gpointer parent_element,
+        LedCount length,
+        const char *pixelformat)
 {
 
         /* can only add chains to tiles */
@@ -266,7 +279,8 @@ gboolean chain_of_tile_new(NIFTYLED_TYPE parent_t,
 
 
 /** remove chain from current setup */
-void chain_of_tile_destroy(NiftyconfTile * tile)
+void chain_of_tile_destroy(
+        NiftyconfTile * tile)
 {
         /* get niftyled tile */
         LedTile *t = tile_niftyled(tile);
@@ -288,7 +302,8 @@ void chain_of_tile_destroy(NiftyconfTile * tile)
 
 
 /** initialize chain module */
-gboolean chain_init()
+gboolean chain_init(
+        )
 {
         return TRUE;
 }

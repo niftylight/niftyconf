@@ -46,6 +46,7 @@
 #include "elements/element-chain.h"
 #include "elements/element-setup.h"
 #include "ui/ui-log.h"
+#include "ui/ui-live-preview.h"
 
 
 
@@ -71,7 +72,9 @@ struct _NiftyconfHardware
  ******************************************************************************/
 
 /** dump element definition to printable string - use free() to deallacote the result */
-char *hardware_dump(NiftyconfHardware * hardware, gboolean encapsulation)
+char *hardware_dump(
+        NiftyconfHardware * hardware,
+        gboolean encapsulation)
 {
         LedHardware *h = hardware_niftyled(hardware);
         LedPrefsNode *n;
@@ -91,7 +94,8 @@ char *hardware_dump(NiftyconfHardware * hardware, gboolean encapsulation)
 
 
 /** getter for boolean value whether element is currently highlighted */
-gboolean hardware_get_highlighted(NiftyconfHardware * h)
+gboolean hardware_get_highlighted(
+        NiftyconfHardware * h)
 {
         if(!h)
                 NFT_LOG_NULL(FALSE);
@@ -101,12 +105,20 @@ gboolean hardware_get_highlighted(NiftyconfHardware * h)
 
 
 /* setter for boolean value whether element is currently highlighted */
-void hardware_set_highlighted(NiftyconfHardware * h, gboolean is_highlighted)
+void hardware_set_highlighted(
+        NiftyconfHardware * h,
+        gboolean is_highlighted)
 {
         if(!h)
                 NFT_LOG_NULL();
 
         h->highlight = is_highlighted;
+
+        /* highlight real hardware */
+        if(is_highlighted)
+        {
+                ui_live_preview_highlight_hardware(h);
+        }
 }
 
 
@@ -114,7 +126,8 @@ void hardware_set_highlighted(NiftyconfHardware * h, gboolean is_highlighted)
  * getter for boolean value whether element row in
  * tree is currently collapsed
  */
-gboolean hardware_get_collapsed(NiftyconfHardware * h)
+gboolean hardware_get_collapsed(
+        NiftyconfHardware * h)
 {
         if(!h)
                 NFT_LOG_NULL(FALSE);
@@ -127,7 +140,9 @@ gboolean hardware_get_collapsed(NiftyconfHardware * h)
  * setter for boolean value whether element row in
  * tree is currently collapsed
  */
-void hardware_set_collapsed(NiftyconfHardware * h, gboolean is_collapsed)
+void hardware_set_collapsed(
+        NiftyconfHardware * h,
+        gboolean is_collapsed)
 {
         if(!h)
                 NFT_LOG_NULL();
@@ -139,7 +154,8 @@ void hardware_set_collapsed(NiftyconfHardware * h, gboolean is_collapsed)
 /**
  * getter for libniftyled object
  */
-LedHardware *hardware_niftyled(NiftyconfHardware * h)
+LedHardware *hardware_niftyled(
+        NiftyconfHardware * h)
 {
         if(!h)
                 return NULL;
@@ -151,7 +167,8 @@ LedHardware *hardware_niftyled(NiftyconfHardware * h)
 /**
  * allocate new hardware element for GUI
  */
-NiftyconfHardware *hardware_register_to_gui(LedHardware * h)
+NiftyconfHardware *hardware_register_to_gui(
+        LedHardware * h)
 {
         NiftyconfHardware *n;
         if(!(n = calloc(1, sizeof(NiftyconfHardware))))
@@ -195,7 +212,8 @@ NiftyconfHardware *hardware_register_to_gui(LedHardware * h)
 /**
  * free hardware element
  */
-void hardware_unregister_from_gui(NiftyconfHardware * h)
+void hardware_unregister_from_gui(
+        NiftyconfHardware * h)
 {
         if(!h)
                 NFT_LOG_NULL();
@@ -225,7 +243,8 @@ void hardware_unregister_from_gui(NiftyconfHardware * h)
 /**
  * add hardware to model
  */
-NiftyconfHardware *hardware_register_to_gui_and_niftyled(LedHardware * h)
+NiftyconfHardware *hardware_register_to_gui_and_niftyled(
+        LedHardware * h)
 {
         /* register hardware to gui */
         NiftyconfHardware *hardware;
@@ -257,9 +276,12 @@ NiftyconfHardware *hardware_register_to_gui_and_niftyled(LedHardware * h)
 /**
  * create new hardware element in setup
  */
-NiftyconfHardware *hardware_new(const char *name, const char *family,
-                                const char *id, LedCount ledcount,
-                                const char *pixelformat)
+NiftyconfHardware *hardware_new(
+        const char *name,
+        const char *family,
+        const char *id,
+        LedCount ledcount,
+        const char *pixelformat)
 {
         /* create new niftyled hardware */
         LedHardware *h;
@@ -287,7 +309,8 @@ NiftyconfHardware *hardware_new(const char *name, const char *family,
 /**
  * remove hardware from current setup
  */
-void hardware_destroy(NiftyconfHardware * hw)
+void hardware_destroy(
+        NiftyconfHardware * hw)
 {
         LedHardware *h = hardware_niftyled(hw);
 
@@ -301,13 +324,15 @@ void hardware_destroy(NiftyconfHardware * hw)
 /**
  * initialize hardware module
  */
-gboolean hardware_init()
+gboolean hardware_init(
+        )
 {
         return TRUE;
 }
 
 /** deinitialize this module */
-void hardware_deinit()
+void hardware_deinit(
+        )
 {
 
 }

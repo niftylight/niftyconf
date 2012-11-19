@@ -63,10 +63,13 @@ static GtkBuilder *_ui;
  ******************************************************************************/
 
 
-static void _logger(void *userdata,
-                    NftLoglevel level,
-                    const char *file,
-                    const char *func, int line, const char *msg)
+static void _logger(
+        void *userdata,
+        NftLoglevel level,
+        const char *file,
+        const char *func,
+        int line,
+        const char *msg)
 {
         /* output this at current loglevel? */
         NftLoglevel lcur = nft_log_level_get();
@@ -145,7 +148,10 @@ static void _logger(void *userdata,
 /**
  *  show yes/no dialog and wat for answer
  */
-gboolean ui_log_dialog_yesno(char *title, char *message, ...)
+gboolean ui_log_dialog_yesno(
+        char *title,
+        char *message,
+        ...)
 {
         if(!message)
                 NFT_LOG_NULL(false);
@@ -204,7 +210,9 @@ gboolean ui_log_dialog_yesno(char *title, char *message, ...)
  *
  * @param message printable text that will be presented to the user
  */
-void ui_log_alert_show(char *message, ...)
+void ui_log_alert_show(
+        char *message,
+        ...)
 {
         /* just hide when message is NULL */
         if(!message)
@@ -247,7 +255,8 @@ void ui_log_alert_show(char *message, ...)
 /**
  * show/hide log window
  */
-void ui_log_show(gboolean visible)
+void ui_log_show(
+        gboolean visible)
 {
         gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);
 }
@@ -255,7 +264,8 @@ void ui_log_show(gboolean visible)
 /**
  * build a string with valid loglevels
  */
-const char *ui_log_loglevels()
+const char *ui_log_loglevels(
+        )
 {
         static char s[1024];
 
@@ -274,7 +284,8 @@ const char *ui_log_loglevels()
 /**
  * initialize module
  */
-gboolean ui_log_init()
+gboolean ui_log_init(
+        )
 {
         _ui = ui_builder("niftyconf-log.ui");
 
@@ -299,7 +310,8 @@ gboolean ui_log_init()
 
 
 /** deinitialize this module */
-void ui_log_deinit()
+void ui_log_deinit(
+        )
 {
         g_object_unref(_ui);
 }
@@ -309,8 +321,9 @@ void ui_log_deinit()
  ******************************************************************************/
 
 /** close main window */
-G_MODULE_EXPORT gboolean on_log_window_delete_event(GtkWidget * w,
-                                                    GdkEvent * e)
+G_MODULE_EXPORT gboolean on_log_window_delete_event(
+        GtkWidget * w,
+        GdkEvent * e)
 {
         ui_log_show(FALSE);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM
@@ -319,15 +332,18 @@ G_MODULE_EXPORT gboolean on_log_window_delete_event(GtkWidget * w,
 }
 
 /** close alert dialog */
-G_MODULE_EXPORT gboolean on_alert_dialog_delete_event(GtkWidget * w,
-                                                      GdkEvent * e)
+G_MODULE_EXPORT gboolean on_alert_dialog_delete_event(
+        GtkWidget * w,
+        GdkEvent * e)
 {
         ui_log_alert_show(NULL);
         return TRUE;
 }
 
 /** loglevel changed */
-G_MODULE_EXPORT void on_log_combobox_changed(GtkComboBox * w, gpointer u)
+G_MODULE_EXPORT void on_log_combobox_changed(
+        GtkComboBox * w,
+        gpointer u)
 {
         NftLoglevel l = (NftLoglevel) gtk_combo_box_get_active(w) + 1;
 
@@ -337,7 +353,9 @@ G_MODULE_EXPORT void on_log_combobox_changed(GtkComboBox * w, gpointer u)
 }
 
 /** "clear" button pressed */
-G_MODULE_EXPORT void on_log_button_clicked(GtkButton * b, gpointer u)
+G_MODULE_EXPORT void on_log_button_clicked(
+        GtkButton * b,
+        gpointer u)
 {
         GtkTextBuffer *buf =
                 gtk_text_view_get_buffer(GTK_TEXT_VIEW(UI("textview")));
@@ -345,8 +363,9 @@ G_MODULE_EXPORT void on_log_button_clicked(GtkButton * b, gpointer u)
 }
 
 /** "dismiss" button in alert-dialog clicked */
-G_MODULE_EXPORT void on_alert_dismiss_button_clicked(GtkButton * b,
-                                                     gpointer u)
+G_MODULE_EXPORT void on_alert_dismiss_button_clicked(
+        GtkButton * b,
+        gpointer u)
 {
         gtk_widget_set_visible(GTK_WIDGET(UI("alert_dialog")), FALSE);
 }
