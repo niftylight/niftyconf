@@ -60,6 +60,8 @@ struct _NiftyconfLed
         gboolean highlight;
                 /** chain to which this LED belongs */
         NiftyconfChain *chain;
+                /** position of this Led inside its chain */
+        LedCount pos;
 };
 
 
@@ -74,6 +76,17 @@ struct _NiftyconfLed
 
 /******************************************************************************
  ******************************************************************************/
+
+/** getter for position inside chain */
+LedCount led_get_pos(
+        NiftyconfLed * l)
+{
+        if(!l)
+                NFT_LOG_NULL(0);
+
+        return l->pos;
+}
+
 
 /** getter for parent chain */
 NiftyconfChain *led_get_chain(
@@ -166,7 +179,8 @@ char *led_dump(
  */
 NiftyconfLed *led_register_to_gui(
         Led * l,
-        NiftyconfChain * chain)
+        NiftyconfChain * chain,
+        LedCount pos)
 {
         NiftyconfLed *n;
         if(!(n = calloc(1, sizeof(NiftyconfLed))))
@@ -178,6 +192,7 @@ NiftyconfLed *led_register_to_gui(
         /* save descriptor */
         n->l = l;
         n->chain = chain;
+        n->pos = pos;
 
         /* allocate renderer */
         if(!(n->renderer = renderer_led_new(n)))

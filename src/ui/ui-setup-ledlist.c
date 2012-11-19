@@ -44,6 +44,7 @@
 #include <gtk/gtk.h>
 #include "ui/ui.h"
 #include "ui/ui-setup-props.h"
+#include "ui/ui-live-preview.h"
 #include "elements/element-led.h"
 #include "elements/element-chain.h"
 
@@ -88,6 +89,8 @@ static void _element_selected(
                            -1);
         NiftyconfLed *l = (NiftyconfLed *) element;
 
+        led_set_highlighted(l, true);
+
         ui_setup_props_hide();
         ui_setup_props_led_show(l);
 }
@@ -108,6 +111,8 @@ static void _build(
                                    C_CHAIN_LED, i,
                                    C_CHAIN_ELEMENT, led_get_privdata(led),
                                    -1);
+
+                led_set_highlighted(led_get_privdata(led), false);
         }
 
         gtk_widget_show(GTK_WIDGET(UI("treeview")));
@@ -237,6 +242,9 @@ G_MODULE_EXPORT void on_setup_ledlist_cursor_changed(
         // gtk_tree_model_get_iter_root(m, &i);
         // _walk_tree(&i, _unhighlight_element);
 
+        /* clear preview */
+        ui_live_preview_clear();
+
         /* get current selection */
         GtkTreeSelection *s;
         if(!(s = gtk_tree_view_get_selection(tv)))
@@ -246,6 +254,8 @@ G_MODULE_EXPORT void on_setup_ledlist_cursor_changed(
 
         /* process all selected elements */
         gtk_tree_selection_selected_foreach(s, _element_selected, NULL);
+
+        ui_live_preview_show();
 
         // setup_redraw();
         // scene_redraw();

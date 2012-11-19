@@ -135,7 +135,7 @@ void chain_set_highlighted(
 
         c->highlight = is_highlighted;
 
-		/* highlight real chain */
+        /* highlight real chain */
         if(is_highlighted)
         {
                 ui_live_preview_highlight_chain(c);
@@ -182,7 +182,7 @@ void chain_register_leds_to_gui(
         LedCount i;
         for(i = 0; i < led_chain_get_ledcount(c->c); i++)
         {
-                led_register_to_gui(led_chain_get_nth(c->c, i), c);
+                led_register_to_gui(led_chain_get_nth(c->c, i), c, i);
         }
 }
 

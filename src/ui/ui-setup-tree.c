@@ -340,7 +340,6 @@ static void _foreach_element_selected(
         gpointer e)
 {
         ui_setup_props_hide();
-        ui_live_preview_clear();
 
         switch (t)
         {
@@ -472,7 +471,7 @@ static void _foreach_element_selected(
                 }
         }
 
-        ui_live_preview_show();
+
 }
 
 
@@ -1002,6 +1001,8 @@ G_MODULE_EXPORT void on_setup_treeview_cursor_changed(
                 return;
         }
 
+        /* clear live preview */
+        ui_live_preview_clear();
 
         /* unhighlight all rows */
         ui_setup_tree_do_foreach_element(_foreach_unhighlight_element);
@@ -1012,6 +1013,9 @@ G_MODULE_EXPORT void on_setup_treeview_cursor_changed(
 
         /* process all selected elements */
         ui_setup_tree_do_foreach_selected_element(_foreach_element_selected);
+
+        /* update live preview */
+        ui_live_preview_show();
 
         /* redraw */
         renderer_all_queue_draw();

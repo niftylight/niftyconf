@@ -120,9 +120,9 @@ void ui_live_preview_highlight_chain(
 
         _fill_chain(c, -1);
 
-		/* chain belongs to tile, refresh mapping */
-		if(led_chain_get_parent_tile(c))
-				_refresh_mapping = true;
+        /* if chain belongs to tile, refresh mapping */
+        if(led_chain_get_parent_tile(c))
+                _refresh_mapping = true;
 }
 
 
@@ -163,7 +163,17 @@ void ui_live_preview_highlight_led(
         if(!led)
                 NFT_LOG_NULL();
 
-        // Led *l = led_niftyled(led);
+
+        /* parent chain */
+        NiftyconfChain *chain = led_get_chain(led);
+        LedChain *c = chain_niftyled(chain);
+
+        /* highlight led */
+        led_chain_set_greyscale(c, led_get_pos(led), -1);
+
+        /* if chain belongs to tile, refresh mapping */
+        if(led_chain_get_parent_tile(c))
+                _refresh_mapping = true;
 }
 
 
