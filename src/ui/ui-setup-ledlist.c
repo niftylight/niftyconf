@@ -47,7 +47,8 @@
 #include "ui/ui-live-preview.h"
 #include "elements/element-led.h"
 #include "elements/element-chain.h"
-
+#include "renderer/renderer.h"
+#include "renderer/renderer-led.h"
 
 
 
@@ -93,6 +94,14 @@ static void _element_selected(
 
         ui_setup_props_hide();
         ui_setup_props_led_show(l);
+        renderer_led_damage(l);
+}
+
+/** deselect all Leds */
+static void _foreach_unhighlight(NiftyconfLed *led)
+{
+		led_set_highlighted(led, false);
+		renderer_led_damage(led);
 }
 
 
@@ -113,6 +122,7 @@ static void _build(
                                    -1);
 
                 led_set_highlighted(led_get_privdata(led), false);
+				renderer_led_damage(led_get_privdata(led));
         }
 
         gtk_widget_show(GTK_WIDGET(UI("treeview")));
@@ -149,6 +159,8 @@ void ui_setup_ledlist_refresh(
 
         _build(c);
 
+		/* redraw */
+        renderer_all_queue_draw();
 }
 
 
@@ -186,8 +198,7 @@ void ui_setup_ledlist_deinit(
 
 /** run function on every selected tree-element (multiple selections) */
 void ui_setup_ledlist_do_foreach_selected_element(
-        void (*func) (LedCount pos,
-                      NiftyconfLed * led))
+        void (*func) (NiftyconfLed * led))
 {
         /* get current treeview selection */
         GtkTreeSelection *selection;
@@ -215,7 +226,7 @@ void ui_setup_ledlist_do_foreach_selected_element(
                                    C_CHAIN_ELEMENT, &current_led, -1);
 
                 /* run user function */
-                func(current_pos, current_led);
+                func(current_led);
         }
 
         /* free list */
@@ -223,6 +234,30 @@ void ui_setup_ledlist_do_foreach_selected_element(
         g_list_free(selected);
 }
 
+
+
+
+/** run function on every tree-element */
+void ui_setup_ledlist_do_foreach_element(
+        void (*func) (NiftyconfLed *led))
+{
+        /* get model */
+        GtkTreeModel *m =
+                gtk_tree_view_get_model(GTK_TREE_VIEW(UI("treeview")));
+        GtkTreeIter iter;
+        gtk_tree_model_iter_nth_child(m, &iter, NULL, 0);
+
+		do
+        {
+                /* get this element */
+                NiftyconfLed *current_led;
+                gtk_tree_model_get(m, &iter, C_CHAIN_ELEMENT, &current_led, -1);
+
+                /* launch function */
+                func(current_led);
+        }
+        while(gtk_tree_model_iter_next(m, &iter));
+}
 
 /******************************************************************************
  ***************************** CALLBACKS ************************************
@@ -244,7 +279,8 @@ G_MODULE_EXPORT void on_setup_ledlist_cursor_changed(
 
         /* clear preview */
         ui_live_preview_clear();
-
+		ui_setup_ledlist_do_foreach_element(_foreach_unhighlight);
+		
         /* get current selection */
         GtkTreeSelection *s;
         if(!(s = gtk_tree_view_get_selection(tv)))
@@ -256,7 +292,7 @@ G_MODULE_EXPORT void on_setup_ledlist_cursor_changed(
         gtk_tree_selection_selected_foreach(s, _element_selected, NULL);
 
         ui_live_preview_show();
-
-        // setup_redraw();
-        // scene_redraw();
+		
+		/* redraw */
+        renderer_all_queue_draw();
 }
