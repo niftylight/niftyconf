@@ -53,6 +53,7 @@
 
 
 void                            ui_live_preview_clear();
+void                            ui_live_preview_highlight_chain(NiftyconfChain * chain);
 void                            ui_live_preview_highlight_hardware(NiftyconfHardware * h);
 void                            ui_live_preview_highlight_tile(NiftyconfTile * t);
 void                            ui_live_preview_highlight_led(NiftyconfLed * l);

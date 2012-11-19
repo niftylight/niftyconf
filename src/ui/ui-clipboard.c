@@ -279,7 +279,9 @@ static void _paste_node(
                                 {
                                         /* parent hardware element */
                                         LedHardware *h;
-                                        if(!(h = hardware_niftyled((NiftyconfHardware *) parent_element)))
+                                        if(!
+                                           (h =
+                                            hardware_niftyled((NiftyconfHardware *) parent_element)))
                                         {
                                                 ui_log_alert_show
                                                         ("Failed to get Hardware node to paste to");

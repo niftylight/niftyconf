@@ -118,7 +118,7 @@ void led_set_highlighted(
 
         l->highlight = is_highlighted;
 
-		/* highlight real hardware */
+        /* highlight real hardware */
         if(is_highlighted)
         {
                 ui_live_preview_highlight_led(l);

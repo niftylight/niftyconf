@@ -128,7 +128,7 @@ void tile_set_highlighted(
 
         t->highlight = is_highlighted;
 
-		/* highlight real tile */
+        /* highlight real tile */
         if(is_highlighted)
         {
                 ui_live_preview_highlight_tile(t);
