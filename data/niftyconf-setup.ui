@@ -422,7 +422,7 @@
     <property name="icon">icons/niftyconf.png</property>
     <property name="type_hint">dialog</property>
     <property name="filter">filefilter</property>
-    <signal name="file-activated" handler="on_setup_save_clicked" swapped="no"/>
+    <signal name="file-activated" handler="on_setup_save_save_clicked" swapped="no"/>
     <signal name="delete-event" handler="gtk_widget_hide_on_delete" swapped="no"/>
     <child internal-child="vbox">
       <object class="GtkBox" id="filechooserdialog-vbox3">
