@@ -59,6 +59,7 @@
 #include "ui/ui-info-hardware.h"
 #include "prefs/prefs.h"
 #include "renderer/renderer.h"
+#include "live-preview/live-preview.h"
 #include "config.h"
 
 
@@ -80,23 +81,32 @@ static NftResult _this_from_prefs(
         NftPrefsNode * node,
         void *userptr)
 {
-        gint x, y, width, height;
 
-        if(!nft_prefs_node_prop_int_get(node, "x", &x))
-                return NFT_FAILURE;
-        if(!nft_prefs_node_prop_int_get(node, "y", &y))
-                return NFT_FAILURE;
-        if(!nft_prefs_node_prop_int_get(node, "width", &width))
-                return NFT_FAILURE;
-        if(!nft_prefs_node_prop_int_get(node, "height", &height))
-                return NFT_FAILURE;
+        *newObj = NULL;
+
+
+        /* UI dimensions */
+        gint x = 0, y = 0, width = 0, height = 0;
+
+        nft_prefs_node_prop_int_get(node, "x", &x);
+        nft_prefs_node_prop_int_get(node, "y", &y);
+        nft_prefs_node_prop_int_get(node, "width", &width);
+        nft_prefs_node_prop_int_get(node, "height", &height);
 
         if(width > 0 && height > 0)
                 gtk_window_resize(GTK_WINDOW(UI("window")), width, height);
         if(x > 0 && y > 0)
                 gtk_window_move(GTK_WINDOW(UI("window")), x, y);
 
-        *newObj = NULL;
+
+        /* hardware live preview enabled? */
+        bool live_preview = false;
+        nft_prefs_node_prop_boolean_get(node, "live-preview", &live_preview);
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM
+                                       (UI("item_view_preview")),
+                                       live_preview);
+        live_preview_set_enabled(live_preview);
+
 
         return NFT_SUCCESS;
 }
@@ -121,6 +131,10 @@ static NftResult _this_to_prefs(
         if(!nft_prefs_node_prop_int_set(newNode, "width", width))
                 return NFT_FAILURE;
         if(!nft_prefs_node_prop_int_set(newNode, "height", height))
+                return NFT_FAILURE;
+
+        if(!nft_prefs_node_prop_boolean_set
+           (newNode, "live-preview", live_preview_get_enabled()))
                 return NFT_FAILURE;
 
         return NFT_SUCCESS;

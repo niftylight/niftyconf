@@ -846,5 +846,5 @@ void on_live_preview_toggled(
         GtkCheckMenuItem * item,
         gpointer user_data)
 {
-        live_preview_enable(gtk_check_menu_item_get_active(item));
+        live_preview_set_enabled(gtk_check_menu_item_get_active(item));
 }

@@ -58,6 +58,7 @@ void                            live_preview_highlight_hardware(NiftyconfHardwar
 void                            live_preview_highlight_tile(NiftyconfTile * t);
 void                            live_preview_highlight_led(NiftyconfLed * l);
 void                            live_preview_show();
-void                            live_preview_enable(bool enable);
+void                            live_preview_set_enabled(bool enable);
+bool                            live_preview_get_enabled();
 
 #endif /* _LIVE_PREVIEW_H */

@@ -88,10 +88,17 @@ static void _fill_tile(
 /******************************************************************************/
 
 /** globally enable/disable the live preview */
-void live_preview_enable(
+void live_preview_set_enabled(
         bool enable)
 {
         _enabled = enable;
+}
+
+
+bool live_preview_get_enabled(
+        )
+{
+        return _enabled;
 }
 
 
