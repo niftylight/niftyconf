@@ -44,7 +44,7 @@
 #include <stdint.h>
 #include <gtk/gtk.h>
 #include <niftyled.h>
-#include "ui-live-preview.h"
+#include "live-preview.h"
 
 
 
@@ -87,7 +87,7 @@ static void _fill_tile(
 /******************************************************************************/
 
 /** clear preview */
-void ui_live_preview_clear(
+void live_preview_clear(
         )
 {
         LedHardware *h;
@@ -107,7 +107,7 @@ void ui_live_preview_clear(
 }
 
 
-void ui_live_preview_highlight_chain(
+void live_preview_highlight_chain(
         NiftyconfChain * chain)
 {
         /* no chain? */
@@ -126,7 +126,7 @@ void ui_live_preview_highlight_chain(
 }
 
 
-void ui_live_preview_highlight_hardware(
+void live_preview_highlight_hardware(
         NiftyconfHardware * hardware)
 {
         if(!hardware)
@@ -135,13 +135,13 @@ void ui_live_preview_highlight_hardware(
         LedHardware *h = hardware_niftyled(hardware);
         LedChain *c = led_hardware_get_chain(h);
 
-        ui_live_preview_highlight_chain(led_chain_get_privdata(c));
+        live_preview_highlight_chain(led_chain_get_privdata(c));
 
         _refresh_mapping = false;
 }
 
 
-void ui_live_preview_highlight_tile(
+void live_preview_highlight_tile(
         NiftyconfTile * tile)
 {
         if(!tile)
@@ -157,7 +157,7 @@ void ui_live_preview_highlight_tile(
 }
 
 
-void ui_live_preview_highlight_led(
+void live_preview_highlight_led(
         NiftyconfLed * led)
 {
         if(!led)
@@ -177,7 +177,7 @@ void ui_live_preview_highlight_led(
 }
 
 
-void ui_live_preview_show(
+void live_preview_show(
         )
 {
         LedSetup *s = setup_get_current();

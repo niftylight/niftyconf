@@ -24,7 +24,6 @@ niftyconf_SOURCES = \
 	ui/ui-setup-props.c \
 	ui/ui-setup-tree.c \
 	ui/ui-setup-ledlist.c \
-	ui/ui-live-preview.c \
 	elements/element-led.c \
 	elements/element-chain.c \
 	elements/element-tile.c \
@@ -35,7 +34,8 @@ niftyconf_SOURCES = \
 	renderer/renderer-tile.c \
 	renderer/renderer-chain.c \
 	renderer/renderer-led.c \
-	prefs/prefs.c
+	prefs/prefs.c \
+	live-preview/live-preview.c
 
 
 

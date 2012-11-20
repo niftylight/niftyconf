@@ -46,7 +46,7 @@
 #include "elements/element-chain.h"
 #include "elements/element-setup.h"
 #include "ui/ui-log.h"
-#include "ui/ui-live-preview.h"
+#include "live-preview/live-preview.h"
 
 
 
@@ -117,7 +117,7 @@ void hardware_set_highlighted(
         /* highlight real hardware */
         if(is_highlighted)
         {
-                ui_live_preview_highlight_hardware(h);
+                live_preview_highlight_hardware(h);
         }
 }
 

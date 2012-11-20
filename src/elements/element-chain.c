@@ -45,7 +45,7 @@
 #include "ui/ui.h"
 #include "ui/ui-log.h"
 #include "ui/ui-setup-props.h"
-#include "ui/ui-live-preview.h"
+#include "live-preview/live-preview.h"
 #include "elements/element-led.h"
 #include "elements/element-chain.h"
 #include "elements/element-setup.h"
@@ -138,7 +138,7 @@ void chain_set_highlighted(
         /* highlight real chain */
         if(is_highlighted)
         {
-                ui_live_preview_highlight_chain(c);
+                live_preview_highlight_chain(c);
         }
 }
 

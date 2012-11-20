@@ -46,7 +46,7 @@
 #include "elements/element-setup.h"
 #include "renderer/renderer.h"
 #include "renderer/renderer-led.h"
-#include "ui/ui-live-preview.h"
+#include "live-preview/live-preview.h"
 
 
 /** one element */
@@ -134,7 +134,7 @@ void led_set_highlighted(
         /* highlight real hardware */
         if(is_highlighted)
         {
-                ui_live_preview_highlight_led(l);
+                live_preview_highlight_led(l);
         }
 }
 

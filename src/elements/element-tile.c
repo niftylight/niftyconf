@@ -47,7 +47,7 @@
 #include "elements/element-setup.h"
 #include "renderer/renderer.h"
 #include "renderer/renderer-tile.h"
-#include "ui/ui-live-preview.h"
+#include "live-preview/live-preview.h"
 
 
 
@@ -131,7 +131,7 @@ void tile_set_highlighted(
         /* highlight real tile */
         if(is_highlighted)
         {
-                ui_live_preview_highlight_tile(t);
+                live_preview_highlight_tile(t);
         }
 }
 

@@ -51,12 +51,11 @@
 #include "ui/ui-setup-tree.h"
 #include "ui/ui-setup-ledlist.h"
 #include "ui/ui-clipboard.h"
-#include "ui/ui-live-preview.h"
-#include "elements/element-setup.h"
-#include "elements/element-hardware.h"
 #include "ui/ui.h"
 #include "ui/ui-log.h"
-
+#include "elements/element-setup.h"
+#include "elements/element-hardware.h"
+#include "live-preview/live-preview.h"
 
 
 

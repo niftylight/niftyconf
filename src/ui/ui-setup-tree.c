@@ -53,7 +53,7 @@
 #include "ui/ui-info-hardware.h"
 #include "ui/ui-clipboard.h"
 #include "ui/ui-log.h"
-#include "ui/ui-live-preview.h"
+#include "live-preview/live-preview.h"
 #include "elements/element-setup.h"
 #include "renderer/renderer-setup.h"
 #include "renderer/renderer-tile.h"
@@ -1002,7 +1002,7 @@ G_MODULE_EXPORT void on_setup_treeview_cursor_changed(
         }
 
         /* clear live preview */
-        ui_live_preview_clear();
+        live_preview_clear();
 
         /* unhighlight all rows */
         ui_setup_tree_do_foreach_element(_foreach_unhighlight_element);
@@ -1015,7 +1015,7 @@ G_MODULE_EXPORT void on_setup_treeview_cursor_changed(
         ui_setup_tree_do_foreach_selected_element(_foreach_element_selected);
 
         /* update live preview */
-        ui_live_preview_show();
+        live_preview_show();
 
         /* redraw */
         renderer_all_queue_draw();

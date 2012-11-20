@@ -41,8 +41,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _UI_LIVE_PREVIEW_H
-#define _UI_LIVE_PREVIEW_H
+#ifndef _LIVE_PREVIEW_H
+#define _LIVE_PREVIEW_H
 
 
 #include "elements/element-setup.h"
@@ -52,12 +52,12 @@
 
 
 
-void                            ui_live_preview_clear();
-void                            ui_live_preview_highlight_chain(NiftyconfChain * chain);
-void                            ui_live_preview_highlight_hardware(NiftyconfHardware * h);
-void                            ui_live_preview_highlight_tile(NiftyconfTile * t);
-void                            ui_live_preview_highlight_led(NiftyconfLed * l);
-void                            ui_live_preview_show();
+void                            live_preview_clear();
+void                            live_preview_highlight_chain(NiftyconfChain * chain);
+void                            live_preview_highlight_hardware(NiftyconfHardware * h);
+void                            live_preview_highlight_tile(NiftyconfTile * t);
+void                            live_preview_highlight_led(NiftyconfLed * l);
+void                            live_preview_show();
 
 
-#endif /* _UI_LIVE_PREVIEW_H */
+#endif /* _LIVE_PREVIEW_H */
