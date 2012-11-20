@@ -79,11 +79,11 @@ typedef enum
 static GtkBuilder *_ui;
 
 /* type of currently selected element */
-static NIFTYLED_TYPE current_type;
+static NIFTYLED_TYPE _current_type;
 /* currently selected element */
-static NiftyconfHardware *current_hw;
-static NiftyconfTile *current_tile;
-static NiftyconfChain *current_chain;
+static NiftyconfHardware *_current_hw;
+static NiftyconfTile *_current_tile;
+static NiftyconfChain *_current_chain;
 
 
 
@@ -563,16 +563,16 @@ static void _foreach_set_current_element(
         {
                 case LED_HARDWARE_T:
                 {
-                        current_hw = (NiftyconfHardware *) e;
+                        _current_hw = (NiftyconfHardware *) e;
 
                         /* refresh info view */
-                        ui_info_hardware_set(current_hw);
+                        ui_info_hardware_set(_current_hw);
                         break;
                 }
 
                 case LED_TILE_T:
                 {
-                        current_tile = (NiftyconfTile *) e;
+                        _current_tile = (NiftyconfTile *) e;
                         break;
                         NIFTYLED_TYPE setup_tree_current_element_type(
                                 );
@@ -580,7 +580,7 @@ static void _foreach_set_current_element(
 
                 case LED_CHAIN_T:
                 {
-                        current_chain = (NiftyconfChain *) e;
+                        _current_chain = (NiftyconfChain *) e;
                         break;
                 }
 
@@ -590,7 +590,7 @@ static void _foreach_set_current_element(
                 }
         }
 
-        current_type = t;
+        _current_type = t;
 }
 
 
@@ -875,7 +875,7 @@ GtkTreeView *ui_setup_tree_view(
 NIFTYLED_TYPE ui_setup_tree_current_element_type(
         )
 {
-        return current_type;
+        return _current_type;
 }
 
 
@@ -1150,19 +1150,19 @@ G_MODULE_EXPORT gboolean on_popup_add_tile(
 
 
         /* different possible element types */
-        switch (current_type)
+        switch (_current_type)
         {
                         /* currently selected element is a hardware-node */
                 case LED_HARDWARE_T:
                 {
-                        tile_of_hardware_new(current_hw);
+                        tile_of_hardware_new(_current_hw);
                         break;
                 }
 
                         /* currently selected element is a tile-node */
                 case LED_TILE_T:
                 {
-                        tile_of_tile_new(current_tile);
+                        tile_of_tile_new(_current_tile);
                         break;
                 }
 
@@ -1415,7 +1415,7 @@ static void _tree_popup_menu(
 
 
         /* decide about type of currently selected element */
-        switch (current_type)
+        switch (_current_type)
         {
 
                 case LED_HARDWARE_T:
@@ -1452,10 +1452,10 @@ static void _tree_popup_menu(
                                                  (gboolean) !
                                                  led_tile_get_chain
                                                  (tile_niftyled
-                                                  (current_tile)));
+                                                  (_current_tile)));
 
                         /* tile has a chain, enable "remove" menu */
-                        LedTile *tile = tile_niftyled(current_tile);
+                        LedTile *tile = tile_niftyled(_current_tile);
                         gtk_widget_set_sensitive(remove_chain,
                                                  (gboolean)
                                                  led_tile_get_chain(tile));
