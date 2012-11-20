@@ -739,3 +739,31 @@ void ui_clipboard_deinit(
 /******************************************************************************
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
+
+
+/** menu-entry selected */
+G_MODULE_EXPORT void on_niftyconf_menu_cut_activate(
+        GtkWidget * i,
+        gpointer u)
+{
+        ui_clipboard_cut_current_selection();
+}
+
+
+/** menu-entry selected */
+G_MODULE_EXPORT void on_niftyconf_menu_copy_activate(
+        GtkWidget * i,
+        gpointer u)
+{
+        ui_clipboard_copy_current_selection();
+}
+
+
+/** menu-entry selected */
+G_MODULE_EXPORT void on_niftyconf_menu_paste_activate(
+        GtkWidget * i,
+        gpointer u)
+{
+        ui_clipboard_paste_current_selection();
+}
+

@@ -674,3 +674,176 @@ G_MODULE_EXPORT void on_setup_import_clicked(
 
         gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_import")));
 }
+
+
+/** menu-entry selected */
+G_MODULE_EXPORT void on_niftyconf_menu_add_hardware_activate(
+        GtkWidget * i,
+        gpointer u)
+{
+        /* rebuild plugin combobox */
+        // gtk_combo_box_
+        /* show "add hardware" dialog */
+        gtk_widget_set_visible(GTK_WIDGET(ui_setup("hardware_add_window")),
+                               TRUE);
+}
+
+/** menu-entry selected */
+G_MODULE_EXPORT void on_niftyconf_menu_add_tile_activate(
+        GtkWidget * i,
+        gpointer u)
+{
+        NIFTYLED_TYPE t;
+        gpointer e;
+        ui_setup_tree_get_last_selected_element(&t, &e);
+
+
+        /* different possible element types */
+        switch (t)
+        {
+                        /* currently selected element is a hardware-node */
+                case LED_HARDWARE_T:
+                {
+                        tile_of_hardware_new((NiftyconfHardware *) e);
+                        break;
+                }
+
+                        /* currently selected element is a tile-node */
+                case LED_TILE_T:
+                {
+                        tile_of_tile_new((NiftyconfTile *) e);
+                        break;
+                }
+
+                default:
+                {
+                        break;
+                }
+        }
+
+        /** @todo refresh our menu */
+
+        /* refresh tree */
+        ui_setup_tree_refresh();
+}
+
+
+/** menu-entry selected */
+G_MODULE_EXPORT void on_niftyconf_menu_add_chain_activate(
+        GtkWidget * i,
+        gpointer u)
+{
+        gtk_widget_set_visible(GTK_WIDGET(ui_setup("chain_add_window")),
+                               TRUE);
+}
+
+
+/** wrapper for do_* functions */
+static void _foreach_remove_hardware(
+        NIFTYLED_TYPE t,
+        gpointer e)
+{
+        if(t != LED_HARDWARE_T)
+                return;
+
+        hardware_destroy((NiftyconfHardware *) e);
+}
+
+
+/** menu-entry selected */
+G_MODULE_EXPORT void on_niftyconf_menu_remove_hardware_activate(
+        GtkWidget * i,
+        gpointer u)
+{
+        /* remove all currently selected elements */
+        ui_setup_tree_do_foreach_selected_element(_foreach_remove_hardware);
+
+        /* refresh tree */
+        ui_setup_tree_refresh();
+
+        /* hide properties */
+        ui_setup_props_hide();
+}
+
+
+/** wrapper for do_* functions */
+static void _foreach_remove_tile(
+        NIFTYLED_TYPE t,
+        gpointer e)
+{
+        if(t != LED_TILE_T)
+                return;
+
+        tile_destroy((NiftyconfTile *) e);
+}
+
+
+/** menu-entry selected */
+G_MODULE_EXPORT void on_niftyconf_menu_remove_tile_activate(
+        GtkWidget * i,
+        gpointer u)
+{
+        /* remove all currently selected elements */
+        ui_setup_tree_do_foreach_selected_element(_foreach_remove_tile);
+
+        /* refresh tree */
+        ui_setup_tree_refresh();
+
+        /* hide properties */
+        ui_setup_props_hide();
+}
+
+
+/** wrapper for do_* functions */
+static void _foreach_remove_chain(
+        NIFTYLED_TYPE type,
+        gpointer e)
+{
+        /* works only if tile-element is selected */
+        if(type != LED_TILE_T)
+                return;
+
+        chain_of_tile_destroy((NiftyconfTile *) e);
+}
+
+
+/** menu-entry selected */
+G_MODULE_EXPORT void on_niftyconf_menu_remove_chain_activate(
+        GtkWidget * i,
+        gpointer u)
+{
+        /* remove all currently selected elements */
+        ui_setup_tree_do_foreach_selected_element(_foreach_remove_chain);
+
+        /* refresh tree */
+        ui_setup_tree_refresh();
+
+        /* hide properties */
+        ui_setup_props_hide();
+}
+
+
+/** menu-entry selected */
+G_MODULE_EXPORT void on_niftyconf_menu_import_activate(
+        GtkWidget * i,
+        gpointer u)
+{
+        gtk_widget_show(GTK_WIDGET(ui_setup("filechooserdialog_import")));
+}
+
+
+/** menu-entry selected */
+G_MODULE_EXPORT void on_niftyconf_menu_export_activate(
+        GtkWidget * i,
+        gpointer u)
+{
+        gtk_widget_show(GTK_WIDGET(ui_setup("filechooserdialog_export")));
+}
+
+
+/** live preview toggled */
+void  on_live_preview_toggled(GtkCheckMenuItem *item,
+                              gpointer         user_data)
+{
+		live_preview_enable(gtk_check_menu_item_get_active(item));
+}

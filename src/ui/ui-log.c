@@ -320,6 +320,15 @@ void ui_log_deinit(
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
 
+/** menuitem "show log-window" toggled */
+G_MODULE_EXPORT void on_niftyconf_menu_log_window_activate(
+        GtkWidget * i,
+        gpointer u)
+{
+        ui_log_show(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(i)));
+}
+
+
 /** close main window */
 G_MODULE_EXPORT gboolean on_log_window_delete_event(
         GtkWidget * w,

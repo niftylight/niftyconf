@@ -915,6 +915,25 @@ void ui_setup_tree_deinit(
 /******************************************************************************
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
+
+/** menuitem "collapse all" activated */
+G_MODULE_EXPORT void on_niftyconf_menu_tree_collapse_activate(
+        GtkWidget * i,
+        gpointer u)
+{
+        gtk_tree_view_collapse_all(ui_setup_tree_view());
+}
+
+
+/** menuitem "expand all" activated */
+G_MODULE_EXPORT void on_niftyconf_menu_tree_expand_activate(
+        GtkWidget * i,
+        gpointer u)
+{
+        gtk_tree_view_expand_all(ui_setup_tree_view());
+}
+
+
 /** user collapsed tree row */
 G_MODULE_EXPORT void on_setup_treeview_collapsed(
         GtkTreeView * tv,
