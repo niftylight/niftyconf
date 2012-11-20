@@ -88,9 +88,10 @@ static void _fill_tile(
 /******************************************************************************/
 
 /** globally enable/disable the live preview */
-void live_preview_enable(bool enable)
+void live_preview_enable(
+        bool enable)
 {
-		_enabled = enable;
+        _enabled = enable;
 }
 
 
@@ -98,9 +99,9 @@ void live_preview_enable(bool enable)
 void live_preview_clear(
         )
 {
-		if(!_enabled)
-				return;
-		
+        if(!_enabled)
+                return;
+
         LedHardware *h;
         for(h = led_setup_get_hardware(setup_get_current());
             h; h = led_hardware_list_get_next(h))
@@ -121,9 +122,9 @@ void live_preview_clear(
 void live_preview_highlight_chain(
         NiftyconfChain * chain)
 {
-		if(!_enabled)
-				return;
-		
+        if(!_enabled)
+                return;
+
         /* no chain? */
         if(!chain)
                 NFT_LOG_NULL();
@@ -143,9 +144,9 @@ void live_preview_highlight_chain(
 void live_preview_highlight_hardware(
         NiftyconfHardware * hardware)
 {
-		if(!_enabled)
-				return;
-		
+        if(!_enabled)
+                return;
+
         if(!hardware)
                 NFT_LOG_NULL();
 
@@ -161,9 +162,9 @@ void live_preview_highlight_hardware(
 void live_preview_highlight_tile(
         NiftyconfTile * tile)
 {
-		if(!_enabled)
-				return;
-		
+        if(!_enabled)
+                return;
+
         if(!tile)
                 NFT_LOG_NULL();
 
@@ -180,9 +181,9 @@ void live_preview_highlight_tile(
 void live_preview_highlight_led(
         NiftyconfLed * led)
 {
-		if(!_enabled)
-				return;
-		
+        if(!_enabled)
+                return;
+
         if(!led)
                 NFT_LOG_NULL();
 
@@ -203,9 +204,9 @@ void live_preview_highlight_led(
 void live_preview_show(
         )
 {
-		if(!_enabled)
-				return;
-		
+        if(!_enabled)
+                return;
+
         LedSetup *s = setup_get_current();
         LedHardware *h = led_setup_get_hardware(s);
 

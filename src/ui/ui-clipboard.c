@@ -766,4 +766,3 @@ G_MODULE_EXPORT void on_niftyconf_menu_paste_activate(
 {
         ui_clipboard_paste_current_selection();
 }
-

@@ -42,7 +42,6 @@
  */
 
 #include <gtk/gtk.h>
-#include <gconf/gconf-client.h>
 #include <niftyled.h>
 #include "elements/element-hardware.h"
 #include "elements/element-tile.h"
@@ -66,7 +65,6 @@
 
 /** GtkBuilder for this module (check data/ directory) */
 static GtkBuilder *_ui;
-static GConfClient *_gconf;
 
 
 
@@ -229,11 +227,6 @@ int main(
         if(!_parse_cmdline_args(argc, argv, &setupfile))
                 return -1;
 
-        /* initialize GConf client */
-        _gconf = gconf_client_get_default();
-        gconf_client_add_dir(_gconf,
-                             "/apps/" PACKAGE_NAME "/ui",
-                             GCONF_CLIENT_PRELOAD_NONE, NULL);
 
         /* initialize modules */
         if(!prefs_init())
