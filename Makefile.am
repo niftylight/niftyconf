@@ -17,8 +17,8 @@ INDENT_H_ARGS=-pmt -bl -bls -cli8 -cbi0 -bli0 -cs -fca -i8 -sc -npsl -nut -npcs 
 .PHONY: indent
 indent:
 	@echo Indenting source-files...
-	find $(top_srcdir)/src -type f -and -name "*.[h]" -not -empty -print0 | xargs -0 $(top_srcdir)/missing --run indent $(INDENT_H_ARGS)
-	find $(top_srcdir)/src -type f -and -name "*.[c]" -not -empty -print0 | xargs -0 $(top_srcdir)/missing --run indent $(INDENT_C_ARGS)
+	find $(top_srcdir)/src -type f -and -name "*.h" -or -name "*.h.in" -not -empty -print0 | xargs -0 $(top_srcdir)/missing --run indent $(INDENT_H_ARGS)
+	find $(top_srcdir)/src -type f -and -name "*.c" -or -name "*.c.in" -not -empty -print0 | xargs -0 $(top_srcdir)/missing --run indent $(INDENT_C_ARGS)
 
 
 # create .deb package

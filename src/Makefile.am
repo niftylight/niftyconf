@@ -14,6 +14,7 @@ bin_PROGRAMS = \
 	niftyconf
 
 niftyconf_SOURCES = \
+	version.c \
 	niftyconf.c \
 	ui/ui.c \
 	ui/ui-about.c \

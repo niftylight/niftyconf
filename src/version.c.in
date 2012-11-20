@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -41,86 +41,43 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <gtk/gtk.h>
-#include "ui/ui.h"
+#include <stdio.h>
+#include <niftylog.h>
 #include "version.h"
+
+
+#if HAVE_CONFIG_H
 #include "config.h"
-
-
-/** GtkBuilder for this module */
-static GtkBuilder *_ui;
+#endif
 
 
 
 
-
-
-/******************************************************************************
- ****************************** STATIC FUNCTIONS ******************************
- ******************************************************************************/
-
-
-
-/******************************************************************************
- ******************************************************************************/
-
-
-
-/** show/hide window */
-void ui_about_set_visible(
-        gboolean visible)
-{
-        gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);
-        gtk_widget_show(GTK_WIDGET(UI("window")));
-}
-
-
-/** initialize setup tree module */
-gboolean ui_about_init(
+/** 
+ * return string holding GIT version. This is done to always reflect the correct
+ * version by supplying the current git version via the -D compiler option
+ */
+const char *version_git(
         )
 {
-        if(!(_ui = ui_builder("niftyconf-about.ui")))
-                return FALSE;
-
-        GtkAboutDialog *d;
-        d = GTK_ABOUT_DIALOG(UI("window"));
-        gtk_about_dialog_set_program_name(d, PACKAGE_NAME);
-        gtk_about_dialog_set_version(d, NIFTYCONF_LONG_VERSION);
-        gtk_about_dialog_set_website(d, PACKAGE_URL);
-        gtk_link_button_set_uri(GTK_LINK_BUTTON(UI("linkbutton_bugreport")),
-                                PACKAGE_BUGREPORT);
-        return TRUE;
+        return ("@PACKAGE_GIT_VERSION@");
 }
 
 
-/** deinitialize this module */
-void ui_about_deinit(
+/**
+ * return long version string
+ */
+const char *version_long(
         )
 {
-        g_object_unref(_ui);
+        static char tmp[128];
+
+        snprintf(tmp, sizeof(tmp), "v%s-%s", "@PACKAGE_VERSION@",
+                 NIFTYCONF_GIT_VERSION);
+
+        return tmp;
 }
 
-
-/******************************************************************************
- ***************************** CALLBACKS **************************************
- ******************************************************************************/
-
-/** hide dialog */
-void on_about_dialog_closed(
-        GtkDialog * arg0,
-        gpointer user_data)
-{
-
-        gtk_widget_set_visible(GTK_WIDGET(arg0), FALSE);
-}
-
-
-/** hide dialog */
-G_MODULE_EXPORT gboolean on_about_dialog_response(
-        GtkDialog * dialog,
-        gint response_id,
-        gpointer user_data)
-{
-        gtk_widget_set_visible(GTK_WIDGET(dialog), FALSE);
-        return TRUE;
-}
+/**
+ * @}
+ */

@@ -1,7 +1,7 @@
 /*
  * niftyconf - niftyled GUI
  * Copyright (C) 2011-2012 Daniel Hiepler <daniel@niftylight.de>
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -41,86 +41,32 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <gtk/gtk.h>
-#include "ui/ui.h"
-#include "version.h"
+
+#ifndef _NIFTYCONF_VERSION
+#define _NIFTYCONF_VERSION
+
+
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 
-/** GtkBuilder for this module */
-static GtkBuilder *_ui;
-
-
-
-
-
-
-/******************************************************************************
- ****************************** STATIC FUNCTIONS ******************************
- ******************************************************************************/
-
-
-
-/******************************************************************************
- ******************************************************************************/
+/** major version */
+#define NIFTYCONF_MAJOR_VERSION  (@PACKAGE_MAJOR_VERSION@)
+/** minor version */
+#define NIFTYCONF_MINOR_VERSION  (@PACKAGE_MINOR_VERSION@)
+/** micro version */
+#define NIFTYCONF_MICRO_VERSION  (@PACKAGE_MICRO_VERSION@)
+/** current git version hash - defined using -DPACKAGE_GIT_VERSION at compile */
+#define NIFTYCONF_GIT_VERSION    (version_git())
+/** nicely composed long version string */
+#define NIFTYCONF_LONG_VERSION   (version_long())
 
 
 
-/** show/hide window */
-void ui_about_set_visible(
-        gboolean visible)
-{
-        gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);
-        gtk_widget_show(GTK_WIDGET(UI("window")));
-}
+
+const char                     *version_git();
+const char                     *version_long();
 
 
-/** initialize setup tree module */
-gboolean ui_about_init(
-        )
-{
-        if(!(_ui = ui_builder("niftyconf-about.ui")))
-                return FALSE;
-
-        GtkAboutDialog *d;
-        d = GTK_ABOUT_DIALOG(UI("window"));
-        gtk_about_dialog_set_program_name(d, PACKAGE_NAME);
-        gtk_about_dialog_set_version(d, NIFTYCONF_LONG_VERSION);
-        gtk_about_dialog_set_website(d, PACKAGE_URL);
-        gtk_link_button_set_uri(GTK_LINK_BUTTON(UI("linkbutton_bugreport")),
-                                PACKAGE_BUGREPORT);
-        return TRUE;
-}
-
-
-/** deinitialize this module */
-void ui_about_deinit(
-        )
-{
-        g_object_unref(_ui);
-}
-
-
-/******************************************************************************
- ***************************** CALLBACKS **************************************
- ******************************************************************************/
-
-/** hide dialog */
-void on_about_dialog_closed(
-        GtkDialog * arg0,
-        gpointer user_data)
-{
-
-        gtk_widget_set_visible(GTK_WIDGET(arg0), FALSE);
-}
-
-
-/** hide dialog */
-G_MODULE_EXPORT gboolean on_about_dialog_response(
-        GtkDialog * dialog,
-        gint response_id,
-        gpointer user_data)
-{
-        gtk_widget_set_visible(GTK_WIDGET(dialog), FALSE);
-        return TRUE;
-}
+#endif /** _NIFTYCONF_VERSION */

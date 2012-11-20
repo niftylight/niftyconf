@@ -693,7 +693,7 @@ Public License instead of this License.  But first, please read
     <signal name="close" handler="on_about_dialog_closed" swapped="no"/>
     <signal name="response" handler="on_about_dialog_response" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="aboutdialog-vbox1">
+      <object class="GtkBox" id="aboutdialog-vbox1">
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
@@ -713,7 +713,6 @@ Public License instead of this License.  But first, please read
           <object class="GtkVBox" id="box1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
             <child>
               <object class="GtkHSeparator" id="separator3">
                 <property name="visible">True</property>
@@ -732,12 +731,13 @@ Public License instead of this License.  But first, please read
                 <child>
                   <object class="GtkLinkButton" id="linkbutton_doc">
                     <property name="label" translatable="yes">Documentation</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="has_tooltip">True</property>
-                    <property name="tooltip_markup" translatable="yes"> (click to report an issue)</property>
-                    <property name="tooltip_text" translatable="yes"> (click to report an issue)</property>
+                    <property name="tooltip_text" translatable="yes">Online documentation</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="relief">none</property>
                     <property name="uri">http://wiki.niftylight.de/Niftyconf/Documentation</property>
                   </object>
@@ -751,7 +751,6 @@ Public License instead of this License.  But first, please read
                   <object class="GtkVSeparator" id="separator1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -762,12 +761,13 @@ Public License instead of this License.  But first, please read
                 <child>
                   <object class="GtkLinkButton" id="linkbutton_source">
                     <property name="label" translatable="yes">Sourcecode</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="has_tooltip">True</property>
-                    <property name="tooltip_markup" translatable="yes"> (click to report an issue)</property>
-                    <property name="tooltip_text" translatable="yes"> (click to report an issue)</property>
+                    <property name="tooltip_text" translatable="yes">Browse sourcecode online</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="relief">none</property>
                     <property name="uri">http://github.com/niftylight/niftyconf.git</property>
                   </object>
@@ -781,7 +781,6 @@ Public License instead of this License.  But first, please read
                   <object class="GtkVSeparator" id="separator2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -792,11 +791,13 @@ Public License instead of this License.  But first, please read
                 <child>
                   <object class="GtkLinkButton" id="linkbutton_bugreport">
                     <property name="label" translatable="yes">Bugtracker</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="has_tooltip">True</property>
-                    <property name="tooltip_text" translatable="yes"> (click to report an issue)</property>
+                    <property name="tooltip_text" translatable="yes">Click to report an issue</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="relief">none</property>
                     <property name="uri">http://github.com/niftylight/niftyconf/issues</property>
                   </object>
