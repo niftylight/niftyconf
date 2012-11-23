@@ -99,6 +99,12 @@ static NftResult _this_from_prefs(
                 gtk_window_move(GTK_WINDOW(UI("window")), x, y);
 
 
+		/* log visible? */
+		bool log_visible = false;
+		nft_prefs_node_prop_boolean_get(node, "log-window-show", &log_visible);
+		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(UI("item_log_win")), log_visible);
+		ui_log_show(log_visible);
+		
         /* hardware live preview enabled? */
         bool live_preview = false;
         nft_prefs_node_prop_boolean_get(node, "live-preview", &live_preview);
@@ -133,6 +139,10 @@ static NftResult _this_to_prefs(
         if(!nft_prefs_node_prop_int_set(newNode, "height", height))
                 return NFT_FAILURE;
 
+		if(!nft_prefs_node_prop_boolean_set
+           (newNode, "log-window-show", ui_log_visible()))
+                return NFT_FAILURE;
+		
         if(!nft_prefs_node_prop_boolean_set
            (newNode, "live-preview", live_preview_get_enabled()))
                 return NFT_FAILURE;

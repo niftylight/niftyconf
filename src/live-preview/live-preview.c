@@ -205,6 +205,8 @@ void live_preview_highlight_led(
         /* if chain belongs to tile, refresh mapping */
         if(led_chain_get_parent_tile(c))
                 _refresh_mapping = true;
+
+		led_chain_print(c, L_INFO);
 }
 
 

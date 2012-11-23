@@ -49,6 +49,7 @@ gboolean                        ui_log_init();
 void                            ui_log_deinit();
 const char                     *ui_log_loglevels();
 void                            ui_log_show(gboolean visible);
+gboolean						ui_log_visible();
 void                            ui_log_alert_show(char *message, ...);
 gboolean                        ui_log_dialog_yesno(char *title, char *message, ...);
 

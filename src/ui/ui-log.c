@@ -205,6 +205,8 @@ gboolean ui_log_dialog_yesno(
 }
 
 
+
+
 /**
  * show alert/error message
  *
@@ -260,6 +262,16 @@ void ui_log_show(
 {
         gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);
 }
+
+
+/**
+ * return whether log window is visible or not
+ */
+gboolean ui_log_visible()
+{
+		return gtk_widget_get_visible(GTK_WIDGET(UI("window")));
+}
+
 
 /**
  * build a string with valid loglevels
