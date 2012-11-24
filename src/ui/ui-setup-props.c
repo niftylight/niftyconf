@@ -111,24 +111,52 @@ void ui_setup_props_hardware_show(
         if(h)
         {
                 LedHardware *hardware = hardware_niftyled(h);
+
+				/* name */
                 gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_name")),
                                    led_hardware_get_name(hardware));
+				/* plugin family */
                 gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_plugin")),
                                    led_hardware_plugin_get_family(hardware));
+				/* id */
                 gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_id")),
                                    led_hardware_get_id(hardware));
                 gtk_widget_set_tooltip_text(GTK_WIDGET(UI("entry_hw_id")),
                                             led_hardware_plugin_get_id_example
                                             (hardware));
+				/* stride */
                 gtk_spin_button_set_value(GTK_SPIN_BUTTON
                                           (UI("spinbutton_hw_stride")),
                                           (gdouble)
                                           led_hardware_get_stride(hardware));
-                /* set button to right toggled state */
+				
+                /* set button to correct toggled state */
                 gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON
                                              (UI("togglebutton_initialized")),
                                              led_hardware_is_initialized
                                              (hardware));
+
+				/* custom properties */
+				if(led_hardware_is_initialized(hardware))
+				{
+						/* clear property name combobox */
+						gtk_list_store_clear(GTK_LIST_STORE(
+							gtk_combo_box_get_model(GTK_COMBO_BOX(UI("combobox_hw_props")))));
+						
+						/* set property names to combobox */
+						LedPluginCustomProp *prop;
+						for(prop = led_hardware_plugin_prop_get_nth(hardware, 0);
+						    prop;
+						    prop = led_hardware_plugin_prop_get_next(prop))
+						{
+								gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(UI("combobox_hw_props")),
+															led_hardware_plugin_prop_get_name(prop));
+						}
+
+						gtk_combo_box_set_active(GTK_COMBO_BOX(UI("combobox_hw_props")), 0);
+						
+						/* refresh hardware property view */
+				}
         }
 
         gtk_widget_show(GTK_WIDGET(UI("frame_hardware")));

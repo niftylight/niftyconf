@@ -69,11 +69,11 @@ GtkBuilder *ui_builder(
         }
 
         /* try to load from datadir */
-        gchar *s = g_build_filename(DATADIR, PACKAGE_NAME, file, NULL);
+        gchar *s = g_build_filename("./data", file, NULL);
         if(gtk_builder_add_from_file(ui, s, NULL) == 0)
         {
                 /* try to load from source dir */
-                gchar *s2 = g_build_filename("./data", file, NULL);
+                gchar *s2 = g_build_filename(DATADIR, PACKAGE_NAME, file, NULL);
 
                 GError *error = NULL;
                 if(gtk_builder_add_from_file(ui, s2, &error) == 0)
