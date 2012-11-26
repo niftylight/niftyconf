@@ -60,6 +60,8 @@
 #include "renderer/renderer-chain.h"
 
 
+/** @todo improve design - i hate this */
+
 
 /* columns for our setup-treeview */
 typedef enum
@@ -1190,7 +1192,7 @@ G_MODULE_EXPORT gboolean on_popup_add_chain(
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
                 return FALSE;
 
-        /* show "add hardware" window */
+        /* show "add chain" window */
         gtk_widget_set_visible(GTK_WIDGET(ui_setup("chain_add_window")),
                                TRUE);
 

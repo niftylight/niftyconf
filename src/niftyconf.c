@@ -243,7 +243,7 @@ int main(
         NFT_LED_CHECK_VERSION;
 
         /* set default loglevel */
-        nft_log_level_set(L_INFO);
+        nft_log_level_set(L_NOTICE);
 
 
         /* parse commandline arguments */
