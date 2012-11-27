@@ -227,6 +227,9 @@ void live_preview_show(
                 _refresh_mapping = false;
         }
 
+		if(!led_hardware_list_refresh_gain(h))
+				return;
+		
         if(!led_hardware_list_send(h))
                 return;
 

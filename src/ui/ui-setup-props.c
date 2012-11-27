@@ -53,6 +53,7 @@
 #include "renderer/renderer-tile.h"
 #include "renderer/renderer-chain.h"
 #include "renderer/renderer-led.h"
+#include "live-preview/live-preview.h"
 
 
 
@@ -405,9 +406,13 @@ G_MODULE_EXPORT void on_spinbutton_led_gain_changed(
         else
                 _widget_set_error_background(GTK_WIDGET(s), FALSE);
 
+		/* reflect new gain on hardware */
+		live_preview_highlight_led(current_led);
+		live_preview_show();
+		
         /* redraw */
-        renderer_led_damage(current_led);
-        renderer_all_queue_draw();
+        //renderer_led_damage(current_led);
+        //renderer_all_queue_draw();
 }
 
 
