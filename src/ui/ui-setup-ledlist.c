@@ -72,7 +72,7 @@ static bool _clear_in_progress;
 
 
 
-void on_selection_changed(GtkTreeSelection *treeselection, gpointer u);
+static void on_selection_changed(GtkTreeSelection *treeselection, gpointer u);
 
 
 /******************************************************************************
@@ -276,13 +276,13 @@ static void _foreach_unhighlight(
 
 		
 /** selection changed */
-G_MODULE_EXPORT void on_selection_changed(GtkTreeSelection *selection,
+static void on_selection_changed(GtkTreeSelection *selection,
                                           gpointer          u)
 {
 		if(_clear_in_progress)
 				return;
 		
-			// GtkTreeModel *m = gtk_tree_view_get_model(tv);
+		// GtkTreeModel *m = gtk_tree_view_get_model(tv);
 
         /* unhighlight all elements */
         // GtkTreeIter i;

@@ -86,12 +86,16 @@ static NIFTYLED_TYPE _current_type;
 static NiftyconfHardware *_current_hw;
 static NiftyconfTile *_current_tile;
 static NiftyconfChain *_current_chain;
+/** narf! */
+static bool _clear_in_progress;
 
 
 
 /******************************************************************************
  ****************************** STATIC FUNCTIONS ******************************
  ******************************************************************************/
+
+static void on_selection_changed(GtkTreeSelection *selection, gpointer u);
 
 
 /** helper to append element to treeview */
@@ -838,7 +842,9 @@ void ui_setup_tree_clear(
         if(!GTK_TREE_STORE(UI("treestore")))
                 return;
 
+		_clear_in_progress = true;
         gtk_tree_store_clear(GTK_TREE_STORE(UI("treestore")));
+		_clear_in_progress = false;
 }
 
 
@@ -889,11 +895,12 @@ gboolean ui_setup_tree_init(
                 return FALSE;
 
         /* set selection mode for setup tree */
-        gtk_tree_selection_set_mode(gtk_tree_view_get_selection
-                                    (GTK_TREE_VIEW(UI("treeview"))),
-                                    GTK_SELECTION_MULTIPLE);
+		GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(UI("treeview")));
+        gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
 
-
+		/* connect signal handler */
+		g_signal_connect(selection, "changed", G_CALLBACK(on_selection_changed), NULL);
+		
         /* initialize setup treeview */
         GtkTreeViewColumn *col = GTK_TREE_VIEW_COLUMN(UI("column_element"));
         GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
@@ -1008,23 +1015,22 @@ G_MODULE_EXPORT void on_setup_treeview_expanded(
 }
 
 
-/** user selected another row */
-G_MODULE_EXPORT void on_setup_treeview_cursor_changed(
-        GtkTreeView * tv,
-        gpointer u)
+/** selection changed */
+static void on_selection_changed(GtkTreeSelection *selection, gpointer u)
 {
+		if(_clear_in_progress)
+				return;
 
-        /* nothing selected? */
-        GtkTreeSelection *s = gtk_tree_view_get_selection(tv);
-        if(gtk_tree_selection_count_selected_rows(s) <= 0)
+		/* clear live preview */
+        live_preview_clear();
+		
+		if(gtk_tree_selection_count_selected_rows(selection) <= 0)
         {
                 ui_setup_props_hide();
+				live_preview_show();
                 return;
         }
-
-        /* clear live preview */
-        live_preview_clear();
-
+		
         /* unhighlight all rows */
         ui_setup_tree_do_foreach_element(_foreach_unhighlight_element);
 
@@ -1041,8 +1047,6 @@ G_MODULE_EXPORT void on_setup_treeview_cursor_changed(
         /* redraw */
         renderer_all_queue_draw();
 }
-
-
 
 
 /** menu-entry selected */

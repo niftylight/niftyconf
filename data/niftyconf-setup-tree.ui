@@ -26,7 +26,6 @@
             <property name="hexpand">True</property>
             <property name="model">treestore</property>
             <property name="search_column">0</property>
-            <signal name="cursor-changed" handler="on_setup_treeview_cursor_changed" swapped="no"/>
             <signal name="button-press-event" handler="on_setup_treeview_button_pressed" swapped="no"/>
             <signal name="row-collapsed" handler="on_setup_treeview_collapsed" swapped="no"/>
             <signal name="row-expanded" handler="on_setup_treeview_expanded" swapped="no"/>
