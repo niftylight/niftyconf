@@ -275,19 +275,6 @@ static void _foreach_unhighlight(
 }
 
 		
-/**
- * user selected another row
- */
-G_MODULE_EXPORT void on_setup_ledlist_cursor_changed(
-        GtkTreeView * tv,
-        gpointer u)
-{
-
-		
-        
-}
-
-
 /** selection changed */
 G_MODULE_EXPORT void on_selection_changed(GtkTreeSelection *selection,
                                           gpointer          u)

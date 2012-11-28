@@ -16,7 +16,6 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="model">liststore</property>
-            <signal name="cursor-changed" handler="on_setup_ledlist_cursor_changed" swapped="no"/>
             <child>
               <object class="GtkTreeViewColumn" id="column_led">
                 <property name="title" translatable="yes">LEDs</property>
