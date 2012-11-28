@@ -388,26 +388,33 @@ G_MODULE_EXPORT void on_spinbutton_led_component_changed(
 }
 
 
+/** foreach helper to set gain */
+void _set_gain(NiftyconfLed * led, void *u)
+{		
+		/* get currently selected LED */
+        Led *l = led_niftyled(led);
+
+        /* value really changed? */
+  		LedGain *new_val = u;
+        if(led_get_gain(l) == *new_val)
+                return;
+
+        led_set_gain(l, *new_val);
+                
+		/* reflect new gain on hardware */
+		live_preview_highlight_led(led);
+}
+
+
 /** spinbutton value changed */
 G_MODULE_EXPORT void on_spinbutton_led_gain_changed(
         GtkSpinButton * s,
         gpointer u)
 {
-        /* get currently selected LED */
-        Led *l = led_niftyled(current_led);
-
-        /* value really changed? */
-        int new_val = gtk_spin_button_get_value_as_int(s);
-        if(led_get_gain(l) == new_val)
-                return;
-
-        if(!led_set_gain(l, new_val))
-                _widget_set_error_background(GTK_WIDGET(s), TRUE);
-        else
-                _widget_set_error_background(GTK_WIDGET(s), FALSE);
-
-		/* reflect new gain on hardware */
-		live_preview_highlight_led(current_led);
+		/* walk all currently selected LEDs */
+		LedGain gain = gtk_spin_button_get_value(s);
+		ui_setup_ledlist_do_foreach_selected_element(_set_gain, &gain);
+		
 		live_preview_show();
 		
         /* redraw */

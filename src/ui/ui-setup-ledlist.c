@@ -66,44 +66,18 @@ typedef enum
 
 /** GtkBuilder for this module */
 static GtkBuilder *_ui;
+/** narf! */
+static bool _clear_in_progress;
 
 
 
 
+void on_selection_changed(GtkTreeSelection *treeselection, gpointer u);
 
 
 /******************************************************************************
  ****************************** STATIC FUNCTIONS ******************************
  ******************************************************************************/
-
-/** function to process an element that is currently selected */
-static void _element_selected(
-        GtkTreeModel * m,
-        GtkTreePath * p,
-        GtkTreeIter * i,
-        gpointer data)
-{
-        /* get element represented by this row */
-        gpointer *element;
-        LedCount n;
-        gtk_tree_model_get(m, i, C_CHAIN_LED, &n, C_CHAIN_ELEMENT, &element,
-                           -1);
-        NiftyconfLed *l = (NiftyconfLed *) element;
-
-        led_set_highlighted(l, true);
-
-        ui_setup_props_hide();
-        ui_setup_props_led_show(l);
-        renderer_led_damage(l);
-}
-
-/** deselect all Leds */
-static void _foreach_unhighlight(
-        NiftyconfLed * led)
-{
-        led_set_highlighted(led, false);
-        renderer_led_damage(led);
-}
 
 
 /** build list of Leds */
@@ -144,7 +118,11 @@ GtkWidget *ui_setup_ledlist_get_widget(
 void ui_setup_ledlist_clear(
         )
 {
+		_clear_in_progress = true;
+		
         gtk_list_store_clear(GTK_LIST_STORE(UI("liststore")));
+		
+		_clear_in_progress = false;
 }
 
 
@@ -176,10 +154,13 @@ gboolean ui_setup_ledlist_init(
 
 
         /* set selection mode for tree */
-        gtk_tree_selection_set_mode(gtk_tree_view_get_selection
-                                    (GTK_TREE_VIEW(UI("treeview"))),
-                                    GTK_SELECTION_MULTIPLE);
+		GtkTreeSelection *selection = gtk_tree_view_get_selection
+                                    (GTK_TREE_VIEW(UI("treeview")));
+        gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
 
+		/* connect signal handler */
+		g_signal_connect(selection, "changed", G_CALLBACK(on_selection_changed), NULL);
+		
         /* initialize setup treeview */
         GtkTreeViewColumn *col = GTK_TREE_VIEW_COLUMN(UI("column_led"));
         GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
@@ -199,7 +180,7 @@ void ui_setup_ledlist_deinit(
 
 /** run function on every selected tree-element (multiple selections) */
 void ui_setup_ledlist_do_foreach_selected_element(
-        void (*func) (NiftyconfLed * led))
+        void (*func) (NiftyconfLed * led, void *u), void *u)
 {
         /* get current treeview selection */
         GtkTreeSelection *selection;
@@ -227,7 +208,7 @@ void ui_setup_ledlist_do_foreach_selected_element(
                                    C_CHAIN_ELEMENT, &current_led, -1);
 
                 /* run user function */
-                func(current_led);
+                func(current_led, u);
         }
 
         /* free list */
@@ -246,7 +227,8 @@ void ui_setup_ledlist_do_foreach_element(
         GtkTreeModel *m =
                 gtk_tree_view_get_model(GTK_TREE_VIEW(UI("treeview")));
         GtkTreeIter iter;
-        gtk_tree_model_iter_nth_child(m, &iter, NULL, 0);
+        if(!gtk_tree_model_iter_nth_child(m, &iter, NULL, 0))
+				return;
 
         do
         {
@@ -265,6 +247,34 @@ void ui_setup_ledlist_do_foreach_element(
  ***************************** CALLBACKS ************************************
  ******************************************************************************/
 
+/** function to process an element that is currently selected */
+static void _element_selected(
+        GtkTreeModel * m,
+        GtkTreePath * p,
+        GtkTreeIter * i,
+        gpointer data)
+{
+        /* get element represented by this row */
+        gpointer *element;
+        LedCount n;
+        gtk_tree_model_get(m, i, C_CHAIN_LED, &n, C_CHAIN_ELEMENT, &element,
+                           -1);
+        NiftyconfLed *l = (NiftyconfLed *) element;
+
+        led_set_highlighted(l, true);
+        renderer_led_damage(l);
+}
+
+
+/** deselect all Leds */
+static void _foreach_unhighlight(
+        NiftyconfLed * led)
+{
+        led_set_highlighted(led, false);
+        renderer_led_damage(led);
+}
+
+		
 /**
  * user selected another row
  */
@@ -272,7 +282,20 @@ G_MODULE_EXPORT void on_setup_ledlist_cursor_changed(
         GtkTreeView * tv,
         gpointer u)
 {
-        // GtkTreeModel *m = gtk_tree_view_get_model(tv);
+
+		
+        
+}
+
+
+/** selection changed */
+G_MODULE_EXPORT void on_selection_changed(GtkTreeSelection *selection,
+                                          gpointer          u)
+{
+		if(_clear_in_progress)
+				return;
+		
+			// GtkTreeModel *m = gtk_tree_view_get_model(tv);
 
         /* unhighlight all elements */
         // GtkTreeIter i;
@@ -283,18 +306,32 @@ G_MODULE_EXPORT void on_setup_ledlist_cursor_changed(
         live_preview_clear();
         ui_setup_ledlist_do_foreach_element(_foreach_unhighlight);
 
-        /* get current selection */
-        GtkTreeSelection *s;
-        if(!(s = gtk_tree_view_get_selection(tv)))
-        {
-                return;
-        }
-
         /* process all selected elements */
-        gtk_tree_selection_selected_foreach(s, _element_selected, NULL);
+        gtk_tree_selection_selected_foreach(selection, _element_selected, NULL);
 
+        /* get last selected element */
+        GList *selected;
+        GtkTreeModel *m;
+        if(!(selected = gtk_tree_selection_get_selected_rows(selection, &m)))
+                return;
+
+        GtkTreePath *path = (GtkTreePath *) g_list_last(selected)->data;
+        GtkTreeIter iter;
+        gtk_tree_model_get_iter(m, &iter, path);
+
+        /* get this element */
+        LedCount i;
+        gpointer *p;
+        gtk_tree_model_get(m, &iter, C_CHAIN_LED, &i, C_CHAIN_ELEMENT, &p, -1);
+
+		/* show property dialog for this led */
+		ui_setup_props_hide();
+        ui_setup_props_led_show((NiftyconfLed *) p);
+
+		/* refresh live hardware preview */
         live_preview_show();
 
         /* redraw */
-        renderer_all_queue_draw();
+        renderer_all_queue_draw();	
 }
+

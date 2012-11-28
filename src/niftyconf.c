@@ -118,7 +118,7 @@ static NftResult _this_from_prefs(
 }
 
 
-/** save configuration to preferences */
+/** save configuration to preferences - @todo give each module a prefs context */
 static NftResult _this_to_prefs(
         NftPrefs * prefs,
         NftPrefsNode * newNode,

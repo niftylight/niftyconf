@@ -59,7 +59,7 @@ void                            ui_setup_ledlist_refresh(NiftyconfChain * c);
 void                            ui_setup_ledlist_clear();
 
 /* model functions */
-void                            ui_setup_ledlist_do_foreach_selected_element(void (*func) (NiftyconfLed * led));
+void                            ui_setup_ledlist_do_foreach_selected_element(void (*func) (NiftyconfLed * led, void *u), void *u);
 
 
 #endif /* _UI_SETUP_LEDLIST_H */
