@@ -47,6 +47,7 @@
 #include "niftyconf.h"
 #include "ui/ui.h"
 #include "ui/ui-log.h"
+#include "prefs/prefs.h"
 
 
 
@@ -61,6 +62,77 @@ static GtkBuilder *_ui;
 /******************************************************************************
  ****************************** STATIC FUNCTIONS ******************************
  ******************************************************************************/
+
+/** configure from preferences */
+static NftResult _this_from_prefs(
+        NftPrefs * prefs,
+        void **newObj,
+        NftPrefsNode * node,
+        void *userptr)
+{
+		/* window geometry */
+		gint x = 0, y = 0, width = 0, height = 0;
+        nft_prefs_node_prop_int_get(node, "x", &x);
+        nft_prefs_node_prop_int_get(node, "y", &y);
+        nft_prefs_node_prop_int_get(node, "width", &width);
+        nft_prefs_node_prop_int_get(node, "height", &height);
+
+        if(width > 0 && height > 0)
+                gtk_window_resize(GTK_WINDOW(UI("window")), width, height);
+        if(x > 0 && y > 0)
+                gtk_window_move(GTK_WINDOW(UI("window")), x, y);
+		
+		/* log visible? */
+		bool log_visible = false;
+		nft_prefs_node_prop_boolean_get(node, "log-window-show", &log_visible);
+		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(niftyconf_ui("item_log_win")), log_visible);
+		ui_log_show(log_visible);
+
+		/* log level */
+		char *loglevel;
+		if((loglevel = nft_prefs_node_prop_string_get(node, "loglevel")))
+		{
+				nft_log_level_set(nft_log_level_from_string(loglevel));
+				nft_prefs_free(loglevel);
+		}
+		
+		return NFT_SUCCESS;
+}
+
+
+/** save configuration to preferences */
+static NftResult _this_to_prefs(
+        NftPrefs * prefs,
+        NftPrefsNode * newNode,
+        void *obj,
+        void *userptr)
+{
+		/* window geometry */
+        gint x, y, width, height;
+        gtk_window_get_size(GTK_WINDOW(UI("window")), &width, &height);
+        gtk_window_get_position(GTK_WINDOW(UI("window")), &x, &y);
+
+
+        if(!nft_prefs_node_prop_int_set(newNode, "x", x))
+                return NFT_FAILURE;
+        if(!nft_prefs_node_prop_int_set(newNode, "y", y))
+                return NFT_FAILURE;
+        if(!nft_prefs_node_prop_int_set(newNode, "width", width))
+                return NFT_FAILURE;
+        if(!nft_prefs_node_prop_int_set(newNode, "height", height))
+                return NFT_FAILURE;
+
+		/* visible? */
+		if(!nft_prefs_node_prop_boolean_set
+           (newNode, "log-window-show", ui_log_visible()))
+                return NFT_FAILURE;
+
+		/* loglevel */
+		if(!nft_prefs_node_prop_string_set(newNode, "loglevel", (char *) nft_log_level_to_string(nft_log_level_get())))
+				return NFT_FAILURE;
+		
+		return NFT_SUCCESS;
+}
 
 
 static void _logger(
@@ -317,6 +389,11 @@ gboolean ui_log_init(
         /* register our custom logger function */
         nft_log_func_register(_logger, UI("textview"));
 
+		/* register prefs class for this module */
+        if(!nft_prefs_class_register
+           (prefs(), "ui-log", _this_from_prefs, _this_to_prefs))
+                g_error("Failed to register prefs class for \"ui-log\"");
+		
         return TRUE;
 }
 
@@ -325,6 +402,9 @@ gboolean ui_log_init(
 void ui_log_deinit(
         )
 {
+		/* unregister prefs class */
+        nft_prefs_class_unregister(prefs(), "ui-log");
+		
         g_object_unref(_ui);
 }
 

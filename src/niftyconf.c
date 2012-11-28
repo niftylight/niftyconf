@@ -84,7 +84,16 @@ static NftResult _this_from_prefs(
 
         *newObj = NULL;
 
+		/* process child nodes */
+		NftPrefsNode *child;
+		for(child = nft_prefs_node_get_first_child(node);
+		    child;
+		    child = nft_prefs_node_get_next(child))
+		{
+				nft_prefs_obj_from_node(prefs, child, NULL);
+		}
 
+		
         /* UI dimensions */
         gint x = 0, y = 0, width = 0, height = 0;
 
@@ -99,32 +108,23 @@ static NftResult _this_from_prefs(
                 gtk_window_move(GTK_WINDOW(UI("window")), x, y);
 
 
-		/* log visible? */
-		bool log_visible = false;
-		nft_prefs_node_prop_boolean_get(node, "log-window-show", &log_visible);
-		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(UI("item_log_win")), log_visible);
-		ui_log_show(log_visible);
-		
-        /* hardware live preview enabled? */
-        bool live_preview = false;
-        nft_prefs_node_prop_boolean_get(node, "live-preview", &live_preview);
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM
-                                       (UI("item_view_preview")),
-                                       live_preview);
-        live_preview_set_enabled(live_preview);
-
-
         return NFT_SUCCESS;
 }
 
 
-/** save configuration to preferences - @todo give each module a prefs context */
+/** save configuration to preferences */
 static NftResult _this_to_prefs(
         NftPrefs * prefs,
         NftPrefsNode * newNode,
         void *obj,
         void *userptr)
 {
+
+		/* submodules */
+		nft_prefs_node_add_child(newNode, nft_prefs_obj_to_node(prefs, "ui-log", NULL, NULL));
+		nft_prefs_node_add_child(newNode, nft_prefs_obj_to_node(prefs, "live-preview", NULL, NULL));
+
+		/* main window geometry */
         gint x, y, width, height;
         gtk_window_get_size(GTK_WINDOW(UI("window")), &width, &height);
         gtk_window_get_position(GTK_WINDOW(UI("window")), &x, &y);
@@ -138,14 +138,7 @@ static NftResult _this_to_prefs(
                 return NFT_FAILURE;
         if(!nft_prefs_node_prop_int_set(newNode, "height", height))
                 return NFT_FAILURE;
-
-		if(!nft_prefs_node_prop_boolean_set
-           (newNode, "log-window-show", ui_log_visible()))
-                return NFT_FAILURE;
 		
-        if(!nft_prefs_node_prop_boolean_set
-           (newNode, "live-preview", live_preview_get_enabled()))
-                return NFT_FAILURE;
 
         return NFT_SUCCESS;
 }
@@ -269,6 +262,8 @@ int main(
                 g_error("Failed to initialize \"hardware\" module");
         if(!setup_init())
                 g_error("Failed to initialize \"setup\" module");
+		if(!live_preview_init())
+				g_error("Failed to initialize \"live-preview\" module");
         if(!ui_info_hardware_init())
                 g_error("Failed to initialize \"info-hardware\" module");
         if(!ui_setup_init())
@@ -321,6 +316,7 @@ int main(
         ui_clipboard_deinit();
         ui_setup_deinit();
         ui_info_hardware_deinit();
+		live_preview_deinit();
         setup_deinit();
         hardware_deinit();
         tile_deinit();

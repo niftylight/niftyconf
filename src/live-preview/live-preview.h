@@ -52,6 +52,8 @@
 
 
 
+NftResult 						live_preview_init();
+void							live_preview_deinit();
 void                            live_preview_clear();
 void                            live_preview_highlight_chain(NiftyconfChain * chain);
 void                            live_preview_highlight_hardware(NiftyconfHardware * h);

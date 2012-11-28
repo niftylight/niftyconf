@@ -44,6 +44,8 @@
 #include <stdint.h>
 #include <gtk/gtk.h>
 #include <niftyled.h>
+#include "prefs/prefs.h"
+#include "niftyconf.h"
 #include "live-preview.h"
 
 
@@ -54,6 +56,38 @@ static bool _enabled;
 
 
 
+
+/** configure from preferences */
+static NftResult _this_from_prefs(
+        NftPrefs * prefs,
+        void **newObj,
+        NftPrefsNode * node,
+        void *userptr)
+{
+        /* hardware live preview enabled? */
+        bool live_preview = false;
+        nft_prefs_node_prop_boolean_get(node, "active", &live_preview);
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM
+                                       (niftyconf_ui("item_view_preview")),
+                                       live_preview);
+        _enabled = live_preview;
+
+		return NFT_SUCCESS;
+}
+
+
+/** save configuration to preferences */
+static NftResult _this_to_prefs(
+        NftPrefs * prefs,
+        NftPrefsNode * newNode,
+        void *obj,
+        void *userptr)
+{
+		if(!nft_prefs_node_prop_boolean_set(newNode, "active", _enabled))
+                return NFT_FAILURE;
+
+		return NFT_SUCCESS;
+}
 
 
 static void _fill_chain(
@@ -86,6 +120,24 @@ static void _fill_tile(
 }
 
 /******************************************************************************/
+
+/** initialize this module */
+NftResult live_preview_init()
+{
+		/* register prefs class for this module */
+        if(!nft_prefs_class_register
+           (prefs(), "live-preview", _this_from_prefs, _this_to_prefs))
+                g_error("Failed to register prefs class for \"live-preview\"");
+
+		return NFT_SUCCESS;
+}
+
+/** deinitialize this module */
+void live_preview_deinit()
+{
+		/* unregister prefs class */
+        nft_prefs_class_unregister(prefs(), "live-preview");
+}
 
 /** globally enable/disable the live preview */
 void live_preview_set_enabled(
