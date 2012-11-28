@@ -855,9 +855,13 @@ void ui_setup_tree_refresh(
         /* clear tree */
         ui_setup_tree_clear();
 
+		_clear_in_progress = true;
+		
         /* rebuild tree */
         _tree_build();
 
+		_clear_in_progress = false;
+		
         /* redraw */
         renderer_all_queue_draw();
 }
