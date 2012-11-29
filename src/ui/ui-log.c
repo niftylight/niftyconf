@@ -83,10 +83,10 @@ static NftResult _this_from_prefs(
                 gtk_window_move(GTK_WINDOW(UI("window")), x, y);
 		
 		/* log visible? */
-		bool log_visible = false;
-		nft_prefs_node_prop_boolean_get(node, "log-window-show", &log_visible);
-		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(niftyconf_ui("item_log_win")), log_visible);
-		ui_log_show(log_visible);
+		bool boolean = false;
+		nft_prefs_node_prop_boolean_get(node, "window-visible", &boolean);
+		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(niftyconf_ui("item_log_win")), boolean);
+		ui_log_show(boolean);
 
 		/* log level */
 		char *loglevel;
@@ -95,6 +95,14 @@ static NftResult _this_from_prefs(
 				nft_log_level_set(nft_log_level_from_string(loglevel));
 				nft_prefs_free(loglevel);
 		}
+
+		/* log flags */
+		nft_prefs_node_prop_boolean_get(node, "show-file", &boolean);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(UI("checkbutton_file")), boolean);
+		nft_prefs_node_prop_boolean_get(node, "show-line", &boolean);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(UI("checkbutton_line")), boolean);
+		nft_prefs_node_prop_boolean_get(node, "show-function", &boolean);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(UI("checkbutton_function")), boolean);
 		
 		return NFT_SUCCESS;
 }
@@ -124,12 +132,21 @@ static NftResult _this_to_prefs(
 
 		/* visible? */
 		if(!nft_prefs_node_prop_boolean_set
-           (newNode, "log-window-show", ui_log_visible()))
+           (newNode, "window-visible", ui_log_visible()))
                 return NFT_FAILURE;
 
 		/* loglevel */
 		if(!nft_prefs_node_prop_string_set(newNode, "loglevel", (char *) nft_log_level_to_string(nft_log_level_get())))
 				return NFT_FAILURE;
+
+		/* logging flags */
+		if(!nft_prefs_node_prop_boolean_set(newNode, "show-file", gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(UI("checkbutton_file")))))
+                return NFT_FAILURE;
+		if(!nft_prefs_node_prop_boolean_set(newNode, "show-line", gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(UI("checkbutton_line")))))
+                return NFT_FAILURE;
+		if(!nft_prefs_node_prop_boolean_set(newNode, "show-function", gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(UI("checkbutton_function")))))
+                return NFT_FAILURE;
+		
 		
 		return NFT_SUCCESS;
 }

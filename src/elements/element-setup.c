@@ -224,6 +224,8 @@ gboolean setup_init(
         if(!(_prefs = led_prefs_init()))
                 return false;
 
+		setup_set_current_filename("Unnamed.xml");
+		
         return true;
 }
 

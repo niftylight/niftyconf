@@ -323,6 +323,7 @@ G_MODULE_EXPORT void on_setup_menuitem_new_activate(
 
         /* save new settings */
         setup_register_to_gui(s);
+		setup_set_current_filename("Unnamed.xml");
         ui_setup_tree_clear();
 }
 

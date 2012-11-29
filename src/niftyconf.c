@@ -108,6 +108,14 @@ static NftResult _this_from_prefs(
                 gtk_window_move(GTK_WINDOW(UI("window")), x, y);
 
 
+		/* restore last project? */
+		char *filename;
+		if((filename = nft_prefs_node_prop_string_get(node, "last-project")))
+		{
+				ui_setup_load(filename);
+				nft_prefs_free(filename);
+		}
+
         return NFT_SUCCESS;
 }
 
@@ -139,7 +147,16 @@ static NftResult _this_to_prefs(
         if(!nft_prefs_node_prop_int_set(newNode, "height", height))
                 return NFT_FAILURE;
 		
+		/* save current project */
+		if(!nft_prefs_node_prop_string_set(
+						newNode, 
+		                "last-project", 
+		                setup_get_current_filename() ? 
+		                		(char *) setup_get_current_filename() : 
+				                ""))
+				return NFT_FAILURE;
 
+		
         return NFT_SUCCESS;
 }
 
