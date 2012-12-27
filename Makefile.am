@@ -4,6 +4,7 @@
 
 
 SUBDIRS = data src
+EXTRA_DIST = debian
 
 
 # indent source & header-files
@@ -22,6 +23,7 @@ indent:
 
 
 # create .deb package
+# needs dpkg-dev, debhelper
 DEBTMPDIR=deb-tmp
 DEBSRCDIR=$(DEBTMPDIR)/$(PACKAGE_NAME)-$(VERSION)
 deb: dist-gzip
