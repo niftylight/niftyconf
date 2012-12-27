@@ -7,6 +7,8 @@ EXTRA_DIST = \
 	elements \
 	renderer \
 	ui \
+	prefs \
+	live-preview \
 	niftyconf.h
 
 
