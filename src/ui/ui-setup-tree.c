@@ -411,13 +411,8 @@ static void _foreach_element_selected(
                                                  led_tile_get_chain
                                                  (tile_niftyled
                                                   ((NiftyconfTile *) e)));
-                        gtk_widget_set_sensitive(GTK_WIDGET
-                                                 (niftyconf_ui
-                                                  ("item_chain_remove")),
-                                                 (gboolean)
-                                                 led_tile_get_chain
-                                                 (tile_niftyled
-                                                  ((NiftyconfTile *) e)));
+                        gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_chain_remove")), 
+                                                  (led_tile_get_chain(tile_niftyled((NiftyconfTile *) e)) != NULL));
 
                         /* highlight tile */
                         tile_set_highlighted((NiftyconfTile *) e, TRUE);
@@ -1467,8 +1462,7 @@ static void _tree_popup_menu(
                         /* tile has a chain, enable "remove" menu */
                         LedTile *tile = tile_niftyled(_current_tile);
                         gtk_widget_set_sensitive(remove_chain,
-                                                 (gboolean)
-                                                 led_tile_get_chain(tile));
+                                                 led_tile_get_chain(tile) != NULL);
 
                         break;
                 }
