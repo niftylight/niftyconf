@@ -174,7 +174,6 @@ void _set_component(NiftyconfLed * led, void *u)
                 return;
 
         led_set_component(l, *new_val);
-
 		renderer_led_damage(led);
 }
 
@@ -858,7 +857,7 @@ void ui_setup_props_led_show(
 
 #define SPIN_SET(a,b,c) \
 	g_signal_handlers_block_by_func(GTK_SPIN_BUTTON(UI(a)), c, NULL); \
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI("spinbutton_led_x")), (gdouble) led_get_x(led)); \
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(UI(a)), b); \
 	g_signal_handlers_unblock_by_func(GTK_SPIN_BUTTON(UI(a)), c, NULL);
 		
         if(l)
