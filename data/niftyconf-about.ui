@@ -2,6 +2,7 @@
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkAboutDialog" id="window">
+    <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">About...</property>
@@ -10,6 +11,14 @@
     <property name="program_name">niftyconf</property>
     <property name="version">unknown version</property>
     <property name="copyright" translatable="yes">Copyright (C) 2011-2012 Daniel Hiepler</property>
+    <property name="comments" translatable="yes">niftyled setup configuration utility
+
+
+BETA release!
+(Expect bugs and missing featues.
+Please use the issue tracker to report bugs or request features.
+Please contribute.)
+</property>
     <property name="website">http://wiki.niftylight.de/niftyconf</property>
     <property name="website_label" translatable="yes">Project page</property>
     <property name="license" translatable="yes">GNU GENERAL PUBLIC LICENSE
@@ -790,7 +799,7 @@ Public License instead of this License.  But first, please read
                 </child>
                 <child>
                   <object class="GtkLinkButton" id="linkbutton_bugreport">
-                    <property name="label" translatable="yes">Bugtracker</property>
+                    <property name="label" translatable="yes">Issue tracker</property>
                     <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
