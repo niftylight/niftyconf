@@ -150,6 +150,7 @@ AC_CONFIG_FILES([
    src/Makefile
    src/version.c
    src/version.h
+   gentoo/media-gfx/niftyconf/niftyconf-9999.ebuild
    debian/control.tmpl
 ])
 AC_OUTPUT

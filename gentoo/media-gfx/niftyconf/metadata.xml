@@ -6,7 +6,7 @@
   <email>daniel-gentoo@niftylight.de</email>
 </maintainer>
 <use>
-  <flag name='debug'>Compile for debugging (additionaly modify CFLAGS and FEATURES)</flag>
+  <flag name='debug'>Compile for debugging (don't forget to modify CFLAGS and FEATURES)</flag>
 </use>
 <bugs-to>http://github.com/niftylight/niftyconf/issues</bugs-to>
 </pkgmetadata>
