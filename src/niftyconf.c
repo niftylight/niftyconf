@@ -84,6 +84,7 @@ static NftResult _this_from_prefs(
 
         *newObj = NULL;
 
+		
 		/* process child nodes */
 		NftPrefsNode *child;
 		for(child = nft_prefs_node_get_first_child(node);
@@ -93,6 +94,15 @@ static NftResult _this_from_prefs(
 				nft_prefs_obj_from_node(prefs, child, NULL);
 		}
 
+		/* first launch ? */
+		bool launched_before = false;
+		nft_prefs_node_prop_boolean_get(node, "launched_before", &launched_before);
+
+		/* show about dialog if we never launched before */
+		if(!launched_before)
+		{
+				ui_about_set_visible(true);
+		}
 		
         /* UI dimensions */
         gint x = 0, y = 0, width = 0, height = 0;
@@ -132,6 +142,9 @@ static NftResult _this_to_prefs(
 		nft_prefs_node_add_child(newNode, nft_prefs_obj_to_node(prefs, "ui-log", NULL, NULL));
 		nft_prefs_node_add_child(newNode, nft_prefs_obj_to_node(prefs, "live-preview", NULL, NULL));
 
+		/* mark that we were launched before */
+		nft_prefs_node_prop_boolean_set(newNode, "launched_before", true);
+		
 		/* main window geometry */
         gint x, y, width, height;
         gtk_window_get_size(GTK_WINDOW(UI("window")), &width, &height);
