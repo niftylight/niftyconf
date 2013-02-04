@@ -1,5 +1,6 @@
 # Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Header: $
 
 EAPI=4
 
@@ -25,9 +26,6 @@ RDEPEND="media-gfx/niftyled
 DEPEND="${RDEPEND}
 	virtual/pkgconfig"
 
-
-
-
 src_prepare()
 {
 	eautoreconf
@@ -38,14 +36,14 @@ src_unpack()
 	git-2_src_unpack
 }
 
-src_configure() 
+src_configure()
 {
 	econf \
                 $(use_enable debug)
 }
 
 src_install() {
-    emake DESTDIR="${D}" install || die
+	emake DESTDIR="${D}" install || die
 
-    dodoc NEWS README COPYING AUTHORS ChangeLog
+	dodoc NEWS README AUTHORS ChangeLog
 }
