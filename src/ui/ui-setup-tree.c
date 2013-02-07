@@ -575,8 +575,6 @@ static void _foreach_set_current_element(
                 {
                         _current_tile = (NiftyconfTile *) e;
                         break;
-                        NIFTYLED_TYPE setup_tree_current_element_type(
-                                );
                 }
 
                 case LED_CHAIN_T:
