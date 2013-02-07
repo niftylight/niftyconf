@@ -120,8 +120,7 @@ gboolean ui_setup_save(
 
         /* create prefs-node from current setup */
         LedPrefsNode *n;
-        if(!(n = led_prefs_setup_to_node(setup_get_prefs(),
-                                         setup_get_current())))
+        if(!(n = led_prefs_setup_to_node(setup_get_prefs(), s)))
         {
                 ui_log_alert_show
                         ("Failed to create preferences from current setup.");
@@ -435,8 +434,7 @@ G_MODULE_EXPORT void on_add_hardware_add_clicked(
         gpointer u)
 {
         /* add new hardware */
-        NiftyconfHardware *h;
-        if(!(h = hardware_new(gtk_entry_get_text
+        if(!hardware_new(gtk_entry_get_text
                               (GTK_ENTRY(UI("hardware_add_name_entry"))),
                               gtk_combo_box_get_active_text(GTK_COMBO_BOX
                                                             (UI
@@ -449,7 +447,7 @@ G_MODULE_EXPORT void on_add_hardware_add_clicked(
                                                                 ("hardware_add_ledcount_spinbutton"))),
                               gtk_combo_box_get_active_text(GTK_COMBO_BOX
                                                             (UI
-                                                             ("hardware_add_pixelformat_comboboxtext"))))))
+                                                             ("hardware_add_pixelformat_comboboxtext")))))
                 return;
 
         /* hide window */
