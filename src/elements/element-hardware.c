@@ -98,7 +98,7 @@ gboolean hardware_get_highlighted(
         NiftyconfHardware * h)
 {
         if(!h)
-                NFT_LOG_NULL(FALSE);
+                NFT_LOG_NULL(false);
 
         return h->highlight;
 }
@@ -130,7 +130,7 @@ gboolean hardware_get_collapsed(
         NiftyconfHardware * h)
 {
         if(!h)
-                NFT_LOG_NULL(FALSE);
+                NFT_LOG_NULL(false);
 
         return h->collapsed;
 }
@@ -184,9 +184,9 @@ NiftyconfHardware *hardware_register_to_gui(
         n->h = h;
 
         /* default hardware is collapsed... */
-        n->collapsed = TRUE;
+        n->collapsed = true;
         /* ...not highlighted */
-        n->highlight = FALSE;
+        n->highlight = false;
 
         /* register tiles of hardware */
         LedTile *t;
@@ -289,7 +289,7 @@ NiftyconfHardware *hardware_new(
         {
                 ui_log_alert_show("Failed to create new hardware \"%s\" (%s)",
                                   name, family);
-                return FALSE;
+                return false;
         }
 
         /* try to initialize hardware */
@@ -327,7 +327,7 @@ void hardware_destroy(
 gboolean hardware_init(
         )
 {
-        return TRUE;
+        return true;
 }
 
 /** deinitialize this module */

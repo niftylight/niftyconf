@@ -246,7 +246,7 @@ static gboolean _foreach_element_refresh_collapse(
         gtk_tree_model_get(model, iter, C_SETUP_TYPE, &t, C_SETUP_ELEMENT,
                            &element, -1);
 
-        gboolean collapsed = FALSE;
+        gboolean collapsed = false;
 
         switch (t)
         {
@@ -276,10 +276,10 @@ static gboolean _foreach_element_refresh_collapse(
                                            path);
         else
                 gtk_tree_view_expand_row(GTK_TREE_VIEW(UI("treeview")), path,
-                                         FALSE);
+                                         false);
 
 
-        return FALSE;
+        return false;
 }
 
 
@@ -296,7 +296,7 @@ static gboolean _foreach_element_refresh_highlight(
         gtk_tree_model_get(model, iter, C_SETUP_TYPE, &t, C_SETUP_ELEMENT,
                            &element, -1);
 
-        gboolean highlighted = FALSE;
+        gboolean highlighted = false;
 
         switch (t)
         {
@@ -336,7 +336,7 @@ static gboolean _foreach_element_refresh_highlight(
         else
                 gtk_tree_selection_unselect_iter(s, iter);
 
-        return FALSE;
+        return false;
 }
 
 
@@ -356,27 +356,27 @@ static void _foreach_element_selected(
                         gtk_widget_set_sensitive(GTK_WIDGET
                                                  (niftyconf_ui
                                                   ("item_hardware_remove")),
-                                                 TRUE);
+                                                 true);
                         gtk_widget_set_sensitive(GTK_WIDGET
                                                  (niftyconf_ui
-                                                  ("item_tile_add")), TRUE);
+                                                  ("item_tile_add")), true);
 
                         /* disable non-hardware related menus */
                         gtk_widget_set_sensitive(GTK_WIDGET
                                                  (niftyconf_ui
                                                   ("item_tile_remove")),
-                                                 FALSE);
+                                                 false);
                         gtk_widget_set_sensitive(GTK_WIDGET
                                                  (niftyconf_ui
-                                                  ("item_chain_add")), FALSE);
+                                                  ("item_chain_add")), false);
                         gtk_widget_set_sensitive(GTK_WIDGET
                                                  (niftyconf_ui
                                                   ("item_chain_remove")),
-                                                 FALSE);
+                                                 false);
 
                         /* highlight hardware */
                         hardware_set_highlighted((NiftyconfHardware *) e,
-                                                 TRUE);
+                                                 true);
 
                         /* show hardware properties */
                         ui_setup_props_hardware_show((NiftyconfHardware *) e);
@@ -394,16 +394,16 @@ static void _foreach_element_selected(
                         gtk_widget_set_sensitive(GTK_WIDGET
                                                  (niftyconf_ui
                                                   ("item_tile_remove")),
-                                                 TRUE);
+                                                 true);
                         gtk_widget_set_sensitive(GTK_WIDGET
                                                  (niftyconf_ui
-                                                  ("item_tile_add")), TRUE);
+                                                  ("item_tile_add")), true);
 
                         /* disable non-tile related menus */
                         gtk_widget_set_sensitive(GTK_WIDGET
                                                  (niftyconf_ui
                                                   ("item_hardware_remove")),
-                                                 FALSE);
+                                                 false);
                         gtk_widget_set_sensitive(GTK_WIDGET
                                                  (niftyconf_ui
                                                   ("item_chain_add")),
@@ -415,7 +415,7 @@ static void _foreach_element_selected(
                                                   (led_tile_get_chain(tile_niftyled((NiftyconfTile *) e)) != NULL));
 
                         /* highlight tile */
-                        tile_set_highlighted((NiftyconfTile *) e, TRUE);
+                        tile_set_highlighted((NiftyconfTile *) e, true);
 
                         ui_setup_props_tile_show((NiftyconfTile *) e);
 
@@ -435,24 +435,24 @@ static void _foreach_element_selected(
                         gtk_widget_set_sensitive(GTK_WIDGET
                                                  (niftyconf_ui
                                                   ("item_hardware_remove")),
-                                                 FALSE);
+                                                 false);
                         gtk_widget_set_sensitive(GTK_WIDGET
                                                  (niftyconf_ui
-                                                  ("item_tile_add")), FALSE);
+                                                  ("item_tile_add")), false);
                         gtk_widget_set_sensitive(GTK_WIDGET
                                                  (niftyconf_ui
                                                   ("item_tile_remove")),
-                                                 FALSE);
+                                                 false);
                         gtk_widget_set_sensitive(GTK_WIDGET
                                                  (niftyconf_ui
-                                                  ("item_chain_add")), FALSE);
+                                                  ("item_chain_add")), false);
                         gtk_widget_set_sensitive(GTK_WIDGET
                                                  (niftyconf_ui
                                                   ("item_chain_remove")),
-                                                 FALSE);
+                                                 false);
 
                         /* highlight chain */
-                        chain_set_highlighted((NiftyconfChain *) e, TRUE);
+                        chain_set_highlighted((NiftyconfChain *) e, true);
 
                         ui_setup_props_chain_show((NiftyconfChain *) e);
 
@@ -486,7 +486,7 @@ static void _foreach_unhighlight_element(
                 case LED_HARDWARE_T:
                 {
                         hardware_set_highlighted((NiftyconfHardware *) e,
-                                                 FALSE);
+                                                 false);
                         break;
                 }
 
@@ -495,7 +495,7 @@ static void _foreach_unhighlight_element(
                         if(tile_get_highlighted((NiftyconfTile *) e))
                         {
                                 tile_set_highlighted((NiftyconfTile *) e,
-                                                     FALSE);
+                                                     false);
                                 renderer_tile_damage((NiftyconfTile *) e);
                         }
                         break;
@@ -506,7 +506,7 @@ static void _foreach_unhighlight_element(
                         if(chain_get_highlighted((NiftyconfChain *) e))
                         {
                                 chain_set_highlighted((NiftyconfChain *) e,
-                                                      FALSE);
+                                                      false);
                                 renderer_chain_damage((NiftyconfChain *) e);
                         }
                         break;
@@ -531,19 +531,19 @@ static void _foreach_highlight_element(
                 case LED_HARDWARE_T:
                 {
                         hardware_set_highlighted((NiftyconfHardware *) e,
-                                                 TRUE);
+                                                 true);
                         break;
                 }
 
                 case LED_TILE_T:
                 {
-                        tile_set_highlighted((NiftyconfTile *) e, TRUE);
+                        tile_set_highlighted((NiftyconfTile *) e, true);
                         break;
                 }
 
                 case LED_CHAIN_T:
                 {
-                        chain_set_highlighted((NiftyconfChain *) e, TRUE);
+                        chain_set_highlighted((NiftyconfChain *) e, true);
                         break;
                 }
 
@@ -889,7 +889,7 @@ gboolean ui_setup_tree_init(
         )
 {
         if(!(_ui = ui_builder("niftyconf-setup-tree.ui")))
-                return FALSE;
+                return false;
 
         /* set selection mode for setup tree */
 		GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(UI("treeview")));
@@ -901,12 +901,12 @@ gboolean ui_setup_tree_init(
         /* initialize setup treeview */
         GtkTreeViewColumn *col = GTK_TREE_VIEW_COLUMN(UI("column_element"));
         GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-        gtk_tree_view_column_pack_start(col, renderer, TRUE);
+        gtk_tree_view_column_pack_start(col, renderer, true);
         gtk_tree_view_column_add_attribute(col, renderer, "text",
                                            C_SETUP_TITLE);
 
 
-        return TRUE;
+        return true;
 }
 
 
@@ -956,13 +956,13 @@ G_MODULE_EXPORT void on_setup_treeview_collapsed(
         {
                 case LED_HARDWARE_T:
                 {
-                        hardware_set_collapsed((NiftyconfHardware *) p, TRUE);
+                        hardware_set_collapsed((NiftyconfHardware *) p, true);
                         break;
                 }
 
                 case LED_TILE_T:
                 {
-                        tile_set_collapsed((NiftyconfTile *) p, TRUE);
+                        tile_set_collapsed((NiftyconfTile *) p, true);
                         break;
                 }
 
@@ -994,13 +994,13 @@ G_MODULE_EXPORT void on_setup_treeview_expanded(
                 case LED_HARDWARE_T:
                 {
                         hardware_set_collapsed((NiftyconfHardware *) p,
-                                               FALSE);
+                                               false);
                         break;
                 }
 
                 case LED_TILE_T:
                 {
-                        tile_set_collapsed((NiftyconfTile *) p, FALSE);
+                        tile_set_collapsed((NiftyconfTile *) p, false);
                         break;
                 }
 
@@ -1054,7 +1054,7 @@ G_MODULE_EXPORT gboolean on_popup_remove_hardware(
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
-                return FALSE;
+                return false;
 
         /* remove all currently selected elements */
         ui_setup_tree_do_foreach_selected_element(_foreach_remove_hardware);
@@ -1065,7 +1065,7 @@ G_MODULE_EXPORT gboolean on_popup_remove_hardware(
         /* hide properties */
         ui_setup_props_hide();
 
-        return TRUE;
+        return true;
 
 }
 
@@ -1078,7 +1078,7 @@ G_MODULE_EXPORT gboolean on_popup_remove_tile(
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
-                return FALSE;
+                return false;
 
         /* remove all currently selected elements */
         ui_setup_tree_do_foreach_selected_element(_foreach_remove_tile);
@@ -1089,7 +1089,7 @@ G_MODULE_EXPORT gboolean on_popup_remove_tile(
         /* hide properties */
         ui_setup_props_hide();
 
-        return TRUE;
+        return true;
 
 }
 
@@ -1102,7 +1102,7 @@ G_MODULE_EXPORT gboolean on_popup_remove_chain(
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
-                return FALSE;
+                return false;
 
         /* remove all currently selected elements */
         ui_setup_tree_do_foreach_selected_element(_foreach_remove_chain);
@@ -1113,7 +1113,7 @@ G_MODULE_EXPORT gboolean on_popup_remove_chain(
         /* hide properties */
         ui_setup_props_hide();
 
-        return TRUE;
+        return true;
 
 }
 
@@ -1126,13 +1126,13 @@ G_MODULE_EXPORT gboolean on_popup_add_hardware(
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
-                return FALSE;
+                return false;
 
         /* show "add hardware" window */
         gtk_widget_set_visible(GTK_WIDGET(ui_setup("hardware_add_window")),
-                               TRUE);
+                               true);
 
-        return TRUE;
+        return true;
 }
 
 
@@ -1144,7 +1144,7 @@ G_MODULE_EXPORT gboolean on_popup_add_tile(
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
-                return FALSE;
+                return false;
 
 
         /* set currently active element */
@@ -1179,7 +1179,7 @@ G_MODULE_EXPORT gboolean on_popup_add_tile(
         /* refresh tree */
         ui_setup_tree_refresh();
 
-        return TRUE;
+        return true;
 }
 
 
@@ -1191,13 +1191,13 @@ G_MODULE_EXPORT gboolean on_popup_add_chain(
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
-                return FALSE;
+                return false;
 
         /* show "add chain" window */
         gtk_widget_set_visible(GTK_WIDGET(ui_setup("chain_add_window")),
-                               TRUE);
+                               true);
 
-        return TRUE;
+        return true;
 }
 
 
@@ -1209,11 +1209,11 @@ G_MODULE_EXPORT gboolean on_popup_info_hardware(
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
-                return FALSE;
+                return false;
 
-        ui_info_hardware_set_visible(TRUE);
+        ui_info_hardware_set_visible(true);
 
-        return TRUE;
+        return true;
 }
 
 
@@ -1226,11 +1226,11 @@ G_MODULE_EXPORT gboolean on_popup_cut_element(
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
-                return FALSE;
+                return false;
 
         ui_clipboard_cut_current_selection();
 
-        return TRUE;
+        return true;
 }
 
 
@@ -1242,11 +1242,11 @@ G_MODULE_EXPORT gboolean on_popup_copy_element(
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
-                return FALSE;
+                return false;
 
         ui_clipboard_copy_current_selection();
 
-        return TRUE;
+        return true;
 }
 
 
@@ -1258,11 +1258,11 @@ G_MODULE_EXPORT gboolean on_popup_paste_element(
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
-                return FALSE;
+                return false;
 
         ui_clipboard_paste_current_selection();
 
-        return TRUE;
+        return true;
 }
 
 
@@ -1424,9 +1424,9 @@ static void _tree_popup_menu(
                 case LED_HARDWARE_T:
                 {
                         /* disable unneeded menus */
-                        gtk_widget_set_sensitive(add_chain, FALSE);
-                        gtk_widget_set_sensitive(remove_chain, FALSE);
-                        gtk_widget_set_sensitive(remove_tile, FALSE);
+                        gtk_widget_set_sensitive(add_chain, false);
+                        gtk_widget_set_sensitive(remove_chain, false);
+                        gtk_widget_set_sensitive(remove_tile, false);
 
 
                         /* generate "info" menuitem */
@@ -1448,7 +1448,7 @@ static void _tree_popup_menu(
                 case LED_TILE_T:
                 {
                         /* disable unneeded menus */
-                        gtk_widget_set_sensitive(remove_hw, FALSE);
+                        gtk_widget_set_sensitive(remove_hw, false);
 
                         /* if tile has no chain, enable "add" menu */
                         gtk_widget_set_sensitive(add_chain,
@@ -1468,11 +1468,11 @@ static void _tree_popup_menu(
                 case LED_CHAIN_T:
                 {
                         /* disable unneeded menus */
-                        gtk_widget_set_sensitive(remove_hw, FALSE);
-                        gtk_widget_set_sensitive(add_chain, FALSE);
-                        gtk_widget_set_sensitive(remove_chain, FALSE);
-                        gtk_widget_set_sensitive(add_tile, FALSE);
-                        gtk_widget_set_sensitive(remove_tile, FALSE);
+                        gtk_widget_set_sensitive(remove_hw, false);
+                        gtk_widget_set_sensitive(add_chain, false);
+                        gtk_widget_set_sensitive(remove_chain, false);
+                        gtk_widget_set_sensitive(add_tile, false);
+                        gtk_widget_set_sensitive(remove_tile, false);
 
                         break;
                 }
@@ -1480,11 +1480,11 @@ static void _tree_popup_menu(
                 default:
                 {
                         /* disable unneeded menus */
-                        gtk_widget_set_sensitive(remove_hw, FALSE);
-                        gtk_widget_set_sensitive(add_chain, FALSE);
-                        gtk_widget_set_sensitive(remove_chain, FALSE);
-                        gtk_widget_set_sensitive(add_tile, FALSE);
-                        gtk_widget_set_sensitive(remove_tile, FALSE);
+                        gtk_widget_set_sensitive(remove_hw, false);
+                        gtk_widget_set_sensitive(add_chain, false);
+                        gtk_widget_set_sensitive(remove_chain, false);
+                        gtk_widget_set_sensitive(add_tile, false);
+                        gtk_widget_set_sensitive(remove_tile, false);
 
                         // NFT_LOG(L_ERROR, "Unknown element-type selected
                         // (%d)", current_type);
@@ -1524,7 +1524,7 @@ G_MODULE_EXPORT gboolean on_setup_treeview_button_pressed(
 {
         /* only handle button-press events */
         if(e->type != GDK_BUTTON_PRESS)
-                return FALSE;
+                return false;
 
 
         /* what kind of button pressed? */
@@ -1533,11 +1533,11 @@ G_MODULE_EXPORT gboolean on_setup_treeview_button_pressed(
                 case 3:
                 {
                         _tree_popup_menu(GTK_WIDGET(t), e, u);
-                        return TRUE;
+                        return true;
                 }
         }
 
-        return FALSE;
+        return false;
 }
 
 
@@ -1547,5 +1547,5 @@ G_MODULE_EXPORT gboolean on_setup_treeview_popup(
         gpointer u)
 {
         _tree_popup_menu(GTK_WIDGET(t), NULL, u);
-        return TRUE;
+        return true;
 }

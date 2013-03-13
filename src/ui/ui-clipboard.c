@@ -527,7 +527,7 @@ NftResult ui_clipboard_cut_current_selection(
         ui_setup_tree_highlight_only(t, e);
 
         LedPrefsNode *n;
-        if(!(n = _cut_or_copy_node(t, e, TRUE)))
+        if(!(n = _cut_or_copy_node(t, e, true)))
                 return NFT_FAILURE;
 
         char *xml;
@@ -568,7 +568,7 @@ NftResult ui_clipboard_copy_current_selection(
         ui_setup_tree_highlight_only(t, e);
 
         LedPrefsNode *n;
-        if(!(n = _cut_or_copy_node(t, e, FALSE)))
+        if(!(n = _cut_or_copy_node(t, e, false)))
                 return NFT_FAILURE;
 
         char *xml;
@@ -651,7 +651,7 @@ NftResult ui_clipboard_copy_to_file(
         ui_setup_tree_highlight_only(t, e);
 
         LedPrefsNode *n;
-        if(!(n = _cut_or_copy_node(t, e, FALSE)))
+        if(!(n = _cut_or_copy_node(t, e, false)))
                 return NFT_FAILURE;
 
         /* file existing? */
@@ -720,12 +720,12 @@ gboolean ui_clipboard_init(
 {
         /* get clipboard */
         if(!(_clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD)))
-                return FALSE;
+                return false;
 
         /* initialize clipboard */
         gtk_clipboard_set_can_store(_clipboard, NULL, 0);
 
-        return TRUE;
+        return true;
 }
 
 

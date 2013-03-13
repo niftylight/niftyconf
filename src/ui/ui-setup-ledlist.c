@@ -164,11 +164,11 @@ gboolean ui_setup_ledlist_init(
         /* initialize setup treeview */
         GtkTreeViewColumn *col = GTK_TREE_VIEW_COLUMN(UI("column_led"));
         GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-        gtk_tree_view_column_pack_start(col, renderer, TRUE);
+        gtk_tree_view_column_pack_start(col, renderer, true);
         gtk_tree_view_column_add_attribute(col, renderer, "text",
                                            C_CHAIN_LED);
 
-        return TRUE;
+        return true;
 }
 
 /** deinitialize this module */

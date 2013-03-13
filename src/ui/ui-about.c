@@ -42,6 +42,7 @@
  */
 
 #include <gtk/gtk.h>
+#include <stdbool.h>
 #include "ui/ui.h"
 #include "version.h"
 #include "config.h"
@@ -80,7 +81,7 @@ gboolean ui_about_init(
         )
 {
         if(!(_ui = ui_builder("niftyconf-about.ui")))
-                return FALSE;
+                return false;
 
         GtkAboutDialog *d;
         d = GTK_ABOUT_DIALOG(UI("window"));
@@ -89,7 +90,7 @@ gboolean ui_about_init(
         gtk_about_dialog_set_website(d, PACKAGE_URL);
         gtk_link_button_set_uri(GTK_LINK_BUTTON(UI("linkbutton_bugreport")),
                                 PACKAGE_BUGREPORT);
-        return TRUE;
+        return true;
 }
 
 
@@ -111,7 +112,7 @@ void on_about_dialog_closed(
         gpointer user_data)
 {
 
-        gtk_widget_set_visible(GTK_WIDGET(arg0), FALSE);
+        gtk_widget_set_visible(GTK_WIDGET(arg0), false);
 }
 
 
@@ -121,6 +122,6 @@ G_MODULE_EXPORT gboolean on_about_dialog_response(
         gint response_id,
         gpointer user_data)
 {
-        gtk_widget_set_visible(GTK_WIDGET(dialog), FALSE);
-        return TRUE;
+        gtk_widget_set_visible(GTK_WIDGET(dialog), false);
+        return true;
 }

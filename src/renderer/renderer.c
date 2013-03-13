@@ -174,9 +174,9 @@ gboolean renderer_init(
         _r.view.scale_factor = 10;
 
         /* initialize drawingarea */
-        gtk_widget_set_app_paintable(GTK_WIDGET(UI("drawingarea")), TRUE);
+        gtk_widget_set_app_paintable(GTK_WIDGET(UI("drawingarea")), true);
 
-        return TRUE;
+        return true;
 }
 
 
@@ -248,24 +248,24 @@ gboolean renderer_resize(
         int height)
 {
         if(!r || !r->surface)
-                NFT_LOG_NULL(FALSE);
+                NFT_LOG_NULL(false);
 
         /* silently succeed if size is as requested */
         if(width == cairo_image_surface_get_width(r->surface) &&
            height == cairo_image_surface_get_height(r->surface))
-                return TRUE;
+                return true;
 
         /* destroy old surface */
         cairo_surface_destroy(r->surface);
 
         if(!(r->surface =
              cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height)))
-                return FALSE;
+                return false;
 
         /* queue renderer for update */
         renderer_damage(r);
 
-        return TRUE;
+        return true;
 }
 
 
@@ -293,7 +293,7 @@ gboolean on_renderer_button_press_event(
         _r.view.mouse_hold_x = ev->x;
         _r.view.mouse_hold_y = ev->y;
 
-        return FALSE;
+        return false;
 }
 
 
@@ -309,7 +309,7 @@ gboolean on_renderer_button_release_event(
         _r.view.pan_y += _r.view.pan_t_y;
         _r.view.pan_t_x = 0;
         _r.view.pan_t_y = 0;
-        return FALSE;
+        return false;
 }
 
 
@@ -330,7 +330,7 @@ gboolean on_renderer_motion_notify_event(
 
         renderer_all_queue_draw();
 
-        return FALSE;
+        return false;
 }
 
 
@@ -371,7 +371,7 @@ gboolean on_renderer_scroll_event(
         }
 
 
-        return FALSE;
+        return false;
 }
 
 
@@ -427,5 +427,5 @@ gboolean on_renderer_expose_event(
         cairo_destroy(cr);
 
 
-        return FALSE;
+        return false;
 }

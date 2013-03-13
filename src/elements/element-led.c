@@ -115,7 +115,7 @@ gboolean led_get_highlighted(
         NiftyconfLed * l)
 {
         if(!l)
-                NFT_LOG_NULL(FALSE);
+                NFT_LOG_NULL(false);
 
         return l->highlight;
 }
@@ -236,7 +236,7 @@ void led_unregister_from_gui(
 gboolean led_init(
         )
 {
-        return TRUE;
+        return true;
 }
 
 

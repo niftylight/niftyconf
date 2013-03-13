@@ -199,12 +199,12 @@ static gboolean _parse_cmdline_args(
 
         context = g_option_context_new("- niftyled configuration GUI");
         g_option_context_add_main_entries(context, entries, PACKAGE_NAME);
-        g_option_context_add_group(context, gtk_get_option_group(TRUE));
+        g_option_context_add_group(context, gtk_get_option_group(true));
         if(!g_option_context_parse(context, &argc, &argv, &error))
         {
                 g_print("option parsing failed: %s\n", error->message);
                 g_error_free(error);
-                return FALSE;
+                return false;
         }
 
         /* initialize setup if XML filename given */
@@ -220,20 +220,20 @@ static gboolean _parse_cmdline_args(
                 if(lev == L_INVALID)
                 {
                         g_error("Invalid loglevel: %s", loglevel);
-                        return FALSE;
+                        return false;
                 }
 
                 if(!nft_log_level_set(lev))
                 {
                         g_error("Failed to set loglevel: %s (%d)",
                                 loglevel, lev);
-                        return FALSE;
+                        return false;
                 }
 
 
         }
 
-        return TRUE;
+        return true;
 }
 
 
@@ -311,12 +311,12 @@ int main(
         /* build our ui */
         _ui = ui_builder("niftyconf.ui");
         GtkBox *box_setup = GTK_BOX(UI("box_setup"));
-        gtk_box_pack_start(box_setup, ui_setup_get_widget(), TRUE, TRUE, 0);
+        gtk_box_pack_start(box_setup, ui_setup_get_widget(), true, true, 0);
         GtkBox *box_chain = GTK_BOX(UI("box_chain"));
-        gtk_box_pack_start(box_chain, ui_setup_ledlist_get_widget(), TRUE,
-                           TRUE, 0);
+        gtk_box_pack_start(box_chain, ui_setup_ledlist_get_widget(), true,
+                           true, 0);
         GtkBox *box_canvas = GTK_BOX(UI("box_canvas"));
-        gtk_box_pack_start(box_canvas, renderer_get_widget(), TRUE, TRUE, 0);
+        gtk_box_pack_start(box_canvas, renderer_get_widget(), true, true, 0);
 
 
         /* load setup file if any given from commandline */
@@ -373,7 +373,7 @@ G_MODULE_EXPORT gboolean on_niftyconf_window_delete_event(
 
         /* bye bye */
         gtk_main_quit();
-        return FALSE;
+        return false;
 }
 
 
@@ -393,5 +393,5 @@ G_MODULE_EXPORT void on_niftyconf_menu_help_about_activate(
         GtkWidget * i,
         gpointer u)
 {
-        ui_about_set_visible(TRUE);
+        ui_about_set_visible(true);
 }

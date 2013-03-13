@@ -104,9 +104,9 @@ gboolean ui_info_hardware_init(
         )
 {
         if(!(_ui = ui_builder("niftyconf-info-hardware.ui")))
-                return FALSE;
+                return false;
 
-        return TRUE;
+        return true;
 }
 
 
@@ -127,6 +127,6 @@ G_MODULE_EXPORT gboolean on_info_hardware_window_delete_event(
         GtkWidget * w,
         GdkEvent * e)
 {
-        gtk_widget_set_visible(w, FALSE);
-        return TRUE;
+        gtk_widget_set_visible(w, false);
+        return true;
 }

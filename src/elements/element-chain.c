@@ -119,7 +119,7 @@ gboolean chain_get_highlighted(
         NiftyconfChain * c)
 {
         if(!c)
-                NFT_LOG_NULL(FALSE);
+                NFT_LOG_NULL(false);
 
         return c->highlight;
 }
@@ -202,7 +202,7 @@ NiftyconfChain *chain_register_to_gui(
         n->c = c;
 
         /* not highlighted */
-        n->highlight = FALSE;
+        n->highlight = false;
 
         /* register descriptor as niftyled privdata */
         led_chain_set_privdata(c, n);
@@ -255,7 +255,7 @@ gboolean chain_of_tile_new(
         if(parent_t != LED_TILE_T)
         {
                 ui_log_alert_show("Can only add Chain to Tiles");
-                return FALSE;
+                return false;
         }
 
         NiftyconfTile *parent = (NiftyconfTile *) parent_element;
@@ -266,7 +266,7 @@ gboolean chain_of_tile_new(
         {
                 ui_log_alert_show("Failed to create new chain \"%s\" (%d)",
                                   pixelformat, length);
-                return FALSE;
+                return false;
         }
 
         /* attach chain to tile */
@@ -278,10 +278,10 @@ gboolean chain_of_tile_new(
         {
                 ui_log_alert_show
                         ("Failed to register new chain to GUI. This is a bug. Expect the unexpected.");
-                return FALSE;
+                return false;
         }
 
-        return TRUE;
+        return true;
 }
 
 
@@ -312,5 +312,5 @@ void chain_of_tile_destroy(
 gboolean chain_init(
         )
 {
-        return TRUE;
+        return true;
 }

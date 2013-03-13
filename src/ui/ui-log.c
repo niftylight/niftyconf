@@ -308,7 +308,7 @@ void ui_log_alert_show(
         /* just hide when message is NULL */
         if(!message)
         {
-                gtk_widget_set_visible(GTK_WIDGET(UI("alert_dialog")), FALSE);
+                gtk_widget_set_visible(GTK_WIDGET(UI("alert_dialog")), false);
                 return;
         }
 
@@ -340,7 +340,7 @@ void ui_log_alert_show(
         gtk_label_set_text(GTK_LABEL(UI("alert_label")), tmp);
 
         /* show dialog */
-        gtk_widget_set_visible(GTK_WIDGET(UI("alert_dialog")), TRUE);
+        gtk_widget_set_visible(GTK_WIDGET(UI("alert_dialog")), true);
 }
 
 /**
@@ -411,7 +411,7 @@ gboolean ui_log_init(
            (prefs(), "ui-log", _this_from_prefs, _this_to_prefs))
                 g_error("Failed to register prefs class for \"ui-log\"");
 		
-        return TRUE;
+        return true;
 }
 
 
@@ -443,10 +443,10 @@ G_MODULE_EXPORT gboolean on_log_window_delete_event(
         GtkWidget * w,
         GdkEvent * e)
 {
-        ui_log_show(FALSE);
+        ui_log_show(false);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM
-                                       (niftyconf_ui("item_log_win")), FALSE);
-        return TRUE;
+                                       (niftyconf_ui("item_log_win")), false);
+        return true;
 }
 
 /** close alert dialog */
@@ -455,7 +455,7 @@ G_MODULE_EXPORT gboolean on_alert_dialog_delete_event(
         GdkEvent * e)
 {
         ui_log_alert_show(NULL);
-        return TRUE;
+        return true;
 }
 
 /** loglevel changed */
@@ -485,5 +485,5 @@ G_MODULE_EXPORT void on_alert_dismiss_button_clicked(
         GtkButton * b,
         gpointer u)
 {
-        gtk_widget_set_visible(GTK_WIDGET(UI("alert_dialog")), FALSE);
+        gtk_widget_set_visible(GTK_WIDGET(UI("alert_dialog")), false);
 }

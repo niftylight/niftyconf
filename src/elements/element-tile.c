@@ -112,7 +112,7 @@ gboolean tile_get_highlighted(
         NiftyconfTile * t)
 {
         if(!t)
-                NFT_LOG_NULL(FALSE);
+                NFT_LOG_NULL(false);
 
         return t->highlight;
 }
@@ -144,7 +144,7 @@ gboolean tile_get_collapsed(
         NiftyconfTile * t)
 {
         if(!t)
-                NFT_LOG_NULL(FALSE);
+                NFT_LOG_NULL(false);
 
         return t->collapsed;
 }
@@ -206,9 +206,9 @@ NiftyconfTile *tile_register_to_gui(
         led_tile_set_privdata(t, n);
 
         /* default hardware is collapsed */
-        n->collapsed = TRUE;
+        n->collapsed = true;
         /* not highlighted */
-        n->highlight = FALSE;
+        n->highlight = false;
 
         /* allocate renderer */
         if(!(n->renderer = renderer_tile_new(n)))
@@ -278,7 +278,7 @@ gboolean tile_of_hardware_new(
         /* create new tile */
         LedTile *n;
         if(!(n = led_tile_new()))
-                return FALSE;
+                return false;
 
         /* get last tile of this hardware */
         LedHardware *h = hardware_niftyled(parent);
@@ -297,7 +297,7 @@ gboolean tile_of_hardware_new(
         /* register new tile to gui */
         tile_register_to_gui(n);
 
-        return TRUE;
+        return true;
 }
 
 
@@ -308,7 +308,7 @@ gboolean tile_of_tile_new(
         /* create new tile */
         LedTile *n;
         if(!(n = led_tile_new()))
-                return FALSE;
+                return false;
 
         LedTile *tile = tile_niftyled(parent);
         led_tile_list_append_child(tile, n);
@@ -316,7 +316,7 @@ gboolean tile_of_tile_new(
         /* register new tile to gui */
         tile_register_to_gui(n);
 
-        return TRUE;
+        return true;
 }
 
 
@@ -343,7 +343,7 @@ void tile_destroy(
 gboolean tile_init(
         )
 {
-        return TRUE;
+        return true;
 }
 
 /** deinitialize this module */

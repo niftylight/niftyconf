@@ -174,14 +174,14 @@ NftResult setup_register_to_gui(
                 if(!hardware_register_to_gui(h))
                 {
                         g_warning("failed to allocate new hardware element");
-                        return FALSE;
+                        return false;
                 }
 
                 /* create chain of this hardware */
                 if(!chain_register_to_gui(led_hardware_get_chain(h)))
                 {
                         g_warning("failed to allocate new chain element");
-                        return FALSE;
+                        return false;
                 }
 
                 /* walk all tiles belonging to this hardware & initialize */
@@ -193,7 +193,7 @@ NftResult setup_register_to_gui(
                         {
                                 g_warning
                                         ("failed to allocate new tile element");
-                                return FALSE;
+                                return false;
                         }
                 }
         }

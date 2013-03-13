@@ -257,13 +257,13 @@ G_MODULE_EXPORT void on_spinbutton_chain_ledcount_changed(
                 if(!led_hardware_set_ledcount(h, ledcount))
                         /* error background color */
                 {
-                        _widget_set_error_background(GTK_WIDGET(s), TRUE);
+                        _widget_set_error_background(GTK_WIDGET(s), true);
                         return;
                 }
                 /* normal background color */
                 else
                 {
-                        _widget_set_error_background(GTK_WIDGET(s), FALSE);
+                        _widget_set_error_background(GTK_WIDGET(s), false);
                 }
         }
         /* this is an ordinary chain of a tile element */
@@ -272,13 +272,13 @@ G_MODULE_EXPORT void on_spinbutton_chain_ledcount_changed(
                 if(!led_chain_set_ledcount(chain, ledcount))
                         /* error background color */
                 {
-                        _widget_set_error_background(GTK_WIDGET(s), TRUE);
+                        _widget_set_error_background(GTK_WIDGET(s), true);
                         return;
                 }
                 /* normal background color */
                 else
                 {
-                        _widget_set_error_background(GTK_WIDGET(s), FALSE);
+                        _widget_set_error_background(GTK_WIDGET(s), false);
                 }
         }
 
@@ -312,12 +312,12 @@ G_MODULE_EXPORT void on_spinbutton_tile_x_changed(
         if(!led_tile_set_x(tile, new_val))
                 /* error background color */
         {
-                _widget_set_error_background(GTK_WIDGET(s), TRUE);
+                _widget_set_error_background(GTK_WIDGET(s), true);
         }
         /* normal background color */
         else
         {
-                _widget_set_error_background(GTK_WIDGET(s), FALSE);
+                _widget_set_error_background(GTK_WIDGET(s), false);
         }
 
         /* refresh tree */
@@ -347,12 +347,12 @@ G_MODULE_EXPORT void on_spinbutton_tile_y_changed(
         if(!led_tile_set_y(tile, new_val))
                 /* error background color */
         {
-                _widget_set_error_background(GTK_WIDGET(s), TRUE);
+                _widget_set_error_background(GTK_WIDGET(s), true);
         }
         /* normal background color */
         else
         {
-                _widget_set_error_background(GTK_WIDGET(s), FALSE);
+                _widget_set_error_background(GTK_WIDGET(s), false);
         }
 
         /* refresh tree */
@@ -382,12 +382,12 @@ G_MODULE_EXPORT void on_spinbutton_tile_rotation_changed(
         if(!led_tile_set_rotation(tile, new_val))
                 /* error background color */
         {
-                _widget_set_error_background(GTK_WIDGET(s), TRUE);
+                _widget_set_error_background(GTK_WIDGET(s), true);
         }
         /* normal background color */
         else
         {
-                _widget_set_error_background(GTK_WIDGET(s), FALSE);
+                _widget_set_error_background(GTK_WIDGET(s), false);
         }
 
         /* refresh view */
@@ -419,12 +419,12 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_x_changed(
         if(!led_tile_set_pivot_x(tile, new_val))
                 /* error background color */
         {
-                _widget_set_error_background(GTK_WIDGET(s), TRUE);
+                _widget_set_error_background(GTK_WIDGET(s), true);
         }
         /* normal background color */
         else
         {
-                _widget_set_error_background(GTK_WIDGET(s), FALSE);
+                _widget_set_error_background(GTK_WIDGET(s), false);
         }
 
         /* refresh view */
@@ -456,12 +456,12 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_y_changed(
         if(!led_tile_set_pivot_y(tile, new_val))
                 /* error background color */
         {
-                _widget_set_error_background(GTK_WIDGET(s), TRUE);
+                _widget_set_error_background(GTK_WIDGET(s), true);
         }
         /* normal background color */
         else
         {
-                _widget_set_error_background(GTK_WIDGET(s), FALSE);
+                _widget_set_error_background(GTK_WIDGET(s), false);
         }
 
         /* refresh view */
@@ -488,12 +488,12 @@ G_MODULE_EXPORT void on_entry_hardware_name_changed(
         if(!led_hardware_set_name(h, gtk_entry_get_text(GTK_ENTRY(e))))
                 /* error background color */
         {
-                _widget_set_error_background(GTK_WIDGET(e), TRUE);
+                _widget_set_error_background(GTK_WIDGET(e), true);
         }
         /* normal background color */
         else
         {
-                _widget_set_error_background(GTK_WIDGET(e), FALSE);
+                _widget_set_error_background(GTK_WIDGET(e), false);
         }
 
         /* refresh view */
@@ -514,12 +514,12 @@ G_MODULE_EXPORT void on_entry_hardware_id_changed(
         if(!led_hardware_set_id(h, gtk_entry_get_text(GTK_ENTRY(e))))
                 /* error background color */
         {
-                _widget_set_error_background(GTK_WIDGET(e), TRUE);
+                _widget_set_error_background(GTK_WIDGET(e), true);
         }
         /* normal background color */
         else
         {
-                _widget_set_error_background(GTK_WIDGET(e), FALSE);
+                _widget_set_error_background(GTK_WIDGET(e), false);
         }
 
 }
@@ -538,12 +538,12 @@ G_MODULE_EXPORT void on_spinbutton_hardware_stride_changed(
            (h, (LedCount) gtk_spin_button_get_value_as_int(s)))
                 /* error background color */
         {
-                _widget_set_error_background(GTK_WIDGET(s), TRUE);
+                _widget_set_error_background(GTK_WIDGET(s), true);
         }
         /* normal background color */
         else
         {
-                _widget_set_error_background(GTK_WIDGET(s), FALSE);
+                _widget_set_error_background(GTK_WIDGET(s), false);
         }
 
 }
@@ -574,7 +574,7 @@ G_MODULE_EXPORT void on_togglebutton_hardware_init_toggled(
                 }
 
                 /* show correct image */
-                ui_setup_props_hardware_initialized_image(TRUE);
+                ui_setup_props_hardware_initialized_image(true);
 
                 /* update ID (it might have changed) */
                 gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_id")),
@@ -587,7 +587,7 @@ G_MODULE_EXPORT void on_togglebutton_hardware_init_toggled(
                 led_hardware_deinit(h);
 
                 /* show correct image */
-                ui_setup_props_hardware_initialized_image(FALSE);
+                ui_setup_props_hardware_initialized_image(false);
         }
 }
 
@@ -893,7 +893,7 @@ gboolean ui_setup_props_init(
 {
         _ui = ui_builder("niftyconf-setup-props.ui");
 
-        return TRUE;
+        return true;
 }
 
 
