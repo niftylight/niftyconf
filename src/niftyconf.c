@@ -319,7 +319,10 @@ int main(
         gtk_box_pack_start(box_canvas, renderer_get_widget(), true, true, 0);
 
 
-        /* load setup file if any given from commandline */
+        /* restore window size & position */
+        prefs_load();
+
+	/* load setup file if any given from commandline */
         if(setupfile)
         {
                 if(!ui_setup_load(setupfile))
@@ -330,10 +333,7 @@ int main(
                 }
                 g_free(setupfile);
         }
-
-        /* restore window size & position */
-        prefs_load();
-
+	
         /* main loop... */
         gtk_main();
 
