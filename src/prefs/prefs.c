@@ -61,8 +61,7 @@ static NftPrefs *_prefs;
 
 
 /** getter */
-NftPrefs *prefs(
-        )
+NftPrefs *prefs()
 {
         return _prefs;
 }
@@ -71,8 +70,7 @@ NftPrefs *prefs(
 
 
 /** load preferences */
-gboolean prefs_load(
-        )
+gboolean prefs_load()
 {
         NftPrefsNode *setup;
         if(!(setup = nft_prefs_node_from_file(_filename)))
@@ -91,8 +89,7 @@ gboolean prefs_load(
 
 
 /** save preferences */
-gboolean prefs_save(
-        )
+gboolean prefs_save()
 {
         /* create preferences */
         NftPrefsNode *setup = nft_prefs_node_alloc("preferences");
@@ -109,8 +106,7 @@ gboolean prefs_save(
 
 
 /** initialize preferences */
-gboolean prefs_init(
-        )
+gboolean prefs_init()
 {
         if(!(_prefs = nft_prefs_init()))
                 return false;
@@ -125,8 +121,7 @@ gboolean prefs_init(
 
 
 /** deinitialize preferences */
-void prefs_deinit(
-        )
+void prefs_deinit()
 {
         nft_prefs_deinit(_prefs);
 }

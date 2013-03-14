@@ -64,14 +64,12 @@ static GtkBuilder *_ui;
  ******************************************************************************/
 
 /** configure from preferences */
-static NftResult _this_from_prefs(
-        NftPrefs * prefs,
-        void **newObj,
-        NftPrefsNode * node,
-        void *userptr)
+static NftResult _this_from_prefs(NftPrefs * prefs,
+                                  void **newObj,
+                                  NftPrefsNode * node, void *userptr)
 {
-		/* window geometry */
-		gint x = 0, y = 0, width = 0, height = 0;
+        /* window geometry */
+        gint x = 0, y = 0, width = 0, height = 0;
         nft_prefs_node_prop_int_get(node, "x", &x);
         nft_prefs_node_prop_int_get(node, "y", &y);
         nft_prefs_node_prop_int_get(node, "width", &width);
@@ -81,41 +79,44 @@ static NftResult _this_from_prefs(
                 gtk_window_resize(GTK_WINDOW(UI("window")), width, height);
         if(x > 0 && y > 0)
                 gtk_window_move(GTK_WINDOW(UI("window")), x, y);
-		
-		/* log visible? */
-		bool boolean = false;
-		nft_prefs_node_prop_boolean_get(node, "window-visible", &boolean);
-		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(niftyconf_ui("item_log_win")), boolean);
-		ui_log_show(boolean);
 
-		/* log level */
-		char *loglevel;
-		if((loglevel = nft_prefs_node_prop_string_get(node, "loglevel")))
-		{
-				nft_log_level_set(nft_log_level_from_string(loglevel));
-				nft_prefs_free(loglevel);
-		}
+        /* log visible? */
+        bool boolean = false;
+        nft_prefs_node_prop_boolean_get(node, "window-visible", &boolean);
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM
+                                       (niftyconf_ui("item_log_win")),
+                                       boolean);
+        ui_log_show(boolean);
 
-		/* log flags */
-		nft_prefs_node_prop_boolean_get(node, "show-file", &boolean);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(UI("checkbutton_file")), boolean);
-		nft_prefs_node_prop_boolean_get(node, "show-line", &boolean);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(UI("checkbutton_line")), boolean);
-		nft_prefs_node_prop_boolean_get(node, "show-function", &boolean);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(UI("checkbutton_function")), boolean);
-		
-		return NFT_SUCCESS;
+        /* log level */
+        char *loglevel;
+        if((loglevel = nft_prefs_node_prop_string_get(node, "loglevel")))
+        {
+                nft_log_level_set(nft_log_level_from_string(loglevel));
+                nft_prefs_free(loglevel);
+        }
+
+        /* log flags */
+        nft_prefs_node_prop_boolean_get(node, "show-file", &boolean);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON
+                                     (UI("checkbutton_file")), boolean);
+        nft_prefs_node_prop_boolean_get(node, "show-line", &boolean);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON
+                                     (UI("checkbutton_line")), boolean);
+        nft_prefs_node_prop_boolean_get(node, "show-function", &boolean);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON
+                                     (UI("checkbutton_function")), boolean);
+
+        return NFT_SUCCESS;
 }
 
 
 /** save configuration to preferences */
-static NftResult _this_to_prefs(
-        NftPrefs * prefs,
-        NftPrefsNode * newNode,
-        void *obj,
-        void *userptr)
+static NftResult _this_to_prefs(NftPrefs * prefs,
+                                NftPrefsNode * newNode,
+                                void *obj, void *userptr)
 {
-		/* window geometry */
+        /* window geometry */
         gint x, y, width, height;
         gtk_window_get_size(GTK_WINDOW(UI("window")), &width, &height);
         gtk_window_get_position(GTK_WINDOW(UI("window")), &x, &y);
@@ -130,35 +131,43 @@ static NftResult _this_to_prefs(
         if(!nft_prefs_node_prop_int_set(newNode, "height", height))
                 return NFT_FAILURE;
 
-		/* visible? */
-		if(!nft_prefs_node_prop_boolean_set
+        /* visible? */
+        if(!nft_prefs_node_prop_boolean_set
            (newNode, "window-visible", ui_log_visible()))
                 return NFT_FAILURE;
 
-		/* loglevel */
-		if(!nft_prefs_node_prop_string_set(newNode, "loglevel", (char *) nft_log_level_to_string(nft_log_level_get())))
-				return NFT_FAILURE;
+        /* loglevel */
+        if(!nft_prefs_node_prop_string_set
+           (newNode, "loglevel",
+            (char *) nft_log_level_to_string(nft_log_level_get())))
+                return NFT_FAILURE;
 
-		/* logging flags */
-		if(!nft_prefs_node_prop_boolean_set(newNode, "show-file", gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(UI("checkbutton_file")))))
+        /* logging flags */
+        if(!nft_prefs_node_prop_boolean_set
+           (newNode, "show-file",
+            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON
+                                         (UI("checkbutton_file")))))
                 return NFT_FAILURE;
-		if(!nft_prefs_node_prop_boolean_set(newNode, "show-line", gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(UI("checkbutton_line")))))
+        if(!nft_prefs_node_prop_boolean_set
+           (newNode, "show-line",
+            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON
+                                         (UI("checkbutton_line")))))
                 return NFT_FAILURE;
-		if(!nft_prefs_node_prop_boolean_set(newNode, "show-function", gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(UI("checkbutton_function")))))
+        if(!nft_prefs_node_prop_boolean_set
+           (newNode, "show-function",
+            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON
+                                         (UI("checkbutton_function")))))
                 return NFT_FAILURE;
-		
-		
-		return NFT_SUCCESS;
+
+
+        return NFT_SUCCESS;
 }
 
 
-static void _logger(
-        void *userdata,
-        NftLoglevel level,
-        const char *file,
-        const char *func,
-        int line,
-        const char *msg)
+static void _logger(void *userdata,
+                    NftLoglevel level,
+                    const char *file,
+                    const char *func, int line, const char *msg)
 {
         /* output this at current loglevel? */
         NftLoglevel lcur = nft_log_level_get();
@@ -237,10 +246,7 @@ static void _logger(
 /**
  *  show yes/no dialog and wat for answer
  */
-gboolean ui_log_dialog_yesno(
-        char *title,
-        char *message,
-        ...)
+gboolean ui_log_dialog_yesno(char *title, char *message, ...)
 {
         if(!message)
                 NFT_LOG_NULL(false);
@@ -301,9 +307,7 @@ gboolean ui_log_dialog_yesno(
  *
  * @param message printable text that will be presented to the user
  */
-void ui_log_alert_show(
-        char *message,
-        ...)
+void ui_log_alert_show(char *message, ...)
 {
         /* just hide when message is NULL */
         if(!message)
@@ -346,8 +350,7 @@ void ui_log_alert_show(
 /**
  * show/hide log window
  */
-void ui_log_show(
-        gboolean visible)
+void ui_log_show(gboolean visible)
 {
         gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);
 }
@@ -358,15 +361,14 @@ void ui_log_show(
  */
 gboolean ui_log_visible()
 {
-		return gtk_widget_get_visible(GTK_WIDGET(UI("window")));
+        return gtk_widget_get_visible(GTK_WIDGET(UI("window")));
 }
 
 
 /**
  * build a string with valid loglevels
  */
-const char *ui_log_loglevels(
-        )
+const char *ui_log_loglevels()
 {
         static char s[1024];
 
@@ -385,8 +387,7 @@ const char *ui_log_loglevels(
 /**
  * initialize module
  */
-gboolean ui_log_init(
-        )
+gboolean ui_log_init()
 {
         _ui = ui_builder("niftyconf-log.ui");
 
@@ -406,22 +407,21 @@ gboolean ui_log_init(
         /* register our custom logger function */
         nft_log_func_register(_logger, UI("textview"));
 
-		/* register prefs class for this module */
+        /* register prefs class for this module */
         if(!nft_prefs_class_register
            (prefs(), "ui-log", _this_from_prefs, _this_to_prefs))
                 g_error("Failed to register prefs class for \"ui-log\"");
-		
+
         return true;
 }
 
 
 /** deinitialize this module */
-void ui_log_deinit(
-        )
+void ui_log_deinit()
 {
-		/* unregister prefs class */
+        /* unregister prefs class */
         nft_prefs_class_unregister(prefs(), "ui-log");
-		
+
         g_object_unref(_ui);
 }
 
@@ -430,18 +430,16 @@ void ui_log_deinit(
  ******************************************************************************/
 
 /** menuitem "show log-window" toggled */
-G_MODULE_EXPORT void on_niftyconf_menu_log_window_activate(
-        GtkWidget * i,
-        gpointer u)
+G_MODULE_EXPORT void on_niftyconf_menu_log_window_activate(GtkWidget * i,
+                                                           gpointer u)
 {
         ui_log_show(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(i)));
 }
 
 
 /** close main window */
-G_MODULE_EXPORT gboolean on_log_window_delete_event(
-        GtkWidget * w,
-        GdkEvent * e)
+G_MODULE_EXPORT gboolean on_log_window_delete_event(GtkWidget * w,
+                                                    GdkEvent * e)
 {
         ui_log_show(false);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM
@@ -450,18 +448,15 @@ G_MODULE_EXPORT gboolean on_log_window_delete_event(
 }
 
 /** close alert dialog */
-G_MODULE_EXPORT gboolean on_alert_dialog_delete_event(
-        GtkWidget * w,
-        GdkEvent * e)
+G_MODULE_EXPORT gboolean on_alert_dialog_delete_event(GtkWidget * w,
+                                                      GdkEvent * e)
 {
         ui_log_alert_show(NULL);
         return true;
 }
 
 /** loglevel changed */
-G_MODULE_EXPORT void on_log_combobox_changed(
-        GtkComboBox * w,
-        gpointer u)
+G_MODULE_EXPORT void on_log_combobox_changed(GtkComboBox * w, gpointer u)
 {
         NftLoglevel l = (NftLoglevel) gtk_combo_box_get_active(w) + 1;
 
@@ -471,9 +466,7 @@ G_MODULE_EXPORT void on_log_combobox_changed(
 }
 
 /** "clear" button pressed */
-G_MODULE_EXPORT void on_log_button_clicked(
-        GtkButton * b,
-        gpointer u)
+G_MODULE_EXPORT void on_log_button_clicked(GtkButton * b, gpointer u)
 {
         GtkTextBuffer *buf =
                 gtk_text_view_get_buffer(GTK_TEXT_VIEW(UI("textview")));
@@ -481,9 +474,8 @@ G_MODULE_EXPORT void on_log_button_clicked(
 }
 
 /** "dismiss" button in alert-dialog clicked */
-G_MODULE_EXPORT void on_alert_dismiss_button_clicked(
-        GtkButton * b,
-        gpointer u)
+G_MODULE_EXPORT void on_alert_dismiss_button_clicked(GtkButton * b,
+                                                     gpointer u)
 {
         gtk_widget_set_visible(GTK_WIDGET(UI("alert_dialog")), false);
 }

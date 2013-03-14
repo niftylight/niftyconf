@@ -75,9 +75,7 @@ struct _NiftyconfTile
  ******************************************************************************/
 
 /** dump element definition to printable string - use free() to deallacote the result */
-char *tile_dump(
-        NiftyconfTile * tile,
-        gboolean encapsulation)
+char *tile_dump(NiftyconfTile * tile, gboolean encapsulation)
 {
         LedTile *t = tile_niftyled(tile);
         LedPrefsNode *n;
@@ -97,8 +95,7 @@ char *tile_dump(
 
 
 /** getter for renderer */
-NiftyconfRenderer *tile_get_renderer(
-        NiftyconfTile * t)
+NiftyconfRenderer *tile_get_renderer(NiftyconfTile * t)
 {
         if(!t)
                 NFT_LOG_NULL(NULL);
@@ -108,8 +105,7 @@ NiftyconfRenderer *tile_get_renderer(
 
 
 /** getter for boolean value whether element is currently highlighted */
-gboolean tile_get_highlighted(
-        NiftyconfTile * t)
+gboolean tile_get_highlighted(NiftyconfTile * t)
 {
         if(!t)
                 NFT_LOG_NULL(false);
@@ -119,9 +115,7 @@ gboolean tile_get_highlighted(
 
 
 /* setter for boolean value whether element is currently highlighted */
-void tile_set_highlighted(
-        NiftyconfTile * t,
-        gboolean is_highlighted)
+void tile_set_highlighted(NiftyconfTile * t, gboolean is_highlighted)
 {
         if(!t)
                 NFT_LOG_NULL();
@@ -140,8 +134,7 @@ void tile_set_highlighted(
  * getter for boolean value whether element
  * tree is currently collapsed
  */
-gboolean tile_get_collapsed(
-        NiftyconfTile * t)
+gboolean tile_get_collapsed(NiftyconfTile * t)
 {
         if(!t)
                 NFT_LOG_NULL(false);
@@ -154,9 +147,7 @@ gboolean tile_get_collapsed(
  * setter for boolean value whether element row in
  * tree is currently collapsed
  */
-void tile_set_collapsed(
-        NiftyconfTile * t,
-        gboolean is_collapsed)
+void tile_set_collapsed(NiftyconfTile * t, gboolean is_collapsed)
 {
         if(!t)
                 NFT_LOG_NULL();
@@ -168,8 +159,7 @@ void tile_set_collapsed(
 /**
  * getter for libniftyled object
  */
-LedTile *tile_niftyled(
-        NiftyconfTile * t)
+LedTile *tile_niftyled(NiftyconfTile * t)
 {
         if(!t)
                 return NULL;
@@ -181,8 +171,7 @@ LedTile *tile_niftyled(
 /**
  * allocate new element
  */
-NiftyconfTile *tile_register_to_gui(
-        LedTile * t)
+NiftyconfTile *tile_register_to_gui(LedTile * t)
 {
 
         /* allocate chain if this tile has one */
@@ -237,8 +226,7 @@ NiftyconfTile *tile_register_to_gui(
 /**
  * free element
  */
-void tile_unregister_from_gui(
-        NiftyconfTile * t)
+void tile_unregister_from_gui(NiftyconfTile * t)
 {
         if(!t)
                 return;
@@ -272,8 +260,7 @@ void tile_unregister_from_gui(
 
 
 /** create new tile for hardware parent */
-gboolean tile_of_hardware_new(
-        NiftyconfHardware * parent)
+gboolean tile_of_hardware_new(NiftyconfHardware * parent)
 {
         /* create new tile */
         LedTile *n;
@@ -302,8 +289,7 @@ gboolean tile_of_hardware_new(
 
 
 /** create new tile for tile parent */
-gboolean tile_of_tile_new(
-        NiftyconfTile * parent)
+gboolean tile_of_tile_new(NiftyconfTile * parent)
 {
         /* create new tile */
         LedTile *n;
@@ -321,8 +307,7 @@ gboolean tile_of_tile_new(
 
 
 /** remove tile from current setup */
-void tile_destroy(
-        NiftyconfTile * tile)
+void tile_destroy(NiftyconfTile * tile)
 {
         if(!tile)
                 NFT_LOG_NULL();
@@ -340,15 +325,13 @@ void tile_destroy(
 /**
  * initialize tile module
  */
-gboolean tile_init(
-        )
+gboolean tile_init()
 {
         return true;
 }
 
 /** deinitialize this module */
-void tile_deinit(
-        )
+void tile_deinit()
 {
 
 }

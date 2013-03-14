@@ -73,8 +73,7 @@ static NiftyconfRenderer *_renderer;
  ******************************************************************************/
 
 /** unregister setup */
-static void _unregister(
-        )
+static void _unregister()
 {
         if(!_setup)
                 NFT_LOG_NULL();
@@ -115,30 +114,26 @@ static void _unregister(
 
 
 /** getter for current setup */
-LedSetup *setup_get_current(
-        )
+LedSetup *setup_get_current()
 {
         return _setup;
 }
 
 
 /** getter for renderer of current setup */
-NiftyconfRenderer *setup_get_renderer(
-        )
+NiftyconfRenderer *setup_get_renderer()
 {
         return _renderer;
 }
 
 /** getter for current filename */
-const char *setup_get_current_filename(
-        )
+const char *setup_get_current_filename()
 {
         return _current_filename;
 }
 
 /** setter for current filename */
-void setup_set_current_filename(
-        const char *filename)
+void setup_set_current_filename(const char *filename)
 {
         free(_current_filename);
         _current_filename = strdup(filename);
@@ -146,16 +141,14 @@ void setup_set_current_filename(
 
 
 /** getter for current preference context */
-LedPrefs *setup_get_prefs(
-        )
+LedPrefs *setup_get_prefs()
 {
         return _prefs;
 }
 
 
 /** register new setup */
-NftResult setup_register_to_gui(
-        LedSetup * s)
+NftResult setup_register_to_gui(LedSetup * s)
 {
         if(!s)
                 NFT_LOG_NULL(NFT_FAILURE);
@@ -217,22 +210,20 @@ NftResult setup_register_to_gui(
 
 
 /** initialize this module */
-gboolean setup_init(
-        )
+gboolean setup_init()
 {
         /* initialize preference context */
         if(!(_prefs = led_prefs_init()))
                 return false;
 
-		setup_set_current_filename("Unnamed.xml");
-		
+        setup_set_current_filename("Unnamed.xml");
+
         return true;
 }
 
 
 /** deinitialize this module */
-void setup_deinit(
-        )
+void setup_deinit()
 {
         led_prefs_deinit(_prefs);
 }

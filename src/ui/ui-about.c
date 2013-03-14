@@ -68,8 +68,7 @@ static GtkBuilder *_ui;
 
 
 /** show/hide window */
-void ui_about_set_visible(
-        gboolean visible)
+void ui_about_set_visible(gboolean visible)
 {
         gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);
         gtk_widget_show(GTK_WIDGET(UI("window")));
@@ -77,8 +76,7 @@ void ui_about_set_visible(
 
 
 /** initialize setup tree module */
-gboolean ui_about_init(
-        )
+gboolean ui_about_init()
 {
         if(!(_ui = ui_builder("niftyconf-about.ui")))
                 return false;
@@ -95,8 +93,7 @@ gboolean ui_about_init(
 
 
 /** deinitialize this module */
-void ui_about_deinit(
-        )
+void ui_about_deinit()
 {
         g_object_unref(_ui);
 }
@@ -107,9 +104,7 @@ void ui_about_deinit(
  ******************************************************************************/
 
 /** hide dialog */
-void on_about_dialog_closed(
-        GtkDialog * arg0,
-        gpointer user_data)
+void on_about_dialog_closed(GtkDialog * arg0, gpointer user_data)
 {
 
         gtk_widget_set_visible(GTK_WIDGET(arg0), false);
@@ -117,10 +112,9 @@ void on_about_dialog_closed(
 
 
 /** hide dialog */
-G_MODULE_EXPORT gboolean on_about_dialog_response(
-        GtkDialog * dialog,
-        gint response_id,
-        gpointer user_data)
+G_MODULE_EXPORT gboolean on_about_dialog_response(GtkDialog * dialog,
+                                                  gint response_id,
+                                                  gpointer user_data)
 {
         gtk_widget_set_visible(GTK_WIDGET(dialog), false);
         return true;

@@ -57,8 +57,7 @@
  * return string holding GIT version. This is done to always reflect the correct
  * version by supplying the current git version via the -D compiler option
  */
-const char *version_git(
-        )
+const char *version_git()
 {
         return ("@PACKAGE_GIT_VERSION@");
 }
@@ -67,8 +66,7 @@ const char *version_git(
 /**
  * return long version string
  */
-const char *version_long(
-        )
+const char *version_long()
 {
         static char tmp[128];
 

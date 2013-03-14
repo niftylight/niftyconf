@@ -66,8 +66,7 @@ static GtkBuilder *_ui;
  ******************************************************************************/
 
 /** set info */
-void ui_info_hardware_set(
-        NiftyconfHardware * hardware)
+void ui_info_hardware_set(NiftyconfHardware * hardware)
 {
         LedHardware *h = hardware_niftyled(hardware);
 
@@ -91,8 +90,7 @@ void ui_info_hardware_set(
 
 
 /** show/hide window */
-void ui_info_hardware_set_visible(
-        gboolean visible)
+void ui_info_hardware_set_visible(gboolean visible)
 {
         gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);
         gtk_widget_show(GTK_WIDGET(UI("window")));
@@ -100,8 +98,7 @@ void ui_info_hardware_set_visible(
 
 
 /** initialize setup tree module */
-gboolean ui_info_hardware_init(
-        )
+gboolean ui_info_hardware_init()
 {
         if(!(_ui = ui_builder("niftyconf-info-hardware.ui")))
                 return false;
@@ -111,8 +108,7 @@ gboolean ui_info_hardware_init(
 
 
 /** deinitialize this module */
-void ui_info_hardware_deinit(
-        )
+void ui_info_hardware_deinit()
 {
         g_object_unref(_ui);
 }
@@ -123,9 +119,8 @@ void ui_info_hardware_deinit(
  ******************************************************************************/
 
 /** close main window */
-G_MODULE_EXPORT gboolean on_info_hardware_window_delete_event(
-        GtkWidget * w,
-        GdkEvent * e)
+G_MODULE_EXPORT gboolean on_info_hardware_window_delete_event(GtkWidget * w,
+                                                              GdkEvent * e)
 {
         gtk_widget_set_visible(w, false);
         return true;

@@ -78,8 +78,7 @@ struct _NiftyconfLed
  ******************************************************************************/
 
 /** getter for position inside chain */
-LedCount led_get_pos(
-        NiftyconfLed * l)
+LedCount led_get_pos(NiftyconfLed * l)
 {
         if(!l)
                 NFT_LOG_NULL(0);
@@ -89,8 +88,7 @@ LedCount led_get_pos(
 
 
 /** getter for parent chain */
-NiftyconfChain *led_get_chain(
-        NiftyconfLed * l)
+NiftyconfChain *led_get_chain(NiftyconfLed * l)
 {
         if(!l)
                 NFT_LOG_NULL(NULL);
@@ -100,8 +98,7 @@ NiftyconfChain *led_get_chain(
 
 
 /** getter for renderer */
-NiftyconfRenderer *led_get_renderer(
-        NiftyconfLed * l)
+NiftyconfRenderer *led_get_renderer(NiftyconfLed * l)
 {
         if(!l)
                 NFT_LOG_NULL(NULL);
@@ -111,8 +108,7 @@ NiftyconfRenderer *led_get_renderer(
 
 
 /** getter for boolean value whether element is currently highlighted */
-gboolean led_get_highlighted(
-        NiftyconfLed * l)
+gboolean led_get_highlighted(NiftyconfLed * l)
 {
         if(!l)
                 NFT_LOG_NULL(false);
@@ -122,9 +118,7 @@ gboolean led_get_highlighted(
 
 
 /* setter for boolean value whether element is currently highlighted */
-void led_set_highlighted(
-        NiftyconfLed * l,
-        gboolean is_highlighted)
+void led_set_highlighted(NiftyconfLed * l, gboolean is_highlighted)
 {
         if(!l)
                 NFT_LOG_NULL();
@@ -142,8 +136,7 @@ void led_set_highlighted(
 /**
  * getter for libniftyled object
  */
-Led *led_niftyled(
-        NiftyconfLed * l)
+Led *led_niftyled(NiftyconfLed * l)
 {
         if(!l)
                 return NULL;
@@ -153,9 +146,7 @@ Led *led_niftyled(
 
 
 /** dump element definition to printable string - use free() to deallacote the result */
-char *led_dump(
-        NiftyconfLed * led,
-        gboolean encapsulation)
+char *led_dump(NiftyconfLed * led, gboolean encapsulation)
 {
         Led *l = led_niftyled(led);
         LedPrefsNode *n;
@@ -177,10 +168,8 @@ char *led_dump(
 /**
  * allocate new element
  */
-NiftyconfLed *led_register_to_gui(
-        Led * l,
-        NiftyconfChain * chain,
-        LedCount pos)
+NiftyconfLed *led_register_to_gui(Led * l,
+                                  NiftyconfChain * chain, LedCount pos)
 {
         NiftyconfLed *n;
         if(!(n = calloc(1, sizeof(NiftyconfLed))))
@@ -215,8 +204,7 @@ NiftyconfLed *led_register_to_gui(
 /**
  * free element
  */
-void led_unregister_from_gui(
-        NiftyconfLed * l)
+void led_unregister_from_gui(NiftyconfLed * l)
 {
         if(!l)
                 return;
@@ -233,16 +221,14 @@ void led_unregister_from_gui(
 /**
  * initialize led module
  */
-gboolean led_init(
-        )
+gboolean led_init()
 {
         return true;
 }
 
 
 /** deinitialize this module */
-void led_deinit(
-        )
+void led_deinit()
 {
 
 }

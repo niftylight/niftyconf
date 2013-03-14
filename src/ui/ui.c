@@ -54,12 +54,11 @@
 
 /******************************************************************************
  ******************************************************************************/
- 
+
 /**
  * build UI
  */
-GtkBuilder *ui_builder(
-        gchar * file)
+GtkBuilder *ui_builder(gchar * file)
 {
         /* create ui */
         GtkBuilder *ui;
@@ -73,7 +72,8 @@ GtkBuilder *ui_builder(
         if(gtk_builder_add_from_file(ui, s, NULL) == 0)
         {
                 /* try to load from source dir */
-                gchar *s2 = g_build_filename(DATADIR, PACKAGE_NAME, file, NULL);
+                gchar *s2 =
+                        g_build_filename(DATADIR, PACKAGE_NAME, file, NULL);
 
                 GError *error = NULL;
                 if(gtk_builder_add_from_file(ui, s2, &error) == 0)

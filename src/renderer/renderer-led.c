@@ -56,9 +56,7 @@
  ******************************************************************************/
 
 /** renderer for LEDs */
-static NftResult _render_led(
-        cairo_surface_t ** s,
-        gpointer element)
+static NftResult _render_led(cairo_surface_t ** s, gpointer element)
 {
         if(!s || !*s || !element)
                 NFT_LOG_NULL(NFT_FAILURE);
@@ -149,8 +147,7 @@ static NftResult _render_led(
  ******************************************************************************/
 
 /** damage led renderer to queue re-render */
-void renderer_led_damage(
-        NiftyconfLed * led)
+void renderer_led_damage(NiftyconfLed * led)
 {
         /* damage this led's renderer */
         renderer_damage(led_get_renderer(led));
@@ -161,8 +158,7 @@ void renderer_led_damage(
 
 
 /** allocate new renderer for a Chain */
-NiftyconfRenderer *renderer_led_new(
-        NiftyconfLed * led)
+NiftyconfRenderer *renderer_led_new(NiftyconfLed * led)
 {
         if(!led)
                 NFT_LOG_NULL(NULL);

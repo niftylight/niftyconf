@@ -57,9 +57,7 @@
  ******************************************************************************/
 
 /** renderer for setups */
-static NftResult _render_setup(
-        cairo_surface_t ** surface,
-        gpointer element)
+static NftResult _render_setup(cairo_surface_t ** surface, gpointer element)
 {
         /* setup to render */
         LedSetup *s = (LedSetup *) element;
@@ -156,8 +154,7 @@ static NftResult _render_setup(
  ******************************************************************************/
 
 /** allocate new renderer for a Setup */
-NiftyconfRenderer *renderer_setup_new(
-        )
+NiftyconfRenderer *renderer_setup_new()
 {
         LedSetup *s = setup_get_current();
 
@@ -173,8 +170,7 @@ NiftyconfRenderer *renderer_setup_new(
 
 
 /** damage setup renderer to queue re-render */
-void renderer_setup_damage(
-        )
+void renderer_setup_damage()
 {
         renderer_damage(setup_get_renderer());
 }

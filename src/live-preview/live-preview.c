@@ -58,11 +58,9 @@ static bool _enabled;
 
 
 /** configure from preferences */
-static NftResult _this_from_prefs(
-        NftPrefs * prefs,
-        void **newObj,
-        NftPrefsNode * node,
-        void *userptr)
+static NftResult _this_from_prefs(NftPrefs * prefs,
+                                  void **newObj,
+                                  NftPrefsNode * node, void *userptr)
 {
         /* hardware live preview enabled? */
         bool live_preview = false;
@@ -72,27 +70,23 @@ static NftResult _this_from_prefs(
                                        live_preview);
         _enabled = live_preview;
 
-		return NFT_SUCCESS;
+        return NFT_SUCCESS;
 }
 
 
 /** save configuration to preferences */
-static NftResult _this_to_prefs(
-        NftPrefs * prefs,
-        NftPrefsNode * newNode,
-        void *obj,
-        void *userptr)
+static NftResult _this_to_prefs(NftPrefs * prefs,
+                                NftPrefsNode * newNode,
+                                void *obj, void *userptr)
 {
-		if(!nft_prefs_node_prop_boolean_set(newNode, "active", _enabled))
+        if(!nft_prefs_node_prop_boolean_set(newNode, "active", _enabled))
                 return NFT_FAILURE;
 
-		return NFT_SUCCESS;
+        return NFT_SUCCESS;
 }
 
 
-static void _fill_chain(
-        LedChain * c,
-        long long int val)
+static void _fill_chain(LedChain * c, long long int val)
 {
         LedCount i;
         for(i = 0; i < led_chain_get_ledcount(c); i++)
@@ -102,9 +96,7 @@ static void _fill_chain(
 }
 
 
-static void _fill_tile(
-        LedTile * t,
-        long long int val)
+static void _fill_tile(LedTile * t, long long int val)
 {
         /* does tile have a chain? */
         LedChain *c;
@@ -124,39 +116,36 @@ static void _fill_tile(
 /** initialize this module */
 NftResult live_preview_init()
 {
-		/* register prefs class for this module */
+        /* register prefs class for this module */
         if(!nft_prefs_class_register
            (prefs(), "live-preview", _this_from_prefs, _this_to_prefs))
                 g_error("Failed to register prefs class for \"live-preview\"");
 
-		return NFT_SUCCESS;
+        return NFT_SUCCESS;
 }
 
 /** deinitialize this module */
 void live_preview_deinit()
 {
-		/* unregister prefs class */
+        /* unregister prefs class */
         nft_prefs_class_unregister(prefs(), "live-preview");
 }
 
 /** globally enable/disable the live preview */
-void live_preview_set_enabled(
-        bool enable)
+void live_preview_set_enabled(bool enable)
 {
         _enabled = enable;
 }
 
 
-bool live_preview_get_enabled(
-        )
+bool live_preview_get_enabled()
 {
         return _enabled;
 }
 
 
 /** clear preview */
-void live_preview_clear(
-        )
+void live_preview_clear()
 {
         if(!_enabled)
                 return;
@@ -178,8 +167,7 @@ void live_preview_clear(
 }
 
 
-void live_preview_highlight_chain(
-        NiftyconfChain * chain)
+void live_preview_highlight_chain(NiftyconfChain * chain)
 {
         if(!_enabled)
                 return;
@@ -200,8 +188,7 @@ void live_preview_highlight_chain(
 }
 
 
-void live_preview_highlight_hardware(
-        NiftyconfHardware * hardware)
+void live_preview_highlight_hardware(NiftyconfHardware * hardware)
 {
         if(!_enabled)
                 return;
@@ -218,8 +205,7 @@ void live_preview_highlight_hardware(
 }
 
 
-void live_preview_highlight_tile(
-        NiftyconfTile * tile)
+void live_preview_highlight_tile(NiftyconfTile * tile)
 {
         if(!_enabled)
                 return;
@@ -237,8 +223,7 @@ void live_preview_highlight_tile(
 }
 
 
-void live_preview_highlight_led(
-        NiftyconfLed * led)
+void live_preview_highlight_led(NiftyconfLed * led)
 {
         if(!_enabled)
                 return;
@@ -258,12 +243,11 @@ void live_preview_highlight_led(
         if(led_chain_get_parent_tile(c))
                 _refresh_mapping = true;
 
-		led_chain_print(c, L_INFO);
+        led_chain_print(c, L_INFO);
 }
 
 
-void live_preview_show(
-        )
+void live_preview_show()
 {
         if(!_enabled)
                 return;
@@ -279,9 +263,9 @@ void live_preview_show(
                 _refresh_mapping = false;
         }
 
-		if(!led_hardware_list_refresh_gain(h))
-				return;
-		
+        if(!led_hardware_list_refresh_gain(h))
+                return;
+
         if(!led_hardware_list_send(h))
                 return;
 

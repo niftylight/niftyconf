@@ -59,9 +59,7 @@
  ******************************************************************************/
 
 /** renderer for tiles */
-static NftResult _render_tile(
-        cairo_surface_t ** s,
-        gpointer element)
+static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
 {
         if(!s || !element)
                 NFT_LOG_NULL(NFT_FAILURE);
@@ -242,8 +240,7 @@ static NftResult _render_tile(
  ******************************************************************************/
 
 /** damage tile renderer to queue re-render */
-void renderer_tile_damage(
-        NiftyconfTile * tile)
+void renderer_tile_damage(NiftyconfTile * tile)
 {
         LedTile *t = tile_niftyled(tile);
 
@@ -264,8 +261,7 @@ void renderer_tile_damage(
 
 
 /** allocate new renderer for a Tile */
-NiftyconfRenderer *renderer_tile_new(
-        NiftyconfTile * tile)
+NiftyconfRenderer *renderer_tile_new(NiftyconfTile * tile)
 {
         if(!tile)
                 NFT_LOG_NULL(NULL);

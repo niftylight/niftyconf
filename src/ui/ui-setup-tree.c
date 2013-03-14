@@ -95,14 +95,12 @@ static bool _clear_in_progress;
  ****************************** STATIC FUNCTIONS ******************************
  ******************************************************************************/
 
-static void on_selection_changed(GtkTreeSelection *selection, gpointer u);
+static void on_selection_changed(GtkTreeSelection * selection, gpointer u);
 
 
 /** helper to append element to treeview */
-static void _tree_append_chain(
-        GtkTreeStore * s,
-        LedChain * c,
-        GtkTreeIter * parent)
+static void _tree_append_chain(GtkTreeStore * s,
+                               LedChain * c, GtkTreeIter * parent)
 {
         NiftyconfChain *chain = led_chain_get_privdata(c);
 
@@ -125,10 +123,8 @@ static void _tree_append_chain(
 
 
 /** helper to append element to treeview */
-static void _tree_append_tile(
-        GtkTreeStore * s,
-        LedTile * t,
-        GtkTreeIter * parent)
+static void _tree_append_tile(GtkTreeStore * s,
+                              LedTile * t, GtkTreeIter * parent)
 {
         NiftyconfTile *tile = led_tile_get_privdata(t);
 
@@ -167,9 +163,7 @@ static void _tree_append_tile(
 
 
 /** helper to append element to treeview */
-static void _tree_append_hardware(
-        GtkTreeStore * s,
-        LedHardware * h)
+static void _tree_append_hardware(GtkTreeStore * s, LedHardware * h)
 {
         NiftyconfHardware *hardware = led_hardware_get_privdata(h);
 
@@ -197,9 +191,7 @@ static void _tree_append_hardware(
 
 
 /** wrapper for do_* functions */
-static void _foreach_remove_hardware(
-        NIFTYLED_TYPE t,
-        gpointer e)
+static void _foreach_remove_hardware(NIFTYLED_TYPE t, gpointer e)
 {
         if(t != LED_HARDWARE_T)
                 return;
@@ -209,9 +201,7 @@ static void _foreach_remove_hardware(
 
 
 /** wrapper for do_* functions */
-static void _foreach_remove_tile(
-        NIFTYLED_TYPE t,
-        gpointer e)
+static void _foreach_remove_tile(NIFTYLED_TYPE t, gpointer e)
 {
         if(t != LED_TILE_T)
                 return;
@@ -221,9 +211,7 @@ static void _foreach_remove_tile(
 
 
 /** wrapper for do_* functions */
-static void _foreach_remove_chain(
-        NIFTYLED_TYPE type,
-        gpointer e)
+static void _foreach_remove_chain(NIFTYLED_TYPE type, gpointer e)
 {
         /* works only if tile-element is selected */
         if(type != LED_TILE_T)
@@ -234,11 +222,10 @@ static void _foreach_remove_chain(
 
 
 /** either collapse or expand a row of the setup-tree */
-static gboolean _foreach_element_refresh_collapse(
-        GtkTreeModel * model,
-        GtkTreePath * path,
-        GtkTreeIter * iter,
-        gpointer u)
+static gboolean _foreach_element_refresh_collapse(GtkTreeModel * model,
+                                                  GtkTreePath * path,
+                                                  GtkTreeIter * iter,
+                                                  gpointer u)
 {
         /* get niftyled element */
         gpointer *element;
@@ -284,11 +271,10 @@ static gboolean _foreach_element_refresh_collapse(
 
 
 /** set selection-state from a row of the setup-tree */
-static gboolean _foreach_element_refresh_highlight(
-        GtkTreeModel * model,
-        GtkTreePath * path,
-        GtkTreeIter * iter,
-        gpointer u)
+static gboolean _foreach_element_refresh_highlight(GtkTreeModel * model,
+                                                   GtkTreePath * path,
+                                                   GtkTreeIter * iter,
+                                                   gpointer u)
 {
         /* get niftyled element */
         gpointer *element;
@@ -341,9 +327,7 @@ static gboolean _foreach_element_refresh_highlight(
 
 
 /** foreach: function to process an element that is currently selected */
-static void _foreach_element_selected(
-        NIFTYLED_TYPE t,
-        gpointer e)
+static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer e)
 {
         ui_setup_props_hide();
 
@@ -411,8 +395,13 @@ static void _foreach_element_selected(
                                                  led_tile_get_chain
                                                  (tile_niftyled
                                                   ((NiftyconfTile *) e)));
-                        gtk_widget_set_sensitive(GTK_WIDGET(niftyconf_ui("item_chain_remove")), 
-                                                  (led_tile_get_chain(tile_niftyled((NiftyconfTile *) e)) != NULL));
+                        gtk_widget_set_sensitive(GTK_WIDGET
+                                                 (niftyconf_ui
+                                                  ("item_chain_remove")),
+                                                 (led_tile_get_chain
+                                                  (tile_niftyled
+                                                   ((NiftyconfTile *) e)) !=
+                                                  NULL));
 
                         /* highlight tile */
                         tile_set_highlighted((NiftyconfTile *) e, true);
@@ -477,9 +466,7 @@ static void _foreach_element_selected(
 
 
 /** foreach: unhighlight element */
-static void _foreach_unhighlight_element(
-        NIFTYLED_TYPE t,
-        gpointer e)
+static void _foreach_unhighlight_element(NIFTYLED_TYPE t, gpointer e)
 {
         switch (t)
         {
@@ -522,9 +509,7 @@ static void _foreach_unhighlight_element(
 
 
 /** foreach: highlight element */
-static void _foreach_highlight_element(
-        NIFTYLED_TYPE t,
-        gpointer e)
+static void _foreach_highlight_element(NIFTYLED_TYPE t, gpointer e)
 {
         switch (t)
         {
@@ -556,9 +541,7 @@ static void _foreach_highlight_element(
 
 
 /** set currently active element */
-static void _foreach_set_current_element(
-        NIFTYLED_TYPE t,
-        gpointer e)
+static void _foreach_set_current_element(NIFTYLED_TYPE t, gpointer e)
 {
         switch (t)
         {
@@ -594,11 +577,9 @@ static void _foreach_set_current_element(
 
 
 /** recursion helper */
-static void _do_foreach_iter(
-        GtkTreeModel * m,
-        GtkTreeIter * i,
-        void (*func) (NIFTYLED_TYPE t,
-                      gpointer e))
+static void _do_foreach_iter(GtkTreeModel * m,
+                             GtkTreeIter * i,
+                             void (*func) (NIFTYLED_TYPE t, gpointer e))
 {
         do
         {
@@ -623,8 +604,7 @@ static void _do_foreach_iter(
 
 
 /** build setup-tree according to current setup */
-static void _tree_build(
-        )
+static void _tree_build()
 {
         /* get model */
         GtkTreeModel *m =
@@ -663,9 +643,8 @@ static void _tree_build(
  ******************************************************************************/
 
 /** run function on every tree-element */
-void ui_setup_tree_do_foreach_element(
-        void (*func) (NIFTYLED_TYPE t,
-                      gpointer e))
+void ui_setup_tree_do_foreach_element(void (*func) (NIFTYLED_TYPE t,
+                                                    gpointer e))
 {
         /* get model */
         GtkTreeModel *m =
@@ -677,9 +656,9 @@ void ui_setup_tree_do_foreach_element(
 
 
 /** run function on every selected tree-element (multiple selections) */
-void ui_setup_tree_do_foreach_selected_element(
-        void (*func) (NIFTYLED_TYPE t,
-                      gpointer element))
+void ui_setup_tree_do_foreach_selected_element(void (*func) (NIFTYLED_TYPE t,
+                                                             gpointer
+                                                             element))
 {
         /* get current treeview selection */
         GtkTreeSelection *selection;
@@ -717,9 +696,9 @@ void ui_setup_tree_do_foreach_selected_element(
 
 
 /** run function on last selected element */
-void ui_setup_tree_do_for_last_selected_element(
-        void (*func) (NIFTYLED_TYPE t,
-                      gpointer element))
+void ui_setup_tree_do_for_last_selected_element(void (*func) (NIFTYLED_TYPE t,
+                                                              gpointer
+                                                              element))
 {
         /* get current treeview selection */
         GtkTreeSelection *selection;
@@ -746,9 +725,8 @@ void ui_setup_tree_do_for_last_selected_element(
 
 
 /** get last of currently selected elements */
-void ui_setup_tree_get_last_selected_element(
-        NIFTYLED_TYPE * t,
-        gpointer * element)
+void ui_setup_tree_get_last_selected_element(NIFTYLED_TYPE * t,
+                                             gpointer * element)
 {
         *t = LED_INVALID_T;
         *element = NULL;
@@ -780,9 +758,8 @@ void ui_setup_tree_get_last_selected_element(
 
 
 /** get first of currently selected elements */
-void ui_setup_tree_get_first_selected_element(
-        NIFTYLED_TYPE * t,
-        gpointer * element)
+void ui_setup_tree_get_first_selected_element(NIFTYLED_TYPE * t,
+                                              gpointer * element)
 {
         *t = LED_INVALID_T;
         *element = NULL;
@@ -814,9 +791,7 @@ void ui_setup_tree_get_first_selected_element(
 
 
 /** unselect all but this element */
-void ui_setup_tree_highlight_only(
-        NIFTYLED_TYPE t,
-        gpointer element)
+void ui_setup_tree_highlight_only(NIFTYLED_TYPE t, gpointer element)
 {
         /* unselect all elements */
         ui_setup_tree_do_foreach_element(_foreach_unhighlight_element);
@@ -829,75 +804,71 @@ void ui_setup_tree_highlight_only(
 
 
 /** clear setup tree */
-void ui_setup_tree_clear(
-        )
+void ui_setup_tree_clear()
 {
         if(!GTK_TREE_STORE(UI("treestore")))
                 return;
 
-		_clear_in_progress = true;
+        _clear_in_progress = true;
         gtk_tree_store_clear(GTK_TREE_STORE(UI("treestore")));
-		_clear_in_progress = false;
+        _clear_in_progress = false;
 }
 
 
 /** refresh setup-tree to reflect changes to the setup */
-void ui_setup_tree_refresh(
-        )
+void ui_setup_tree_refresh()
 {
         /* clear tree */
         ui_setup_tree_clear();
 
-		_clear_in_progress = true;
-		
+        _clear_in_progress = true;
+
         /* rebuild tree */
         _tree_build();
 
-		_clear_in_progress = false;
-		
+        _clear_in_progress = false;
+
         /* redraw */
         renderer_all_queue_draw();
 }
 
 
 /** getter for our widget */
-GtkWidget *ui_setup_tree_get_widget(
-        )
+GtkWidget *ui_setup_tree_get_widget()
 {
         return GTK_WIDGET(UI("box"));
 }
 
 
 /** getter for treeview */
-GtkTreeView *ui_setup_tree_view(
-        )
+GtkTreeView *ui_setup_tree_view()
 {
         return GTK_TREE_VIEW(UI("treeview"));
 }
 
 
 /** get type of currently selected element */
-NIFTYLED_TYPE ui_setup_tree_current_element_type(
-        )
+NIFTYLED_TYPE ui_setup_tree_current_element_type()
 {
         return _current_type;
 }
 
 
 /** initialize setup tree module */
-gboolean ui_setup_tree_init(
-        )
+gboolean ui_setup_tree_init()
 {
         if(!(_ui = ui_builder("niftyconf-setup-tree.ui")))
                 return false;
 
         /* set selection mode for setup tree */
-		GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(UI("treeview")));
+        GtkTreeSelection *selection =
+                gtk_tree_view_get_selection(GTK_TREE_VIEW(UI("treeview")));
         gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
 
-		/* connect signal handler */
-		g_signal_connect(selection, "changed", G_CALLBACK(on_selection_changed), NULL);
-		
+        /* connect signal handler */
+        g_signal_connect(selection, "changed",
+                         G_CALLBACK(on_selection_changed), NULL);
+
         /* initialize setup treeview */
         GtkTreeViewColumn *col = GTK_TREE_VIEW_COLUMN(UI("column_element"));
         GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
@@ -911,8 +882,7 @@ gboolean ui_setup_tree_init(
 
 
 /** deinitialize this module */
-void ui_setup_tree_deinit(
-        )
+void ui_setup_tree_deinit()
 {
         g_object_unref(_ui);
 }
@@ -923,29 +893,26 @@ void ui_setup_tree_deinit(
  ******************************************************************************/
 
 /** menuitem "collapse all" activated */
-G_MODULE_EXPORT void on_niftyconf_menu_tree_collapse_activate(
-        GtkWidget * i,
-        gpointer u)
+G_MODULE_EXPORT void on_niftyconf_menu_tree_collapse_activate(GtkWidget * i,
+                                                              gpointer u)
 {
         gtk_tree_view_collapse_all(ui_setup_tree_view());
 }
 
 
 /** menuitem "expand all" activated */
-G_MODULE_EXPORT void on_niftyconf_menu_tree_expand_activate(
-        GtkWidget * i,
-        gpointer u)
+G_MODULE_EXPORT void on_niftyconf_menu_tree_expand_activate(GtkWidget * i,
+                                                            gpointer u)
 {
         gtk_tree_view_expand_all(ui_setup_tree_view());
 }
 
 
 /** user collapsed tree row */
-G_MODULE_EXPORT void on_setup_treeview_collapsed(
-        GtkTreeView * tv,
-        GtkTreeIter * i,
-        GtkTreePath * path,
-        gpointer u)
+G_MODULE_EXPORT void on_setup_treeview_collapsed(GtkTreeView * tv,
+                                                 GtkTreeIter * i,
+                                                 GtkTreePath * path,
+                                                 gpointer u)
 {
         GtkTreeModel *m = gtk_tree_view_get_model(tv);
         gpointer *p;
@@ -975,11 +942,10 @@ G_MODULE_EXPORT void on_setup_treeview_collapsed(
 
 
 /** user expanded tree row */
-G_MODULE_EXPORT void on_setup_treeview_expanded(
-        GtkTreeView * tv,
-        GtkTreeIter * i,
-        GtkTreePath * path,
-        gpointer u)
+G_MODULE_EXPORT void on_setup_treeview_expanded(GtkTreeView * tv,
+                                                GtkTreeIter * i,
+                                                GtkTreePath * path,
+                                                gpointer u)
 {
         GtkTreeModel *m;
         if(!(m = gtk_tree_view_get_model(tv)))
@@ -1013,21 +979,21 @@ G_MODULE_EXPORT void on_setup_treeview_expanded(
 
 
 /** selection changed */
-static void on_selection_changed(GtkTreeSelection *selection, gpointer u)
+static void on_selection_changed(GtkTreeSelection * selection, gpointer u)
 {
-		if(_clear_in_progress)
-				return;
+        if(_clear_in_progress)
+                return;
 
-		/* clear live preview */
+        /* clear live preview */
         live_preview_clear();
-		
-		if(gtk_tree_selection_count_selected_rows(selection) <= 0)
+
+        if(gtk_tree_selection_count_selected_rows(selection) <= 0)
         {
                 ui_setup_props_hide();
-				live_preview_show();
+                live_preview_show();
                 return;
         }
-		
+
         /* unhighlight all rows */
         ui_setup_tree_do_foreach_element(_foreach_unhighlight_element);
 
@@ -1047,10 +1013,9 @@ static void on_selection_changed(GtkTreeSelection *selection, gpointer u)
 
 
 /** menu-entry selected */
-G_MODULE_EXPORT gboolean on_popup_remove_hardware(
-        GtkWidget * w,
-        GdkEventButton * e,
-        gpointer u)
+G_MODULE_EXPORT gboolean on_popup_remove_hardware(GtkWidget * w,
+                                                  GdkEventButton * e,
+                                                  gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -1071,10 +1036,8 @@ G_MODULE_EXPORT gboolean on_popup_remove_hardware(
 
 
 /** menu-entry selected */
-G_MODULE_EXPORT gboolean on_popup_remove_tile(
-        GtkWidget * w,
-        GdkEventButton * e,
-        gpointer u)
+G_MODULE_EXPORT gboolean on_popup_remove_tile(GtkWidget * w,
+                                              GdkEventButton * e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -1095,10 +1058,8 @@ G_MODULE_EXPORT gboolean on_popup_remove_tile(
 
 
 /** menu-entry selected */
-G_MODULE_EXPORT gboolean on_popup_remove_chain(
-        GtkWidget * w,
-        GdkEventButton * e,
-        gpointer u)
+G_MODULE_EXPORT gboolean on_popup_remove_chain(GtkWidget * w,
+                                               GdkEventButton * e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -1119,10 +1080,8 @@ G_MODULE_EXPORT gboolean on_popup_remove_chain(
 
 
 /** menu-entry selected */
-G_MODULE_EXPORT gboolean on_popup_add_hardware(
-        GtkWidget * w,
-        GdkEventButton * e,
-        gpointer u)
+G_MODULE_EXPORT gboolean on_popup_add_hardware(GtkWidget * w,
+                                               GdkEventButton * e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -1137,10 +1096,8 @@ G_MODULE_EXPORT gboolean on_popup_add_hardware(
 
 
 /** menu-entry selected */
-G_MODULE_EXPORT gboolean on_popup_add_tile(
-        GtkWidget * w,
-        GdkEventButton * e,
-        gpointer u)
+G_MODULE_EXPORT gboolean on_popup_add_tile(GtkWidget * w,
+                                           GdkEventButton * e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -1184,10 +1141,8 @@ G_MODULE_EXPORT gboolean on_popup_add_tile(
 
 
 /** menu-entry selected */
-G_MODULE_EXPORT gboolean on_popup_add_chain(
-        GtkWidget * w,
-        GdkEventButton * e,
-        gpointer u)
+G_MODULE_EXPORT gboolean on_popup_add_chain(GtkWidget * w,
+                                            GdkEventButton * e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -1202,10 +1157,9 @@ G_MODULE_EXPORT gboolean on_popup_add_chain(
 
 
 /** menu-entry selected */
-G_MODULE_EXPORT gboolean on_popup_info_hardware(
-        GtkWidget * w,
-        GdkEventButton * e,
-        gpointer u)
+G_MODULE_EXPORT gboolean on_popup_info_hardware(GtkWidget * w,
+                                                GdkEventButton * e,
+                                                gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -1219,10 +1173,8 @@ G_MODULE_EXPORT gboolean on_popup_info_hardware(
 
 
 /** menu-entry selected */
-G_MODULE_EXPORT gboolean on_popup_cut_element(
-        GtkWidget * w,
-        GdkEventButton * e,
-        gpointer u)
+G_MODULE_EXPORT gboolean on_popup_cut_element(GtkWidget * w,
+                                              GdkEventButton * e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -1235,10 +1187,8 @@ G_MODULE_EXPORT gboolean on_popup_cut_element(
 
 
 /** menu-entry selected */
-G_MODULE_EXPORT gboolean on_popup_copy_element(
-        GtkWidget * w,
-        GdkEventButton * e,
-        gpointer u)
+G_MODULE_EXPORT gboolean on_popup_copy_element(GtkWidget * w,
+                                               GdkEventButton * e, gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -1251,10 +1201,9 @@ G_MODULE_EXPORT gboolean on_popup_copy_element(
 
 
 /** menu-entry selected */
-G_MODULE_EXPORT gboolean on_popup_paste_element(
-        GtkWidget * w,
-        GdkEventButton * e,
-        gpointer u)
+G_MODULE_EXPORT gboolean on_popup_paste_element(GtkWidget * w,
+                                                GdkEventButton * e,
+                                                gpointer u)
 {
         /* only handle button-press events */
         if((e->type != GDK_BUTTON_PRESS) || (e->button != 1))
@@ -1267,20 +1216,18 @@ G_MODULE_EXPORT gboolean on_popup_paste_element(
 
 
 /** menu-entry selected */
-G_MODULE_EXPORT gboolean on_popup_import_element(
-        GtkWidget * w,
-        GdkEventButton * e,
-        gpointer u)
+G_MODULE_EXPORT gboolean on_popup_import_element(GtkWidget * w,
+                                                 GdkEventButton * e,
+                                                 gpointer u)
 {
         gtk_widget_show(GTK_WIDGET(ui_setup("filechooserdialog_import")));
         return true;
 }
 
 /** menu-entry selected */
-G_MODULE_EXPORT gboolean on_popup_export_element(
-        GtkWidget * w,
-        GdkEventButton * e,
-        gpointer u)
+G_MODULE_EXPORT gboolean on_popup_export_element(GtkWidget * w,
+                                                 GdkEventButton * e,
+                                                 gpointer u)
 {
         gtk_widget_show(GTK_WIDGET(ui_setup("filechooserdialog_export")));
         return true;
@@ -1288,10 +1235,7 @@ G_MODULE_EXPORT gboolean on_popup_export_element(
 
 
 /** create & show setup-tree popup menu */
-static void _tree_popup_menu(
-        GtkWidget * w,
-        GdkEventButton * e,
-        gpointer u)
+static void _tree_popup_menu(GtkWidget * w, GdkEventButton * e, gpointer u)
 {
 
         /* set currently active element */
@@ -1460,7 +1404,8 @@ static void _tree_popup_menu(
                         /* tile has a chain, enable "remove" menu */
                         LedTile *tile = tile_niftyled(_current_tile);
                         gtk_widget_set_sensitive(remove_chain,
-                                                 led_tile_get_chain(tile) != NULL);
+                                                 led_tile_get_chain(tile) !=
+                                                 NULL);
 
                         break;
                 }
@@ -1517,10 +1462,9 @@ static void _tree_popup_menu(
 
 
 /** mouseclick over element-tree */
-G_MODULE_EXPORT gboolean on_setup_treeview_button_pressed(
-        GtkTreeView * t,
-        GdkEventButton * e,
-        gpointer u)
+G_MODULE_EXPORT gboolean on_setup_treeview_button_pressed(GtkTreeView * t,
+                                                          GdkEventButton * e,
+                                                          gpointer u)
 {
         /* only handle button-press events */
         if(e->type != GDK_BUTTON_PRESS)
@@ -1542,9 +1486,7 @@ G_MODULE_EXPORT gboolean on_setup_treeview_button_pressed(
 
 
 /** request to generate popup-menu */
-G_MODULE_EXPORT gboolean on_setup_treeview_popup(
-        GtkWidget * t,
-        gpointer u)
+G_MODULE_EXPORT gboolean on_setup_treeview_popup(GtkWidget * t, gpointer u)
 {
         _tree_popup_menu(GTK_WIDGET(t), NULL, u);
         return true;

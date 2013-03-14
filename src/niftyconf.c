@@ -75,35 +75,33 @@ static GtkBuilder *_ui;
 
 
 /** configure from preferences */
-static NftResult _this_from_prefs(
-        NftPrefs * prefs,
-        void **newObj,
-        NftPrefsNode * node,
-        void *userptr)
+static NftResult _this_from_prefs(NftPrefs * prefs,
+                                  void **newObj,
+                                  NftPrefsNode * node, void *userptr)
 {
 
         *newObj = NULL;
 
-		
-		/* process child nodes */
-		NftPrefsNode *child;
-		for(child = nft_prefs_node_get_first_child(node);
-		    child;
-		    child = nft_prefs_node_get_next(child))
-		{
-				nft_prefs_obj_from_node(prefs, child, NULL);
-		}
 
-		/* first launch ? */
-		bool launched_before = false;
-		nft_prefs_node_prop_boolean_get(node, "launched_before", &launched_before);
+        /* process child nodes */
+        NftPrefsNode *child;
+        for(child = nft_prefs_node_get_first_child(node);
+            child; child = nft_prefs_node_get_next(child))
+        {
+                nft_prefs_obj_from_node(prefs, child, NULL);
+        }
 
-		/* show about dialog if we never launched before */
-		if(!launched_before)
-		{
-				ui_about_set_visible(true);
-		}
-		
+        /* first launch ? */
+        bool launched_before = false;
+        nft_prefs_node_prop_boolean_get(node, "launched_before",
+                                        &launched_before);
+
+        /* show about dialog if we never launched before */
+        if(!launched_before)
+        {
+                ui_about_set_visible(true);
+        }
+
         /* UI dimensions */
         gint x = 0, y = 0, width = 0, height = 0;
 
@@ -118,34 +116,36 @@ static NftResult _this_from_prefs(
                 gtk_window_move(GTK_WINDOW(UI("window")), x, y);
 
 
-		/* restore last project? */
-		char *filename;
-		if((filename = nft_prefs_node_prop_string_get(node, "last-project")))
-		{
-				ui_setup_load(filename);
-				nft_prefs_free(filename);
-		}
+        /* restore last project? */
+        char *filename;
+        if((filename = nft_prefs_node_prop_string_get(node, "last-project")))
+        {
+                ui_setup_load(filename);
+                nft_prefs_free(filename);
+        }
 
         return NFT_SUCCESS;
 }
 
 
 /** save configuration to preferences */
-static NftResult _this_to_prefs(
-        NftPrefs * prefs,
-        NftPrefsNode * newNode,
-        void *obj,
-        void *userptr)
+static NftResult _this_to_prefs(NftPrefs * prefs,
+                                NftPrefsNode * newNode,
+                                void *obj, void *userptr)
 {
 
-		/* submodules */
-		nft_prefs_node_add_child(newNode, nft_prefs_obj_to_node(prefs, "ui-log", NULL, NULL));
-		nft_prefs_node_add_child(newNode, nft_prefs_obj_to_node(prefs, "live-preview", NULL, NULL));
+        /* submodules */
+        nft_prefs_node_add_child(newNode,
+                                 nft_prefs_obj_to_node(prefs, "ui-log", NULL,
+                                                       NULL));
+        nft_prefs_node_add_child(newNode,
+                                 nft_prefs_obj_to_node(prefs, "live-preview",
+                                                       NULL, NULL));
 
-		/* mark that we were launched before */
-		nft_prefs_node_prop_boolean_set(newNode, "launched_before", true);
-		
-		/* main window geometry */
+        /* mark that we were launched before */
+        nft_prefs_node_prop_boolean_set(newNode, "launched_before", true);
+
+        /* main window geometry */
         gint x, y, width, height;
         gtk_window_get_size(GTK_WINDOW(UI("window")), &width, &height);
         gtk_window_get_position(GTK_WINDOW(UI("window")), &x, &y);
@@ -159,26 +159,23 @@ static NftResult _this_to_prefs(
                 return NFT_FAILURE;
         if(!nft_prefs_node_prop_int_set(newNode, "height", height))
                 return NFT_FAILURE;
-		
-		/* save current project */
-		if(!nft_prefs_node_prop_string_set(
-						newNode, 
-		                "last-project", 
-		                setup_get_current_filename() ? 
-		                		(char *) setup_get_current_filename() : 
-				                ""))
-				return NFT_FAILURE;
 
-		
+        /* save current project */
+        if(!nft_prefs_node_prop_string_set(newNode,
+                                           "last-project",
+                                           setup_get_current_filename()?
+                                           (char *)
+                                           setup_get_current_filename() : ""))
+                return NFT_FAILURE;
+
+
         return NFT_SUCCESS;
 }
 
 
 /** parse commandline arguments */
-static gboolean _parse_cmdline_args(
-        int argc,
-        char *argv[],
-        gchar ** setupfile)
+static gboolean _parse_cmdline_args(int argc,
+                                    char *argv[], gchar ** setupfile)
 {
         static gchar loglevelmsg[1024];
         g_snprintf(loglevelmsg, sizeof(loglevelmsg), "define loglevel (%s)",
@@ -242,8 +239,7 @@ static gboolean _parse_cmdline_args(
  ******************************************************************************/
 
 /** getter for GtkBuilder of this module */
-GObject *niftyconf_ui(
-        const char *n)
+GObject *niftyconf_ui(const char *n)
 {
         return UI(n);
 }
@@ -254,9 +250,7 @@ GObject *niftyconf_ui(
 
 
 /******************************************************************************/
-int main(
-        int argc,
-        char *argv[])
+int main(int argc, char *argv[])
 {
         /* initialize GTK stuff */
         // gtk_set_locale();
@@ -264,7 +258,7 @@ int main(
 
         /* check version */
         if(!NFT_LED_CHECK_VERSION)
-		return EXIT_FAILURE;
+                return EXIT_FAILURE;
 
         /* set default loglevel */
         nft_log_level_set(L_NOTICE);
@@ -293,8 +287,8 @@ int main(
                 g_error("Failed to initialize \"hardware\" module");
         if(!setup_init())
                 g_error("Failed to initialize \"setup\" module");
-	if(!live_preview_init())
-		g_error("Failed to initialize \"live-preview\" module");
+        if(!live_preview_init())
+                g_error("Failed to initialize \"live-preview\" module");
         if(!ui_info_hardware_init())
                 g_error("Failed to initialize \"info-hardware\" module");
         if(!ui_setup_init())
@@ -323,7 +317,7 @@ int main(
         /* restore window size & position */
         prefs_load();
 
-	/* load setup file if any given from commandline */
+        /* load setup file if any given from commandline */
         if(setupfile)
         {
                 if(!ui_setup_load(setupfile))
@@ -334,7 +328,7 @@ int main(
                 }
                 g_free(setupfile);
         }
-	
+
         /* main loop... */
         gtk_main();
 
@@ -347,7 +341,7 @@ int main(
         ui_clipboard_deinit();
         ui_setup_deinit();
         ui_info_hardware_deinit();
-	live_preview_deinit();
+        live_preview_deinit();
         setup_deinit();
         hardware_deinit();
         tile_deinit();
@@ -365,9 +359,8 @@ int main(
  ******************************************************************************/
 
 /** close main window */
-G_MODULE_EXPORT gboolean on_niftyconf_window_delete_event(
-        GtkWidget * w,
-        GdkEvent * e)
+G_MODULE_EXPORT gboolean on_niftyconf_window_delete_event(GtkWidget * w,
+                                                          GdkEvent * e)
 {
         /* store window size & position */
         prefs_save();
@@ -379,9 +372,8 @@ G_MODULE_EXPORT gboolean on_niftyconf_window_delete_event(
 
 
 /** menuitem "quit" selected */
-G_MODULE_EXPORT void on_niftyconf_menu_quit_activate(
-        GtkMenuItem * i,
-        gpointer d)
+G_MODULE_EXPORT void on_niftyconf_menu_quit_activate(GtkMenuItem * i,
+                                                     gpointer d)
 {
         gtk_main_quit();
 }
@@ -390,9 +382,8 @@ G_MODULE_EXPORT void on_niftyconf_menu_quit_activate(
 
 
 /** menu-entry selected */
-G_MODULE_EXPORT void on_niftyconf_menu_help_about_activate(
-        GtkWidget * i,
-        gpointer u)
+G_MODULE_EXPORT void on_niftyconf_menu_help_about_activate(GtkWidget * i,
+                                                           gpointer u)
 {
         ui_about_set_visible(true);
 }

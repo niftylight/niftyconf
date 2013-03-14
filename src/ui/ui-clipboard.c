@@ -84,10 +84,8 @@ static GtkClipboard *_clipboard;
 
 
 /** cut/copy node */
-static LedPrefsNode *_cut_or_copy_node(
-        NIFTYLED_TYPE t,
-        gpointer * e,
-        gboolean cut)
+static LedPrefsNode *_cut_or_copy_node(NIFTYLED_TYPE t,
+                                       gpointer * e, gboolean cut)
 {
         NFT_LOG(L_DEBUG,
                 cut ? "Cutting element (type: %d / ptr: %p)..." :
@@ -224,10 +222,8 @@ static LedPrefsNode *_cut_or_copy_node(
 
 
 /** paste element from clipboard */
-static void _paste_node(
-        LedPrefsNode * n,
-        NIFTYLED_TYPE parent_t,
-        gpointer parent_element)
+static void _paste_node(LedPrefsNode * n,
+                        NIFTYLED_TYPE parent_t, gpointer parent_element)
 {
 
         /* handle different element types */
@@ -508,8 +504,7 @@ static void _paste_node(
  ******************************************************************************/
 
 /** cut currently selected element to clipboard */
-NftResult ui_clipboard_cut_current_selection(
-        )
+NftResult ui_clipboard_cut_current_selection()
 {
         /* get currently selected element */
         NIFTYLED_TYPE t;
@@ -549,8 +544,7 @@ NftResult ui_clipboard_cut_current_selection(
 
 
 /** copy currently selected element to clipboard */
-NftResult ui_clipboard_copy_current_selection(
-        )
+NftResult ui_clipboard_copy_current_selection()
 {
         /* get currently selected element */
         NIFTYLED_TYPE t;
@@ -590,8 +584,7 @@ NftResult ui_clipboard_copy_current_selection(
 
 
 /** paste element in clipboard after currently (or end of rootlist) */
-NftResult ui_clipboard_paste_current_selection(
-        )
+NftResult ui_clipboard_paste_current_selection()
 {
         /* get currently selected element */
         NIFTYLED_TYPE t;
@@ -632,8 +625,7 @@ NftResult ui_clipboard_paste_current_selection(
 
 
 /** copy element to file */
-NftResult ui_clipboard_copy_to_file(
-        const char *filename)
+NftResult ui_clipboard_copy_to_file(const char *filename)
 {
         /* get currently selected element */
         NIFTYLED_TYPE t;
@@ -691,8 +683,7 @@ NftResult ui_clipboard_copy_to_file(
 
 
 /** paste element from a file */
-NftResult ui_clipboard_paste_from_file(
-        const char *filename)
+NftResult ui_clipboard_paste_from_file(const char *filename)
 {
         /* get currently selected element */
         NIFTYLED_TYPE t;
@@ -715,8 +706,7 @@ NftResult ui_clipboard_paste_from_file(
 
 
 /** initialize this module */
-gboolean ui_clipboard_init(
-        )
+gboolean ui_clipboard_init()
 {
         /* get clipboard */
         if(!(_clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD)))
@@ -730,8 +720,7 @@ gboolean ui_clipboard_init(
 
 
 /** deinitialize this module */
-void ui_clipboard_deinit(
-        )
+void ui_clipboard_deinit()
 {
 
 }
@@ -742,27 +731,23 @@ void ui_clipboard_deinit(
 
 
 /** menu-entry selected */
-G_MODULE_EXPORT void on_niftyconf_menu_cut_activate(
-        GtkWidget * i,
-        gpointer u)
+G_MODULE_EXPORT void on_niftyconf_menu_cut_activate(GtkWidget * i, gpointer u)
 {
         ui_clipboard_cut_current_selection();
 }
 
 
 /** menu-entry selected */
-G_MODULE_EXPORT void on_niftyconf_menu_copy_activate(
-        GtkWidget * i,
-        gpointer u)
+G_MODULE_EXPORT void on_niftyconf_menu_copy_activate(GtkWidget * i,
+                                                     gpointer u)
 {
         ui_clipboard_copy_current_selection();
 }
 
 
 /** menu-entry selected */
-G_MODULE_EXPORT void on_niftyconf_menu_paste_activate(
-        GtkWidget * i,
-        gpointer u)
+G_MODULE_EXPORT void on_niftyconf_menu_paste_activate(GtkWidget * i,
+                                                      gpointer u)
 {
         ui_clipboard_paste_current_selection();
 }
