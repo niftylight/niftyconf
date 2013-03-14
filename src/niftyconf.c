@@ -263,7 +263,8 @@ int main(
         gtk_init(&argc, &argv);
 
         /* check version */
-        NFT_LED_CHECK_VERSION;
+        if(!NFT_LED_CHECK_VERSION)
+		return EXIT_FAILURE;
 
         /* set default loglevel */
         nft_log_level_set(L_NOTICE);
@@ -272,7 +273,7 @@ int main(
         /* parse commandline arguments */
         static gchar *setupfile;
         if(!_parse_cmdline_args(argc, argv, &setupfile))
-                return -1;
+                return EXIT_FAILURE;
 
 
         /* initialize modules */
@@ -292,8 +293,8 @@ int main(
                 g_error("Failed to initialize \"hardware\" module");
         if(!setup_init())
                 g_error("Failed to initialize \"setup\" module");
-		if(!live_preview_init())
-				g_error("Failed to initialize \"live-preview\" module");
+	if(!live_preview_init())
+		g_error("Failed to initialize \"live-preview\" module");
         if(!ui_info_hardware_init())
                 g_error("Failed to initialize \"info-hardware\" module");
         if(!ui_setup_init())
@@ -329,7 +330,7 @@ int main(
                 {
                         g_warning("Failed to initialize setup from \"%s\"",
                                   setupfile);
-                        return -1;
+                        return EXIT_FAILURE;
                 }
                 g_free(setupfile);
         }
@@ -346,7 +347,7 @@ int main(
         ui_clipboard_deinit();
         ui_setup_deinit();
         ui_info_hardware_deinit();
-		live_preview_deinit();
+	live_preview_deinit();
         setup_deinit();
         hardware_deinit();
         tile_deinit();
@@ -355,7 +356,7 @@ int main(
         ui_log_deinit();
         prefs_deinit();
 
-        return 0;
+        return EXIT_SUCCESS;
 }
 
 
