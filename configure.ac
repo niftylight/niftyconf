@@ -7,16 +7,19 @@
 # --------------------------------
 #    initialization
 # --------------------------------
+
 AC_INIT([niftyconf], 
 		m4_esyscmd([./version --short]),
         [http://github.com/niftylight/niftyconf/issues],
         [niftyconf],
         [http://wiki.niftylight.de/AC_PACKAGE_NAME])
-
 AC_COPYRIGHT([Copyright (C) 2002-2012 Daniel Hiepler])        
 
-AM_INIT_AUTOMAKE([1.11 color-tests dist-bzip2 tar-ustar parallel-tests silent-rules -Wno-portability -Wall])
+AC_CANONICAL_SYSTEM
 AC_CONFIG_MACRO_DIR([m4])
+AM_INIT_AUTOMAKE([1.11 color-tests dist-bzip2 tar-ustar parallel-tests silent-rules -Wno-portability -Wall])
+
+
 
 
 # --------------------------------

@@ -17,4 +17,4 @@ fi
 
 # autogen
 autoreconf -i
-PATH=".:$PATH" ./configure --prefix=/usr/$TARGET/usr/ --target=$TARGET $*
+PATH=".:$PATH" ./configure --prefix=/usr/$TARGET/usr/ --host=$TARGET $*
