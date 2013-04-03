@@ -1,6 +1,6 @@
 #############
 # niftyconf Makefile.am
-# v0.4 - (c) Daniel Hiepler (2010-2012)
+# v0.4 - (c) Daniel Hiepler (2010-2013)
 
 
 SUBDIRS = data src

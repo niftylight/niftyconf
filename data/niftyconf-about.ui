@@ -9,7 +9,7 @@
     <property name="type_hint">dialog</property>
     <property name="program_name">niftyconf</property>
     <property name="version">unknown version</property>
-    <property name="copyright" translatable="yes">Copyright (C) 2011-2012 Daniel Hiepler</property>
+    <property name="copyright" translatable="yes">Copyright (C) 2011-2013 Daniel Hiepler</property>
     <property name="comments" translatable="yes">niftyled setup configuration utility
 
 
