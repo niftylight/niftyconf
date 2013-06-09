@@ -64,5 +64,5 @@ if ENABLE_GPROF
 endif
 
 if ENABLE_DEBUG
-	niftyonf_CFLAGS += -DDEBUG
+	niftyconf_CFLAGS += -DDEBUG
 endif
