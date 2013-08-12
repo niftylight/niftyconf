@@ -43,6 +43,7 @@ deb: dist-gzip
 	mv "$(top_builddir)/$(PACKAGE)-$(VERSION).tar.gz" "$(DEBTMPDIR)/$(PACKAGE)_$(VERSION).orig.tar.gz" && \
 	tar --directory "$(DEBTMPDIR)/" --extract --gunzip --file "$(DEBTMPDIR)/$(PACKAGE)_$(VERSION).orig.tar.gz" && \
 	cp -r "$(top_builddir)/debian/"* "$(DEBSRCDIR)/debian" && \
+	cp "$(top_builddir)/debian/rules.tmpl" "$(DEBSRCDIR)/debian/rules" && \
 	cp "$(top_builddir)/debian/control.tmpl" "$(DEBSRCDIR)/debian/control" && \
 	cd "$(DEBSRCDIR)" && \
 	dpkg-buildpackage -D -v"$(VERSION)"

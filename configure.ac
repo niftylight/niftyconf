@@ -1,4 +1,4 @@
-#############
+############
 # niftyconf configure.ac
 # v0.5 - (c) Daniel Hiepler (2010-2013)
 
@@ -160,6 +160,7 @@ AC_CONFIG_FILES([
    src/version.h
    gentoo/media-gfx/niftyconf/niftyconf-9999.ebuild
    debian/control.tmpl
+   debian/rules.tmpl
 ])
 AC_OUTPUT
 
