@@ -159,6 +159,7 @@ AC_CONFIG_FILES([
    src/version.c
    src/version.h
    gentoo/media-gfx/niftyconf/niftyconf-9999.ebuild
+   debian/changelog
    debian/control.tmpl
    debian/rules.tmpl
 ])
