@@ -6,11 +6,11 @@
 # release version
 MAJOR=0
 MINOR=1
-MICRO=0beta
+MICRO=0
 
 ######################
 # debian revision
-DEBIAN_REVISION=0
+DEBIAN_REVISION=1
 
 
 
