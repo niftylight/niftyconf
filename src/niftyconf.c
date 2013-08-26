@@ -257,7 +257,7 @@ int main(int argc, char *argv[])
         gtk_init(&argc, &argv);
 
         /* check version */
-        if(!NFT_LED_CHECK_VERSION)
+        if(!LED_CHECK_VERSION)
                 return EXIT_FAILURE;
 
         /* set default loglevel */
