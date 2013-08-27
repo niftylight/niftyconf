@@ -404,7 +404,7 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_x_changed(GtkSpinButton * s,
         LedTile *tile = tile_niftyled(current_tile);
 
         /* value really changed? */
-        double new_val = gtk_spin_button_get_value_as_int(s);
+        double new_val = gtk_spin_button_get_value(s);
         if(led_tile_get_pivot_x(tile) == new_val)
                 return;
 
@@ -440,7 +440,7 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_y_changed(GtkSpinButton * s,
         LedTile *tile = tile_niftyled(current_tile);
 
         /* value really changed? */
-        double new_val = gtk_spin_button_get_value_as_int(s);
+        double new_val = gtk_spin_button_get_value(s);
         if(led_tile_get_pivot_y(tile) == new_val)
                 return;
 

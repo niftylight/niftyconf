@@ -622,6 +622,7 @@
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
+                    <property name="input_purpose">number</property>
                     <property name="adjustment">adjustment_tile_x</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_tile_x_changed" swapped="no"/>
@@ -640,6 +641,7 @@
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
+                    <property name="input_purpose">number</property>
                     <property name="adjustment">adjustment_tile_y</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_tile_y_changed" swapped="no"/>
@@ -662,6 +664,7 @@
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
+                    <property name="input_purpose">number</property>
                     <property name="adjustment">adjustment_tile_width</property>
                     <property name="numeric">True</property>
                   </object>
@@ -683,6 +686,7 @@
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
+                    <property name="input_purpose">number</property>
                     <property name="adjustment">adjustment_tile_height</property>
                     <property name="numeric">True</property>
                   </object>
@@ -702,7 +706,9 @@
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
+                    <property name="input_purpose">number</property>
                     <property name="adjustment">adjustment_tile_rotation</property>
+                    <property name="digits">2</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_tile_rotation_changed" swapped="no"/>
                   </object>
@@ -722,7 +728,9 @@
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
+                    <property name="input_purpose">number</property>
                     <property name="adjustment">adjustment_tile_pivot_x</property>
+                    <property name="digits">2</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_tile_pivot_x_changed" swapped="no"/>
                   </object>
@@ -742,7 +750,9 @@
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
+                    <property name="input_purpose">number</property>
                     <property name="adjustment">adjustment_tile_pivot_y</property>
+                    <property name="digits">2</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_tile_pivot_y_changed" swapped="no"/>
                   </object>
@@ -914,6 +924,7 @@
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
+                    <property name="input_purpose">number</property>
                     <property name="adjustment">adjustment_hardware_stride</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_hardware_stride_changed" swapped="no"/>
@@ -942,12 +953,10 @@
                 </child>
                 <child>
                   <object class="GtkToggleButton" id="togglebutton_initialized">
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">(De)Initialize this hardware instance...</property>
-                    <property name="use_action_appearance">False</property>
                     <signal name="toggled" handler="on_togglebutton_hardware_init_toggled" swapped="no"/>
                     <child>
                       <object class="GtkVBox" id="box1">
@@ -1058,10 +1067,8 @@
                     </child>
                     <child>
                       <object class="GtkCheckButton" id="checkbutton_hw_prop">
-                        <property name="use_action_appearance">False</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="xalign">0</property>
                         <property name="draw_indicator">True</property>
                         <child>

@@ -115,7 +115,7 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
                                 (double) (led_tile_get_y(ct)) *
                                 renderer_scale_factor());
 
-                /* rotate */
+                /* rotate around pivot */
                 cairo_translate(cr,
                                 (led_tile_get_transformed_pivot_x(ct)) *
                                 renderer_scale_factor(),
