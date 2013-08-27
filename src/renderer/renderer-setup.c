@@ -41,6 +41,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <math.h>
 #include <gtk/gtk.h>
 #include <niftyled.h>
 #include "elements/element-setup.h"
@@ -112,12 +113,12 @@ static NftResult _render_setup(cairo_surface_t ** surface, gpointer element)
                                         (double) (led_tile_get_y(t)) *
                                         renderer_scale_factor());
 
-                        /* rotate */
-                        cairo_translate(cr,
-                                        (led_tile_get_pivot_x(t)) *
-                                        renderer_scale_factor(),
-                                        (led_tile_get_pivot_y(t)) *
-                                        renderer_scale_factor());
+						/* rotate around pivot */						
+						cairo_translate(cr,
+										(led_tile_get_transformed_pivot_x(t)) *
+										renderer_scale_factor(),
+										(led_tile_get_transformed_pivot_y(t)) *
+										renderer_scale_factor());
 
                         cairo_rotate(cr, led_tile_get_rotation(t));
                         cairo_translate(cr,

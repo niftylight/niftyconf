@@ -129,12 +129,6 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
                                 -(led_tile_get_pivot_y(ct)) *
                                 renderer_scale_factor());
 
-                /* adapt to new pivot */
-                /* cairo_translate(cr,
-                 * (led_tile_get_pivot_y(ct)-led_tile_get_transformed_pivot_x(ct))*renderer_scale_factor(),
-                 * (led_tile_get_pivot_x(ct)-led_tile_get_transformed_pivot_y(ct))*renderer_scale_factor()); 
-                 */
-
                 /* draw */
                 cairo_set_source_surface(cr,
                                          renderer_get_surface
