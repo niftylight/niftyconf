@@ -95,6 +95,10 @@ static NftResult _this_from_prefs(NftPrefs * prefs,
         {
                 nft_log_level_set(nft_log_level_from_string(loglevel));
                 nft_prefs_free(loglevel);
+
+                /* set combobox to current loglevel */
+                gtk_combo_box_set_active(GTK_COMBO_BOX(UI("combobox")),
+                                         (gint) nft_log_level_get() - 1);
         }
 
         /* log flags */
