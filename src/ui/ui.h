@@ -49,6 +49,9 @@
 #define UI(name) (gtk_builder_get_object(_ui, name))
 
 
+GObject                        *ui(const char *n);
+gboolean                        ui_init();
+void                            ui_deinit();
 GtkBuilder                     *ui_builder(gchar * file);
 
 

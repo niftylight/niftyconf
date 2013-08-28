@@ -48,15 +48,10 @@
 #include "elements/element-chain.h"
 #include "elements/element-led.h"
 #include "elements/element-setup.h"
-#include "ui/ui-about.h"
 #include "ui/ui.h"
 #include "ui/ui-log.h"
-#include "ui/ui-clipboard.h"
+#include "ui/ui-about.h"
 #include "ui/ui-setup.h"
-#include "ui/ui-setup-props.h"
-#include "ui/ui-setup-tree.h"
-#include "ui/ui-setup-ledlist.h"
-#include "ui/ui-info-hardware.h"
 #include "prefs/prefs.h"
 #include "renderer/renderer.h"
 #include "live-preview/live-preview.h"
@@ -64,8 +59,7 @@
 
 
 
-/** GtkBuilder for this module (check data/ directory) */
-static GtkBuilder *_ui;
+
 
 
 
@@ -80,7 +74,8 @@ static NftResult _this_from_prefs(NftPrefs * prefs,
                                   NftPrefsNode * node, void *userptr)
 {
 
-        *newObj = NULL;
+        /* dummy object */
+        *newObj = (void *) 1;
 
 
         /* process child nodes */
@@ -102,19 +97,6 @@ static NftResult _this_from_prefs(NftPrefs * prefs,
                 ui_about_set_visible(true);
         }
 
-        /* UI dimensions */
-        gint x = 0, y = 0, width = 0, height = 0;
-
-        nft_prefs_node_prop_int_get(node, "x", &x);
-        nft_prefs_node_prop_int_get(node, "y", &y);
-        nft_prefs_node_prop_int_get(node, "width", &width);
-        nft_prefs_node_prop_int_get(node, "height", &height);
-
-        if(width > 0 && height > 0)
-                gtk_window_resize(GTK_WINDOW(UI("window")), width, height);
-        if(x > 0 && y > 0)
-                gtk_window_move(GTK_WINDOW(UI("window")), x, y);
-
 
         /* restore last project? */
         char *filename;
@@ -134,31 +116,9 @@ static NftResult _this_to_prefs(NftPrefs * prefs,
                                 void *obj, void *userptr)
 {
 
-        /* submodules */
-        nft_prefs_node_add_child(newNode,
-                                 nft_prefs_obj_to_node(prefs, "ui-log", NULL,
-                                                       NULL));
-        nft_prefs_node_add_child(newNode,
-                                 nft_prefs_obj_to_node(prefs, "live-preview",
-                                                       NULL, NULL));
-
         /* mark that we were launched before */
         nft_prefs_node_prop_boolean_set(newNode, "launched_before", true);
 
-        /* main window geometry */
-        gint x, y, width, height;
-        gtk_window_get_size(GTK_WINDOW(UI("window")), &width, &height);
-        gtk_window_get_position(GTK_WINDOW(UI("window")), &x, &y);
-
-
-        if(!nft_prefs_node_prop_int_set(newNode, "x", x))
-                return NFT_FAILURE;
-        if(!nft_prefs_node_prop_int_set(newNode, "y", y))
-                return NFT_FAILURE;
-        if(!nft_prefs_node_prop_int_set(newNode, "width", width))
-                return NFT_FAILURE;
-        if(!nft_prefs_node_prop_int_set(newNode, "height", height))
-                return NFT_FAILURE;
 
         /* save current project */
         if(!nft_prefs_node_prop_string_set(newNode,
@@ -238,11 +198,7 @@ static gboolean _parse_cmdline_args(int argc,
 /******************************************************************************
  ******************************************************************************/
 
-/** getter for GtkBuilder of this module */
-GObject *niftyconf_ui(const char *n)
-{
-        return UI(n);
-}
+
 
 
 
@@ -273,8 +229,6 @@ int main(int argc, char *argv[])
         /* initialize modules */
         if(!prefs_init())
                 g_error("Failed to initialize \"prefs\" module");
-        if(!ui_log_init())
-                g_error("Failed to initialize \"log\" module");
         if(!renderer_init())
                 g_error("Failed to initialize \"renderer\" module");
         if(!led_init())
@@ -289,29 +243,13 @@ int main(int argc, char *argv[])
                 g_error("Failed to initialize \"setup\" module");
         if(!live_preview_init())
                 g_error("Failed to initialize \"live-preview\" module");
-        if(!ui_info_hardware_init())
-                g_error("Failed to initialize \"info-hardware\" module");
-        if(!ui_setup_init())
-                g_error("Failed to initialize \"setup\" module");
-        if(!ui_clipboard_init())
-                g_error("Failed to initialize \"clipboard\" module");
-        if(!ui_about_init())
-                g_error("Failed to initialize \"about\" module");
+        if(!ui_init())
+                g_error("Failed to initialize \"ui\" module");
 
         /* register prefs class for this module */
         if(!nft_prefs_class_register
-           (prefs(), "niftyconf", _this_from_prefs, _this_to_prefs))
-                g_error("Failed to register prefs class for \"niftyconf\"");
-
-        /* build our ui */
-        _ui = ui_builder("niftyconf.ui");
-        GtkBox *box_setup = GTK_BOX(UI("box_setup"));
-        gtk_box_pack_start(box_setup, ui_setup_get_widget(), true, true, 0);
-        GtkBox *box_chain = GTK_BOX(UI("box_chain"));
-        gtk_box_pack_start(box_chain, ui_setup_ledlist_get_widget(), true,
-                           true, 0);
-        GtkBox *box_canvas = GTK_BOX(UI("box_canvas"));
-        gtk_box_pack_start(box_canvas, renderer_get_widget(), true, true, 0);
+           (prefs(), "main", _this_from_prefs, _this_to_prefs))
+                g_error("Failed to register prefs class for \"main\"");
 
 
         /* restore window size & position */
@@ -332,22 +270,16 @@ int main(int argc, char *argv[])
         /* main loop... */
         gtk_main();
 
-        g_object_unref(_ui);
-
         /* unregister prefs class */
-        nft_prefs_class_unregister(prefs(), "niftyconf");
+        nft_prefs_class_unregister(prefs(), "main");
 
-        ui_about_deinit();
-        ui_clipboard_deinit();
-        ui_setup_deinit();
-        ui_info_hardware_deinit();
+        ui_deinit();
         live_preview_deinit();
         setup_deinit();
         hardware_deinit();
         tile_deinit();
         led_deinit();
         renderer_deinit();
-        ui_log_deinit();
         prefs_deinit();
 
         return EXIT_SUCCESS;
@@ -362,7 +294,7 @@ int main(int argc, char *argv[])
 G_MODULE_EXPORT gboolean on_niftyconf_window_delete_event(GtkWidget * w,
                                                           GdkEvent * e)
 {
-        /* store window size & position */
+        /* store preferences */
         prefs_save();
 
         /* bye bye */
@@ -375,6 +307,7 @@ G_MODULE_EXPORT gboolean on_niftyconf_window_delete_event(GtkWidget * w,
 G_MODULE_EXPORT void on_niftyconf_menu_quit_activate(GtkMenuItem * i,
                                                      gpointer d)
 {
+        /* bye bye */
         gtk_main_quit();
 }
 

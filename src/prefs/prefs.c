@@ -92,14 +92,18 @@ gboolean prefs_load()
 gboolean prefs_save()
 {
         /* create preferences */
-        NftPrefsNode *setup = nft_prefs_node_alloc("preferences");
+        NftPrefsNode *setup = nft_prefs_node_alloc("niftyconf");
 
-        /* create ui prefs */
-        NftPrefsNode *niftyconf =
-                nft_prefs_obj_to_node(_prefs, "niftyconf", NULL, NULL);
+        /* create main prefs */
+        const char *nodes[] = { "main", "ui", "renderer" };
+        for(unsigned int i = 0; i < sizeof(nodes) / sizeof(char *); i++)
+        {
+                NftPrefsNode *n =
+                        nft_prefs_obj_to_node(_prefs, nodes[i], NULL, NULL);
 
-        /* add nodes to prefs */
-        nft_prefs_node_add_child(setup, niftyconf);
+                nft_prefs_node_add_child(setup, n);
+        }
+
 
         return nft_prefs_node_to_file(setup, _filename, true);
 }

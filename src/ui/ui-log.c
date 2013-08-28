@@ -44,7 +44,6 @@
 #include <stdarg.h>
 #include <gtk/gtk.h>
 #include <niftyled.h>
-#include "niftyconf.h"
 #include "ui/ui.h"
 #include "ui/ui-log.h"
 #include "prefs/prefs.h"
@@ -68,6 +67,9 @@ static NftResult _this_from_prefs(NftPrefs * prefs,
                                   void **newObj,
                                   NftPrefsNode * node, void *userptr)
 {
+        /* dummy object */
+        *newObj = (void *) 1;
+
         /* window geometry */
         gint x = 0, y = 0, width = 0, height = 0;
         nft_prefs_node_prop_int_get(node, "x", &x);
@@ -84,8 +86,7 @@ static NftResult _this_from_prefs(NftPrefs * prefs,
         bool boolean = false;
         nft_prefs_node_prop_boolean_get(node, "window-visible", &boolean);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM
-                                       (niftyconf_ui("item_log_win")),
-                                       boolean);
+                                       (ui("item_log_win")), boolean);
         ui_log_show(boolean);
 
         /* log level */
@@ -442,7 +443,7 @@ G_MODULE_EXPORT gboolean on_log_window_delete_event(GtkWidget * w,
 {
         ui_log_show(false);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM
-                                       (niftyconf_ui("item_log_win")), false);
+                                       (ui("item_log_win")), false);
         return true;
 }
 

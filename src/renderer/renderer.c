@@ -45,6 +45,7 @@
 #include <gtk/gtk.h>
 #include <niftyled.h>
 #include "ui/ui.h"
+#include "prefs/prefs.h"
 #include "elements/element-setup.h"
 #include "elements/element-tile.h"
 #include "renderer/renderer.h"
@@ -97,6 +98,53 @@ static GtkBuilder *_ui;
  ****************************** STATIC FUNCTIONS ******************************
  ******************************************************************************/
 
+/** configure from preferences */
+static NftResult _this_from_prefs(NftPrefs * prefs,
+                                  void **newObj,
+                                  NftPrefsNode * node, void *userptr)
+{
+
+        /* dummy object */
+        *newObj = (void *) 1;
+
+
+        /* process child nodes */
+        NftPrefsNode *child;
+        for(child = nft_prefs_node_get_first_child(node);
+            child; child = nft_prefs_node_get_next(child))
+        {
+                nft_prefs_obj_from_node(prefs, child, NULL);
+        }
+
+
+        /* scale */
+        nft_prefs_node_prop_double_get(node, "scale", &_r.view.scale);
+        nft_prefs_node_prop_double_get(node, "scale_delta",
+                                       &_r.view.scale_delta);
+        nft_prefs_node_prop_double_get(node, "pan_x", &_r.view.pan_x);
+        nft_prefs_node_prop_double_get(node, "pan_y", &_r.view.pan_y);
+
+        return NFT_SUCCESS;
+}
+
+
+/** save configuration to preferences */
+static NftResult _this_to_prefs(NftPrefs * prefs,
+                                NftPrefsNode * newNode,
+                                void *obj, void *userptr)
+{
+        if(!nft_prefs_node_prop_double_set(newNode, "scale", _r.view.scale))
+                return NFT_FAILURE;
+        if(!nft_prefs_node_prop_double_set
+           (newNode, "scale_delta", _r.view.scale_delta))
+                return NFT_FAILURE;
+        if(!nft_prefs_node_prop_double_set(newNode, "pan_x", _r.view.pan_x))
+                return NFT_FAILURE;
+        if(!nft_prefs_node_prop_double_set(newNode, "pan_y", _r.view.pan_y))
+                return NFT_FAILURE;
+
+        return NFT_SUCCESS;
+}
 
 
 /******************************************************************************
@@ -160,6 +208,11 @@ void renderer_damage(NiftyconfRenderer * r)
 /** initialize this module */
 gboolean renderer_init()
 {
+        /* register prefs class for this module */
+        if(!nft_prefs_class_register
+           (prefs(), "renderer", _this_from_prefs, _this_to_prefs))
+                g_error("Failed to register prefs class for \"renderer\"");
+
         /* build ui */
         _ui = ui_builder("niftyconf-renderer.ui");
 
@@ -178,6 +231,9 @@ gboolean renderer_init()
 /** deinitialize this module */
 void renderer_deinit()
 {
+        /* unregister prefs class */
+        nft_prefs_class_unregister(prefs(), "renderer");
+
         g_object_unref(_ui);
 }
 

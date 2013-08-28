@@ -44,8 +44,8 @@
 #include <stdint.h>
 #include <gtk/gtk.h>
 #include <niftyled.h>
+#include "ui/ui.h"
 #include "prefs/prefs.h"
-#include "niftyconf.h"
 #include "live-preview.h"
 
 
@@ -62,11 +62,14 @@ static NftResult _this_from_prefs(NftPrefs * prefs,
                                   void **newObj,
                                   NftPrefsNode * node, void *userptr)
 {
+        /* dummy object */
+        *newObj = (void *) 1;
+
         /* hardware live preview enabled? */
         bool live_preview = false;
         nft_prefs_node_prop_boolean_get(node, "active", &live_preview);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM
-                                       (niftyconf_ui("item_view_preview")),
+                                       (ui("item_view_preview")),
                                        live_preview);
         _enabled = live_preview;
 

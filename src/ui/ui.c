@@ -42,18 +42,152 @@
  */
 
 #include <gtk/gtk.h>
+#include <niftyled.h>
+#include "ui/ui-about.h"
+#include "ui/ui.h"
+#include "ui/ui-log.h"
+#include "ui/ui-clipboard.h"
+#include "ui/ui-setup.h"
+#include "ui/ui-setup-props.h"
+#include "ui/ui-setup-tree.h"
+#include "ui/ui-setup-ledlist.h"
+#include "ui/ui-info-hardware.h"
+#include "prefs/prefs.h"
 #include "config.h"
 
+
+
+/** GtkBuilder for this module (check data/ directory) */
+static GtkBuilder *_ui;
 
 
 /******************************************************************************
  ****************************** STATIC FUNCTIONS ******************************
  ******************************************************************************/
 
+/** configure from preferences */
+static NftResult _this_from_prefs(NftPrefs * prefs,
+                                  void **newObj,
+                                  NftPrefsNode * node, void *userptr)
+{
+
+        /* dummy object */
+        *newObj = (void *) 1;
+
+
+        /* process child nodes */
+        NftPrefsNode *child;
+        for(child = nft_prefs_node_get_first_child(node);
+            child; child = nft_prefs_node_get_next(child))
+        {
+                nft_prefs_obj_from_node(prefs, child, NULL);
+        }
+
+        /* UI dimensions */
+        gint x = 0, y = 0, width = 0, height = 0;
+
+        nft_prefs_node_prop_int_get(node, "x", &x);
+        nft_prefs_node_prop_int_get(node, "y", &y);
+        nft_prefs_node_prop_int_get(node, "width", &width);
+        nft_prefs_node_prop_int_get(node, "height", &height);
+
+        if(width > 0 && height > 0)
+                gtk_window_resize(GTK_WINDOW(UI("window")), width, height);
+        if(x > 0 && y > 0)
+                gtk_window_move(GTK_WINDOW(UI("window")), x, y);
+
+        return NFT_SUCCESS;
+}
+
+
+/** save configuration to preferences */
+static NftResult _this_to_prefs(NftPrefs * prefs,
+                                NftPrefsNode * newNode,
+                                void *obj, void *userptr)
+{
+
+        /* submodules */
+        nft_prefs_node_add_child(newNode,
+                                 nft_prefs_obj_to_node(prefs, "live-preview",
+                                                       NULL, NULL));
+        nft_prefs_node_add_child(newNode,
+                                 nft_prefs_obj_to_node(prefs, "ui-log", NULL,
+                                                       NULL));
+
+        /* main window geometry */
+        gint x, y, width, height;
+        gtk_window_get_size(GTK_WINDOW(UI("window")), &width, &height);
+        gtk_window_get_position(GTK_WINDOW(UI("window")), &x, &y);
+
+
+        if(!nft_prefs_node_prop_int_set(newNode, "x", x))
+                return NFT_FAILURE;
+        if(!nft_prefs_node_prop_int_set(newNode, "y", y))
+                return NFT_FAILURE;
+        if(!nft_prefs_node_prop_int_set(newNode, "width", width))
+                return NFT_FAILURE;
+        if(!nft_prefs_node_prop_int_set(newNode, "height", height))
+                return NFT_FAILURE;
+
+        return NFT_SUCCESS;
+}
+
+
 
 
 /******************************************************************************
  ******************************************************************************/
+
+/** initialize module */
+gboolean ui_init()
+{
+        /* register prefs class for this module */
+        if(!nft_prefs_class_register
+           (prefs(), "ui", _this_from_prefs, _this_to_prefs))
+                g_error("Failed to register prefs class for \"ui\"");
+
+        /* build our ui */
+        _ui = ui_builder("niftyconf.ui");
+
+
+        if(!ui_log_init())
+                g_error("Failed to initialize \"log\" module");
+        if(!ui_info_hardware_init())
+                g_error("Failed to initialize \"info-hardware\" module");
+        if(!ui_setup_init())
+                g_error("Failed to initialize \"setup\" module");
+        if(!ui_clipboard_init())
+                g_error("Failed to initialize \"clipboard\" module");
+        if(!ui_about_init())
+                g_error("Failed to initialize \"about\" module");
+
+        GtkBox *box_setup = GTK_BOX(UI("box_setup"));
+        gtk_box_pack_start(box_setup, ui_setup_get_widget(), true, true, 0);
+        GtkBox *box_chain = GTK_BOX(UI("box_chain"));
+        gtk_box_pack_start(box_chain, ui_setup_ledlist_get_widget(), true,
+                           true, 0);
+        GtkBox *box_canvas = GTK_BOX(UI("box_canvas"));
+        gtk_box_pack_start(box_canvas, renderer_get_widget(), true, true, 0);
+
+        return true;
+}
+
+
+/** deinitialize module */
+void ui_deinit()
+{
+        ui_about_deinit();
+        ui_clipboard_deinit();
+        ui_setup_deinit();
+        ui_info_hardware_deinit();
+        ui_log_deinit();
+
+        /* unregister prefs class */
+        nft_prefs_class_unregister(prefs(), "ui");
+
+        g_object_unref(_ui);
+}
+
 
 /**
  * build UI
@@ -93,4 +227,11 @@ GtkBuilder *ui_builder(gchar * file)
         gtk_builder_connect_signals(ui, NULL);
 
         return ui;
+}
+
+
+/** getter for GtkBuilder of this module */
+GObject *ui(const char *n)
+{
+        return UI(n);
 }

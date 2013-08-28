@@ -44,7 +44,6 @@
 
 #include <niftyled.h>
 #include <gtk/gtk.h>
-#include "niftyconf.h"
 #include "ui/ui.h"
 #include "ui/ui-setup.h"
 #include "ui/ui-setup-props.h"
@@ -338,23 +337,22 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer e)
                 {
                         /* enable hardware related menus */
                         gtk_widget_set_sensitive(GTK_WIDGET
-                                                 (niftyconf_ui
+                                                 (ui
                                                   ("item_hardware_remove")),
                                                  true);
                         gtk_widget_set_sensitive(GTK_WIDGET
-                                                 (niftyconf_ui
-                                                  ("item_tile_add")), true);
+                                                 (ui("item_tile_add")), true);
 
                         /* disable non-hardware related menus */
                         gtk_widget_set_sensitive(GTK_WIDGET
-                                                 (niftyconf_ui
+                                                 (ui
                                                   ("item_tile_remove")),
                                                  false);
                         gtk_widget_set_sensitive(GTK_WIDGET
-                                                 (niftyconf_ui
+                                                 (ui
                                                   ("item_chain_add")), false);
                         gtk_widget_set_sensitive(GTK_WIDGET
-                                                 (niftyconf_ui
+                                                 (ui
                                                   ("item_chain_remove")),
                                                  false);
 
@@ -376,27 +374,26 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer e)
                 {
                         /* enable tile related menus */
                         gtk_widget_set_sensitive(GTK_WIDGET
-                                                 (niftyconf_ui
+                                                 (ui
                                                   ("item_tile_remove")),
                                                  true);
                         gtk_widget_set_sensitive(GTK_WIDGET
-                                                 (niftyconf_ui
-                                                  ("item_tile_add")), true);
+                                                 (ui("item_tile_add")), true);
 
                         /* disable non-tile related menus */
                         gtk_widget_set_sensitive(GTK_WIDGET
-                                                 (niftyconf_ui
+                                                 (ui
                                                   ("item_hardware_remove")),
                                                  false);
                         gtk_widget_set_sensitive(GTK_WIDGET
-                                                 (niftyconf_ui
+                                                 (ui
                                                   ("item_chain_add")),
                                                  (gboolean) !
                                                  led_tile_get_chain
                                                  (tile_niftyled
                                                   ((NiftyconfTile *) e)));
                         gtk_widget_set_sensitive(GTK_WIDGET
-                                                 (niftyconf_ui
+                                                 (ui
                                                   ("item_chain_remove")),
                                                  (led_tile_get_chain
                                                   (tile_niftyled
@@ -422,21 +419,21 @@ static void _foreach_element_selected(NIFTYLED_TYPE t, gpointer e)
                 {
                         /* disable non-chain related menus */
                         gtk_widget_set_sensitive(GTK_WIDGET
-                                                 (niftyconf_ui
+                                                 (ui
                                                   ("item_hardware_remove")),
                                                  false);
                         gtk_widget_set_sensitive(GTK_WIDGET
-                                                 (niftyconf_ui
+                                                 (ui
                                                   ("item_tile_add")), false);
                         gtk_widget_set_sensitive(GTK_WIDGET
-                                                 (niftyconf_ui
+                                                 (ui
                                                   ("item_tile_remove")),
                                                  false);
                         gtk_widget_set_sensitive(GTK_WIDGET
-                                                 (niftyconf_ui
+                                                 (ui
                                                   ("item_chain_add")), false);
                         gtk_widget_set_sensitive(GTK_WIDGET
-                                                 (niftyconf_ui
+                                                 (ui
                                                   ("item_chain_remove")),
                                                  false);
 
