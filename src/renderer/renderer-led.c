@@ -71,9 +71,6 @@ static NftResult _render_led(cairo_surface_t ** s, gpointer element)
         /* create context for drawing */
         cairo_t *cr = cairo_create(*s);
 
-        /* disable antialiasing */
-        cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-
         /* clear surface */
         cairo_set_source_rgba(cr, 0, 0, 0, 0);
         cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);

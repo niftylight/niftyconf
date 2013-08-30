@@ -80,11 +80,10 @@ static NftResult _render_chain(cairo_surface_t ** s, gpointer element)
         /* create context for drawing */
         cairo_t *cr = cairo_create(*s);
 
-        /* disable antialiasing */
-        cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
 
         /* clear surface */
         cairo_set_source_rgba(cr, 0, 0, 0, 1);
+
         cairo_rectangle(cr,
                         0, 0,
                         (double) cairo_image_surface_get_width(*s),
@@ -109,6 +108,12 @@ static NftResult _render_chain(cairo_surface_t ** s, gpointer element)
                                          renderer_scale_factor(),
                                          (double) led_get_y(l) *
                                          renderer_scale_factor());
+                /* disable filtering */
+                cairo_pattern_set_filter(cairo_get_source(cr),
+                                         renderer_filter());
+                /* disable antialiasing */
+                cairo_set_antialias(cr, renderer_antialias());
+
                 cairo_paint(cr);
         }
 

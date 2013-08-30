@@ -65,9 +65,19 @@ static struct
                 gdouble scale_delta;
                 gdouble scale_cords;
                 gdouble scale_factor;
+        } view;
+
+        struct
+        {
                 gboolean mouse_1_pressed;
                 gdouble mouse_hold_x, mouse_hold_y;
-        } view;
+        } input;
+
+        struct
+        {
+                cairo_filter_t filter;
+                cairo_antialias_t antialias;
+        } rendering;
 } _r;
 
 
@@ -117,12 +127,17 @@ static NftResult _this_from_prefs(NftPrefs * prefs,
         }
 
 
-        /* scale */
+        /* settings */
         nft_prefs_node_prop_double_get(node, "scale", &_r.view.scale);
         nft_prefs_node_prop_double_get(node, "scale_delta",
                                        &_r.view.scale_delta);
         nft_prefs_node_prop_double_get(node, "pan_x", &_r.view.pan_x);
         nft_prefs_node_prop_double_get(node, "pan_y", &_r.view.pan_y);
+
+        nft_prefs_node_prop_int_get(node, "filter",
+                                    (int *) &_r.rendering.filter);
+        nft_prefs_node_prop_int_get(node, "antialias",
+                                    (int *) &_r.rendering.antialias);
 
         return NFT_SUCCESS;
 }
@@ -142,6 +157,12 @@ static NftResult _this_to_prefs(NftPrefs * prefs,
                 return NFT_FAILURE;
         if(!nft_prefs_node_prop_double_set(newNode, "pan_y", _r.view.pan_y))
                 return NFT_FAILURE;
+        if(!nft_prefs_node_prop_int_set
+           (newNode, "filter", _r.rendering.filter))
+                return NFT_FAILURE;
+        if(!nft_prefs_node_prop_int_set
+           (newNode, "antialias", _r.rendering.antialias))
+                return NFT_FAILURE;
 
         return NFT_SUCCESS;
 }
@@ -149,6 +170,20 @@ static NftResult _this_to_prefs(NftPrefs * prefs,
 
 /******************************************************************************
  ******************************************************************************/
+
+/** getter for currently configured antialiasing method */
+cairo_antialias_t renderer_antialias()
+{
+        return _r.rendering.antialias;
+}
+
+
+/** getter for currently configured filter method */
+cairo_filter_t renderer_filter()
+{
+        return _r.rendering.filter;
+}
+
 
 /** getter for scaling factor */
 gdouble renderer_scale_factor()
@@ -158,7 +193,7 @@ gdouble renderer_scale_factor()
 
 
 /** getter for widget */
-GtkWidget *renderer_get_widget()
+GtkWidget *renderer_widget()
 {
         return GTK_WIDGET(UI("drawingarea"));
 }
@@ -220,6 +255,8 @@ gboolean renderer_init()
         _r.view.scale = 0.5;
         _r.view.scale_delta = 0.1;
         _r.view.scale_factor = 15;
+        _r.rendering.filter = CAIRO_FILTER_NEAREST;
+        _r.rendering.antialias = CAIRO_ANTIALIAS_DEFAULT;
 
         /* initialize drawingarea */
         gtk_widget_set_app_paintable(GTK_WIDGET(UI("drawingarea")), true);
@@ -331,8 +368,8 @@ gboolean on_renderer_button_press_event(GtkWidget * w,
                                         GdkEventButton * ev, gpointer u)
 {
         /* save coordinates */
-        _r.view.mouse_hold_x = ev->x;
-        _r.view.mouse_hold_y = ev->y;
+        _r.input.mouse_hold_x = ev->x;
+        _r.input.mouse_hold_y = ev->y;
 
         return false;
 }
@@ -361,8 +398,8 @@ gboolean on_renderer_motion_notify_event(GtkWidget * w,
         /* mousebutton pressed? */
         if(ev->state & GDK_BUTTON1_MASK)
         {
-                _r.view.pan_t_x = -(_r.view.mouse_hold_x - ev->x);
-                _r.view.pan_t_y = -(_r.view.mouse_hold_y - ev->y);
+                _r.view.pan_t_x = -(_r.input.mouse_hold_x - ev->x);
+                _r.view.pan_t_y = -(_r.input.mouse_hold_y - ev->y);
         }
 
         renderer_all_queue_draw();
@@ -420,9 +457,6 @@ gboolean on_renderer_expose_event(GtkWidget * w,
         cairo_t *cr;
         cr = gdk_cairo_create(w->window);
 
-        /* disable antialiasing */
-        cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-
         /* get current viewport dimensions */
         GtkAllocation a;
         gtk_widget_get_allocation(GTK_WIDGET(UI("drawingarea")), &a);
@@ -455,8 +489,24 @@ gboolean on_renderer_expose_event(GtkWidget * w,
         /* draw surface */
         cairo_set_source_surface(cr, renderer_get_surface(r), 0, 0);
 
+        /* disable filtering */
+        cairo_pattern_set_filter(cairo_get_source(cr), _r.rendering.filter);
+        /* disable antialiasing */
+        cairo_set_antialias(cr, _r.rendering.antialias);
+
+        /* render surface */
         cairo_paint(cr);
 
+        /* draw origin */
+        cairo_set_source_rgba(cr, 1, 1, 1, 1);
+        cairo_set_line_width(cr, 0.5);
+        cairo_move_to(cr, 0, -5);
+        cairo_line_to(cr, 0, 5);
+        cairo_move_to(cr, -5, 0);
+        cairo_line_to(cr, 5, 0);
+        cairo_stroke(cr);
+
+        /* free context */
         cairo_destroy(cr);
 
 

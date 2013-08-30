@@ -167,7 +167,7 @@ gboolean ui_init()
         gtk_box_pack_start(box_chain, ui_setup_ledlist_get_widget(), true,
                            true, 0);
         GtkBox *box_canvas = GTK_BOX(UI("box_canvas"));
-        gtk_box_pack_start(box_canvas, renderer_get_widget(), true, true, 0);
+        gtk_box_pack_start(box_canvas, renderer_widget(), true, true, 0);
 
         return true;
 }

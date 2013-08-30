@@ -87,8 +87,6 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
         /* create context for drawing */
         cairo_t *cr = cairo_create(*s);
 
-        /* disable antialiasing */
-        cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
 
         /* clear surface */
         cairo_set_source_rgba(cr, 0, 0, 0, 1);
@@ -117,23 +115,29 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
 
                 /* rotate around pivot */
                 cairo_translate(cr,
-                                (led_tile_get_transformed_pivot_x(ct)) *
+                                led_tile_get_pivot_x(ct) *
                                 renderer_scale_factor(),
-                                (led_tile_get_transformed_pivot_y(ct)) *
+                                led_tile_get_pivot_y(ct) *
                                 renderer_scale_factor());
 
                 cairo_rotate(cr, led_tile_get_rotation(ct));
                 cairo_translate(cr,
-                                -(led_tile_get_pivot_x(ct)) *
+                                -led_tile_get_pivot_x(ct) *
                                 renderer_scale_factor(),
-                                -(led_tile_get_pivot_y(ct)) *
+                                -led_tile_get_pivot_y(ct) *
                                 renderer_scale_factor());
+
 
                 /* draw */
                 cairo_set_source_surface(cr,
                                          renderer_get_surface
                                          (tile_get_renderer(ctt)), 0, 0);
 
+                /* disable filtering */
+                cairo_pattern_set_filter(cairo_get_source(cr),
+                                         renderer_filter());
+                /* disable antialiasing */
+                cairo_set_antialias(cr, renderer_antialias());
 
                 cairo_fill(cr);
                 cairo_paint(cr);
@@ -156,6 +160,13 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
                 cairo_set_source_surface(cr,
                                          renderer_get_surface
                                          (chain_get_renderer(ch)), 0, 0);
+
+                /* disable filtering */
+                cairo_pattern_set_filter(cairo_get_source(cr),
+                                         renderer_filter());
+                /* disable antialiasing */
+                cairo_set_antialias(cr, renderer_antialias());
+
                 cairo_paint(cr);
         }
 
@@ -220,8 +231,6 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
         cairo_line_to(cr, cx, cy);
         cairo_close_path(cr);
         cairo_stroke(cr);
-
-
 
         cairo_destroy(cr);
 

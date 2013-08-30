@@ -59,10 +59,12 @@ void                            renderer_destroy(NiftyconfRenderer * r);
 /* GUI functions */
 gboolean                        renderer_init();
 void                            renderer_deinit();
-GtkWidget                      *renderer_get_widget();
+GtkWidget                      *renderer_widget();
+cairo_filter_t                  renderer_filter();
+cairo_antialias_t               renderer_antialias();
+gdouble                         renderer_scale_factor();
 void                            renderer_all_queue_draw();
 void                            renderer_damage(NiftyconfRenderer * r);
-gdouble                         renderer_scale_factor();
 gboolean                        renderer_resize(NiftyconfRenderer * r, gint width, gint height);
 cairo_surface_t                *renderer_get_surface(NiftyconfRenderer * r);
 
