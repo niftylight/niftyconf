@@ -71,6 +71,7 @@ void                            tile_set_highlighted(NiftyconfTile * t, gboolean
 
 
 /* model functions */
+gboolean					    tile_calc_render_offset(NiftyconfTile * t, double screenWidth, double screenHeight, double *xOff, double *yOff);
 NiftyconfRenderer              *tile_get_renderer(NiftyconfTile * t);
 LedTile                        *tile_niftyled(NiftyconfTile * t);
 char                           *tile_dump(NiftyconfTile * tile, gboolean encapsulation);

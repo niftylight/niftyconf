@@ -100,69 +100,18 @@ static NftResult _render_setup(cairo_surface_t ** surface, gpointer element)
                 for(t = led_hardware_get_tile(h);
                     t; t = led_tile_list_get_next(t))
                 {
-                                                /** @todo visibility? */
-
+                        /** @todo check for visibility? */
+						
                         /* get surface from tile */
                         NiftyconfTile *tile =
                                 (NiftyconfTile *) led_tile_get_privdata(t);
-
 
                         /* move to x/y */
                         cairo_translate(cr,
                                         ((double) led_tile_get_x(t)) *
                                         renderer_scale_factor(),
                                         ((double) led_tile_get_y(t)) *
-                                        renderer_scale_factor());
-
-                        /* compensate rotation into offscreen area */
-                        double x1, x2, x3, x4;
-                        double y1, y2, y3, y4;
-                        double xOff = 0, yOff = 0;
-                        led_tile_get_transformed_bounding_box(t,
-                                                              &x1, &y1, &x2,
-                                                              &y2, &x3, &y3,
-                                                              &x4, &y4);
-                        printf("------> %.2f/%.2f  %.2f/%.2f  %.2f/%.2f  %.2f/%.2f\n", x1, y1, x2, y2, x3, y3, x4, y4);
-                        if(x1 < 0)
-                                xOff = MAX(xOff, -x1);
-                        else if(x1 > width)
-                                xOff = MAX(xOff, x1 - width);
-                        if(y1 < 0)
-                                yOff = MAX(yOff, -y1);
-                        else if(y1 > height)
-                                yOff = MAX(yOff, y1 - height);
-
-                        if(x2 < 0)
-                                xOff = MAX(xOff, -x2);
-                        else if(x2 > width)
-                                xOff = MAX(xOff, x2 - width);
-                        if(y2 < 0)
-                                yOff = MAX(yOff, -y2);
-                        else if(y2 > height)
-                                yOff = MAX(yOff, y2 - height);
-
-                        if(x3 < 0)
-                                xOff = MAX(xOff, -x3);
-                        else if(x3 > width)
-                                xOff = MAX(xOff, x3 - width);
-                        if(y3 < 0)
-                                yOff = MAX(yOff, -y3);
-                        else if(y3 > height)
-                                yOff = MAX(yOff, y3 - height);
-
-                        if(x4 < 0)
-                                xOff = MAX(xOff, -x4);
-                        else if(x4 > width)
-                                xOff = MAX(xOff, x4 - width);
-                        if(y4 < 0)
-                                yOff = MAX(yOff, -y4);
-                        else if(y4 > height)
-                                yOff = MAX(yOff, y4 - height);
-
-                        /* translate to be back onscreen */
-                        cairo_translate(cr,
-                                        xOff * renderer_scale_factor(),
-                                        yOff * renderer_scale_factor());
+                                        renderer_scale_factor());                      
 
                         /* rotate around pivot */
                         cairo_translate(cr,
@@ -177,11 +126,19 @@ static NftResult _render_setup(cairo_surface_t ** surface, gpointer element)
                                         -led_tile_get_pivot_y(t) *
                                         renderer_scale_factor());
 
+						/* calculate offscreen compensation */
+						double xOff=0, yOff=0;
+						//~ tile_calc_render_offset(tile, (double) width, (double) height, &xOff, &yOff);
+						//~ renderer_set_offset(setup_get_renderer(), 
+						                    //~ -xOff*renderer_scale_factor(), 
+						                    //~ -yOff*renderer_scale_factor());
+						
                         /* draw surface */
                         cairo_set_source_surface(cr,
                                                  renderer_get_surface
-                                                 (tile_get_renderer(tile)), 0,
-                                                 0);
+                                                 (tile_get_renderer(tile)), 
+                                                 xOff*renderer_scale_factor(), 
+                                                 yOff*renderer_scale_factor());
 
 
                         /* disable filtering */

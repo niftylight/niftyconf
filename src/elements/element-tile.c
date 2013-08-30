@@ -74,6 +74,51 @@ struct _NiftyconfTile
 /******************************************************************************
  ******************************************************************************/
 
+
+/** 
+ * calculate rendering offset to compensate for offscreen transformations.
+ * call this after transforming the tile
+ */
+gboolean tile_calc_render_offset(NiftyconfTile * t, 
+                                 double screenWidth, double screenHeight,
+                                 double *xOff, double *yOff)
+{
+		if(!t || !xOff || !yOff)
+				NFT_LOG_NULL(false);
+		
+		/* compensate rotation into offscreen area */
+		double corners[4][2];
+		
+		*xOff = 0;
+		*yOff = 0;
+		
+		led_tile_get_transformed_bounding_box(t->t,
+											  &corners[0][0], &corners[0][1],
+		                                      &corners[1][0], &corners[1][1],
+		                                      &corners[2][0], &corners[2][1],
+											  &corners[3][0], &corners[3][1]);
+		printf("------> %.2f/%.2f  %.2f/%.2f  %.2f/%.2f  %.2f/%.2f\n", 
+	       		corners[0][0], corners[0][1],
+			  	corners[1][0], corners[1][1],
+			  	corners[2][0], corners[2][1],
+			  	corners[3][0], corners[3][1]);
+
+		for(int i=0; i<4; i++)
+		{			
+				if(corners[i][0] < 0)
+						*xOff = MAX(*xOff, -corners[i][0]);
+				else if(corners[i][0] > screenWidth)
+						*xOff = MAX(*xOff, corners[i][0]-screenWidth);
+
+				if(corners[i][1] < 0)
+						*yOff = MAX(*yOff, -corners[i][1]);
+				else if(corners[i][1] > screenHeight)
+						*yOff = MAX(*yOff, corners[i][1]-screenHeight);
+		}
+
+		return true;
+}
+
 /** dump element definition to printable string - use free() to deallacote the result */
 char *tile_dump(NiftyconfTile * tile, gboolean encapsulation)
 {

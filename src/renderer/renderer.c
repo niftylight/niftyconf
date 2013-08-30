@@ -94,6 +94,8 @@ struct _NiftyconfRenderer
         bool damaged;
                 /** render function */
         NiftyconfRenderFunc *render;
+				/** rendering offset */
+		gdouble xOffset, yOffset;
 };
 
 
@@ -357,6 +359,19 @@ void renderer_all_queue_draw()
 }
 
 
+
+/** set drawing offset for this renderer */
+gboolean renderer_set_offset(NiftyconfRenderer *r, double xOff, double yOff)
+{
+		if(!r)
+				NFT_LOG_NULL(false);
+
+		r->xOffset = xOff;
+		r->yOffset = yOff;
+		
+		return true;
+}
+
 /******************************************************************************
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
@@ -483,21 +498,7 @@ gboolean on_renderer_expose_event(GtkWidget * w,
         cairo_scale(cr, _r.view.scale, _r.view.scale);
 
 
-        /* renderer of current setup */
-        NiftyconfRenderer *r = setup_get_renderer();
-
-        /* draw surface */
-        cairo_set_source_surface(cr, renderer_get_surface(r), 0, 0);
-
-        /* disable filtering */
-        cairo_pattern_set_filter(cairo_get_source(cr), _r.rendering.filter);
-        /* disable antialiasing */
-        cairo_set_antialias(cr, _r.rendering.antialias);
-
-        /* render surface */
-        cairo_paint(cr);
-
-        /* draw origin */
+		/* draw origin */
         cairo_set_source_rgba(cr, 1, 1, 1, 1);
         cairo_set_line_width(cr, 0.5);
         cairo_move_to(cr, 0, -5);
@@ -505,6 +506,20 @@ gboolean on_renderer_expose_event(GtkWidget * w,
         cairo_move_to(cr, -5, 0);
         cairo_line_to(cr, 5, 0);
         cairo_stroke(cr);
+		
+        /* renderer of current setup */
+        NiftyconfRenderer *r = setup_get_renderer();
+				
+        /* draw surface */
+        cairo_set_source_surface(cr, renderer_get_surface(r), r->xOffset, r->yOffset);
+		
+        /* disable filtering */
+        cairo_pattern_set_filter(cairo_get_source(cr), _r.rendering.filter);
+        /* disable antialiasing */
+        cairo_set_antialias(cr, _r.rendering.antialias);
+
+        /* render surface */
+        cairo_paint(cr);
 
         /* free context */
         cairo_destroy(cr);
