@@ -94,8 +94,8 @@ struct _NiftyconfRenderer
         bool damaged;
                 /** render function */
         NiftyconfRenderFunc *render;
-				/** rendering offset */
-		gdouble xOffset, yOffset;
+                /** rendering offset */
+        gdouble xOffset, yOffset;
 };
 
 
@@ -256,7 +256,7 @@ gboolean renderer_init()
         /* initial scale */
         _r.view.scale = 0.5;
         _r.view.scale_delta = 0.1;
-        _r.view.scale_factor = 15;
+        _r.view.scale_factor = 25;
         _r.rendering.filter = CAIRO_FILTER_NEAREST;
         _r.rendering.antialias = CAIRO_ANTIALIAS_DEFAULT;
 
@@ -361,15 +361,15 @@ void renderer_all_queue_draw()
 
 
 /** set drawing offset for this renderer */
-gboolean renderer_set_offset(NiftyconfRenderer *r, double xOff, double yOff)
+gboolean renderer_set_offset(NiftyconfRenderer * r, double xOff, double yOff)
 {
-		if(!r)
-				NFT_LOG_NULL(false);
+        if(!r)
+                NFT_LOG_NULL(false);
 
-		r->xOffset = xOff;
-		r->yOffset = yOff;
-		
-		return true;
+        r->xOffset = xOff;
+        r->yOffset = yOff;
+
+        return true;
 }
 
 /******************************************************************************
@@ -476,8 +476,8 @@ gboolean on_renderer_expose_event(GtkWidget * w,
         GtkAllocation a;
         gtk_widget_get_allocation(GTK_WIDGET(UI("drawingarea")), &a);
         gdouble pan_x, pan_y;
-        pan_x = ((double) a.width / 2) + _r.view.pan_x + _r.view.pan_t_x;
-        pan_y = ((double) a.height / 2) + _r.view.pan_y + _r.view.pan_t_y;
+        pan_x = _r.view.pan_x + _r.view.pan_t_x;
+        pan_y = _r.view.pan_y + _r.view.pan_t_y;
 
         /* fill background */
         cairo_set_source_rgb(cr, 0, 0, 0);
@@ -488,17 +488,11 @@ gboolean on_renderer_expose_event(GtkWidget * w,
         cairo_fill(cr);
 
         /* pan & scale */
-        cairo_translate(cr,
-                        pan_x -
-                        ((double) led_setup_get_width(setup_get_current()) *
-                         _r.view.scale * _r.view.scale_factor) / 2,
-                        pan_y -
-                        ((double) led_setup_get_height(setup_get_current()) *
-                         _r.view.scale * _r.view.scale_factor) / 2);
+        cairo_translate(cr, pan_x, pan_y);
         cairo_scale(cr, _r.view.scale, _r.view.scale);
 
 
-		/* draw origin */
+        /* draw origin */
         cairo_set_source_rgba(cr, 1, 1, 1, 1);
         cairo_set_line_width(cr, 0.5);
         cairo_move_to(cr, 0, -5);
@@ -506,13 +500,14 @@ gboolean on_renderer_expose_event(GtkWidget * w,
         cairo_move_to(cr, -5, 0);
         cairo_line_to(cr, 5, 0);
         cairo_stroke(cr);
-		
+
         /* renderer of current setup */
         NiftyconfRenderer *r = setup_get_renderer();
-				
+
         /* draw surface */
-        cairo_set_source_surface(cr, renderer_get_surface(r), r->xOffset, r->yOffset);
-		
+        cairo_set_source_surface(cr, renderer_get_surface(r),
+                                 r->xOffset, r->yOffset);
+
         /* disable filtering */
         cairo_pattern_set_filter(cairo_get_source(cr), _r.rendering.filter);
         /* disable antialiasing */
