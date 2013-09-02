@@ -97,7 +97,6 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
         cairo_fill(cr);
 
 
-
         /* render children */
         LedTile *ct;
         for(ct = led_tile_get_child(t); ct; ct = led_tile_list_get_next(ct))
@@ -148,7 +147,6 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
         }
 
 
-
         /* redraw chain */
         LedChain *chain;
         if((chain = led_tile_get_chain(t)))
@@ -172,18 +170,38 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
 
 
 
+        /* highlighted outlines? */
         if(tile_get_highlighted(tile))
         {
                 /* set white */
                 cairo_set_source_rgba(cr, 1, 1, 0, 1);
                 /* set line-width */
-                cairo_set_line_width(cr, 4);
+                cairo_set_line_width(cr, renderer_scale_factor() / 5);
         }
         else
         {
                 cairo_set_source_rgba(cr, 1, 1, 1, 1);
-                cairo_set_line_width(cr, 2);
+                cairo_set_line_width(cr, renderer_scale_factor() / 10);
         }
+
+
+        /* draw tile pivot */
+        cairo_translate(cr,
+                        led_tile_get_pivot_x(t) *
+                        renderer_scale_factor(),
+                        led_tile_get_pivot_y(t) * renderer_scale_factor());
+
+#define PIVOT_FACTOR (renderer_scale_factor()/5)
+        cairo_move_to(cr, -PIVOT_FACTOR, -PIVOT_FACTOR);
+        cairo_line_to(cr, PIVOT_FACTOR, PIVOT_FACTOR);
+        cairo_move_to(cr, PIVOT_FACTOR, -PIVOT_FACTOR);
+        cairo_line_to(cr, -PIVOT_FACTOR, PIVOT_FACTOR);
+        cairo_stroke(cr);
+
+        cairo_translate(cr,
+                        -led_tile_get_pivot_x(t) *
+                        renderer_scale_factor(),
+                        -led_tile_get_pivot_y(t) * renderer_scale_factor());
 
 
         /* draw tile outlines */
@@ -214,9 +232,9 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
         cairo_set_source_rgba(cr, 1, 1, 1, 1);
 
         if(tile_get_highlighted(tile))
-                cairo_set_line_width(cr, 8);
+                cairo_set_line_width(cr, renderer_scale_factor() / 5);
         else
-                cairo_set_line_width(cr, 2);
+                cairo_set_line_width(cr, renderer_scale_factor() / 10);
 
         double w = (double) led_tile_get_width(t) * renderer_scale_factor();
         double h = (double) led_tile_get_height(t) * renderer_scale_factor();
