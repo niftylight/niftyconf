@@ -69,7 +69,7 @@ gboolean                        renderer_resize(NiftyconfRenderer * r, gint widt
 cairo_surface_t                *renderer_get_surface(NiftyconfRenderer * r);
 
 /* model functions */
-gboolean                        renderer_set_offset(NiftyconfRenderer *r, double xOff, double yOff);
+gboolean                        renderer_set_offset(NiftyconfRenderer * r, double xOff, double yOff);
 
 
 #endif /* _NIFTYCONF_RENDERER_H */

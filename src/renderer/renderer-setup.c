@@ -101,7 +101,7 @@ static NftResult _render_setup(cairo_surface_t ** surface, gpointer element)
                     t; t = led_tile_list_get_next(t))
                 {
                         /** @todo check for visibility? */
-						
+
                         /* get surface from tile */
                         NiftyconfTile *tile =
                                 (NiftyconfTile *) led_tile_get_privdata(t);
@@ -111,7 +111,7 @@ static NftResult _render_setup(cairo_surface_t ** surface, gpointer element)
                                         ((double) led_tile_get_x(t)) *
                                         renderer_scale_factor(),
                                         ((double) led_tile_get_y(t)) *
-                                        renderer_scale_factor());                      
+                                        renderer_scale_factor());
 
                         /* rotate around pivot */
                         cairo_translate(cr,
@@ -126,19 +126,22 @@ static NftResult _render_setup(cairo_surface_t ** surface, gpointer element)
                                         -led_tile_get_pivot_y(t) *
                                         renderer_scale_factor());
 
-						/* calculate offscreen compensation */
-						double xOff=0, yOff=0;
-						//~ tile_calc_render_offset(tile, (double) width, (double) height, &xOff, &yOff);
-						//~ renderer_set_offset(setup_get_renderer(), 
-						                    //~ -xOff*renderer_scale_factor(), 
-						                    //~ -yOff*renderer_scale_factor());
-						
+                        /* calculate offscreen compensation */
+                        double xOff = 0, yOff = 0;
+                        // ~ tile_calc_render_offset(tile, (double) width,
+                        // (double) height, &xOff, &yOff);
+                        // ~ renderer_set_offset(setup_get_renderer(), 
+                        // ~ -xOff*renderer_scale_factor(), 
+                        // ~ -yOff*renderer_scale_factor());
+
                         /* draw surface */
                         cairo_set_source_surface(cr,
                                                  renderer_get_surface
-                                                 (tile_get_renderer(tile)), 
-                                                 xOff*renderer_scale_factor(), 
-                                                 yOff*renderer_scale_factor());
+                                                 (tile_get_renderer(tile)),
+                                                 xOff *
+                                                 renderer_scale_factor(),
+                                                 yOff *
+                                                 renderer_scale_factor());
 
 
                         /* disable filtering */
