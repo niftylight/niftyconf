@@ -299,7 +299,7 @@ G_MODULE_EXPORT gboolean on_niftyconf_window_delete_event(GtkWidget * w,
 
         /* bye bye */
         gtk_main_quit();
-        return false;
+        return true;
 }
 
 
@@ -307,6 +307,9 @@ G_MODULE_EXPORT gboolean on_niftyconf_window_delete_event(GtkWidget * w,
 G_MODULE_EXPORT void on_niftyconf_menu_quit_activate(GtkMenuItem * i,
                                                      gpointer d)
 {
+        /* store preferences */
+        prefs_save();
+
         /* bye bye */
         gtk_main_quit();
 }
