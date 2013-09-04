@@ -59,7 +59,7 @@ gboolean                        led_get_highlighted(NiftyconfLed * l);
 void                            led_set_highlighted(NiftyconfLed * l, gboolean is_highlighted);
 NiftyconfRenderer              *led_get_renderer(NiftyconfLed * l);
 NiftyconfChain                 *led_get_chain(NiftyconfLed * l);
-LedCount                        led_get_pos(NiftyconfLed * l);
+LedCount                        led_get_chainpos(NiftyconfLed * l);
 
 Led                            *led_niftyled(NiftyconfLed * l);
 char                           *led_dump(NiftyconfLed * led, gboolean encapsulation);

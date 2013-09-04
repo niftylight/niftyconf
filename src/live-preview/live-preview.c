@@ -240,7 +240,7 @@ void live_preview_highlight_led(NiftyconfLed * led)
         LedChain *c = chain_niftyled(chain);
 
         /* highlight led */
-        led_chain_set_greyscale(c, led_get_pos(led), -1);
+        led_chain_set_greyscale(c, led_get_chainpos(led), -1);
 
         /* if chain belongs to tile, refresh mapping */
         if(led_chain_get_parent_tile(c))

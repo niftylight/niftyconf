@@ -78,7 +78,7 @@ struct _NiftyconfLed
  ******************************************************************************/
 
 /** getter for position inside chain */
-LedCount led_get_pos(NiftyconfLed * l)
+LedCount led_get_chainpos(NiftyconfLed * l)
 {
         if(!l)
                 NFT_LOG_NULL(0);
