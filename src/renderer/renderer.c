@@ -372,6 +372,22 @@ gboolean renderer_set_offset(NiftyconfRenderer * r, double xOff, double yOff)
         return true;
 }
 
+/** get drawing offset for this renderer */
+gboolean renderer_get_offset(NiftyconfRenderer * r, double *xOff,
+                             double *yOff)
+{
+        if(!r)
+                NFT_LOG_NULL(false);
+
+        if(xOff)
+                *xOff = r->xOffset;
+        if(yOff)
+                *yOff = r->yOffset;
+
+        return true;
+}
+
+
 /******************************************************************************
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
@@ -494,11 +510,12 @@ gboolean on_renderer_expose_event(GtkWidget * w,
 
         /* draw origin */
         cairo_set_source_rgba(cr, 1, 1, 1, 1);
-        cairo_set_line_width(cr, 0.5);
-        cairo_move_to(cr, 0, -5);
-        cairo_line_to(cr, 0, 5);
-        cairo_move_to(cr, -5, 0);
-        cairo_line_to(cr, 5, 0);
+        cairo_set_line_width(cr, renderer_scale_factor() / 25);
+#define ORIGIN_FACTOR (renderer_scale_factor()/2.5)
+        cairo_move_to(cr, 0, -ORIGIN_FACTOR);
+        cairo_line_to(cr, 0, ORIGIN_FACTOR);
+        cairo_move_to(cr, -ORIGIN_FACTOR, 0);
+        cairo_line_to(cr, ORIGIN_FACTOR, 0);
         cairo_stroke(cr);
 
         /* renderer of current setup */

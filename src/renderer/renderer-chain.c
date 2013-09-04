@@ -66,8 +66,10 @@ static NftResult _render_chain(cairo_surface_t ** s, gpointer element)
         LedChain *c = chain_niftyled(chain);
 
         /* if dimensions changed, we need to allocate a new surface */
-        int width = (led_chain_get_max_x(c) + 1) * renderer_scale_factor();
-        int height = (led_chain_get_max_y(c) + 1) * renderer_scale_factor();
+        int width, height;
+        led_chain_get_max_pos(c, &width, &height);
+        width = (width + 1) * renderer_scale_factor();
+        height = (height + 1) * renderer_scale_factor();
 
         NiftyconfRenderer *r = chain_get_renderer(chain);
         if(!renderer_resize(r, width, height))
@@ -103,14 +105,16 @@ static NftResult _render_chain(cairo_surface_t ** s, gpointer element)
                 Led *l = led_chain_get_nth(c, i);
                 NiftyconfLed *led = led_get_privdata(l);
                 NiftyconfRenderer *lr = led_get_renderer(led);
+                LedFrameCord x, y;
+                led_get_pos(l, &x, &y);
                 cairo_set_source_surface(cr, renderer_get_surface(lr),
-                                         (double) led_get_x(l) *
-                                         renderer_scale_factor(),
-                                         (double) led_get_y(l) *
+                                         (double) x * renderer_scale_factor(),
+                                         (double) y *
                                          renderer_scale_factor());
                 /* disable filtering */
                 cairo_pattern_set_filter(cairo_get_source(cr),
                                          renderer_filter());
+
                 /* disable antialiasing */
                 cairo_set_antialias(cr, renderer_antialias());
 
@@ -152,8 +156,10 @@ NiftyconfRenderer *renderer_chain_new(NiftyconfChain * chain)
 
         /* dimensions of cairo surface */
         LedChain *c = chain_niftyled(chain);
-        int width = (led_chain_get_max_x(c) + 1) * renderer_scale_factor();
-        int height = (led_chain_get_max_y(c) + 1) * renderer_scale_factor();
+        int width, height;
+        led_chain_get_max_pos(c, &width, &height);
+        width = (width + 1) * renderer_scale_factor();
+        height = (height + 1) * renderer_scale_factor();
 
         return renderer_new(LED_CHAIN_T, chain, &_render_chain, width,
                             height);

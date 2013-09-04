@@ -100,12 +100,14 @@ void _set_x(NiftyconfLed * led, void *u)
 {
         Led *l = led_niftyled(led);
         LedFrameCord *new_val = u;
+        LedFrameCord x, y;
+        led_get_pos(l, &x, &y);
 
-        if(led_get_x(l) == *new_val)
+        if(x == *new_val)
                 return;
 
         /* set new value */
-        led_set_x(l, *new_val);
+        led_set_pos(l, *new_val, y);
 
         renderer_led_damage(led);
 }
@@ -134,12 +136,14 @@ void _set_y(NiftyconfLed * led, void *u)
 {
         Led *l = led_niftyled(led);
         LedFrameCord *new_val = u;
+        LedFrameCord x, y;
+        led_get_pos(led_niftyled(led), &x, &y);
 
-        if(led_get_y(l) == *new_val)
+        if(y == *new_val)
                 return;
 
         /* set new value */
-        led_set_y(l, *new_val);
+        led_set_pos(l, x, *new_val);
 
         renderer_led_damage(led);
 }
@@ -299,13 +303,17 @@ G_MODULE_EXPORT void on_spinbutton_tile_x_changed(GtkSpinButton * s,
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
 
+        /* get position */
+        LedFrameCord x, y;
+        led_tile_get_pos(tile, &x, &y);
+
         /* value really changed? */
         int new_val = gtk_spin_button_get_value_as_int(s);
-        if(led_tile_get_x(tile) == new_val)
+        if(x == new_val)
                 return;
 
         /* set new value */
-        if(!led_tile_set_x(tile, new_val))
+        if(!led_tile_set_pos(tile, new_val, y))
                 /* error background color */
         {
                 _widget_set_error_background(GTK_WIDGET(s), true);
@@ -333,13 +341,17 @@ G_MODULE_EXPORT void on_spinbutton_tile_y_changed(GtkSpinButton * s,
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
 
+        /* get position */
+        LedFrameCord x, y;
+        led_tile_get_pos(tile, &x, &y);
+
         /* value really changed? */
         int new_val = gtk_spin_button_get_value_as_int(s);
-        if(led_tile_get_y(tile) == new_val)
+        if(y == new_val)
                 return;
 
         /* set new value */
-        if(!led_tile_set_y(tile, new_val))
+        if(!led_tile_set_pos(tile, x, new_val))
                 /* error background color */
         {
                 _widget_set_error_background(GTK_WIDGET(s), true);
@@ -403,13 +415,17 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_x_changed(GtkSpinButton * s,
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
 
+        /* get pivot */
+        double x, y;
+        led_tile_get_pivot(tile, &x, &y);
+
         /* value really changed? */
         double new_val = gtk_spin_button_get_value(s);
-        if(led_tile_get_pivot_x(tile) == new_val)
+        if(x == new_val)
                 return;
 
         /* set new value */
-        if(!led_tile_set_pivot_x(tile, new_val))
+        if(!led_tile_set_pivot(tile, new_val, y))
                 /* error background color */
         {
                 _widget_set_error_background(GTK_WIDGET(s), true);
@@ -439,13 +455,17 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_y_changed(GtkSpinButton * s,
         /* get current tile */
         LedTile *tile = tile_niftyled(current_tile);
 
+        /* get pivot */
+        double x, y;
+        led_tile_get_pivot(tile, &x, &y);
+
         /* value really changed? */
         double new_val = gtk_spin_button_get_value(s);
-        if(led_tile_get_pivot_y(tile) == new_val)
+        if(y == new_val)
                 return;
 
         /* set new value */
-        if(!led_tile_set_pivot_y(tile, new_val))
+        if(!led_tile_set_pivot(tile, x, new_val))
                 /* error background color */
         {
                 _widget_set_error_background(GTK_WIDGET(s), true);
@@ -798,23 +818,30 @@ void ui_setup_props_tile_show(NiftyconfTile * t)
 
         if(t)
         {
+                /* position */
                 LedTile *tile = tile_niftyled(t);
+                LedFrameCord x, y;
+                led_tile_get_pos(tile, &x, &y);
                 gtk_spin_button_set_value(GTK_SPIN_BUTTON
                                           (UI("spinbutton_tile_x")),
-                                          (gdouble) led_tile_get_x(tile));
+                                          (gdouble) x);
                 gtk_spin_button_set_value(GTK_SPIN_BUTTON
                                           (UI("spinbutton_tile_y")),
-                                          (gdouble) led_tile_get_y(tile));
+                                          (gdouble) y);
+
+                /* dimension */
+                LedFrameCord w, h;
+                led_tile_get_transformed_dim(tile, &w, &h);
                 gtk_spin_button_set_value(GTK_SPIN_BUTTON
                                           (UI("spinbutton_tile_width")),
-                                          (gdouble)
-                                          led_tile_get_transformed_width
-                                          (tile));
+                                          (gdouble) w);
                 gtk_spin_button_set_value(GTK_SPIN_BUTTON
                                           (UI("spinbutton_tile_height")),
-                                          (gdouble)
-                                          led_tile_get_transformed_height
-                                          (tile));
+                                          (gdouble) h);
+
+                /* transformation */
+                double pX, pY;
+                led_tile_get_pivot(tile, &pX, &pY);
                 gtk_spin_button_set_value(GTK_SPIN_BUTTON
                                           (UI("spinbutton_tile_rotation")),
                                           (gdouble)
@@ -822,12 +849,10 @@ void ui_setup_props_tile_show(NiftyconfTile * t)
                                           M_PI);
                 gtk_spin_button_set_value(GTK_SPIN_BUTTON
                                           (UI("spinbutton_tile_pivot_x")),
-                                          (gdouble)
-                                          led_tile_get_pivot_x(tile));
+                                          (gdouble) pX);
                 gtk_spin_button_set_value(GTK_SPIN_BUTTON
                                           (UI("spinbutton_tile_pivot_y")),
-                                          (gdouble)
-                                          led_tile_get_pivot_y(tile));
+                                          (gdouble) pY);
         }
 
         gtk_widget_show(GTK_WIDGET(UI("frame_tile")));
@@ -877,10 +902,12 @@ void ui_setup_props_led_show(NiftyconfLed * l)
 
 
                 Led *led = led_niftyled(l);
+                LedFrameCord x, y;
+                led_get_pos(led, &x, &y);
 
-                SPIN_SET("spinbutton_led_x", (gdouble) led_get_x(led),
+                SPIN_SET("spinbutton_led_x", (gdouble) x,
                          on_spinbutton_led_x_changed);
-                SPIN_SET("spinbutton_led_y", (gdouble) led_get_y(led),
+                SPIN_SET("spinbutton_led_y", (gdouble) y,
                          on_spinbutton_led_y_changed);
                 SPIN_SET("spinbutton_led_component",
                          (gdouble) led_get_component(led),

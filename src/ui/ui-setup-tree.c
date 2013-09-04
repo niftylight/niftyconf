@@ -131,10 +131,13 @@ static void _tree_append_tile(GtkTreeStore * s,
         if(!tile)
                 return;
 
+        /* get dimensions */
+        LedFrameCord w, h;
+        led_tile_get_dim(t, &w, &h);
+
         /* create name */
         char title[64];
-        snprintf(title, sizeof(title), "%dx%d tile",
-                 led_tile_get_width(t), led_tile_get_height(t));
+        snprintf(title, sizeof(title), "%dx%d tile", w, h);
 
         GtkTreeIter i;
         gtk_tree_store_append(s, &i, parent);

@@ -86,34 +86,28 @@ gboolean tile_calc_render_offset(NiftyconfTile * t,
         if(!t || !xOff || !yOff)
                 NFT_LOG_NULL(false);
 
-        /* compensate rotation into offscreen area */
-        double corners[4][2];
+        *xOff = *yOff = 0;
 
-        *xOff = 0;
-        *yOff = 0;
+        /* get bounding box of rotated tile */
+        LedFrameCord corners[2][2];
+        if(!led_tile_get_transformed_bounding_box(tile_niftyled(t),
+                                                  &corners[0][0],
+                                                  &corners[0][1],
+                                                  &corners[1][0],
+                                                  &corners[1][1]))
+                return false;
 
-        led_tile_get_transformed_bounding_box(t->t,
-                                              &corners[0][0], &corners[0][1],
-                                              &corners[1][0], &corners[1][1],
-                                              &corners[2][0], &corners[2][1],
-                                              &corners[3][0], &corners[3][1]);
-        printf("------> %.2f/%.2f  %.2f/%.2f  %.2f/%.2f  %.2f/%.2f\n",
-               corners[0][0], corners[0][1],
-               corners[1][0], corners[1][1],
-               corners[2][0], corners[2][1], corners[3][0], corners[3][1]);
+        /* sort points */
+        LedFrameCord x1, y1;
+        x1 = MIN(corners[0][0], corners[1][0]);
+        y1 = MIN(corners[0][1], corners[1][1]);
 
-        for(int i = 0; i < 4; i++)
-        {
-                if(corners[i][0] < 0)
-                        *xOff = MAX(*xOff, -corners[i][0]);
-                else if(corners[i][0] > screenWidth)
-                        *xOff = MAX(*xOff, corners[i][0] - screenWidth);
-
-                if(corners[i][1] < 0)
-                        *yOff = MAX(*yOff, -corners[i][1]);
-                else if(corners[i][1] > screenHeight)
-                        *yOff = MAX(*yOff, corners[i][1] - screenHeight);
-        }
+        /* left offscreen? */
+        if(x1 < 0)
+                *xOff = (double) x1;
+        /* top offscreen? */
+        if(y1 < 0)
+                *yOff = (double) y1;
 
         return true;
 }
