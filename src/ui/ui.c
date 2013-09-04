@@ -169,6 +169,10 @@ gboolean ui_init()
         GtkBox *box_canvas = GTK_BOX(UI("box_canvas"));
         gtk_box_pack_start(box_canvas, renderer_widget(), true, true, 0);
 
+        /* set window title */
+        gtk_window_set_title(GTK_WINDOW(UI("window")),
+                             PACKAGE " v" PACKAGE_VERSION);
+
         return true;
 }
 
