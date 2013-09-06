@@ -102,12 +102,16 @@ gboolean tile_calc_render_offset(NiftyconfTile * t,
         x1 = MIN(corners[0][0], corners[1][0]);
         y1 = MIN(corners[0][1], corners[1][1]);
 
+		/* get x/y position of tile */
+		LedFrameCord x,y;
+		led_tile_get_pos(tile_niftyled(t), &x, &y);
+		
         /* left offscreen? */
-        if(x1 < 0)
-                *xOff = (double) x1;
+        if(x1+x < 0)
+                *xOff = (double) (x1+x);
         /* top offscreen? */
-        if(y1 < 0)
-                *yOff = (double) y1;
+        if(y1+y < 0)
+                *yOff = (double) (y1+y);
 
         return true;
 }

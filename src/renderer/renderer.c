@@ -296,7 +296,7 @@ NiftyconfRenderer *renderer_new(NIFTYLED_TYPE type,
         n->type = type;
         n->element = element;
         n->render = render;
-
+		
         if(!(n->surface =
              cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height)))
         {
@@ -521,9 +521,14 @@ gboolean on_renderer_expose_event(GtkWidget * w,
         /* renderer of current setup */
         NiftyconfRenderer *r = setup_get_renderer();
 
+		/* get surface */
+		cairo_surface_t *surface = renderer_get_surface(r);
+		
+		/* compensate offset */
+		cairo_translate(cr, r->xOffset, r->yOffset);
+		
         /* draw surface */
-        cairo_set_source_surface(cr, renderer_get_surface(r),
-                                 r->xOffset, r->yOffset);
+        cairo_set_source_surface(cr, surface, 0,0);
 
         /* disable filtering */
         cairo_pattern_set_filter(cairo_get_source(cr), _r.rendering.filter);

@@ -385,14 +385,14 @@ G_MODULE_EXPORT void on_spinbutton_tile_rotation_changed(GtkSpinButton * s,
                 return;
 
         /* set new value */
-        if(!led_tile_set_rotation(tile, new_val))
-                /* error background color */
+        if(!led_tile_set_rotation(tile, new_val))                
         {
+				/* error background color */
                 _widget_set_error_background(GTK_WIDGET(s), true);
-        }
-        /* normal background color */
+        }       
         else
         {
+				/* normal background color */
                 _widget_set_error_background(GTK_WIDGET(s), false);
         }
 
