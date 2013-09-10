@@ -60,16 +60,22 @@
 /** renderer for setups */
 static NftResult _render_setup(cairo_surface_t ** surface, gpointer element)
 {
+		if(!surface || !element)
+                NFT_LOG_NULL(NFT_FAILURE);
+		
         /* setup to render */
         LedSetup *s = (LedSetup *) element;
 
-        /* if dimensions changed, we need to allocate a new surface */
+		/* get dimensions of setup */
         LedFrameCord w, h;
         led_setup_get_dim(s, &w, &h);
-
+		NFT_LOG(L_INFO, "-------> %dx%d", w, h);
+		
+		/* calculate rendered dimensions of this tile */
 		double width = (double) w * renderer_scale_factor();
         double height = (double) h * renderer_scale_factor();
 
+		/* if dimensions changed, we need to allocate a new surface */
         if(!renderer_resize(setup_get_renderer(), width, height))
         {
                 g_error("Failed to resize renderer to %dx%d", w, h);
@@ -78,7 +84,6 @@ static NftResult _render_setup(cairo_surface_t ** surface, gpointer element)
 
         /* create context for drawing */
         cairo_t *cr = cairo_create(*surface);
-
 
         /* clear surface */
 #ifdef DEBUG
@@ -92,13 +97,15 @@ static NftResult _render_setup(cairo_surface_t ** surface, gpointer element)
                         (double) cairo_image_surface_get_height(*surface));
         cairo_fill(cr);
 
+
+		
         /* walk through all hardware LED adapters */
         LedHardware *hw;
         for(hw = led_setup_get_hardware(s);
             hw; hw = led_hardware_list_get_next(hw))
         {
 
-				//~ /* calculate offset of complete setup */
+				/* calculate offset of complete setup */
 				LedTile *t;
 				double xOff = 0, yOff = 0;
                 for(t = led_hardware_get_tile(hw);

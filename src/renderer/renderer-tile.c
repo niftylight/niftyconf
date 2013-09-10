@@ -68,14 +68,16 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
         NiftyconfTile *tile = (NiftyconfTile *) element;
         LedTile *t = tile_niftyled(tile);
 
-        /* if dimensions changed, we need to allocate a new surface */
+        /* get dimensions of this tile */
         LedFrameCord w, h;
         led_tile_get_dim(t, &w, &h);
 
-        NiftyconfRenderer *r = tile_get_renderer(tile);
+		/* calculate rendered dimensions of this tile */
         double width = (double) w * renderer_scale_factor();
         double height = (double) h * renderer_scale_factor();
-        if(!renderer_resize(r, width, height))
+
+		/* if dimensions changed, we need to allocate a new surface */
+        if(!renderer_resize(tile_get_renderer(tile), width, height))
         {
                 g_error("Failed to resize renderer to %.0fx%.0f",
                         width, height);
@@ -86,7 +88,6 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
         /* create context for drawing */
         cairo_t *cr = cairo_create(*s);
 
-
         /* clear surface */
         cairo_set_source_rgba(cr, 0, 0, 0, 1);
         cairo_rectangle(cr,
@@ -96,6 +97,8 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
         cairo_fill(cr);
 
 
+
+		
 		/* calculate this tiles' offset */
 		LedTile *ct;
 		double xOff = 0, yOff = 0;
@@ -111,6 +114,7 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
 		renderer_set_offset(tile_get_renderer(tile),
 								xOff * renderer_scale_factor(),
 								yOff * renderer_scale_factor());
+
 
 		
         /* render children */
@@ -267,6 +271,7 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
         cairo_line_to(cr, -PIVOT_FACTOR, PIVOT_FACTOR);
         cairo_stroke(cr);
 
+		/* respect offset */
         cairo_translate(cr,
                         -pX * renderer_scale_factor(),
                         -pY * renderer_scale_factor());
