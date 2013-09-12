@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.24"/>
+  <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkDialog" id="alert_dialog">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
@@ -61,11 +61,9 @@
             <child>
               <object class="GtkButton" id="alert_button">
                 <property name="label" translatable="yes">Dismiss</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <signal name="clicked" handler="on_alert_dismiss_button_clicked" swapped="no"/>
               </object>
               <packing>
@@ -127,7 +125,12 @@
               <object class="GtkLabel" id="label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="xpad">3</property>
                 <property name="label" translatable="yes">Loglevel:</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -150,11 +153,9 @@
             <child>
               <object class="GtkButton" id="button">
                 <property name="label">gtk-clear</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
                 <signal name="clicked" handler="on_log_button_clicked" swapped="no"/>
               </object>
@@ -177,16 +178,15 @@
             <property name="can_focus">False</property>
             <property name="spacing">5</property>
             <child>
-              <object class="GtkCheckButton" id="checkbutton_file">
-                <property name="label" translatable="yes">source file</property>
-                <property name="use_action_appearance">False</property>
+              <object class="GtkLabel" id="label_log_show">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="use_action_appearance">False</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
-                <property name="active">True</property>
-                <property name="draw_indicator">True</property>
+                <property name="xpad">3</property>
+                <property name="label" translatable="yes">Show:</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -195,13 +195,11 @@
               </packing>
             </child>
             <child>
-              <object class="GtkCheckButton" id="checkbutton_line">
-                <property name="label" translatable="yes">source line</property>
-                <property name="use_action_appearance">False</property>
+              <object class="GtkCheckButton" id="checkbutton_file">
+                <property name="label" translatable="yes">source file</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="xalign">0</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
@@ -213,13 +211,11 @@
               </packing>
             </child>
             <child>
-              <object class="GtkCheckButton" id="checkbutton_function">
-                <property name="label" translatable="yes">function</property>
-                <property name="use_action_appearance">False</property>
+              <object class="GtkCheckButton" id="checkbutton_line">
+                <property name="label" translatable="yes">source line</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="xalign">0</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
@@ -228,6 +224,22 @@
                 <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="checkbutton_function">
+                <property name="label" translatable="yes">function</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="xalign">0</property>
+                <property name="active">True</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
               </packing>
             </child>
           </object>
