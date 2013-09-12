@@ -302,9 +302,8 @@ void ui_setup_deinit()
  ******************************************************************************/
 
 
-/** menuitem "new" selected */
-G_MODULE_EXPORT void on_setup_menuitem_new_activate(GtkMenuItem * i,
-                                                    gpointer d)
+/** New setup */
+G_MODULE_EXPORT void  on_action_setup_new_activate(GtkAction *a, gpointer u)
 {
         LedSetup *s;
         if(!(s = led_setup_new()))
@@ -319,17 +318,16 @@ G_MODULE_EXPORT void on_setup_menuitem_new_activate(GtkMenuItem * i,
         ui_setup_tree_clear();
 }
 
+
 /** menuitem "open" selected */
-G_MODULE_EXPORT void on_setup_menuitem_open_activate(GtkMenuItem * i,
-                                                     gpointer d)
+G_MODULE_EXPORT void on_action_setup_open_activate(GtkAction *a, gpointer u)
 {
         gtk_widget_show(GTK_WIDGET(UI("filechooserdialog_load")));
 }
 
 
 /** menuitem "save" selected */
-G_MODULE_EXPORT void on_setup_menuitem_save_activate(GtkMenuItem * i,
-                                                     gpointer d)
+G_MODULE_EXPORT void on_action_setup_save_activate(GtkAction *a, gpointer u)
 {
         if(!ui_setup_save(NULL))
         {
@@ -340,8 +338,7 @@ G_MODULE_EXPORT void on_setup_menuitem_save_activate(GtkMenuItem * i,
 
 
 /** menuitem "save as" selected */
-G_MODULE_EXPORT void on_setup_menuitem_save_as_activate(GtkMenuItem * i,
-                                                        gpointer d)
+G_MODULE_EXPORT void on_action_setup_saveas_activate(GtkAction *a, gpointer u)
 {
         gtk_widget_show(GTK_WIDGET(UI("filechooserdialog_save")));
 }

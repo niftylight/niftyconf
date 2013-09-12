@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
+  <object class="GtkAction" id="action_quit">
+    <property name="label" translatable="yes">Quit</property>
+    <property name="tooltip" translatable="yes">Exit niftyconf</property>
+    <property name="stock_id">gtk-quit</property>
+    <signal name="activate" handler="on_action_quit_activate" swapped="no"/>
+  </object>
+  <object class="GtkAction" id="action_setup_new">
+    <property name="label" translatable="yes">New setup</property>
+    <property name="short_label" translatable="yes">New</property>
+    <property name="tooltip" translatable="yes">Start a fresh setup...</property>
+    <property name="stock_id">gtk-new</property>
+    <signal name="activate" handler="on_action_setup_new_activate" swapped="no"/>
+  </object>
+  <object class="GtkAction" id="action_setup_open">
+    <property name="label" translatable="yes">Open setup</property>
+    <property name="short_label" translatable="yes">Open</property>
+    <property name="tooltip" translatable="yes">Load setup from file...</property>
+    <property name="stock_id">gtk-open</property>
+    <signal name="activate" handler="on_action_setup_open_activate" swapped="no"/>
+  </object>
+  <object class="GtkAction" id="action_setup_save">
+    <property name="label" translatable="yes">Save setup</property>
+    <property name="short_label" translatable="yes">Save</property>
+    <property name="tooltip" translatable="yes">Save setup to file...</property>
+    <property name="stock_id">gtk-save</property>
+    <signal name="activate" handler="on_action_setup_save_activate" swapped="no"/>
+  </object>
+  <object class="GtkAction" id="action_setup_saveas">
+    <property name="label" translatable="yes">Save setup as...</property>
+    <property name="short_label" translatable="yes">Save as</property>
+    <property name="tooltip" translatable="yes">Save setup &amp; choose filename...</property>
+    <property name="stock_id">gtk-save-as</property>
+    <signal name="activate" handler="on_action_setup_saveas_activate" swapped="no"/>
+  </object>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -31,7 +65,7 @@
               <object class="GtkMenuItem" id="item_file">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">_Datei</property>
+                <property name="label" translatable="yes">_Setup</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="menu_file">
@@ -39,46 +73,38 @@
                     <property name="can_focus">False</property>
                     <child>
                       <object class="GtkImageMenuItem" id="item_file_new">
-                        <property name="label">gtk-new</property>
+                        <property name="related_action">action_setup_new</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="n" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                        <signal name="activate" handler="on_setup_menuitem_new_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="item_file_open">
-                        <property name="label">gtk-open</property>
+                        <property name="related_action">action_setup_open</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="o" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                        <signal name="activate" handler="on_setup_menuitem_open_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="item_file_save">
-                        <property name="label">gtk-save</property>
+                        <property name="related_action">action_setup_save</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="s" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                        <signal name="activate" handler="on_setup_menuitem_save_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="item_file_saveas">
-                        <property name="label">gtk-save-as</property>
+                        <property name="related_action">action_setup_saveas</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="s" signal="activate" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
-                        <signal name="activate" handler="on_setup_menuitem_save_as_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -89,13 +115,11 @@
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="item_file_quit">
-                        <property name="label">gtk-quit</property>
+                        <property name="related_action">action_quit</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                        <signal name="activate" handler="on_niftyconf_menu_quit_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -106,7 +130,7 @@
               <object class="GtkMenuItem" id="item_edit">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">_Bearbeiten</property>
+                <property name="label" translatable="yes">_Edit</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="menu_edit">
@@ -296,7 +320,7 @@
               <object class="GtkMenuItem" id="item_view">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">_Ansicht</property>
+                <property name="label" translatable="yes">_View</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="menu_view">
@@ -376,7 +400,7 @@
               <object class="GtkMenuItem" id="item_help">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">_Hilfe</property>
+                <property name="label" translatable="yes">_Help</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="menu_help">
@@ -411,12 +435,12 @@
             <property name="show_arrow">False</property>
             <child>
               <object class="GtkToolButton" id="toolbutton_new">
+                <property name="related_action">action_setup_new</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_text" translatable="yes">New setup...</property>
                 <property name="label" translatable="yes">New</property>
                 <property name="use_underline">True</property>
-                <property name="stock_id">gtk-new</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -425,12 +449,12 @@
             </child>
             <child>
               <object class="GtkToolButton" id="toolbutton_open">
+                <property name="related_action">action_setup_open</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_text" translatable="yes">Open setup...</property>
                 <property name="label" translatable="yes">Open</property>
                 <property name="use_underline">True</property>
-                <property name="stock_id">gtk-open</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -439,12 +463,12 @@
             </child>
             <child>
               <object class="GtkToolButton" id="toolbutton_save">
+                <property name="related_action">action_setup_save</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_text" translatable="yes">Save current setup...</property>
                 <property name="label" translatable="yes">Save</property>
                 <property name="use_underline">True</property>
-                <property name="stock_id">gtk-save</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -453,12 +477,12 @@
             </child>
             <child>
               <object class="GtkToolButton" id="toolbutton_saveas">
+                <property name="related_action">action_setup_saveas</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_text" translatable="yes">Save current setup in new file...</property>
                 <property name="label" translatable="yes">Save as</property>
                 <property name="use_underline">True</property>
-                <property name="stock_id">gtk-save-as</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -466,7 +490,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSeparatorToolItem" id="toolbutton1">
+              <object class="GtkSeparatorToolItem" id="separator1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
               </object>
@@ -480,9 +504,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_text" translatable="yes">Increase zoom level...</property>
-                <property name="label" translatable="yes">toolbutton2</property>
+                <property name="label" translatable="yes">Zoom in</property>
                 <property name="use_underline">True</property>
-		<property name="stock_id">gtk-zoom-in</property>
+                <property name="stock_id">gtk-zoom-in</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -494,9 +518,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_text" translatable="yes">Decrease zoom level...</property>
-                <property name="label" translatable="yes">toolbutton2</property>
+                <property name="label" translatable="yes">Zoom out</property>
                 <property name="use_underline">True</property>
-		<property name="stock_id">gtk-zoom-out</property>
+                <property name="stock_id">gtk-zoom-out</property>
               </object>
               <packing>
                 <property name="expand">False</property>
