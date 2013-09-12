@@ -45,6 +45,7 @@
 #include <niftyled.h>
 #include <gtk/gtk.h>
 #include "ui/ui.h"
+#include "ui/ui-renderer.h"
 #include "ui/ui-setup.h"
 #include "ui/ui-setup-props.h"
 #include "ui/ui-setup-tree.h"
@@ -829,7 +830,7 @@ void ui_setup_tree_refresh()
         _clear_in_progress = false;
 
         /* redraw */
-        renderer_all_queue_draw();
+        ui_renderer_all_queue_draw();
 }
 
 
@@ -1008,7 +1009,7 @@ static void on_selection_changed(GtkTreeSelection * selection, gpointer u)
         live_preview_show();
 
         /* redraw */
-        renderer_all_queue_draw();
+        ui_renderer_all_queue_draw();
 }
 
 

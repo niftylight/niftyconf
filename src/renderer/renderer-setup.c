@@ -44,6 +44,7 @@
 #include <math.h>
 #include <gtk/gtk.h>
 #include <niftyled.h>
+#include "ui/ui-renderer.h"
 #include "elements/element-setup.h"
 #include "renderer/renderer.h"
 #include "renderer/renderer-tile.h"
@@ -60,21 +61,21 @@
 /** renderer for setups */
 static NftResult _render_setup(cairo_surface_t ** surface, gpointer element)
 {
-		if(!surface || !element)
+        if(!surface || !element)
                 NFT_LOG_NULL(NFT_FAILURE);
-		
+
         /* setup to render */
         LedSetup *s = (LedSetup *) element;
 
-		/* get dimensions of setup */
+        /* get dimensions of setup */
         LedFrameCord w, h;
         led_setup_get_dim(s, &w, &h);
-		
-		/* calculate rendered dimensions of this tile */
-		double width = (double) w * renderer_scale_factor();
-        double height = (double) h * renderer_scale_factor();
 
-		/* if dimensions changed, we need to allocate a new surface */
+        /* calculate rendered dimensions of this tile */
+        double width = (double) w * ui_renderer_scale_factor();
+        double height = (double) h * ui_renderer_scale_factor();
+
+        /* if dimensions changed, we need to allocate a new surface */
         if(!renderer_resize(setup_get_renderer(), width, height))
         {
                 g_error("Failed to resize renderer to %dx%d", w, h);
@@ -97,32 +98,32 @@ static NftResult _render_setup(cairo_surface_t ** surface, gpointer element)
         cairo_fill(cr);
 
 
-		
+
         /* walk through all hardware LED adapters */
         LedHardware *hw;
         for(hw = led_setup_get_hardware(s);
             hw; hw = led_hardware_list_get_next(hw))
         {
 
-				/* calculate offset of complete setup */
-				LedTile *t;
-				double xOff = 0, yOff = 0;
+                /* calculate offset of complete setup */
+                LedTile *t;
+                double xOff = 0, yOff = 0;
                 for(t = led_hardware_get_tile(hw);
                     t; t = led_tile_list_get_next(t))
-				{
-						double xOffT, yOffT;
-						tile_calc_render_offset(led_tile_get_privdata(t),
-						                        (double) w, (double) h, 
-												&xOffT, &yOffT);
-						xOff = MIN(xOff, xOffT);
-						yOff = MIN(yOff, yOffT);                
-				}
+                {
+                        double xOffT, yOffT;
+                        tile_calc_render_offset(led_tile_get_privdata(t),
+                                                (double) w, (double) h,
+                                                &xOffT, &yOffT);
+                        xOff = MIN(xOff, xOffT);
+                        yOff = MIN(yOff, yOffT);
+                }
 
-				renderer_set_offset(setup_get_renderer(),
-										xOff * renderer_scale_factor(),
-										yOff * renderer_scale_factor());
-						
-                /* Walk all tiles of this hardware & draw their surface */                
+                renderer_set_offset(setup_get_renderer(),
+                                    xOff * ui_renderer_scale_factor(),
+                                    yOff * ui_renderer_scale_factor());
+
+                /* Walk all tiles of this hardware & draw their surface */
                 for(t = led_hardware_get_tile(hw);
                     t; t = led_tile_list_get_next(t))
                 {
@@ -132,48 +133,49 @@ static NftResult _render_setup(cairo_surface_t ** surface, gpointer element)
                         NiftyconfTile *tile =
                                 (NiftyconfTile *) led_tile_get_privdata(t);
 
-						/* get surface */
-						cairo_surface_t *tsurface = renderer_get_surface
-                                         (tile_get_renderer(tile));
-						
-						/* compensate child tiles' offset */
-						double xOffT, yOffT;
-						renderer_get_offset(tile_get_renderer(tile), &xOffT, &yOffT);
-                		cairo_translate(cr, xOffT, yOffT);
+                        /* get surface */
+                        cairo_surface_t *tsurface = renderer_get_surface
+                                (tile_get_renderer(tile));
 
-						/* compensate setup offset */
-						cairo_translate(cr, 
-						                -xOff*renderer_scale_factor(), 
-						                -yOff*renderer_scale_factor());
-						
+                        /* compensate child tiles' offset */
+                        double xOffT, yOffT;
+                        renderer_get_offset(tile_get_renderer(tile), &xOffT,
+                                            &yOffT);
+                        cairo_translate(cr, xOffT, yOffT);
+
+                        /* compensate setup offset */
+                        cairo_translate(cr,
+                                        -xOff * ui_renderer_scale_factor(),
+                                        -yOff * ui_renderer_scale_factor());
+
                         /* move to x/y */
                         LedFrameCord x, y;
                         led_tile_get_pos(t, &x, &y);
                         cairo_translate(cr,
                                         ((double) x) *
-                                        renderer_scale_factor(),
+                                        ui_renderer_scale_factor(),
                                         ((double) y) *
-                                        renderer_scale_factor());
+                                        ui_renderer_scale_factor());
 
                         /* rotate around pivot */
                         double pX, pY;
                         led_tile_get_pivot(t, &pX, &pY);
                         cairo_translate(cr,
-                                        pX * renderer_scale_factor(),
-                                        pY * renderer_scale_factor());
+                                        pX * ui_renderer_scale_factor(),
+                                        pY * ui_renderer_scale_factor());
                         cairo_rotate(cr, led_tile_get_rotation(t));
                         cairo_translate(cr,
-                                        -pX * renderer_scale_factor(),
-                                        -pY * renderer_scale_factor());
+                                        -pX * ui_renderer_scale_factor(),
+                                        -pY * ui_renderer_scale_factor());
 
                         /* draw surface */
                         cairo_set_source_surface(cr, tsurface, 0, 0);
 
                         /* disable filtering */
                         cairo_pattern_set_filter(cairo_get_source(cr),
-                                                 renderer_filter());
+                                                 ui_renderer_filter());
                         /* disable antialiasing */
-                        cairo_set_antialias(cr, renderer_antialias());
+                        cairo_set_antialias(cr, ui_renderer_antialias());
 
                         /* render surface */
                         cairo_paint(cr);
@@ -210,8 +212,8 @@ NiftyconfRenderer *renderer_setup_new()
         gint width, height;
         led_setup_get_dim(s, &width, &height);
 
-        width *= renderer_scale_factor();
-        height *= renderer_scale_factor();
+        width *= ui_renderer_scale_factor();
+        height *= ui_renderer_scale_factor();
 
         return renderer_new(LED_SETUP_T, s, &_render_setup, width, height);
 }

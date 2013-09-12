@@ -47,6 +47,7 @@
 #include "ui/ui.h"
 #include "ui/ui-log.h"
 #include "ui/ui-clipboard.h"
+#include "ui/ui-renderer.h"
 #include "ui/ui-setup.h"
 #include "ui/ui-setup-props.h"
 #include "ui/ui-setup-tree.h"
@@ -160,6 +161,8 @@ gboolean ui_init()
                 g_error("Failed to initialize \"clipboard\" module");
         if(!ui_about_init())
                 g_error("Failed to initialize \"about\" module");
+        if(!ui_renderer_init())
+                g_error("Failed to initialize \"renderer\" module");
 
         GtkBox *box_setup = GTK_BOX(UI("box_setup"));
         gtk_box_pack_start(box_setup, ui_setup_get_widget(), true, true, 0);
@@ -167,7 +170,7 @@ gboolean ui_init()
         gtk_box_pack_start(box_chain, ui_setup_ledlist_get_widget(), true,
                            true, 0);
         GtkBox *box_canvas = GTK_BOX(UI("box_canvas"));
-        gtk_box_pack_start(box_canvas, renderer_widget(), true, true, 0);
+        gtk_box_pack_start(box_canvas, ui_renderer_widget(), true, true, 0);
 
         /* set window title */
         gtk_window_set_title(GTK_WINDOW(UI("window")),
@@ -180,6 +183,7 @@ gboolean ui_init()
 /** deinitialize module */
 void ui_deinit()
 {
+        ui_renderer_deinit();
         ui_about_deinit();
         ui_clipboard_deinit();
         ui_setup_deinit();

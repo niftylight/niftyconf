@@ -46,6 +46,7 @@
 #include <sys/stat.h>
 #include <niftyled.h>
 #include <gtk/gtk.h>
+#include "ui/ui-renderer.h"
 #include "ui/ui-setup-props.h"
 #include "ui/ui-setup-tree.h"
 #include "ui/ui-log.h"
@@ -496,7 +497,7 @@ static void _paste_node(LedPrefsNode * n,
         ui_setup_tree_refresh();
 
         /* redraw view */
-        renderer_all_queue_draw();
+        ui_renderer_all_queue_draw();
 }
 
 

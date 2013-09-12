@@ -46,7 +46,7 @@
 #include "elements/element-led.h"
 #include "renderer/renderer.h"
 #include "renderer/renderer-chain.h"
-
+#include "ui/ui-renderer.h"
 
 
 
@@ -120,8 +120,8 @@ static NftResult _render_led(cairo_surface_t ** s, gpointer element)
         /* draw outline */
         cairo_set_line_width(cr, 1);
         cairo_set_source_rgb(cr, 0.5, 0.5, 0.5);
-        cairo_rectangle(cr, 0, 0, renderer_scale_factor(),
-                        renderer_scale_factor());
+        cairo_rectangle(cr, 0, 0, ui_renderer_scale_factor(),
+                        ui_renderer_scale_factor());
         cairo_stroke(cr);
 
 
@@ -160,8 +160,9 @@ NiftyconfRenderer *renderer_led_new(NiftyconfLed * led)
         if(!led)
                 NFT_LOG_NULL(NULL);
 
-        return renderer_new(LED_T, led, &_render_led, renderer_scale_factor(),
-                            renderer_scale_factor());
+        return renderer_new(LED_T, led, &_render_led,
+                            ui_renderer_scale_factor(),
+                            ui_renderer_scale_factor());
 }
 
 

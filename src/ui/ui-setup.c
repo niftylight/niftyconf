@@ -303,7 +303,7 @@ void ui_setup_deinit()
 
 
 /** New setup */
-G_MODULE_EXPORT void  on_action_setup_new_activate(GtkAction *a, gpointer u)
+G_MODULE_EXPORT void on_action_setup_new_activate(GtkAction * a, gpointer u)
 {
         LedSetup *s;
         if(!(s = led_setup_new()))
@@ -320,14 +320,14 @@ G_MODULE_EXPORT void  on_action_setup_new_activate(GtkAction *a, gpointer u)
 
 
 /** menuitem "open" selected */
-G_MODULE_EXPORT void on_action_setup_open_activate(GtkAction *a, gpointer u)
+G_MODULE_EXPORT void on_action_setup_open_activate(GtkAction * a, gpointer u)
 {
         gtk_widget_show(GTK_WIDGET(UI("filechooserdialog_load")));
 }
 
 
 /** menuitem "save" selected */
-G_MODULE_EXPORT void on_action_setup_save_activate(GtkAction *a, gpointer u)
+G_MODULE_EXPORT void on_action_setup_save_activate(GtkAction * a, gpointer u)
 {
         if(!ui_setup_save(NULL))
         {
@@ -338,7 +338,8 @@ G_MODULE_EXPORT void on_action_setup_save_activate(GtkAction *a, gpointer u)
 
 
 /** menuitem "save as" selected */
-G_MODULE_EXPORT void on_action_setup_saveas_activate(GtkAction *a, gpointer u)
+G_MODULE_EXPORT void on_action_setup_saveas_activate(GtkAction * a,
+                                                     gpointer u)
 {
         gtk_widget_show(GTK_WIDGET(UI("filechooserdialog_save")));
 }

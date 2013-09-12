@@ -45,6 +45,7 @@
 #include <gtk/gtk.h>
 #include "ui/ui.h"
 #include "ui/ui-log.h"
+#include "ui/ui-renderer.h"
 #include "ui/ui-setup-tree.h"
 #include "ui/ui-setup-props.h"
 #include "ui/ui-setup-ledlist.h"
@@ -127,7 +128,7 @@ G_MODULE_EXPORT void on_spinbutton_led_x_changed(GtkSpinButton * s,
         ui_setup_tree_refresh();
 
         /* redraw */
-        renderer_all_queue_draw();
+        ui_renderer_all_queue_draw();
 }
 
 
@@ -162,7 +163,7 @@ G_MODULE_EXPORT void on_spinbutton_led_y_changed(GtkSpinButton * s,
         ui_setup_tree_refresh();
 
         /* redraw */
-        renderer_all_queue_draw();
+        ui_renderer_all_queue_draw();
 }
 
 
@@ -192,7 +193,7 @@ G_MODULE_EXPORT void on_spinbutton_led_component_changed(GtkSpinButton * s,
                                                      &new_val);
 
         /* redraw */
-        renderer_all_queue_draw();
+        ui_renderer_all_queue_draw();
 }
 
 
@@ -292,7 +293,7 @@ G_MODULE_EXPORT void on_spinbutton_chain_ledcount_changed(GtkSpinButton * s,
 
         /* redraw */
         renderer_chain_damage(current_chain);
-        renderer_all_queue_draw();
+        ui_renderer_all_queue_draw();
 }
 
 
@@ -329,7 +330,7 @@ G_MODULE_EXPORT void on_spinbutton_tile_x_changed(GtkSpinButton * s,
 
         /* redraw */
         renderer_tile_damage(current_tile);
-        renderer_all_queue_draw();
+        ui_renderer_all_queue_draw();
 
 }
 
@@ -367,7 +368,7 @@ G_MODULE_EXPORT void on_spinbutton_tile_y_changed(GtkSpinButton * s,
 
         /* redraw */
         renderer_tile_damage(current_tile);
-        renderer_all_queue_draw();
+        ui_renderer_all_queue_draw();
 
 }
 
@@ -385,14 +386,14 @@ G_MODULE_EXPORT void on_spinbutton_tile_rotation_changed(GtkSpinButton * s,
                 return;
 
         /* set new value */
-        if(!led_tile_set_rotation(tile, new_val))                
+        if(!led_tile_set_rotation(tile, new_val))
         {
-				/* error background color */
+                /* error background color */
                 _widget_set_error_background(GTK_WIDGET(s), true);
-        }       
+        }
         else
         {
-				/* normal background color */
+                /* normal background color */
                 _widget_set_error_background(GTK_WIDGET(s), false);
         }
 
@@ -404,7 +405,7 @@ G_MODULE_EXPORT void on_spinbutton_tile_rotation_changed(GtkSpinButton * s,
 
         /* redraw */
         renderer_tile_damage(current_tile);
-        renderer_all_queue_draw();
+        ui_renderer_all_queue_draw();
 }
 
 
@@ -444,7 +445,7 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_x_changed(GtkSpinButton * s,
 
         /* redraw */
         renderer_tile_damage(current_tile);
-        renderer_all_queue_draw();
+        ui_renderer_all_queue_draw();
 }
 
 
@@ -484,7 +485,7 @@ G_MODULE_EXPORT void on_spinbutton_tile_pivot_y_changed(GtkSpinButton * s,
 
         /* redraw */
         renderer_tile_damage(current_tile);
-        renderer_all_queue_draw();
+        ui_renderer_all_queue_draw();
 }
 
 

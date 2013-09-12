@@ -41,24 +41,19 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _NIFTYCONF_RENDERER_H
-#define _NIFTYCONF_RENDERER_H
-
-#include <cairo.h>
-#include <niftyled.h>
+#ifndef _UI_RENDERER_H
+#define _UI_RENDERER_H
 
 
-typedef struct _NiftyconfRenderer NiftyconfRenderer;
-typedef                         NftResult(NiftyconfRenderFunc) (cairo_surface_t ** s, gpointer element);
+
+/* GUI functions */
+gboolean                        ui_renderer_init();
+void                            ui_renderer_deinit();
+GtkWidget                      *ui_renderer_widget();
+cairo_filter_t                  ui_renderer_filter();
+cairo_antialias_t               ui_renderer_antialias();
+gdouble                         ui_renderer_scale_factor();
+void                            ui_renderer_all_queue_draw();
 
 
-NiftyconfRenderer              *renderer_new(NIFTYLED_TYPE type, gpointer element, NiftyconfRenderFunc * render, gint width, gint height);
-void                            renderer_destroy(NiftyconfRenderer * r);
-
-void                            renderer_damage(NiftyconfRenderer * r);
-gboolean                        renderer_resize(NiftyconfRenderer * r, gint width, gint height);
-cairo_surface_t                *renderer_get_surface(NiftyconfRenderer * r);
-gboolean                        renderer_set_offset(NiftyconfRenderer * r, double xOff, double yOff);
-gboolean                        renderer_get_offset(NiftyconfRenderer * r, double *xOff, double *yOff);
-
-#endif /* _NIFTYCONF_RENDERER_H */
+#endif /* _UI_RENDERER_H */

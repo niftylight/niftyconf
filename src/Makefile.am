@@ -23,6 +23,7 @@ niftyconf_SOURCES = \
         ui/ui-log.c \
         ui/ui-clipboard.c \
         ui/ui-info-hardware.c \
+        ui/ui-renderer.c \
         ui/ui-setup.c \
         ui/ui-setup-props.c \
         ui/ui-setup-tree.c \

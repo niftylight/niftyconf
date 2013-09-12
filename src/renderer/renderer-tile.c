@@ -48,7 +48,7 @@
 #include "elements/element-chain.h"
 #include "renderer/renderer.h"
 #include "renderer/renderer-chain.h"
-
+#include "ui/ui-renderer.h"
 
 
 
@@ -72,11 +72,11 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
         LedFrameCord w, h;
         led_tile_get_dim(t, &w, &h);
 
-		/* calculate rendered dimensions of this tile */
-        double width = (double) w * renderer_scale_factor();
-        double height = (double) h * renderer_scale_factor();
+        /* calculate rendered dimensions of this tile */
+        double width = (double) w * ui_renderer_scale_factor();
+        double height = (double) h * ui_renderer_scale_factor();
 
-		/* if dimensions changed, we need to allocate a new surface */
+        /* if dimensions changed, we need to allocate a new surface */
         if(!renderer_resize(tile_get_renderer(tile), width, height))
         {
                 g_error("Failed to resize renderer to %.0fx%.0f",
@@ -98,72 +98,72 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
 
 
 
-		
-		/* calculate this tiles' offset */
-		LedTile *ct;
-		double xOff = 0, yOff = 0;
+
+        /* calculate this tiles' offset */
+        LedTile *ct;
+        double xOff = 0, yOff = 0;
         for(ct = led_tile_get_child(t); ct; ct = led_tile_list_get_next(ct))
         {
-				double xOffT, yOffT;
-                tile_calc_render_offset(led_tile_get_privdata(ct), (double) w, (double) h, 
-                						&xOffT, &yOffT);
-				xOff = MIN(xOff, xOffT);
-				yOff = MIN(yOff, yOffT);                
-		}
+                double xOffT, yOffT;
+                tile_calc_render_offset(led_tile_get_privdata(ct), (double) w,
+                                        (double) h, &xOffT, &yOffT);
+                xOff = MIN(xOff, xOffT);
+                yOff = MIN(yOff, yOffT);
+        }
 
-		renderer_set_offset(tile_get_renderer(tile),
-								xOff * renderer_scale_factor(),
-								yOff * renderer_scale_factor());
+        renderer_set_offset(tile_get_renderer(tile),
+                            xOff * ui_renderer_scale_factor(),
+                            yOff * ui_renderer_scale_factor());
 
 
-		
+
         /* render children */
         for(ct = led_tile_get_child(t); ct; ct = led_tile_list_get_next(ct))
         {
                 NiftyconfTile *ctt =
                         (NiftyconfTile *) led_tile_get_privdata(ct);
 
-				/* get surface */
-				cairo_surface_t *surface = renderer_get_surface
-                                         (tile_get_renderer(ctt));
-				
-				/* compensate child tiles' offset */
-				double xOffT, yOffT;
-				renderer_get_offset(tile_get_renderer(ctt), &xOffT, &yOffT);
+                /* get surface */
+                cairo_surface_t *surface = renderer_get_surface
+                        (tile_get_renderer(ctt));
+
+                /* compensate child tiles' offset */
+                double xOffT, yOffT;
+                renderer_get_offset(tile_get_renderer(ctt), &xOffT, &yOffT);
                 cairo_translate(cr, xOffT, yOffT);
 
-				/* compensate parent tiles' offset */
-				cairo_translate(cr, 
-				                -xOff*renderer_scale_factor(),
-				                -yOff*renderer_scale_factor());
+                /* compensate parent tiles' offset */
+                cairo_translate(cr,
+                                -xOff * ui_renderer_scale_factor(),
+                                -yOff * ui_renderer_scale_factor());
 
                 /* move to x/y */
                 LedFrameCord x, y;
                 led_tile_get_pos(ct, &x, &y);
                 cairo_translate(cr,
-                                (double) x * renderer_scale_factor(),
-                                (double) y * renderer_scale_factor());
+                                (double) x * ui_renderer_scale_factor(),
+                                (double) y * ui_renderer_scale_factor());
 
                 /* rotate around pivot */
                 double pX, pY;
                 led_tile_get_pivot(ct, &pX, &pY);
                 cairo_translate(cr,
-                                pX * renderer_scale_factor(),
-                                pY * renderer_scale_factor());
+                                pX * ui_renderer_scale_factor(),
+                                pY * ui_renderer_scale_factor());
 
                 cairo_rotate(cr, led_tile_get_rotation(ct));
                 cairo_translate(cr,
-                                -pX * renderer_scale_factor(),
-                                -pY * renderer_scale_factor());
+                                -pX * ui_renderer_scale_factor(),
+                                -pY * ui_renderer_scale_factor());
 
                 /* draw */
                 cairo_set_source_surface(cr, surface, 0, 0);
 
                 /* disable filtering */
                 cairo_pattern_set_filter(cairo_get_source(cr),
-                                         renderer_filter());
+                                         ui_renderer_filter());
                 /* disable antialiasing */
-                cairo_set_antialias(cr, renderer_antialias());
+                cairo_set_antialias(cr, ui_renderer_antialias());
 
                 cairo_fill(cr);
                 cairo_paint(cr);
@@ -188,9 +188,9 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
 
                 /* disable filtering */
                 cairo_pattern_set_filter(cairo_get_source(cr),
-                                         renderer_filter());
+                                         ui_renderer_filter());
                 /* disable antialiasing */
-                cairo_set_antialias(cr, renderer_antialias());
+                cairo_set_antialias(cr, ui_renderer_antialias());
 
                 cairo_paint(cr);
         }
@@ -203,13 +203,13 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
                 /* set white */
                 cairo_set_source_rgba(cr, 1, 1, 0, 1);
                 /* set line-width */
-                cairo_set_line_width(cr, renderer_scale_factor() / 5);
+                cairo_set_line_width(cr, ui_renderer_scale_factor() / 5);
         }
         /* normal outlines */
         else
         {
                 cairo_set_source_rgba(cr, 1, 1, 1, 1);
-                cairo_set_line_width(cr, renderer_scale_factor() / 8);
+                cairo_set_line_width(cr, ui_renderer_scale_factor() / 8);
         }
 
 
@@ -237,9 +237,9 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
         cairo_set_source_rgba(cr, 1, 1, 1, 1);
 
         if(tile_get_highlighted(tile))
-                cairo_set_line_width(cr, renderer_scale_factor() / 5);
+                cairo_set_line_width(cr, ui_renderer_scale_factor() / 5);
         else
-                cairo_set_line_width(cr, renderer_scale_factor() / 10);
+                cairo_set_line_width(cr, ui_renderer_scale_factor() / 10);
 
         double cx = width / 2;
         double cy = height / 10;
@@ -254,29 +254,29 @@ static NftResult _render_tile(cairo_surface_t ** s, gpointer element)
         cairo_stroke(cr);
 
 
-		/* draw tile pivot */
+        /* draw tile pivot */
         double pX, pY;
         led_tile_get_pivot(t, &pX, &pY);
-		cairo_translate(cr, 
-		                -xOff*renderer_scale_factor(), 
-		                -yOff*renderer_scale_factor());
         cairo_translate(cr,
-                        pX * renderer_scale_factor(),
-                        pY * renderer_scale_factor());
+                        -xOff * ui_renderer_scale_factor(),
+                        -yOff * ui_renderer_scale_factor());
+        cairo_translate(cr,
+                        pX * ui_renderer_scale_factor(),
+                        pY * ui_renderer_scale_factor());
 
-#define PIVOT_FACTOR (renderer_scale_factor()/5)
+#define PIVOT_FACTOR (ui_renderer_scale_factor()/5)
         cairo_move_to(cr, -PIVOT_FACTOR, -PIVOT_FACTOR);
         cairo_line_to(cr, PIVOT_FACTOR, PIVOT_FACTOR);
         cairo_move_to(cr, PIVOT_FACTOR, -PIVOT_FACTOR);
         cairo_line_to(cr, -PIVOT_FACTOR, PIVOT_FACTOR);
         cairo_stroke(cr);
 
-		/* respect offset */
+        /* respect offset */
         cairo_translate(cr,
-                        -pX * renderer_scale_factor(),
-                        -pY * renderer_scale_factor());
+                        -pX * ui_renderer_scale_factor(),
+                        -pY * ui_renderer_scale_factor());
 
-		
+
         cairo_destroy(cr);
 
 
@@ -297,7 +297,8 @@ void renderer_tile_damage(NiftyconfTile * tile)
 
         /* also damage parent tiles... */
         LedTile *pt;
-		for(pt = led_tile_get_parent_tile(t); pt; pt = led_tile_get_parent_tile(pt))
+        for(pt = led_tile_get_parent_tile(t); pt;
+            pt = led_tile_get_parent_tile(pt))
         {
                 renderer_tile_damage(led_tile_get_privdata(pt));
         }
@@ -319,8 +320,8 @@ NiftyconfRenderer *renderer_tile_new(NiftyconfTile * tile)
         if(!led_tile_get_dim(t, &width, &height))
                 return NULL;
 
-        width *= renderer_scale_factor();
-        height *= renderer_scale_factor();
+        width *= ui_renderer_scale_factor();
+        height *= ui_renderer_scale_factor();
 
         return renderer_new(LED_TILE_T, tile, &_render_tile, width, height);
 }

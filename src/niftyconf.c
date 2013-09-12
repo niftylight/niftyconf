@@ -229,8 +229,6 @@ int main(int argc, char *argv[])
         /* initialize modules */
         if(!prefs_init())
                 g_error("Failed to initialize \"prefs\" module");
-        if(!renderer_init())
-                g_error("Failed to initialize \"renderer\" module");
         if(!led_init())
                 g_error("Failed to initialize \"led\" module");
         if(!chain_init())
@@ -279,7 +277,6 @@ int main(int argc, char *argv[])
         hardware_deinit();
         tile_deinit();
         led_deinit();
-        renderer_deinit();
         prefs_deinit();
 
         return EXIT_SUCCESS;
@@ -304,7 +301,7 @@ G_MODULE_EXPORT gboolean on_niftyconf_window_delete_event(GtkWidget * w,
 
 
 /** menuitem "quit" selected */
-G_MODULE_EXPORT void on_action_quit_activate(GtkAction *a, gpointer u)
+G_MODULE_EXPORT void on_action_quit_activate(GtkAction * a, gpointer u)
 {
         /* store preferences */
         prefs_save();

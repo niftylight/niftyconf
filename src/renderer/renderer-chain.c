@@ -47,6 +47,7 @@
 #include "renderer/renderer.h"
 #include "renderer/renderer-led.h"
 #include "renderer/renderer-tile.h"
+#include "ui/ui-renderer.h"
 
 
 
@@ -68,8 +69,8 @@ static NftResult _render_chain(cairo_surface_t ** s, gpointer element)
         /* if dimensions changed, we need to allocate a new surface */
         int width, height;
         led_chain_get_max_pos(c, &width, &height);
-        width = (width + 1) * renderer_scale_factor();
-        height = (height + 1) * renderer_scale_factor();
+        width = (width + 1) * ui_renderer_scale_factor();
+        height = (height + 1) * ui_renderer_scale_factor();
 
         NiftyconfRenderer *r = chain_get_renderer(chain);
         if(!renderer_resize(r, width, height))
@@ -108,15 +109,17 @@ static NftResult _render_chain(cairo_surface_t ** s, gpointer element)
                 LedFrameCord x, y;
                 led_get_pos(l, &x, &y);
                 cairo_set_source_surface(cr, renderer_get_surface(lr),
-                                         (double) x * renderer_scale_factor(),
+                                         (double) x *
+                                         ui_renderer_scale_factor(),
                                          (double) y *
-                                         renderer_scale_factor());
+                                         ui_renderer_scale_factor());
+
                 /* disable filtering */
                 cairo_pattern_set_filter(cairo_get_source(cr),
-                                         renderer_filter());
+                                         ui_renderer_filter());
 
                 /* disable antialiasing */
-                cairo_set_antialias(cr, renderer_antialias());
+                cairo_set_antialias(cr, ui_renderer_antialias());
 
                 cairo_paint(cr);
         }
@@ -158,8 +161,8 @@ NiftyconfRenderer *renderer_chain_new(NiftyconfChain * chain)
         LedChain *c = chain_niftyled(chain);
         int width, height;
         led_chain_get_max_pos(c, &width, &height);
-        width = (width + 1) * renderer_scale_factor();
-        height = (height + 1) * renderer_scale_factor();
+        width = (width + 1) * ui_renderer_scale_factor();
+        height = (height + 1) * ui_renderer_scale_factor();
 
         return renderer_new(LED_CHAIN_T, chain, &_render_chain, width,
                             height);
