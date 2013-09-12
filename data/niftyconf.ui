@@ -3,6 +3,7 @@
   <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkAction" id="action_quit">
     <property name="label" translatable="yes">Quit</property>
+    <property name="short_label" translatable="yes">Quit</property>
     <property name="tooltip" translatable="yes">Exit niftyconf</property>
     <property name="stock_id">gtk-quit</property>
     <signal name="activate" handler="on_action_quit_activate" swapped="no"/>
@@ -34,6 +35,18 @@
     <property name="tooltip" translatable="yes">Save setup &amp; choose filename...</property>
     <property name="stock_id">gtk-save-as</property>
     <signal name="activate" handler="on_action_setup_saveas_activate" swapped="no"/>
+  </object>
+  <object class="GtkAction" id="action_zoom_in">
+    <property name="label" translatable="yes">Zoom in</property>
+    <property name="tooltip" translatable="yes">Increase zoomlevel...</property>
+    <property name="stock_id">gtk-zoom-in</property>
+    <signal name="activate" handler="on_action_zoom_in_activate" swapped="no"/>
+  </object>
+  <object class="GtkAction" id="action_zoom_out">
+    <property name="label" translatable="yes">Zoom out</property>
+    <property name="tooltip" translatable="yes">Decrease zoomlevel...</property>
+    <property name="stock_id">gtk-zoom-out</property>
+    <signal name="activate" handler="on_action_zoom_out_activate" swapped="no"/>
   </object>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
@@ -76,6 +89,7 @@
                         <property name="related_action">action_setup_new</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="n" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
@@ -85,6 +99,7 @@
                         <property name="related_action">action_setup_open</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="o" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
@@ -94,6 +109,7 @@
                         <property name="related_action">action_setup_save</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="s" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
@@ -103,6 +119,7 @@
                         <property name="related_action">action_setup_saveas</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="s" signal="activate" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
                       </object>
@@ -115,9 +132,10 @@
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="item_file_quit">
-                        <property name="related_action">action_quit</property>
+                        <property name="related_action">action_zoom_in</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
@@ -359,30 +377,6 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="item_view_logging">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Logging</property>
-                        <property name="use_underline">True</property>
-                        <child type="submenu">
-                          <object class="GtkMenu" id="menu1">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <child>
-                              <object class="GtkCheckMenuItem" id="item_log_win">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">show log window</property>
-                                <property name="use_underline">True</property>
-                                <property name="draw_as_radio">True</property>
-                                <signal name="activate" handler="on_niftyconf_menu_log_window_activate" swapped="no"/>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
                       <object class="GtkCheckMenuItem" id="item_view_preview">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -390,6 +384,16 @@
                         <property name="label" translatable="yes">Live hardware preview</property>
                         <property name="use_underline">True</property>
                         <signal name="toggled" handler="on_live_preview_toggled" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkCheckMenuItem" id="item_log_win">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Show log window</property>
+                        <property name="draw_as_radio">True</property>
+                        <signal name="toggled" handler="on_item_log_win_toggled" swapped="no"/>
+                        <signal name="activate" handler="on_niftyconf_menu_log_window_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -501,12 +505,12 @@
             </child>
             <child>
               <object class="GtkToolButton" id="toolbutton_zoom_in">
+                <property name="related_action">action_zoom_in</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_text" translatable="yes">Increase zoom level...</property>
                 <property name="label" translatable="yes">Zoom in</property>
                 <property name="use_underline">True</property>
-                <property name="stock_id">gtk-zoom-in</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -515,12 +519,12 @@
             </child>
             <child>
               <object class="GtkToolButton" id="toolbutton_zoom_out">
+                <property name="related_action">action_zoom_out</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_text" translatable="yes">Decrease zoom level...</property>
                 <property name="label" translatable="yes">Zoom out</property>
                 <property name="use_underline">True</property>
-                <property name="stock_id">gtk-zoom-out</property>
               </object>
               <packing>
                 <property name="expand">False</property>

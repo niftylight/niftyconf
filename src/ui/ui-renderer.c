@@ -45,6 +45,7 @@
 #include <gtk/gtk.h>
 #include <niftyled.h>
 #include "ui/ui.h"
+#include "ui/ui-renderer.h"
 #include "elements/element-setup.h"
 #include "elements/element-tile.h"
 #include "renderer/renderer.h"
@@ -151,6 +152,30 @@ static NftResult _this_to_prefs(NftPrefs * prefs,
 }
 
 
+
+/** increase zoom level of rendered view */
+static void _zoom_in()
+{
+		_r.view.scale += _r.view.scale_delta;
+		_r.view.scale_delta *= 1.1;
+
+		ui_renderer_all_queue_draw();
+}
+
+/** decrease zoom level of rendered view */
+static void _zoom_out()
+{
+		if((_r.view.scale - _r.view.scale_delta) > 0)
+		{
+				if(_r.view.scale_delta > 0.1)
+						_r.view.scale_delta /= 1.1;
+				_r.view.scale -= _r.view.scale_delta;
+		}
+
+		ui_renderer_all_queue_draw();
+}
+
+
 /******************************************************************************
  ******************************************************************************/
 
@@ -228,10 +253,20 @@ void ui_renderer_deinit()
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
 
-/**
- * mousebutton pressed above drawingarea
- */
-gboolean on_renderer_button_press_event(GtkWidget * w,
+/** zoom in */
+G_MODULE_EXPORT void on_action_zoom_in_activate(GtkAction * a, gpointer u)
+{
+		_zoom_in();
+}
+
+/** zoom out */
+G_MODULE_EXPORT void on_action_zoom_out_activate(GtkAction * a, gpointer u)
+{
+		_zoom_out();
+}
+
+/** mousebutton pressed above drawingarea */
+G_MODULE_EXPORT gboolean on_renderer_button_press_event(GtkWidget * w,
                                         GdkEventButton * ev, gpointer u)
 {
         /* save coordinates */
@@ -242,10 +277,8 @@ gboolean on_renderer_button_press_event(GtkWidget * w,
 }
 
 
-/**
- * mousebutton released above drawingarea
- */
-gboolean on_renderer_button_release_event(GtkWidget * w,
+/** mousebutton released above drawingarea */
+G_MODULE_EXPORT gboolean on_renderer_button_release_event(GtkWidget * w,
                                           GdkEvent * ev, gpointer u)
 {
         _r.view.pan_x += _r.view.pan_t_x;
@@ -256,10 +289,8 @@ gboolean on_renderer_button_release_event(GtkWidget * w,
 }
 
 
-/**
- * mouse moved above drawingarea
- */
-gboolean on_renderer_motion_notify_event(GtkWidget * w,
+/** mouse moved above drawingarea */
+G_MODULE_EXPORT gboolean on_renderer_motion_notify_event(GtkWidget * w,
                                          GdkEventMotion * ev, gpointer u)
 {
         /* mousebutton pressed? */
@@ -275,33 +306,21 @@ gboolean on_renderer_motion_notify_event(GtkWidget * w,
 }
 
 
-/**
- * mousewheel turned
- */
-gboolean on_renderer_scroll_event(GtkWidget * w,
+/** mousewheel turned */
+G_MODULE_EXPORT gboolean on_renderer_scroll_event(GtkWidget * w,
                                   GdkEventScroll * ev, gpointer u)
 {
         switch (ev->direction)
         {
                 case GDK_SCROLL_UP:
                 {
-                        _r.view.scale += _r.view.scale_delta;
-                        _r.view.scale_delta *= 1.1;
-
-                        ui_renderer_all_queue_draw();
+                        _zoom_in();
                         break;
                 }
 
                 case GDK_SCROLL_DOWN:
                 {
-                        if((_r.view.scale - _r.view.scale_delta) > 0)
-                        {
-                                if(_r.view.scale_delta > 0.1)
-                                        _r.view.scale_delta /= 1.1;
-                                _r.view.scale -= _r.view.scale_delta;
-                        }
-
-                        ui_renderer_all_queue_draw();
+						_zoom_out();
                         break;
                 }
 
@@ -314,10 +333,8 @@ gboolean on_renderer_scroll_event(GtkWidget * w,
 }
 
 
-/**
- * exposed event (redraw)
- */
-gboolean on_renderer_expose_event(GtkWidget * w,
+/** exposed event (redraw) */
+G_MODULE_EXPORT gboolean on_renderer_expose_event(GtkWidget * w,
                                   GdkEventExpose * e, gpointer d)
 {
         /* create cairo context */
