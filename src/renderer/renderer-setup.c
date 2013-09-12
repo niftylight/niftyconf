@@ -69,7 +69,6 @@ static NftResult _render_setup(cairo_surface_t ** surface, gpointer element)
 		/* get dimensions of setup */
         LedFrameCord w, h;
         led_setup_get_dim(s, &w, &h);
-		NFT_LOG(L_INFO, "-------> %dx%d", w, h);
 		
 		/* calculate rendered dimensions of this tile */
 		double width = (double) w * renderer_scale_factor();
