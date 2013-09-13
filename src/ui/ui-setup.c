@@ -642,8 +642,6 @@ G_MODULE_EXPORT void on_setup_import_clicked(GtkButton * b, gpointer u)
 G_MODULE_EXPORT void on_niftyconf_menu_add_hardware_activate(GtkWidget * i,
                                                              gpointer u)
 {
-        /* rebuild plugin combobox */
-        // gtk_combo_box_
         /* show "add hardware" dialog */
         gtk_widget_set_visible(GTK_WIDGET(ui_setup("hardware_add_window")),
                                true);

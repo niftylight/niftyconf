@@ -830,6 +830,7 @@ void ui_setup_tree_refresh()
         _clear_in_progress = false;
 
         /* redraw */
+        renderer_setup_damage();
         ui_renderer_all_queue_draw();
 }
 
