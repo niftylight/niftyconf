@@ -806,6 +806,15 @@ void ui_setup_props_hardware_show(NiftyconfHardware * h)
                                      led_hardware_is_initialized(hardware));
 
         /* custom properties */
+        gtk_widget_set_visible(GTK_WIDGET(UI("label_hw_prop_none")), false);
+        gtk_widget_set_visible(GTK_WIDGET(UI("spinbutton_hw_prop_int")),
+                               false);
+        gtk_widget_set_visible(GTK_WIDGET(UI("spinbutton_hw_prop_float")),
+                               false);
+        gtk_widget_set_visible(GTK_WIDGET(UI("entry_hw_prop_string")), false);
+        gtk_widget_set_visible(GTK_WIDGET(UI("checkbutton_hw_prop_bool")),
+                               false);
+
         if(led_hardware_is_initialized(hardware))
         {
                 /* clear property name combobox */
