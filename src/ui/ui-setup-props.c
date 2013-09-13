@@ -619,9 +619,13 @@ G_MODULE_EXPORT void on_combobox_hw_props_changed(GtkComboBoxText * b,
 
 
         gtk_widget_set_visible(GTK_WIDGET(UI("label_hw_prop_none")), false);
-        gtk_widget_set_visible(GTK_WIDGET(UI("spinbutton_hw_prop")), false);
-        gtk_widget_set_visible(GTK_WIDGET(UI("entry_hw_prop")), false);
-        gtk_widget_set_visible(GTK_WIDGET(UI("checkbutton_hw_prop")), false);
+        gtk_widget_set_visible(GTK_WIDGET(UI("spinbutton_hw_prop_int")),
+                               false);
+        gtk_widget_set_visible(GTK_WIDGET(UI("spinbutton_hw_prop_float")),
+                               false);
+        gtk_widget_set_visible(GTK_WIDGET(UI("entry_hw_prop_string")), false);
+        gtk_widget_set_visible(GTK_WIDGET(UI("checkbutton_hw_prop_bool")),
+                               false);
 
         switch (led_hardware_plugin_prop_get_type(prop))
         {
@@ -631,13 +635,16 @@ G_MODULE_EXPORT void on_combobox_hw_props_changed(GtkComboBoxText * b,
                         led_hardware_plugin_prop_get_float(h, propname,
                                                            &floatval);
                         gtk_widget_set_visible(GTK_WIDGET
-                                               (UI("spinbotton_hw_prop")),
+                                               (UI
+                                                ("spinbotton_hw_prop_float")),
                                                true);
                         gtk_spin_button_set_value(GTK_SPIN_BUTTON
-                                                  (UI("spinbutton_hw_prop")),
+                                                  (UI
+                                                   ("spinbutton_hw_prop_float")),
                                                   (gdouble) floatval);
                         gtk_spin_button_set_digits(GTK_SPIN_BUTTON
-                                                   (UI("spinbutton_hw_prop")),
+                                                   (UI
+                                                    ("spinbutton_hw_prop_float")),
                                                    5);
                         break;
                 }
@@ -648,13 +655,15 @@ G_MODULE_EXPORT void on_combobox_hw_props_changed(GtkComboBoxText * b,
                         led_hardware_plugin_prop_get_int(h, propname,
                                                          &intval);
                         gtk_widget_set_visible(GTK_WIDGET
-                                               (UI("spinbutton_hw_prop")),
+                                               (UI("spinbutton_hw_prop_int")),
                                                true);
                         gtk_spin_button_set_value(GTK_SPIN_BUTTON
-                                                  (UI("spinbutton_hw_prop")),
+                                                  (UI
+                                                   ("spinbutton_hw_prop_int")),
                                                   (gdouble) intval);
                         gtk_spin_button_set_digits(GTK_SPIN_BUTTON
-                                                   (UI("spinbutton_hw_prop")),
+                                                   (UI
+                                                    ("spinbutton_hw_prop_int")),
                                                    0);
                         break;
                 }
@@ -665,8 +674,10 @@ G_MODULE_EXPORT void on_combobox_hw_props_changed(GtkComboBoxText * b,
                         led_hardware_plugin_prop_get_string(h, propname,
                                                             &stringval);
                         gtk_widget_set_visible(GTK_WIDGET
-                                               (UI("entry_hw_prop")), true);
-                        gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_prop")),
+                                               (UI("entry_hw_prop_string")),
+                                               true);
+                        gtk_entry_set_text(GTK_ENTRY
+                                           (UI("entry_hw_prop_string")),
                                            stringval);
                         break;
                 }
@@ -682,9 +693,9 @@ G_MODULE_EXPORT void on_combobox_hw_props_changed(GtkComboBoxText * b,
 }
 
 
-/** hardware property spin-button value changed */
-G_MODULE_EXPORT void on_spinbutton_hw_prop_change_value(GtkSpinButton * b,
-                                                        gpointer u)
+/** float hardware property spin-button value changed */
+G_MODULE_EXPORT void on_spinbutton_hw_prop_float_change_value(GtkSpinButton *
+                                                              b, gpointer u)
 {
         const char *propname =
                 gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT
@@ -693,34 +704,46 @@ G_MODULE_EXPORT void on_spinbutton_hw_prop_change_value(GtkSpinButton * b,
         LedPluginCustomProp *prop =
                 led_hardware_plugin_prop_find(h, propname);
 
-        switch (led_hardware_plugin_prop_get_type(prop))
+        if(led_hardware_plugin_prop_get_type(prop) !=
+           LED_HW_CUSTOM_PROP_FLOAT)
         {
-                case LED_HW_CUSTOM_PROP_FLOAT:
-                {
-                        float floatval =
-                                gtk_spin_button_get_value_as_float(b);
-                        led_hardware_plugin_prop_set_float(h, propname,
-                                                           floatval);
-                        break;
-                }
-
-                case LED_HW_CUSTOM_PROP_INT:
-                {
-                        int intval = gtk_spin_button_get_value_as_int(b);
-                        led_hardware_plugin_prop_set_int(h, propname, intval);
-                        break;
-                }
-
-                default:
-                {
-                        break;
-                }
+                NFT_LOG(L_ERROR,
+                        "expected float hardware property. This is a bug.");
+                return;
         }
+
+        float floatval = gtk_spin_button_get_value_as_float(b);
+        led_hardware_plugin_prop_set_float(h, propname, floatval);
+
+}
+
+
+/** integer hardware property spin-button value changed */
+G_MODULE_EXPORT void on_spinbutton_hw_prop_int_change_value(GtkSpinButton * b,
+                                                            gpointer u)
+{
+        const char *propname =
+                gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT
+                                                   (UI("combobox_hw_props")));
+        LedHardware *h = hardware_niftyled(current_hw);
+        LedPluginCustomProp *prop =
+                led_hardware_plugin_prop_find(h, propname);
+
+        if(led_hardware_plugin_prop_get_type(prop) != LED_HW_CUSTOM_PROP_INT)
+        {
+                NFT_LOG(L_ERROR,
+                        "expected integer hardware property. This is a bug.");
+                return;
+        }
+
+        int intval = gtk_spin_button_get_value_as_int(b);
+        led_hardware_plugin_prop_set_int(h, propname, intval);
+
 }
 
 
 /** hardware plugin custom text property changed */
-G_MODULE_EXPORT void on_entry_hw_prop_changed(GtkEditable * e, gpointer u)
+G_MODULE_EXPORT void on_entry_hw_prop_string_changed(GtkEditable * e, gpointer u)
 {
         const char *propname =
                 gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT
@@ -750,65 +773,63 @@ void ui_setup_props_hardware_show(NiftyconfHardware * h)
 {
         current_hw = h;
 
-        if(h)
+        gtk_widget_show(GTK_WIDGET(UI("frame_hardware")));
+
+        if(!h)
+                return;
+
+
+        LedHardware *hardware = hardware_niftyled(h);
+
+        /* name */
+        gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_name")),
+                           led_hardware_get_name(hardware));
+        /* plugin family */
+        gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_plugin")),
+                           led_hardware_plugin_get_family(hardware));
+        /* id */
+        gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_id")),
+                           led_hardware_get_id(hardware));
+        gtk_widget_set_tooltip_text(GTK_WIDGET(UI("entry_hw_id")),
+                                    led_hardware_plugin_get_id_example
+                                    (hardware));
+        /* stride */
+        gtk_spin_button_set_value(GTK_SPIN_BUTTON
+                                  (UI("spinbutton_hw_stride")),
+                                  (gdouble)
+                                  led_hardware_get_stride(hardware));
+
+        /* set button to correct toggled state */
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON
+                                     (UI("togglebutton_initialized")),
+                                     led_hardware_is_initialized(hardware));
+
+        /* custom properties */
+        if(led_hardware_is_initialized(hardware))
         {
-                LedHardware *hardware = hardware_niftyled(h);
+                /* clear property name combobox */
+                gtk_list_store_clear(GTK_LIST_STORE
+                                     (gtk_combo_box_get_model
+                                      (GTK_COMBO_BOX
+                                       (UI("combobox_hw_props")))));
 
-                /* name */
-                gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_name")),
-                                   led_hardware_get_name(hardware));
-                /* plugin family */
-                gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_plugin")),
-                                   led_hardware_plugin_get_family(hardware));
-                /* id */
-                gtk_entry_set_text(GTK_ENTRY(UI("entry_hw_id")),
-                                   led_hardware_get_id(hardware));
-                gtk_widget_set_tooltip_text(GTK_WIDGET(UI("entry_hw_id")),
-                                            led_hardware_plugin_get_id_example
-                                            (hardware));
-                /* stride */
-                gtk_spin_button_set_value(GTK_SPIN_BUTTON
-                                          (UI("spinbutton_hw_stride")),
-                                          (gdouble)
-                                          led_hardware_get_stride(hardware));
-
-                /* set button to correct toggled state */
-                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON
-                                             (UI("togglebutton_initialized")),
-                                             led_hardware_is_initialized
-                                             (hardware));
-
-                /* custom properties */
-                if(led_hardware_is_initialized(hardware))
+                /* set property names to combobox */
+                LedPluginCustomProp *prop;
+                for(prop =
+                    led_hardware_plugin_prop_get_nth(hardware, 0);
+                    prop; prop = led_hardware_plugin_prop_get_next(prop))
                 {
-                        /* clear property name combobox */
-                        gtk_list_store_clear(GTK_LIST_STORE
-                                             (gtk_combo_box_get_model
-                                              (GTK_COMBO_BOX
-                                               (UI("combobox_hw_props")))));
-
-                        /* set property names to combobox */
-                        LedPluginCustomProp *prop;
-                        for(prop =
-                            led_hardware_plugin_prop_get_nth(hardware, 0);
-                            prop;
-                            prop = led_hardware_plugin_prop_get_next(prop))
-                        {
-                                gtk_combo_box_text_append_text
-                                        (GTK_COMBO_BOX_TEXT
-                                         (UI("combobox_hw_props")),
-                                         led_hardware_plugin_prop_get_name
-                                         (prop));
-                        }
-
-                        gtk_combo_box_set_active(GTK_COMBO_BOX
-                                                 (UI("combobox_hw_props")),
-                                                 0);
-
+                        gtk_combo_box_text_append_text
+                                (GTK_COMBO_BOX_TEXT
+                                 (UI("combobox_hw_props")),
+                                 led_hardware_plugin_prop_get_name(prop));
                 }
+
+                gtk_combo_box_set_active(GTK_COMBO_BOX
+                                         (UI("combobox_hw_props")), 0);
+
         }
 
-        gtk_widget_show(GTK_WIDGET(UI("frame_hardware")));
 }
 
 
@@ -931,10 +952,22 @@ void ui_setup_props_hide()
 }
 
 
-/** initialize led module */
+/** initialize this module */
 gboolean ui_setup_props_init()
 {
         _ui = ui_builder("niftyconf-setup-props.ui");
+
+        /* set platform specific stuff */
+        gtk_adjustment_set_lower(GTK_ADJUSTMENT(UI("adjustment_hw_prop_int")),
+                                 (gdouble) (INT_MIN));
+        gtk_adjustment_set_upper(GTK_ADJUSTMENT(UI("adjustment_hw_prop_int")),
+                                 (gdouble) (INT_MAX));
+        gtk_adjustment_set_lower(GTK_ADJUSTMENT
+                                 (UI("adjustment_hw_prop_float")),
+                                 (gdouble) (FLT_MIN));
+        gtk_adjustment_set_upper(GTK_ADJUSTMENT
+                                 (UI("adjustment_hw_prop_float")),
+                                 (gdouble) (FLT_MAX));
 
         return true;
 }

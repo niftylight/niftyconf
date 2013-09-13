@@ -156,23 +156,23 @@ static NftResult _this_to_prefs(NftPrefs * prefs,
 /** increase zoom level of rendered view */
 static void _zoom_in()
 {
-		_r.view.scale += _r.view.scale_delta;
-		_r.view.scale_delta *= 1.1;
+        _r.view.scale += _r.view.scale_delta;
+        _r.view.scale_delta *= 1.1;
 
-		ui_renderer_all_queue_draw();
+        ui_renderer_all_queue_draw();
 }
 
 /** decrease zoom level of rendered view */
 static void _zoom_out()
 {
-		if((_r.view.scale - _r.view.scale_delta) > 0)
-		{
-				if(_r.view.scale_delta > 0.1)
-						_r.view.scale_delta /= 1.1;
-				_r.view.scale -= _r.view.scale_delta;
-		}
+        if((_r.view.scale - _r.view.scale_delta) > 0)
+        {
+                if(_r.view.scale_delta > 0.1)
+                        _r.view.scale_delta /= 1.1;
+                _r.view.scale -= _r.view.scale_delta;
+        }
 
-		ui_renderer_all_queue_draw();
+        ui_renderer_all_queue_draw();
 }
 
 
@@ -256,18 +256,19 @@ void ui_renderer_deinit()
 /** zoom in */
 G_MODULE_EXPORT void on_action_zoom_in_activate(GtkAction * a, gpointer u)
 {
-		_zoom_in();
+        _zoom_in();
 }
 
 /** zoom out */
 G_MODULE_EXPORT void on_action_zoom_out_activate(GtkAction * a, gpointer u)
 {
-		_zoom_out();
+        _zoom_out();
 }
 
 /** mousebutton pressed above drawingarea */
 G_MODULE_EXPORT gboolean on_renderer_button_press_event(GtkWidget * w,
-                                        GdkEventButton * ev, gpointer u)
+                                                        GdkEventButton * ev,
+                                                        gpointer u)
 {
         /* save coordinates */
         _r.input.mouse_hold_x = ev->x;
@@ -279,7 +280,8 @@ G_MODULE_EXPORT gboolean on_renderer_button_press_event(GtkWidget * w,
 
 /** mousebutton released above drawingarea */
 G_MODULE_EXPORT gboolean on_renderer_button_release_event(GtkWidget * w,
-                                          GdkEvent * ev, gpointer u)
+                                                          GdkEvent * ev,
+                                                          gpointer u)
 {
         _r.view.pan_x += _r.view.pan_t_x;
         _r.view.pan_y += _r.view.pan_t_y;
@@ -291,7 +293,8 @@ G_MODULE_EXPORT gboolean on_renderer_button_release_event(GtkWidget * w,
 
 /** mouse moved above drawingarea */
 G_MODULE_EXPORT gboolean on_renderer_motion_notify_event(GtkWidget * w,
-                                         GdkEventMotion * ev, gpointer u)
+                                                         GdkEventMotion * ev,
+                                                         gpointer u)
 {
         /* mousebutton pressed? */
         if(ev->state & GDK_BUTTON1_MASK)
@@ -308,7 +311,8 @@ G_MODULE_EXPORT gboolean on_renderer_motion_notify_event(GtkWidget * w,
 
 /** mousewheel turned */
 G_MODULE_EXPORT gboolean on_renderer_scroll_event(GtkWidget * w,
-                                  GdkEventScroll * ev, gpointer u)
+                                                  GdkEventScroll * ev,
+                                                  gpointer u)
 {
         switch (ev->direction)
         {
@@ -320,7 +324,7 @@ G_MODULE_EXPORT gboolean on_renderer_scroll_event(GtkWidget * w,
 
                 case GDK_SCROLL_DOWN:
                 {
-						_zoom_out();
+                        _zoom_out();
                         break;
                 }
 
@@ -335,7 +339,8 @@ G_MODULE_EXPORT gboolean on_renderer_scroll_event(GtkWidget * w,
 
 /** exposed event (redraw) */
 G_MODULE_EXPORT gboolean on_renderer_expose_event(GtkWidget * w,
-                                  GdkEventExpose * e, gpointer d)
+                                                  GdkEventExpose * e,
+                                                  gpointer d)
 {
         /* create cairo context */
         cairo_t *cr;

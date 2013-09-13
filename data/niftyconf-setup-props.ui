@@ -11,8 +11,11 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
-  <object class="GtkAdjustment" id="adjustment_hw_prop">
-    <property name="upper">4294967295</property>
+  <object class="GtkAdjustment" id="adjustment_hw_prop_float">
+    <property name="step_increment">0.10000000000000001</property>
+    <property name="page_increment">1</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment_hw_prop_int">
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
@@ -1041,11 +1044,12 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkSpinButton" id="spinbutton_hw_prop">
+                      <object class="GtkSpinButton" id="spinbutton_hw_prop_float">
                         <property name="can_focus">True</property>
                         <property name="invisible_char">•</property>
-                        <property name="adjustment">adjustment_hw_prop</property>
-                        <signal name="value-changed" handler="on_spinbutton_hw_prop_change_value" swapped="no"/>
+                        <property name="adjustment">adjustment_hw_prop_float</property>
+                        <property name="numeric">True</property>
+                        <signal name="value-changed" handler="on_spinbutton_hw_prop_float_change_value" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1054,10 +1058,13 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkEntry" id="entry_hw_prop">
+                      <object class="GtkSpinButton" id="spinbutton_hw_prop_int">
                         <property name="can_focus">True</property>
                         <property name="invisible_char">•</property>
-                        <signal name="changed" handler="on_entry_hw_prop_changed" swapped="no"/>
+                        <property name="invisible_char_set">True</property>
+                        <property name="adjustment">adjustment_hw_prop_int</property>
+                        <property name="numeric">True</property>
+                        <signal name="value-changed" handler="on_spinbutton_hw_prop_int_change_value" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1066,7 +1073,19 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkCheckButton" id="checkbutton_hw_prop">
+                      <object class="GtkEntry" id="entry_hw_prop_string">
+                        <property name="can_focus">True</property>
+                        <property name="invisible_char">•</property>
+                        <signal name="changed" handler="on_entry_hw_prop_string_changed" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkCheckButton" id="checkbutton_hw_prop_bool">
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="xalign">0</property>
@@ -1078,7 +1097,7 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
-                        <property name="position">3</property>
+                        <property name="position">4</property>
                       </packing>
                     </child>
                   </object>

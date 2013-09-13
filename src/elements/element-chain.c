@@ -289,7 +289,6 @@ void chain_of_tile_destroy(NiftyconfTile * tile)
         /* unregister from gui */
         NiftyconfChain *chain = led_chain_get_privdata(c);
         chain_unregister_from_gui(chain);
-        // led_settings_chain_unlink(setup_get_current(), c);
         led_chain_destroy(c);
 }
 
