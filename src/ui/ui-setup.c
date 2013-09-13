@@ -788,7 +788,7 @@ G_MODULE_EXPORT void on_niftyconf_menu_export_activate(GtkWidget * i,
 
 
 /** live preview toggled */
-void on_live_preview_toggled(GtkCheckMenuItem * item, gpointer user_data)
+G_MODULE_EXPORT void on_live_preview_toggled(GtkCheckMenuItem * item, gpointer user_data)
 {
         live_preview_set_enabled(gtk_check_menu_item_get_active(item));
 }
