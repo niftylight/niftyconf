@@ -85,17 +85,17 @@ static NftResult _this_from_prefs(NftPrefs * prefs,
         }
 
         /* UI dimensions */
-        gint x = 0, y = 0; 
-		nft_prefs_node_prop_int_get(node, "x", &x);
+        gint x = 0, y = 0;
+        nft_prefs_node_prop_int_get(node, "x", &x);
         nft_prefs_node_prop_int_get(node, "y", &y);
         gtk_window_move(GTK_WINDOW(UI("main_window")), x, y);
-		
-		gint width = 0, height = 0;
-		nft_prefs_node_prop_int_get(node, "width", &width);
+
+        gint width = 0, height = 0;
+        nft_prefs_node_prop_int_get(node, "width", &width);
         nft_prefs_node_prop_int_get(node, "height", &height);
         gtk_window_resize(GTK_WINDOW(UI("main_window")), width, height);
-		gtk_widget_show(GTK_WIDGET(UI("main_window")));
-				
+        gtk_widget_show(GTK_WIDGET(UI("main_window")));
+
         return NFT_SUCCESS;
 }
 

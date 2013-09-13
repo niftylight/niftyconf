@@ -76,12 +76,12 @@ static NftResult _this_from_prefs(NftPrefs * prefs,
         gint width = 0, height = 0;
         nft_prefs_node_prop_int_get(node, "x", &_pos_x);
         nft_prefs_node_prop_int_get(node, "y", &_pos_y);
-		gtk_window_move(GTK_WINDOW(UI("window")), _pos_x, _pos_y);
-		
+        gtk_window_move(GTK_WINDOW(UI("window")), _pos_x, _pos_y);
+
         nft_prefs_node_prop_int_get(node, "width", &width);
         nft_prefs_node_prop_int_get(node, "height", &height);
         gtk_window_resize(GTK_WINDOW(UI("window")), width, height);
-                
+
 
         /* log visible? */
         bool boolean = false;
@@ -125,17 +125,17 @@ static NftResult _this_to_prefs(NftPrefs * prefs,
         /* window geometry */
         gint width, height;
         gtk_window_get_size(GTK_WINDOW(UI("window")), &width, &height);
-		if(!nft_prefs_node_prop_int_set(newNode, "width", width))
+        if(!nft_prefs_node_prop_int_set(newNode, "width", width))
                 return NFT_FAILURE;
         if(!nft_prefs_node_prop_int_set(newNode, "height", height))
                 return NFT_FAILURE;
-		
+
         gtk_window_get_position(GTK_WINDOW(UI("window")), &_pos_x, &_pos_y);
         if(!nft_prefs_node_prop_int_set(newNode, "x", _pos_x))
                 return NFT_FAILURE;
         if(!nft_prefs_node_prop_int_set(newNode, "y", _pos_y))
                 return NFT_FAILURE;
-        
+
 
         /* visible? */
         if(!nft_prefs_node_prop_boolean_set
@@ -154,13 +154,13 @@ static NftResult _this_to_prefs(NftPrefs * prefs,
             gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON
                                          (UI("checkbutton_file")))))
                 return NFT_FAILURE;
-		
+
         if(!nft_prefs_node_prop_boolean_set
            (newNode, "show-line",
             gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON
                                          (UI("checkbutton_line")))))
                 return NFT_FAILURE;
-		
+
         if(!nft_prefs_node_prop_boolean_set
            (newNode, "show-function",
             gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON
@@ -358,20 +358,21 @@ void ui_log_alert_show(char *message, ...)
  * show/hide log window
  */
 void ui_log_show(gboolean visible)
-{	
-		/* save/restore window position */
-		if(visible)
-		{
-				/* set position */
-				gtk_window_move(GTK_WINDOW(UI("window")), _pos_x, _pos_y);
-		}
-		else
-		{
-				/* store position */
-				gtk_window_get_position(GTK_WINDOW(UI("window")), &_pos_x, &_pos_y);
-		}
+{
+        /* save/restore window position */
+        if(visible)
+        {
+                /* set position */
+                gtk_window_move(GTK_WINDOW(UI("window")), _pos_x, _pos_y);
+        }
+        else
+        {
+                /* store position */
+                gtk_window_get_position(GTK_WINDOW(UI("window")), &_pos_x,
+                                        &_pos_y);
+        }
 
-		/* show/hide */
+        /* show/hide */
         gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);
 }
 
@@ -450,8 +451,7 @@ void ui_log_deinit()
  ******************************************************************************/
 
 /** menuitem "show log-window" toggled */
-G_MODULE_EXPORT void on_item_log_win_toggled(GtkWidget * i,
-                                                           gpointer u)
+G_MODULE_EXPORT void on_item_log_win_toggled(GtkWidget * i, gpointer u)
 {
         ui_log_show(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(i)));
 }

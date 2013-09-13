@@ -743,7 +743,8 @@ G_MODULE_EXPORT void on_spinbutton_hw_prop_int_change_value(GtkSpinButton * b,
 
 
 /** hardware plugin custom text property changed */
-G_MODULE_EXPORT void on_entry_hw_prop_string_changed(GtkEditable * e, gpointer u)
+G_MODULE_EXPORT void on_entry_hw_prop_string_changed(GtkEditable * e,
+                                                     gpointer u)
 {
         const char *propname =
                 gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT

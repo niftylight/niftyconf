@@ -46,13 +46,14 @@
 #include <sys/stat.h>
 #include <niftyled.h>
 #include <gtk/gtk.h>
+#include "ui/ui.h"
+#include "ui/ui-log.h"
+#include "ui/ui-renderer.h"
 #include "ui/ui-setup.h"
 #include "ui/ui-setup-props.h"
 #include "ui/ui-setup-tree.h"
 #include "ui/ui-setup-ledlist.h"
 #include "ui/ui-clipboard.h"
-#include "ui/ui.h"
-#include "ui/ui-log.h"
 #include "elements/element-setup.h"
 #include "elements/element-hardware.h"
 #include "live-preview/live-preview.h"
@@ -316,6 +317,7 @@ G_MODULE_EXPORT void on_action_setup_new_activate(GtkAction * a, gpointer u)
         setup_register_to_gui(s);
         setup_set_current_filename("Unnamed.xml");
         ui_setup_tree_clear();
+        ui_renderer_all_queue_draw();
 }
 
 
@@ -788,7 +790,8 @@ G_MODULE_EXPORT void on_niftyconf_menu_export_activate(GtkWidget * i,
 
 
 /** live preview toggled */
-G_MODULE_EXPORT void on_live_preview_toggled(GtkCheckMenuItem * item, gpointer user_data)
+G_MODULE_EXPORT void on_live_preview_toggled(GtkCheckMenuItem * item,
+                                             gpointer user_data)
 {
         live_preview_set_enabled(gtk_check_menu_item_get_active(item));
 }
