@@ -198,14 +198,6 @@ static gboolean _parse_cmdline_args(int argc,
 /******************************************************************************
  ******************************************************************************/
 
-
-
-
-
-
-
-
-/******************************************************************************/
 int main(int argc, char *argv[])
 {
         /* initialize GTK stuff */
@@ -283,39 +275,3 @@ int main(int argc, char *argv[])
 }
 
 
-/******************************************************************************
- ***************************** CALLBACKS **************************************
- ******************************************************************************/
-
-/** close main window */
-G_MODULE_EXPORT gboolean on_niftyconf_window_delete_event(GtkWidget * w,
-                                                          GdkEvent * e)
-{
-        /* store preferences */
-        prefs_save();
-
-        /* bye bye */
-        gtk_main_quit();
-        return true;
-}
-
-
-/** menuitem "quit" selected */
-G_MODULE_EXPORT void on_action_quit_activate(GtkAction * a, gpointer u)
-{
-        /* store preferences */
-        prefs_save();
-
-        /* bye bye */
-        gtk_main_quit();
-}
-
-
-
-
-/** menu-entry selected */
-G_MODULE_EXPORT void on_niftyconf_menu_help_about_activate(GtkWidget * i,
-                                                           gpointer u)
-{
-        ui_about_set_visible(true);
-}
