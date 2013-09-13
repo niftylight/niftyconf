@@ -61,7 +61,6 @@
     <property name="icon-size">1</property>
   </object>
   <object class="GtkWindow" id="main_window">
-    <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">niftyconf</property>
     <property name="icon">icons/niftyconf.png</property>
@@ -132,10 +131,9 @@
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="item_file_quit">
-                        <property name="related_action">action_zoom_in</property>
+                        <property name="related_action">action_quit</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>

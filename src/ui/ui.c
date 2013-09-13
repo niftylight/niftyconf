@@ -94,9 +94,8 @@ static NftResult _this_from_prefs(NftPrefs * prefs,
 		nft_prefs_node_prop_int_get(node, "width", &width);
         nft_prefs_node_prop_int_get(node, "height", &height);
         gtk_window_resize(GTK_WINDOW(UI("main_window")), width, height);
-		
-		
-		NFT_LOG(L_INFO, "-----> %dx%d at %d, %d", width, height, x, y);
+		gtk_widget_show(GTK_WIDGET(UI("main_window")));
+				
         return NFT_SUCCESS;
 }
 
