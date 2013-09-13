@@ -463,7 +463,7 @@ G_MODULE_EXPORT gboolean on_log_window_delete_event(GtkWidget * w,
 {
         ui_log_show(false);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM
-                                       (UI("item_log_win")), false);
+                                       (ui("item_log_win")), false);
         return true;
 }
 
