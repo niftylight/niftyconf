@@ -85,18 +85,18 @@ static NftResult _this_from_prefs(NftPrefs * prefs,
         }
 
         /* UI dimensions */
-        gint x = 0, y = 0, width = 0, height = 0;
-
-        nft_prefs_node_prop_int_get(node, "x", &x);
+        gint x = 0, y = 0; 
+		nft_prefs_node_prop_int_get(node, "x", &x);
         nft_prefs_node_prop_int_get(node, "y", &y);
-        nft_prefs_node_prop_int_get(node, "width", &width);
+        gtk_window_move(GTK_WINDOW(UI("main_window")), x, y);
+		
+		gint width = 0, height = 0;
+		nft_prefs_node_prop_int_get(node, "width", &width);
         nft_prefs_node_prop_int_get(node, "height", &height);
-
-        if(width > 0 && height > 0)
-                gtk_window_resize(GTK_WINDOW(UI("window")), width, height);
-        if(x > 0 && y > 0)
-                gtk_window_move(GTK_WINDOW(UI("window")), x, y);
-
+        gtk_window_resize(GTK_WINDOW(UI("main_window")), width, height);
+		
+		
+		NFT_LOG(L_INFO, "-----> %dx%d at %d, %d", width, height, x, y);
         return NFT_SUCCESS;
 }
 
@@ -117,8 +117,8 @@ static NftResult _this_to_prefs(NftPrefs * prefs,
 
         /* main window geometry */
         gint x, y, width, height;
-        gtk_window_get_size(GTK_WINDOW(UI("window")), &width, &height);
-        gtk_window_get_position(GTK_WINDOW(UI("window")), &x, &y);
+        gtk_window_get_size(GTK_WINDOW(UI("main_window")), &width, &height);
+        gtk_window_get_position(GTK_WINDOW(UI("main_window")), &x, &y);
 
 
         if(!nft_prefs_node_prop_int_set(newNode, "x", x))
@@ -173,7 +173,7 @@ gboolean ui_init()
         gtk_box_pack_start(box_canvas, ui_renderer_widget(), true, true, 0);
 
         /* set window title */
-        gtk_window_set_title(GTK_WINDOW(UI("window")),
+        gtk_window_set_title(GTK_WINDOW(UI("main_window")),
                              PACKAGE " v" PACKAGE_VERSION);
 
         return true;

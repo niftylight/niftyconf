@@ -41,6 +41,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <niftyled.h>
 #include "elements/element-hardware.h"
@@ -200,10 +202,18 @@ static gboolean _parse_cmdline_args(int argc,
 
 int main(int argc, char *argv[])
 {
+		
+        bindtextdomain(PACKAGE_NAME, NULL);
+        bind_textdomain_codeset(PACKAGE_NAME, "UTF-8");
+        textdomain(PACKAGE_NAME);
+
+		g_set_prgname(PACKAGE_NAME);
+		
         /* initialize GTK stuff */
-        // gtk_set_locale();
         gtk_init(&argc, &argv);
 
+		g_set_application_name(PACKAGE_NAME);
+		
         /* check version */
         if(!LED_CHECK_VERSION)
                 return EXIT_FAILURE;
@@ -240,8 +250,7 @@ int main(int argc, char *argv[])
         if(!nft_prefs_class_register
            (prefs(), "main", _this_from_prefs, _this_to_prefs))
                 g_error("Failed to register prefs class for \"main\"");
-
-
+		
         /* restore window size & position */
         prefs_load();
 

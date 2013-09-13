@@ -57,6 +57,8 @@
 /** GtkBuilder for this module */
 static GtkBuilder *_ui;
 
+/* current log window position */
+static gint _pos_x, _pos_y;
 
 /******************************************************************************
  ****************************** STATIC FUNCTIONS ******************************
@@ -71,16 +73,15 @@ static NftResult _this_from_prefs(NftPrefs * prefs,
         *newObj = (void *) 1;
 
         /* window geometry */
-        gint x = 0, y = 0, width = 0, height = 0;
-        nft_prefs_node_prop_int_get(node, "x", &x);
-        nft_prefs_node_prop_int_get(node, "y", &y);
+        gint width = 0, height = 0;
+        nft_prefs_node_prop_int_get(node, "x", &_pos_x);
+        nft_prefs_node_prop_int_get(node, "y", &_pos_y);
+		gtk_window_move(GTK_WINDOW(UI("window")), _pos_x, _pos_y);
+		
         nft_prefs_node_prop_int_get(node, "width", &width);
         nft_prefs_node_prop_int_get(node, "height", &height);
-
-        if(width > 0 && height > 0)
-                gtk_window_resize(GTK_WINDOW(UI("window")), width, height);
-        if(x > 0 && y > 0)
-                gtk_window_move(GTK_WINDOW(UI("window")), x, y);
+        gtk_window_resize(GTK_WINDOW(UI("window")), width, height);
+                
 
         /* log visible? */
         bool boolean = false;
@@ -122,19 +123,19 @@ static NftResult _this_to_prefs(NftPrefs * prefs,
                                 void *obj, void *userptr)
 {
         /* window geometry */
-        gint x, y, width, height;
+        gint width, height;
         gtk_window_get_size(GTK_WINDOW(UI("window")), &width, &height);
-        gtk_window_get_position(GTK_WINDOW(UI("window")), &x, &y);
-
-
-        if(!nft_prefs_node_prop_int_set(newNode, "x", x))
-                return NFT_FAILURE;
-        if(!nft_prefs_node_prop_int_set(newNode, "y", y))
-                return NFT_FAILURE;
-        if(!nft_prefs_node_prop_int_set(newNode, "width", width))
+		if(!nft_prefs_node_prop_int_set(newNode, "width", width))
                 return NFT_FAILURE;
         if(!nft_prefs_node_prop_int_set(newNode, "height", height))
                 return NFT_FAILURE;
+		
+        gtk_window_get_position(GTK_WINDOW(UI("window")), &_pos_x, &_pos_y);
+        if(!nft_prefs_node_prop_int_set(newNode, "x", _pos_x))
+                return NFT_FAILURE;
+        if(!nft_prefs_node_prop_int_set(newNode, "y", _pos_y))
+                return NFT_FAILURE;
+        
 
         /* visible? */
         if(!nft_prefs_node_prop_boolean_set
@@ -153,11 +154,13 @@ static NftResult _this_to_prefs(NftPrefs * prefs,
             gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON
                                          (UI("checkbutton_file")))))
                 return NFT_FAILURE;
+		
         if(!nft_prefs_node_prop_boolean_set
            (newNode, "show-line",
             gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON
                                          (UI("checkbutton_line")))))
                 return NFT_FAILURE;
+		
         if(!nft_prefs_node_prop_boolean_set
            (newNode, "show-function",
             gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON
@@ -355,7 +358,20 @@ void ui_log_alert_show(char *message, ...)
  * show/hide log window
  */
 void ui_log_show(gboolean visible)
-{
+{	
+		/* save/restore window position */
+		if(visible)
+		{
+				/* set position */
+				gtk_window_move(GTK_WINDOW(UI("window")), _pos_x, _pos_y);
+		}
+		else
+		{
+				/* store position */
+				gtk_window_get_position(GTK_WINDOW(UI("window")), &_pos_x, &_pos_y);
+		}
+
+		/* show/hide */
         gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);
 }
 
@@ -434,7 +450,7 @@ void ui_log_deinit()
  ******************************************************************************/
 
 /** menuitem "show log-window" toggled */
-G_MODULE_EXPORT void on_niftyconf_menu_log_window_activate(GtkWidget * i,
+G_MODULE_EXPORT void on_item_log_win_toggled(GtkWidget * i,
                                                            gpointer u)
 {
         ui_log_show(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(i)));
@@ -447,7 +463,7 @@ G_MODULE_EXPORT gboolean on_log_window_delete_event(GtkWidget * w,
 {
         ui_log_show(false);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM
-                                       (ui("item_log_win")), false);
+                                       (UI("item_log_win")), false);
         return true;
 }
 
