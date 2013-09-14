@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
-  <object class="GtkTreeStore" id="treestore">
-    <columns>
-      <!-- column-name type -->
-      <column type="gint"/>
-      <!-- column-name title -->
-      <column type="gchararray"/>
-      <!-- column-name element -->
-      <column type="gpointer"/>
-    </columns>
-  </object>
   <object class="GtkVBox" id="box">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -23,6 +13,7 @@
           <object class="GtkTreeView" id="treeview">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="events">GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK</property>
             <property name="hexpand">True</property>
             <property name="model">treestore</property>
             <property name="search_column">0</property>
@@ -48,5 +39,15 @@
         <property name="position">0</property>
       </packing>
     </child>
+  </object>
+  <object class="GtkTreeStore" id="treestore">
+    <columns>
+      <!-- column-name type -->
+      <column type="gint"/>
+      <!-- column-name title -->
+      <column type="gchararray"/>
+      <!-- column-name element -->
+      <column type="gpointer"/>
+    </columns>
   </object>
 </interface>
