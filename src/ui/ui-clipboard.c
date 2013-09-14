@@ -731,24 +731,22 @@ void ui_clipboard_deinit()
  ******************************************************************************/
 
 
-/** menu-entry selected */
-G_MODULE_EXPORT void on_niftyconf_menu_cut_activate(GtkWidget * i, gpointer u)
+/** cut */
+G_MODULE_EXPORT void on_action_cut_activate(GtkAction * w, gpointer u)
 {
         ui_clipboard_cut_current_selection();
 }
 
 
-/** menu-entry selected */
-G_MODULE_EXPORT void on_niftyconf_menu_copy_activate(GtkWidget * i,
-                                                     gpointer u)
+/** copy */
+G_MODULE_EXPORT void on_action_copy_activate(GtkAction * w, gpointer u)
 {
         ui_clipboard_copy_current_selection();
 }
 
 
-/** menu-entry selected */
-G_MODULE_EXPORT void on_niftyconf_menu_paste_activate(GtkWidget * i,
-                                                      gpointer u)
+/** paste */
+G_MODULE_EXPORT void on_action_paste_activate(GtkWidget * w, gpointer u)
 {
         ui_clipboard_paste_current_selection();
 }

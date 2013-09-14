@@ -451,9 +451,10 @@ void ui_log_deinit()
  ******************************************************************************/
 
 /** menuitem "show log-window" toggled */
-G_MODULE_EXPORT void on_item_log_win_toggled(GtkWidget * i, gpointer u)
+G_MODULE_EXPORT void on_toggleaction_log_show_toggled(GtkToggleAction * i,
+                                                      gpointer u)
 {
-        ui_log_show(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(i)));
+        ui_log_show(gtk_toggle_action_get_active(i));
 }
 
 
@@ -462,8 +463,9 @@ G_MODULE_EXPORT gboolean on_log_window_delete_event(GtkWidget * w,
                                                     GdkEvent * e)
 {
         ui_log_show(false);
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM
-                                       (ui("item_log_win")), false);
+        gtk_toggle_action_set_active(GTK_TOGGLE_ACTION
+                                     (ui("toggleaction_log_show")), false);
+
         return true;
 }
 

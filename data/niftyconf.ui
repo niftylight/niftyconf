@@ -1,64 +1,213 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
-  <object class="GtkAction" id="action_quit">
-    <property name="label" translatable="yes">Quit</property>
-    <property name="short_label" translatable="yes">Quit</property>
-    <property name="tooltip" translatable="yes">Exit niftyconf</property>
-    <property name="stock_id">gtk-quit</property>
-    <signal name="activate" handler="on_action_quit_activate" swapped="no"/>
+  <object class="GtkActionGroup" id="actiongroup_global">
+    <child>
+      <object class="GtkAction" id="action_quit">
+        <property name="label" translatable="yes">Quit</property>
+        <property name="short_label" translatable="yes">Quit</property>
+        <property name="tooltip" translatable="yes">Exit niftyconf</property>
+        <property name="stock_id">gtk-quit</property>
+        <signal name="activate" handler="on_action_quit_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_setup_new">
+        <property name="label" translatable="yes">New setup</property>
+        <property name="short_label" translatable="yes">New</property>
+        <property name="tooltip" translatable="yes">New setup...</property>
+        <property name="stock_id">gtk-new</property>
+        <signal name="activate" handler="on_action_setup_new_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_setup_open">
+        <property name="label" translatable="yes">Open setup</property>
+        <property name="short_label" translatable="yes">Open</property>
+        <property name="tooltip" translatable="yes">Load setup from file...</property>
+        <property name="stock_id">gtk-open</property>
+        <signal name="activate" handler="on_action_setup_open_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_setup_save">
+        <property name="label" translatable="yes">Save setup</property>
+        <property name="short_label" translatable="yes">Save</property>
+        <property name="tooltip" translatable="yes">Save setup to file...</property>
+        <property name="stock_id">gtk-save</property>
+        <signal name="activate" handler="on_action_setup_save_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_setup_saveas">
+        <property name="label" translatable="yes">Save setup as...</property>
+        <property name="short_label" translatable="yes">Save as</property>
+        <property name="tooltip" translatable="yes">Save setup &amp; choose filename...</property>
+        <property name="stock_id">gtk-save-as</property>
+        <signal name="activate" handler="on_action_setup_saveas_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_zoom_in">
+        <property name="label" translatable="yes">Zoom in</property>
+        <property name="tooltip" translatable="yes">Increase zoomlevel...</property>
+        <property name="stock_id">gtk-zoom-in</property>
+        <signal name="activate" handler="on_action_zoom_in_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_zoom_out">
+        <property name="label" translatable="yes">Zoom out</property>
+        <property name="tooltip" translatable="yes">Decrease zoomlevel...</property>
+        <property name="stock_id">gtk-zoom-out</property>
+        <signal name="activate" handler="on_action_zoom_out_activate" swapped="no"/>
+      </object>
+    </child>
   </object>
-  <object class="GtkAction" id="action_setup_new">
-    <property name="label" translatable="yes">New setup</property>
-    <property name="short_label" translatable="yes">New</property>
-    <property name="tooltip" translatable="yes">Start a fresh setup...</property>
-    <property name="stock_id">gtk-new</property>
-    <signal name="activate" handler="on_action_setup_new_activate" swapped="no"/>
-  </object>
-  <object class="GtkAction" id="action_setup_open">
-    <property name="label" translatable="yes">Open setup</property>
-    <property name="short_label" translatable="yes">Open</property>
-    <property name="tooltip" translatable="yes">Load setup from file...</property>
-    <property name="stock_id">gtk-open</property>
-    <signal name="activate" handler="on_action_setup_open_activate" swapped="no"/>
-  </object>
-  <object class="GtkAction" id="action_setup_save">
-    <property name="label" translatable="yes">Save setup</property>
-    <property name="short_label" translatable="yes">Save</property>
-    <property name="tooltip" translatable="yes">Save setup to file...</property>
-    <property name="stock_id">gtk-save</property>
-    <signal name="activate" handler="on_action_setup_save_activate" swapped="no"/>
-  </object>
-  <object class="GtkAction" id="action_setup_saveas">
-    <property name="label" translatable="yes">Save setup as...</property>
-    <property name="short_label" translatable="yes">Save as</property>
-    <property name="tooltip" translatable="yes">Save setup &amp; choose filename...</property>
-    <property name="stock_id">gtk-save-as</property>
-    <signal name="activate" handler="on_action_setup_saveas_activate" swapped="no"/>
-  </object>
-  <object class="GtkAction" id="action_zoom_in">
-    <property name="label" translatable="yes">Zoom in</property>
-    <property name="tooltip" translatable="yes">Increase zoomlevel...</property>
-    <property name="stock_id">gtk-zoom-in</property>
-    <signal name="activate" handler="on_action_zoom_in_activate" swapped="no"/>
-  </object>
-  <object class="GtkAction" id="action_zoom_out">
-    <property name="label" translatable="yes">Zoom out</property>
-    <property name="tooltip" translatable="yes">Decrease zoomlevel...</property>
-    <property name="stock_id">gtk-zoom-out</property>
-    <signal name="activate" handler="on_action_zoom_out_activate" swapped="no"/>
-  </object>
-  <object class="GtkImage" id="image1">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-open</property>
-    <property name="icon-size">1</property>
-  </object>
-  <object class="GtkImage" id="image2">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-save</property>
-    <property name="icon-size">1</property>
+  <object class="GtkActionGroup" id="actiongroup_setup">
+    <child>
+      <object class="GtkAction" id="action_chain_add">
+        <property name="label" translatable="yes">Add chain</property>
+        <property name="short_label" translatable="yes">Chain</property>
+        <property name="tooltip" translatable="yes">Add new LED chain...</property>
+        <property name="stock_id">gtk-add</property>
+        <signal name="activate" handler="on_action_chain_add_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_chain_remove">
+        <property name="label" translatable="yes">Remove chain</property>
+        <property name="short_label" translatable="yes">Chain</property>
+        <property name="tooltip" translatable="yes">Remove this chain...</property>
+        <property name="stock_id">gtk-remove</property>
+        <signal name="activate" handler="on_action_chain_remove_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_hardware_add">
+        <property name="label" translatable="yes">Add hardware</property>
+        <property name="short_label" translatable="yes">Hardware</property>
+        <property name="tooltip" translatable="yes">Add new hardware plugin instance...</property>
+        <property name="stock_id">gtk-add</property>
+        <signal name="activate" handler="on_action_hardware_add_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_hardware_remove">
+        <property name="label" translatable="yes">Remove hardware</property>
+        <property name="short_label" translatable="yes">Hardware</property>
+        <property name="tooltip" translatable="yes">Remove hardware plugin instance from setup...</property>
+        <property name="stock_id">gtk-remove</property>
+        <signal name="activate" handler="on_action_hardware_remove_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_tile_add">
+        <property name="label" translatable="yes">Add tile</property>
+        <property name="short_label" translatable="yes">Tile</property>
+        <property name="tooltip" translatable="yes">Add new tile...</property>
+        <property name="stock_id">gtk-add</property>
+        <signal name="activate" handler="on_action_tile_add_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_tile_remove">
+        <property name="label" translatable="yes">Remove tile</property>
+        <property name="short_label" translatable="yes">Tile</property>
+        <property name="tooltip" translatable="yes">Remove selected tile(s)...</property>
+        <property name="stock_id">gtk-remove</property>
+        <signal name="activate" handler="on_action_tile_remove_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_hardware_info">
+        <property name="label" translatable="yes">Plugin Info</property>
+        <property name="tooltip" translatable="yes">Information about this hardware plugin...</property>
+        <property name="stock_id">gtk-info</property>
+        <signal name="activate" handler="on_action_hardware_info_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_cut">
+        <property name="label" translatable="yes">Cut</property>
+        <property name="tooltip" translatable="yes">Cut element to clipboard...</property>
+        <property name="stock_id">gtk-cut</property>
+        <signal name="activate" handler="on_action_cut_activate" swapped="no"/>
+      </object>
+      <accelerator key="x" modifiers="GDK_CONTROL_MASK"/>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_copy">
+        <property name="label" translatable="yes">Copy</property>
+        <property name="tooltip" translatable="yes">Copy element to clipboard...</property>
+        <property name="stock_id">gtk-copy</property>
+        <signal name="activate" handler="on_action_copy_activate" swapped="no"/>
+      </object>
+      <accelerator key="c" modifiers="GDK_CONTROL_MASK"/>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_paste">
+        <property name="label" translatable="yes">Paste</property>
+        <property name="tooltip" translatable="yes">Paste element on clipboard...</property>
+        <property name="stock_id">gtk-paste</property>
+        <signal name="activate" handler="on_action_paste_activate" swapped="no"/>
+      </object>
+      <accelerator key="v" modifiers="GDK_CONTROL_MASK"/>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_import">
+        <property name="label" translatable="yes">Import element(s)</property>
+        <property name="short_label" translatable="yes">Import</property>
+        <property name="tooltip" translatable="yes">Import element(s) from file...</property>
+        <property name="stock_id">gtk-open</property>
+        <signal name="activate" handler="on_action_import_activate" swapped="no"/>
+      </object>
+      <accelerator key="i" modifiers="GDK_CONTROL_MASK"/>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_export">
+        <property name="label" translatable="yes">Export element(s)</property>
+        <property name="short_label" translatable="yes">Export</property>
+        <property name="tooltip" translatable="yes">Export element(s) to file...</property>
+        <property name="stock_id">gtk-save</property>
+        <signal name="activate" handler="on_action_export_activate" swapped="no"/>
+      </object>
+      <accelerator key="e" modifiers="GDK_CONTROL_MASK"/>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_tree_collapse">
+        <property name="label" translatable="yes">Collapse all</property>
+        <property name="tooltip" translatable="yes">Collapse all elements in setup...</property>
+        <signal name="activate" handler="on_action_tree_collapse_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_tree_expand">
+        <property name="label" translatable="yes">Expand all</property>
+        <property name="tooltip" translatable="yes">Collapse all elements in setup...</property>
+        <signal name="activate" handler="on_action_tree_expand_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggleaction_live_preview_show">
+        <property name="label" translatable="yes">Live hardware preview</property>
+        <property name="short_label" translatable="yes">Hardware preview</property>
+        <property name="tooltip" translatable="yes">Turn on selected LEDs on connected &amp; initialized hardware</property>
+        <property name="icon_name">video-display</property>
+        <signal name="toggled" handler="on_toggleaction_live_preview_show_toggled" swapped="no"/>
+      </object>
+      <accelerator key="p" modifiers="GDK_CONTROL_MASK"/>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="toggleaction_log_show">
+        <property name="label" translatable="yes">Show log window</property>
+        <property name="short_label" translatable="yes">Log window</property>
+        <property name="tooltip" translatable="yes">Show/hide window with log/debug messages...</property>
+        <property name="icon_name">utilities-system-monitor</property>
+        <signal name="toggled" handler="on_toggleaction_log_show_toggled" swapped="no"/>
+      </object>
+      <accelerator key="l" modifiers="GDK_CONTROL_MASK"/>
+    </child>
   </object>
   <object class="GtkWindow" id="main_window">
     <property name="can_focus">False</property>
@@ -131,9 +280,11 @@
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="item_file_quit">
+                        <property name="use_action_appearance">False</property>
                         <property name="related_action">action_quit</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
@@ -164,25 +315,22 @@
                             <property name="can_focus">False</property>
                             <child>
                               <object class="GtkImageMenuItem" id="item_hardware_add">
-                                <property name="label">gtk-add</property>
+                                <property name="related_action">action_hardware_add</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="use_stock">True</property>
                                 <accelerator key="1" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                                <signal name="activate" handler="on_niftyconf_menu_add_hardware_activate" swapped="no"/>
                               </object>
                             </child>
                             <child>
                               <object class="GtkImageMenuItem" id="item_hardware_remove">
-                                <property name="label">gtk-remove</property>
+                                <property name="related_action">action_hardware_remove</property>
                                 <property name="visible">True</property>
-                                <property name="sensitive">False</property>
                                 <property name="can_focus">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="use_stock">True</property>
                                 <accelerator key="Delete" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                                <signal name="activate" handler="on_niftyconf_menu_remove_hardware_activate" swapped="no"/>
                               </object>
                             </child>
                           </object>
@@ -201,26 +349,22 @@
                             <property name="can_focus">False</property>
                             <child>
                               <object class="GtkImageMenuItem" id="item_tile_add">
-                                <property name="label">gtk-add</property>
+                                <property name="related_action">action_tile_add</property>
                                 <property name="visible">True</property>
-                                <property name="sensitive">False</property>
                                 <property name="can_focus">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="use_stock">True</property>
                                 <accelerator key="2" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                                <signal name="activate" handler="on_niftyconf_menu_add_tile_activate" swapped="no"/>
                               </object>
                             </child>
                             <child>
                               <object class="GtkImageMenuItem" id="item_tile_remove">
-                                <property name="label">gtk-remove</property>
+                                <property name="related_action">action_tile_remove</property>
                                 <property name="visible">True</property>
-                                <property name="sensitive">False</property>
                                 <property name="can_focus">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="use_stock">True</property>
                                 <accelerator key="Delete" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                                <signal name="activate" handler="on_niftyconf_menu_remove_tile_activate" swapped="no"/>
                               </object>
                             </child>
                           </object>
@@ -239,26 +383,22 @@
                             <property name="can_focus">False</property>
                             <child>
                               <object class="GtkImageMenuItem" id="item_chain_add">
-                                <property name="label">gtk-add</property>
+                                <property name="related_action">action_chain_add</property>
                                 <property name="visible">True</property>
-                                <property name="sensitive">False</property>
                                 <property name="can_focus">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="use_stock">True</property>
                                 <accelerator key="3" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                                <signal name="activate" handler="on_niftyconf_menu_add_chain_activate" swapped="no"/>
                               </object>
                             </child>
                             <child>
                               <object class="GtkImageMenuItem" id="item_chain_remove">
-                                <property name="label">gtk-remove</property>
+                                <property name="related_action">action_chain_remove</property>
                                 <property name="visible">True</property>
-                                <property name="sensitive">False</property>
                                 <property name="can_focus">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="use_stock">True</property>
                                 <accelerator key="Delete" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                                <signal name="activate" handler="on_niftyconf_menu_remove_chain_activate" swapped="no"/>
                               </object>
                             </child>
                           </object>
@@ -275,57 +415,42 @@
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="item_edit_cut">
-                        <property name="label">gtk-cut</property>
+                        <property name="related_action">action_cut</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="x" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                        <signal name="activate" handler="on_niftyconf_menu_cut_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="item_edit_copy">
-                        <property name="label">gtk-copy</property>
+                        <property name="related_action">action_copy</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="c" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                        <signal name="activate" handler="on_niftyconf_menu_copy_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="item_edit_paste">
-                        <property name="label">gtk-paste</property>
+                        <property name="related_action">action_paste</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="v" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                        <signal name="activate" handler="on_niftyconf_menu_paste_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="item_edit_import">
-                        <property name="label">Import element</property>
+                        <property name="related_action">action_import</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="image">image1</property>
-                        <property name="use_stock">False</property>
-                        <accelerator key="i" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                        <signal name="activate" handler="on_niftyconf_menu_import_activate" swapped="no"/>
+                        <property name="use_stock">True</property>
                       </object>
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="item_edit_export">
-                        <property name="label">Export element</property>
+                        <property name="related_action">action_export</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="image">image2</property>
-                        <property name="use_stock">False</property>
-                        <accelerator key="e" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                        <signal name="activate" handler="on_niftyconf_menu_export_activate" swapped="no"/>
+                        <property name="use_stock">True</property>
                       </object>
                     </child>
                   </object>
@@ -354,20 +479,16 @@
                             <property name="can_focus">False</property>
                             <child>
                               <object class="GtkMenuItem" id="item_setup_collapse">
+                                <property name="related_action">action_tree_collapse</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Collapse all</property>
-                                <property name="use_underline">True</property>
-                                <signal name="activate" handler="on_niftyconf_menu_tree_collapse_activate" swapped="no"/>
                               </object>
                             </child>
                             <child>
                               <object class="GtkMenuItem" id="item_setup_expand">
+                                <property name="related_action">action_tree_expand</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Expand all</property>
-                                <property name="use_underline">True</property>
-                                <signal name="activate" handler="on_niftyconf_menu_tree_expand_activate" swapped="no"/>
                               </object>
                             </child>
                           </object>
@@ -376,21 +497,18 @@
                     </child>
                     <child>
                       <object class="GtkCheckMenuItem" id="item_view_preview">
+                        <property name="related_action">toggleaction_live_preview_show</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Turn on selected LEDs on connected &amp; initialized hardware</property>
-                        <property name="label" translatable="yes">Live hardware preview</property>
-                        <property name="use_underline">True</property>
-                        <signal name="toggled" handler="on_live_preview_toggled" swapped="no"/>
                       </object>
                     </child>
                     <child>
                       <object class="GtkCheckMenuItem" id="item_log_win">
+                        <property name="related_action">toggleaction_log_show</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Show log window</property>
                         <property name="draw_as_radio">True</property>
-                        <signal name="toggled" handler="on_item_log_win_toggled" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -439,7 +557,6 @@
                 <property name="related_action">action_setup_new</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">New setup...</property>
                 <property name="label" translatable="yes">New</property>
                 <property name="use_underline">True</property>
               </object>
@@ -624,6 +741,106 @@
             <property name="position">3</property>
           </packing>
         </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkMenu" id="popup_menu">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkImageMenuItem" id="menuitem_cut">
+        <property name="related_action">action_cut</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="menuitem_copy">
+        <property name="related_action">action_copy</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="menuitem_paste">
+        <property name="related_action">action_paste</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="menuitem_import">
+        <property name="related_action">action_import</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="menuitem_export">
+        <property name="related_action">action_export</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="menuitem_hardware_add">
+        <property name="related_action">action_hardware_add</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="menuitem_tile_add">
+        <property name="related_action">action_tile_add</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="menuitem_chain_add">
+        <property name="related_action">action_chain_add</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="menuitem_hardware_remove">
+        <property name="related_action">action_hardware_remove</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="menuitem_tile_remove">
+        <property name="related_action">action_tile_remove</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="menuitem_chain_remove">
+        <property name="related_action">action_chain_remove</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="menuitem_hardware_info">
+        <property name="related_action">action_hardware_info</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_stock">True</property>
       </object>
     </child>
   </object>

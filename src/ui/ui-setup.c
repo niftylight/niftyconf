@@ -54,6 +54,7 @@
 #include "ui/ui-setup-tree.h"
 #include "ui/ui-setup-ledlist.h"
 #include "ui/ui-clipboard.h"
+#include "ui/ui-info-hardware.h"
 #include "elements/element-setup.h"
 #include "elements/element-hardware.h"
 #include "live-preview/live-preview.h"
@@ -347,6 +348,168 @@ G_MODULE_EXPORT void on_action_setup_saveas_activate(GtkAction * a,
 }
 
 
+/** hardware add */
+G_MODULE_EXPORT void on_action_hardware_add_activate(GtkAction * i,
+                                                     gpointer u)
+{
+        /* show "add hardware" dialog */
+        gtk_widget_set_visible(GTK_WIDGET(ui_setup("hardware_add_window")),
+                               true);
+}
+
+/** tile add */
+G_MODULE_EXPORT void on_action_tile_add_activate(GtkAction * i, gpointer u)
+{
+        NIFTYLED_TYPE t;
+        gpointer e;
+        ui_setup_tree_get_last_selected_element(&t, &e);
+
+
+        /* different possible element types */
+        switch (t)
+        {
+                        /* currently selected element is a hardware-node */
+                case LED_HARDWARE_T:
+                {
+                        tile_of_hardware_new((NiftyconfHardware *) e);
+                        break;
+                }
+
+                        /* currently selected element is a tile-node */
+                case LED_TILE_T:
+                {
+                        tile_of_tile_new((NiftyconfTile *) e);
+                        break;
+                }
+
+                default:
+                {
+                        break;
+                }
+        }
+
+        /** @todo refresh our menu */
+
+        /* refresh tree */
+        ui_setup_tree_refresh();
+}
+
+
+/** chain add */
+G_MODULE_EXPORT void on_action_chain_add_activate(GtkAction * i, gpointer u)
+{
+        gtk_widget_set_visible(GTK_WIDGET(ui_setup("chain_add_window")),
+                               true);
+}
+
+
+/** foreach helper */
+static void _foreach_remove_hardware(NIFTYLED_TYPE t, gpointer e)
+{
+        if(t != LED_HARDWARE_T)
+                return;
+
+        hardware_destroy((NiftyconfHardware *) e);
+}
+
+
+/** hardware remove */
+G_MODULE_EXPORT void on_action_hardware_remove_activate(GtkAction * i,
+                                                        gpointer u)
+{
+        /* remove all currently selected elements */
+        ui_setup_tree_do_foreach_selected_element(_foreach_remove_hardware);
+
+        /* refresh tree */
+        ui_setup_tree_refresh();
+
+        /* hide properties */
+        ui_setup_props_hide();
+}
+
+
+/** foreach helper */
+static void _foreach_remove_tile(NIFTYLED_TYPE t, gpointer e)
+{
+        if(t != LED_TILE_T)
+                return;
+
+        tile_destroy((NiftyconfTile *) e);
+}
+
+
+/** tile remove */
+G_MODULE_EXPORT void on_action_tile_remove_activate(GtkAction * i, gpointer u)
+{
+        /* remove all currently selected elements */
+        ui_setup_tree_do_foreach_selected_element(_foreach_remove_tile);
+
+        /* refresh tree */
+        ui_setup_tree_refresh();
+
+        /* hide properties */
+        ui_setup_props_hide();
+}
+
+
+/** foreach helper */
+static void _foreach_remove_chain(NIFTYLED_TYPE type, gpointer e)
+{
+        /* works only if tile-element is selected */
+        if(type != LED_TILE_T)
+                return;
+
+        chain_of_tile_destroy((NiftyconfTile *) e);
+}
+
+
+/** chain remove */
+G_MODULE_EXPORT void on_action_chain_remove_activate(GtkWidget * i,
+                                                     gpointer u)
+{
+        /* remove all currently selected elements */
+        ui_setup_tree_do_foreach_selected_element(_foreach_remove_chain);
+
+        /* refresh tree */
+        ui_setup_tree_refresh();
+
+        /* hide properties */
+        ui_setup_props_hide();
+}
+
+
+/** import */
+G_MODULE_EXPORT void on_action_import_activate(GtkAction * i, gpointer u)
+{
+        gtk_widget_show(GTK_WIDGET(UI("filechooserdialog_import")));
+}
+
+
+/** export */
+G_MODULE_EXPORT void on_action_export_activate(GtkAction * i, gpointer u)
+{
+        gtk_widget_show(GTK_WIDGET(UI("filechooserdialog_export")));
+}
+
+
+/** hardware info */
+G_MODULE_EXPORT void on_action_hardware_info_activate(GtkAction * w,
+                                                      gpointer u)
+{
+        ui_info_hardware_set_visible(true);
+}
+
+
+/** live preview toggled */
+G_MODULE_EXPORT void on_toggleaction_live_preview_show_toggled(GtkToggleAction
+                                                               * item,
+                                                               gpointer
+                                                               user_data)
+{
+        live_preview_set_enabled(gtk_toggle_action_get_active(item));
+}
+
+
 /** "save" button in filechooser clicked */
 G_MODULE_EXPORT void on_setup_save_save_clicked(GtkButton * b, gpointer u)
 {
@@ -635,161 +798,4 @@ G_MODULE_EXPORT void on_setup_import_clicked(GtkButton * b, gpointer u)
         }
 
         gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_import")));
-}
-
-
-/** menu-entry selected */
-G_MODULE_EXPORT void on_niftyconf_menu_add_hardware_activate(GtkWidget * i,
-                                                             gpointer u)
-{
-        /* show "add hardware" dialog */
-        gtk_widget_set_visible(GTK_WIDGET(ui_setup("hardware_add_window")),
-                               true);
-}
-
-/** menu-entry selected */
-G_MODULE_EXPORT void on_niftyconf_menu_add_tile_activate(GtkWidget * i,
-                                                         gpointer u)
-{
-        NIFTYLED_TYPE t;
-        gpointer e;
-        ui_setup_tree_get_last_selected_element(&t, &e);
-
-
-        /* different possible element types */
-        switch (t)
-        {
-                        /* currently selected element is a hardware-node */
-                case LED_HARDWARE_T:
-                {
-                        tile_of_hardware_new((NiftyconfHardware *) e);
-                        break;
-                }
-
-                        /* currently selected element is a tile-node */
-                case LED_TILE_T:
-                {
-                        tile_of_tile_new((NiftyconfTile *) e);
-                        break;
-                }
-
-                default:
-                {
-                        break;
-                }
-        }
-
-        /** @todo refresh our menu */
-
-        /* refresh tree */
-        ui_setup_tree_refresh();
-}
-
-
-/** menu-entry selected */
-G_MODULE_EXPORT void on_niftyconf_menu_add_chain_activate(GtkWidget * i,
-                                                          gpointer u)
-{
-        gtk_widget_set_visible(GTK_WIDGET(ui_setup("chain_add_window")),
-                               true);
-}
-
-
-/** wrapper for do_* functions */
-static void _foreach_remove_hardware(NIFTYLED_TYPE t, gpointer e)
-{
-        if(t != LED_HARDWARE_T)
-                return;
-
-        hardware_destroy((NiftyconfHardware *) e);
-}
-
-
-/** menu-entry selected */
-G_MODULE_EXPORT void on_niftyconf_menu_remove_hardware_activate(GtkWidget * i,
-                                                                gpointer u)
-{
-        /* remove all currently selected elements */
-        ui_setup_tree_do_foreach_selected_element(_foreach_remove_hardware);
-
-        /* refresh tree */
-        ui_setup_tree_refresh();
-
-        /* hide properties */
-        ui_setup_props_hide();
-}
-
-
-/** wrapper for do_* functions */
-static void _foreach_remove_tile(NIFTYLED_TYPE t, gpointer e)
-{
-        if(t != LED_TILE_T)
-                return;
-
-        tile_destroy((NiftyconfTile *) e);
-}
-
-
-/** menu-entry selected */
-G_MODULE_EXPORT void on_niftyconf_menu_remove_tile_activate(GtkWidget * i,
-                                                            gpointer u)
-{
-        /* remove all currently selected elements */
-        ui_setup_tree_do_foreach_selected_element(_foreach_remove_tile);
-
-        /* refresh tree */
-        ui_setup_tree_refresh();
-
-        /* hide properties */
-        ui_setup_props_hide();
-}
-
-
-/** wrapper for do_* functions */
-static void _foreach_remove_chain(NIFTYLED_TYPE type, gpointer e)
-{
-        /* works only if tile-element is selected */
-        if(type != LED_TILE_T)
-                return;
-
-        chain_of_tile_destroy((NiftyconfTile *) e);
-}
-
-
-/** menu-entry selected */
-G_MODULE_EXPORT void on_niftyconf_menu_remove_chain_activate(GtkWidget * i,
-                                                             gpointer u)
-{
-        /* remove all currently selected elements */
-        ui_setup_tree_do_foreach_selected_element(_foreach_remove_chain);
-
-        /* refresh tree */
-        ui_setup_tree_refresh();
-
-        /* hide properties */
-        ui_setup_props_hide();
-}
-
-
-/** menu-entry selected */
-G_MODULE_EXPORT void on_niftyconf_menu_import_activate(GtkWidget * i,
-                                                       gpointer u)
-{
-        gtk_widget_show(GTK_WIDGET(ui_setup("filechooserdialog_import")));
-}
-
-
-/** menu-entry selected */
-G_MODULE_EXPORT void on_niftyconf_menu_export_activate(GtkWidget * i,
-                                                       gpointer u)
-{
-        gtk_widget_show(GTK_WIDGET(ui_setup("filechooserdialog_export")));
-}
-
-
-/** live preview toggled */
-G_MODULE_EXPORT void on_live_preview_toggled(GtkCheckMenuItem * item,
-                                             gpointer user_data)
-{
-        live_preview_set_enabled(gtk_check_menu_item_get_active(item));
 }
