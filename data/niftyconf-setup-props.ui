@@ -968,7 +968,7 @@
                         <child>
                           <object class="GtkImage" id="image_initialized">
                             <property name="can_focus">False</property>
-                            <property name="stock">gtk-yes</property>
+                            <property name="stock">gtk-connect</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -980,7 +980,7 @@
                           <object class="GtkImage" id="image_deinitialized">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="stock">gtk-no</property>
+                            <property name="stock">gtk-disconnect</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
