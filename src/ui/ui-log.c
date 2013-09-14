@@ -471,13 +471,6 @@ G_MODULE_EXPORT gboolean on_log_window_delete_event(GtkWidget * w,
         return true;
 }
 
-/** close alert dialog */
-G_MODULE_EXPORT gboolean on_alert_dialog_delete_event(GtkWidget * w,
-                                                      GdkEvent * e)
-{
-        ui_log_alert_show(NULL);
-        return true;
-}
 
 /** loglevel changed */
 G_MODULE_EXPORT void on_log_combobox_changed(GtkComboBox * w, gpointer u)

@@ -118,10 +118,4 @@ void ui_info_hardware_deinit()
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
 
-/** close main window */
-G_MODULE_EXPORT gboolean on_info_hardware_window_delete_event(GtkWidget * w,
-                                                              GdkEvent * e)
-{
-        gtk_widget_set_visible(w, false);
-        return true;
-}
+

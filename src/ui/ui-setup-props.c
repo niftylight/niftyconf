@@ -223,11 +223,28 @@ G_MODULE_EXPORT void on_spinbutton_led_gain_changed(GtkSpinButton * s,
         LedGain gain = gtk_spin_button_get_value(s);
         ui_setup_ledlist_do_foreach_selected_element(_set_gain, &gain);
 
-        live_preview_show();
+        /* get hardware these LEDs belong to */
+        LedHardware *h;
+        LedChain *c = chain_niftyled(led_get_chain(current_led));
+        if(led_chain_parent_is_hardware(c))
+        {
+                h = led_chain_get_parent_hardware(c);
+        }
+        else
+        {
+                LedTile *t;
+                for(t = led_chain_get_parent_tile(c);
+                    t && !led_tile_get_parent_hardware(t);
+                    t = led_tile_get_parent_tile(t));
 
-        /* redraw */
-        // renderer_led_damage(current_led);
-        // renderer_all_queue_draw();
+                h = led_tile_get_parent_hardware(t);
+        }
+
+
+        /* update gain */
+        led_hardware_refresh_gain(h);
+
+        live_preview_show();
 }
 
 

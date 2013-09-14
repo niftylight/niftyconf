@@ -8,13 +8,11 @@
       <object class="GtkScrolledWindow" id="scrolledwindow">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="hexpand">True</property>
         <child>
           <object class="GtkTreeView" id="treeview">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="events">GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK</property>
-            <property name="hexpand">True</property>
             <property name="model">treestore</property>
             <property name="search_column">0</property>
             <signal name="button-press-event" handler="on_setup_treeview_button_pressed" swapped="no"/>

@@ -77,13 +77,9 @@
   <object class="GtkHBox" id="box_props">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="hexpand">True</property>
-    <property name="vexpand">True</property>
     <child>
       <object class="GtkFrame" id="frame_led">
         <property name="can_focus">False</property>
-        <property name="hexpand">True</property>
-        <property name="vexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
@@ -188,7 +184,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">X coordinate of LED relative to top-left corner of tile (or 0/0)</property>
-                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
@@ -206,7 +201,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Y coordinate of LED relative to top-left corner of tile (or 0/0)</property>
-                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
@@ -226,7 +220,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Component of this LED starting from 0 (e.g. if you use RGB and want to select green, component=1)</property>
-                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
@@ -246,7 +239,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Hardware gain of this LED, typically adjust LED current (effect depends on the used hardware plugin)</property>
-                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
@@ -288,8 +280,6 @@
     <child>
       <object class="GtkFrame" id="frame_chain">
         <property name="can_focus">False</property>
-        <property name="hexpand">True</property>
-        <property name="vexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
@@ -350,7 +340,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Amount of LEDs in this chain</property>
-                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
@@ -368,7 +357,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Pixelformat of this chain (e.g. RGB u8 - check http://gegl.org/babl for valid formats)</property>
-                    <property name="hexpand">True</property>
                     <property name="editable">False</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
@@ -407,8 +395,6 @@
     <child>
       <object class="GtkFrame" id="frame_tile">
         <property name="can_focus">False</property>
-        <property name="hexpand">True</property>
-        <property name="vexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
@@ -621,11 +607,9 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">X offset of this tile relative to top-left corner of parent tile (or 0/0)</property>
-                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="input_purpose">number</property>
                     <property name="adjustment">adjustment_tile_x</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_tile_x_changed" swapped="no"/>
@@ -640,11 +624,9 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">X offset of this tile relative to top-left corner of parent tile (or 0/0)</property>
-                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="input_purpose">number</property>
                     <property name="adjustment">adjustment_tile_y</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_tile_y_changed" swapped="no"/>
@@ -662,12 +644,10 @@
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">current total width allocated by this tile</property>
-                    <property name="hexpand">True</property>
                     <property name="editable">False</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="input_purpose">number</property>
                     <property name="adjustment">adjustment_tile_width</property>
                     <property name="numeric">True</property>
                   </object>
@@ -684,12 +664,10 @@
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">current total height allocated by this tile</property>
-                    <property name="hexpand">True</property>
                     <property name="editable">False</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="input_purpose">number</property>
                     <property name="adjustment">adjustment_tile_height</property>
                     <property name="numeric">True</property>
                   </object>
@@ -705,11 +683,9 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Tile rotation in degrees (clockwise around pivot)</property>
-                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="input_purpose">number</property>
                     <property name="adjustment">adjustment_tile_rotation</property>
                     <property name="digits">2</property>
                     <property name="numeric">True</property>
@@ -727,11 +703,9 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">X coordinate of rotation pivot (relative to top-left of tile)</property>
-                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="input_purpose">number</property>
                     <property name="adjustment">adjustment_tile_pivot_x</property>
                     <property name="digits">2</property>
                     <property name="numeric">True</property>
@@ -749,11 +723,9 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Y coordinate of rotation pivot (relative to top-left of tile)</property>
-                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="input_purpose">number</property>
                     <property name="adjustment">adjustment_tile_pivot_y</property>
                     <property name="digits">2</property>
                     <property name="numeric">True</property>
@@ -792,8 +764,6 @@
     <child>
       <object class="GtkFrame" id="frame_hardware">
         <property name="can_focus">False</property>
-        <property name="hexpand">True</property>
-        <property name="vexpand">True</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
@@ -870,7 +840,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Arbitrary name of this hardware-adapter instance</property>
-                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
@@ -887,7 +856,6 @@
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">plugin used by this hardware-adapter instance</property>
-                    <property name="hexpand">True</property>
                     <property name="editable">False</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
@@ -905,7 +873,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Unique id of this hardware adapter instance</property>
-                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
@@ -923,11 +890,9 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">stride value of this hardware-adapter instance (s. docs)</property>
-                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="input_purpose">number</property>
                     <property name="adjustment">adjustment_hardware_stride</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_spinbutton_hardware_stride_changed" swapped="no"/>
@@ -1116,7 +1081,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="entry_text_column">0</property>
-                    <property name="id_column">1</property>
                     <signal name="changed" handler="on_combobox_hw_props_changed" swapped="no"/>
                   </object>
                   <packing>

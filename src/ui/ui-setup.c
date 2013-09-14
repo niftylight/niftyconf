@@ -610,15 +610,6 @@ G_MODULE_EXPORT void on_add_hardware_cancel_clicked(GtkButton * b, gpointer u)
 }
 
 
-/** add hardware window close */
-G_MODULE_EXPORT gboolean on_add_hardware_window_delete_event(GtkWidget * w,
-                                                             GdkEvent * e)
-{
-        gtk_widget_set_visible(GTK_WIDGET(UI("hardware_add_window")), false);
-        return true;
-}
-
-
 /** add hardware "pixelformat" changed */
 G_MODULE_EXPORT void
 on_hardware_add_pixelformat_comboboxtext_changed(GtkComboBox * w, gpointer u)
@@ -689,15 +680,6 @@ G_MODULE_EXPORT void on_add_chain_add_clicked(GtkButton * b, gpointer u)
 G_MODULE_EXPORT void on_add_chain_cancel_clicked(GtkButton * b, gpointer u)
 {
         gtk_widget_set_visible(GTK_WIDGET(UI("chain_add_window")), false);
-}
-
-
-/** add chain window close */
-G_MODULE_EXPORT gboolean on_add_chain_window_delete_event(GtkWidget * w,
-                                                          GdkEvent * e)
-{
-        gtk_widget_set_visible(GTK_WIDGET(UI("chain_add_window")), false);
-        return true;
 }
 
 

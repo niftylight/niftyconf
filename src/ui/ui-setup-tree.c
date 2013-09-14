@@ -1007,8 +1007,15 @@ static void _tree_popup_menu(GtkWidget * w, GdkEventButton * e, gpointer u)
         GtkWidget *e_chain_add = GTK_WIDGET(ui("menuitem_chain_add"));
         GtkWidget *e_chain_remove = GTK_WIDGET(ui("menuitem_chain_remove"));
         GtkWidget *e_hardware_info = GTK_WIDGET(ui("menuitem_hardware_info"));
+		//~ GtkWidget *e_hardware_up = GTK_WIDGET(ui("menuitem_hardware_up"));
+		//~ GtkWidget *e_hardware_down = GTK_WIDGET(ui("menuitem_hardware_down"));
 
-
+		/* disable all menus except always-on ones */
+		gtk_widget_set_sensitive(e_tile_add, false);
+		gtk_widget_set_sensitive(e_tile_add, false);
+		gtk_widget_set_sensitive(e_chain_add, false);
+		gtk_widget_set_sensitive(e_chain_remove, false);
+		gtk_widget_set_sensitive(e_tile_remove, false);
 
         /* decide about type of currently selected element */
         switch (_current_type)
@@ -1016,10 +1023,7 @@ static void _tree_popup_menu(GtkWidget * w, GdkEventButton * e, gpointer u)
 
                 case LED_HARDWARE_T:
                 {
-                        /* disable unneeded menus */
-                        gtk_widget_set_sensitive(e_chain_add, false);
-                        gtk_widget_set_sensitive(e_chain_remove, false);
-                        gtk_widget_set_sensitive(e_tile_remove, false);
+
 
                         /* enable needed menus */
                         gtk_widget_set_sensitive(e_hardware_info, true);

@@ -103,19 +103,13 @@ void ui_about_deinit()
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
 
-/** hide dialog */
-void on_about_dialog_closed(GtkDialog * arg0, gpointer user_data)
-{
-
-        gtk_widget_set_visible(GTK_WIDGET(arg0), false);
-}
-
 
 /** hide dialog */
-G_MODULE_EXPORT gboolean on_about_dialog_response(GtkDialog * dialog,
+G_MODULE_EXPORT gboolean on_about_dialog_response(
+                                                  GtkDialog * d,
                                                   gint response_id,
                                                   gpointer user_data)
 {
-        gtk_widget_set_visible(GTK_WIDGET(dialog), false);
+        gtk_widget_set_visible(GTK_WIDGET(d), false);
         return true;
 }

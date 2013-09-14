@@ -10,6 +10,7 @@
         <property name="stock_id">gtk-quit</property>
         <signal name="activate" handler="on_action_quit_activate" swapped="no"/>
       </object>
+      <accelerator key="q" modifiers="GDK_CONTROL_MASK"/>
     </child>
     <child>
       <object class="GtkAction" id="action_setup_new">
@@ -19,6 +20,7 @@
         <property name="stock_id">gtk-new</property>
         <signal name="activate" handler="on_action_setup_new_activate" swapped="no"/>
       </object>
+      <accelerator key="n" modifiers="GDK_CONTROL_MASK"/>
     </child>
     <child>
       <object class="GtkAction" id="action_setup_open">
@@ -28,6 +30,7 @@
         <property name="stock_id">gtk-open</property>
         <signal name="activate" handler="on_action_setup_open_activate" swapped="no"/>
       </object>
+      <accelerator key="o" modifiers="GDK_CONTROL_MASK"/>
     </child>
     <child>
       <object class="GtkAction" id="action_setup_save">
@@ -37,6 +40,7 @@
         <property name="stock_id">gtk-save</property>
         <signal name="activate" handler="on_action_setup_save_activate" swapped="no"/>
       </object>
+      <accelerator key="s" modifiers="GDK_CONTROL_MASK"/>
     </child>
     <child>
       <object class="GtkAction" id="action_setup_saveas">
@@ -46,6 +50,7 @@
         <property name="stock_id">gtk-save-as</property>
         <signal name="activate" handler="on_action_setup_saveas_activate" swapped="no"/>
       </object>
+      <accelerator key="s" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
     </child>
     <child>
       <object class="GtkAction" id="action_zoom_in">
@@ -54,6 +59,7 @@
         <property name="stock_id">gtk-zoom-in</property>
         <signal name="activate" handler="on_action_zoom_in_activate" swapped="no"/>
       </object>
+      <accelerator key="plus" modifiers="GDK_CONTROL_MASK"/>
     </child>
     <child>
       <object class="GtkAction" id="action_zoom_out">
@@ -62,6 +68,7 @@
         <property name="stock_id">gtk-zoom-out</property>
         <signal name="activate" handler="on_action_zoom_out_activate" swapped="no"/>
       </object>
+      <accelerator key="minus" modifiers="GDK_CONTROL_MASK"/>
     </child>
   </object>
   <object class="GtkActionGroup" id="actiongroup_setup">
@@ -208,6 +215,26 @@
       </object>
       <accelerator key="l" modifiers="GDK_CONTROL_MASK"/>
     </child>
+    <child>
+      <object class="GtkAction" id="action_element_up">
+        <property name="label" translatable="yes">Move up</property>
+        <property name="tooltip" translatable="yes">Move currently selected element up...</property>
+        <property name="stock_id">gtk-go-up</property>
+        <property name="sensitive">False</property>
+        <signal name="activate" handler="on_action_element_up_activate" swapped="no"/>
+      </object>
+      <accelerator key="Up" modifiers="GDK_CONTROL_MASK"/>
+    </child>
+    <child>
+      <object class="GtkAction" id="action_element_down">
+        <property name="label" translatable="yes">Move down</property>
+        <property name="tooltip" translatable="yes">Move currently selected element down...</property>
+        <property name="stock_id">gtk-go-down</property>
+        <property name="sensitive">False</property>
+        <signal name="activate" handler="on_action_element_down_activate" swapped="no"/>
+      </object>
+      <accelerator key="Down" modifiers="GDK_CONTROL_MASK"/>
+    </child>
   </object>
   <object class="GtkWindow" id="main_window">
     <property name="can_focus">False</property>
@@ -280,11 +307,9 @@
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="item_file_quit">
-                        <property name="use_action_appearance">False</property>
                         <property name="related_action">action_quit</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
@@ -418,6 +443,7 @@
                         <property name="related_action">action_cut</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -426,6 +452,7 @@
                         <property name="related_action">action_copy</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -434,6 +461,7 @@
                         <property name="related_action">action_paste</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -442,6 +470,7 @@
                         <property name="related_action">action_import</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -450,6 +479,7 @@
                         <property name="related_action">action_export</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -550,7 +580,6 @@
           <object class="GtkToolbar" id="toolbar">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="hexpand">True</property>
             <property name="show_arrow">False</property>
             <child>
               <object class="GtkToolButton" id="toolbutton_new">
@@ -660,17 +689,14 @@
               <object class="GtkHPaned" id="hpaned1">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="hexpand">True</property>
                 <child>
                   <object class="GtkVBox" id="vbox2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="hexpand">True</property>
                     <child>
                       <object class="GtkVBox" id="box_setup">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="hexpand">True</property>
                         <child>
                           <placeholder/>
                         </child>
@@ -752,6 +778,7 @@
         <property name="related_action">action_cut</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
       </object>
     </child>
@@ -760,6 +787,7 @@
         <property name="related_action">action_copy</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
       </object>
     </child>
@@ -768,20 +796,21 @@
         <property name="related_action">action_paste</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
       </object>
     </child>
     <child>
-      <object class="GtkImageMenuItem" id="menuitem_import">
-        <property name="related_action">action_import</property>
+      <object class="GtkImageMenuItem" id="menuitem_element_up">
+        <property name="related_action">action_element_up</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="use_stock">True</property>
       </object>
     </child>
     <child>
-      <object class="GtkImageMenuItem" id="menuitem_export">
-        <property name="related_action">action_export</property>
+      <object class="GtkImageMenuItem" id="menuitem_element_down">
+        <property name="related_action">action_element_down</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="use_stock">True</property>
@@ -792,6 +821,7 @@
         <property name="related_action">action_hardware_add</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
       </object>
     </child>
@@ -800,6 +830,7 @@
         <property name="related_action">action_tile_add</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
       </object>
     </child>
@@ -808,6 +839,7 @@
         <property name="related_action">action_chain_add</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
       </object>
     </child>
@@ -816,6 +848,7 @@
         <property name="related_action">action_hardware_remove</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
       </object>
     </child>
@@ -824,6 +857,7 @@
         <property name="related_action">action_tile_remove</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
       </object>
     </child>
@@ -832,6 +866,25 @@
         <property name="related_action">action_chain_remove</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="menuitem_import">
+        <property name="related_action">action_import</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="menuitem_export">
+        <property name="related_action">action_export</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
       </object>
     </child>
@@ -840,6 +893,7 @@
         <property name="related_action">action_hardware_info</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
       </object>
     </child>
