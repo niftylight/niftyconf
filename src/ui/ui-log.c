@@ -372,6 +372,10 @@ void ui_log_show(gboolean visible)
                                         &_pos_y);
         }
 
+        /* deactivate togglebuttons */
+        gtk_toggle_action_set_active(GTK_TOGGLE_ACTION
+                                     (ui("toggleaction_log_show")), visible);
+
         /* show/hide */
         gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);
 }
@@ -463,8 +467,6 @@ G_MODULE_EXPORT gboolean on_log_window_delete_event(GtkWidget * w,
                                                     GdkEvent * e)
 {
         ui_log_show(false);
-        gtk_toggle_action_set_active(GTK_TOGGLE_ACTION
-                                     (ui("toggleaction_log_show")), false);
 
         return true;
 }
