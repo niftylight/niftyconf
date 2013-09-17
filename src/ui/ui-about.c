@@ -105,8 +105,7 @@ void ui_about_deinit()
 
 
 /** hide dialog */
-G_MODULE_EXPORT gboolean on_about_dialog_response(
-                                                  GtkDialog * d,
+G_MODULE_EXPORT gboolean on_about_dialog_response(GtkDialog * d,
                                                   gint response_id,
                                                   gpointer user_data)
 {
