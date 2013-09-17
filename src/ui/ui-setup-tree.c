@@ -998,8 +998,7 @@ static void _tree_popup_menu(GtkWidget * w, GdkEventButton * e, gpointer u)
         // ~ GtkWidget *e_paste = GTK_WIDGET(ui("menuitem_paste"));
         // ~ GtkWidget *e_import = GTK_WIDGET(ui("menuitem_import"));
         // ~ GtkWidget *e_export = GTK_WIDGET(ui("menuitem_export"));
-        // ~ GtkWidget *e_hardware_add =
-        // GTK_WIDGET(ui("menuitem_hardware_add"));
+        GtkWidget *e_hardware_add = GTK_WIDGET(ui("menuitem_hardware_add"));
         GtkWidget *e_hardware_remove =
                 GTK_WIDGET(ui("menuitem_hardware_remove"));
         GtkWidget *e_tile_add = GTK_WIDGET(ui("menuitem_tile_add"));
@@ -1012,6 +1011,7 @@ static void _tree_popup_menu(GtkWidget * w, GdkEventButton * e, gpointer u)
         // GTK_WIDGET(ui("menuitem_hardware_down"));
 
         /* disable all menus except always-on ones */
+        gtk_widget_set_sensitive(e_hardware_add, false);
         gtk_widget_set_sensitive(e_tile_add, false);
         gtk_widget_set_sensitive(e_tile_add, false);
         gtk_widget_set_sensitive(e_chain_add, false);
@@ -1027,16 +1027,14 @@ static void _tree_popup_menu(GtkWidget * w, GdkEventButton * e, gpointer u)
 
 
                         /* enable needed menus */
+                        gtk_widget_set_sensitive(e_hardware_remove, true);
                         gtk_widget_set_sensitive(e_hardware_info, true);
+                        gtk_widget_set_sensitive(e_tile_add, true);
                         break;
                 }
 
                 case LED_TILE_T:
                 {
-                        /* disable unneeded menus */
-                        gtk_widget_set_sensitive(e_hardware_remove, false);
-                        gtk_widget_set_sensitive(e_hardware_info, false);
-
                         /* if tile has no chain, enable "add" menu */
                         gtk_widget_set_sensitive(e_chain_add,
                                                  (gboolean) !
@@ -1050,30 +1048,19 @@ static void _tree_popup_menu(GtkWidget * w, GdkEventButton * e, gpointer u)
                                                  led_tile_get_chain(tile) !=
                                                  NULL);
 
+                        /* enable "remove tile" */
+                        gtk_widget_set_sensitive(e_tile_remove, true);
                         break;
                 }
 
                 case LED_CHAIN_T:
                 {
-                        /* disable unneeded menus */
-                        gtk_widget_set_sensitive(e_hardware_remove, false);
-                        gtk_widget_set_sensitive(e_hardware_info, false);
-                        gtk_widget_set_sensitive(e_chain_add, false);
-                        gtk_widget_set_sensitive(e_chain_remove, false);
-                        gtk_widget_set_sensitive(e_tile_add, false);
-                        gtk_widget_set_sensitive(e_tile_remove, false);
                         break;
                 }
 
                 default:
                 {
-                        /* disable unneeded menus */
-                        gtk_widget_set_sensitive(e_hardware_remove, false);
-                        gtk_widget_set_sensitive(e_hardware_info, false);
-                        gtk_widget_set_sensitive(e_chain_add, false);
-                        gtk_widget_set_sensitive(e_chain_remove, false);
-                        gtk_widget_set_sensitive(e_tile_add, false);
-                        gtk_widget_set_sensitive(e_tile_remove, false);
+                        break;
                 }
         }
 
