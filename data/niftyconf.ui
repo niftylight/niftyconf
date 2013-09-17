@@ -23,14 +23,14 @@
       <accelerator key="n" modifiers="GDK_CONTROL_MASK"/>
     </child>
     <child>
-      <object class="GtkAction" id="action_setup_open">
-        <property name="label" translatable="yes">Open setup</property>
-        <property name="short_label" translatable="yes">Open</property>
+      <object class="GtkAction" id="action_setup_load">
+        <property name="label" translatable="yes">Load setup</property>
+        <property name="short_label" translatable="yes">Load</property>
         <property name="tooltip" translatable="yes">Load setup from file...</property>
         <property name="stock_id">gtk-open</property>
         <signal name="activate" handler="on_action_setup_open_activate" swapped="no"/>
       </object>
-      <accelerator key="o" modifiers="GDK_CONTROL_MASK"/>
+      <accelerator key="l" modifiers="GDK_CONTROL_MASK"/>
     </child>
     <child>
       <object class="GtkAction" id="action_setup_save">
@@ -250,7 +250,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkMenuItem" id="item_file">
+              <object class="GtkMenuItem" id="item_setup">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">_Setup</property>
@@ -260,7 +260,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="item_file_new">
+                      <object class="GtkImageMenuItem" id="item_setup_new">
                         <property name="related_action">action_setup_new</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -270,17 +270,17 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="item_file_open">
-                        <property name="related_action">action_setup_open</property>
+                      <object class="GtkImageMenuItem" id="item_setup_load">
+                        <property name="related_action">action_setup_load</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="o" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="l" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="item_file_save">
+                      <object class="GtkImageMenuItem" id="item_setup_save">
                         <property name="related_action">action_setup_save</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -290,7 +290,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="item_file_saveas">
+                      <object class="GtkImageMenuItem" id="item_setup_saveas">
                         <property name="related_action">action_setup_saveas</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -310,6 +310,7 @@
                         <property name="related_action">action_quit</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
@@ -596,7 +597,7 @@
             </child>
             <child>
               <object class="GtkToolButton" id="toolbutton_open">
-                <property name="related_action">action_setup_open</property>
+                <property name="related_action">action_setup_load</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_text" translatable="yes">Open setup...</property>
@@ -805,6 +806,7 @@
         <property name="related_action">action_element_up</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
       </object>
     </child>
@@ -813,6 +815,7 @@
         <property name="related_action">action_element_down</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
       </object>
     </child>
