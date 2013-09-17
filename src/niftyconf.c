@@ -254,6 +254,10 @@ int main(int argc, char *argv[])
         /* restore window size & position */
         prefs_load();
 
+        /* show main window (in case it wasn't shown while loading the
+         * preferences */
+        gtk_widget_show(GTK_WIDGET(ui("main_window")));
+
         /* load setup file if any given from commandline */
         if(setupfile)
         {
