@@ -740,7 +740,7 @@ Public License instead of this License.  But first, please read
                     <property name="has_tooltip">True</property>
                     <property name="tooltip_text" translatable="yes">Online documentation</property>
                     <property name="relief">none</property>
-                    <property name="uri">http://wiki.niftylight.de/Niftyconf/Documentation</property>
+                    <property name="uri">http://wiki.niftylight.de/Niftyconf:Documentation</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
