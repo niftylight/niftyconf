@@ -1,12 +1,14 @@
-Niftyconf LED setup GUI
+niftyconf LED setup GUI
 =======================
 
 gtk+ GUI editor for niftyled setup files. 
 
 
 
+------------------------------------------------------------------------------
+
 Project page:	http://wiki.niftylight.de/Niftyconf  
-Repository:	http://github.com/niftylight/niftyconf  
+Sourcecode:	http://github.com/niftylight/niftyconf  
 Issue tracker:	http://github.com/niftylight/niftyconf/issues  
 Mailinglist:	niftyled@googlegroups.com  
 IRC chat:	irc://irc.freenode.net/niftylight   

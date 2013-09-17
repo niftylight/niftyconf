@@ -1,7 +1,14 @@
-niftyconf for Debian
---------------------
+niftyconf LED setup GUI (Debian package)
+========================================
 
-niftyconf source package. More information at http://wiki.niftylight.de/Niftyconf
+niftyconf source package.
 
 
 
+------------------------------------------------------------------------------
+
+Project page:	http://wiki.niftylight.de/Niftyconf  
+Sourcecode:	http://github.com/niftylight/niftyconf  
+Issue tracker:	http://github.com/niftylight/niftyconf/issues  
+Mailinglist:	niftyled@googlegroups.com  
+IRC chat:	irc://irc.freenode.net/niftylight
