@@ -229,6 +229,8 @@ gboolean ui_renderer_init()
         _r.view.scale = 0.5;
         _r.view.scale_delta = 0.1;
         _r.view.scale_factor = 25;
+        _r.view.pan_x = _r.view.scale_factor;
+        _r.view.pan_y = _r.view.scale_factor;
         _r.rendering.filter = CAIRO_FILTER_NEAREST;
         _r.rendering.antialias = CAIRO_ANTIALIAS_DEFAULT;
 
