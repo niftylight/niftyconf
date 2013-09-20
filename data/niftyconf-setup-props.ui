@@ -355,6 +355,7 @@
                 <child>
                   <object class="GtkEntry" id="entry_chain_format">
                     <property name="visible">True</property>
+                    <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Pixelformat of this chain (e.g. RGB u8 - check http://gegl.org/babl for valid formats)</property>
                     <property name="editable">False</property>
