@@ -998,7 +998,7 @@ static void _tree_popup_menu(GtkWidget * w, GdkEventButton * e, gpointer u)
         // ~ GtkWidget *e_paste = GTK_WIDGET(ui("menuitem_paste"));
         // ~ GtkWidget *e_import = GTK_WIDGET(ui("menuitem_import"));
         // ~ GtkWidget *e_export = GTK_WIDGET(ui("menuitem_export"));
-        GtkWidget *e_hardware_add = GTK_WIDGET(ui("menuitem_hardware_add"));
+        // ~ GtkWidget *e_hardware_add = GTK_WIDGET(ui("menuitem_hardware_add"));
         GtkWidget *e_hardware_remove =
                 GTK_WIDGET(ui("menuitem_hardware_remove"));
         GtkWidget *e_tile_add = GTK_WIDGET(ui("menuitem_tile_add"));
@@ -1011,7 +1011,6 @@ static void _tree_popup_menu(GtkWidget * w, GdkEventButton * e, gpointer u)
         // GTK_WIDGET(ui("menuitem_hardware_down"));
 
         /* disable all menus except always-on ones */
-        gtk_widget_set_sensitive(e_hardware_add, false);
         gtk_widget_set_sensitive(e_tile_add, false);
         gtk_widget_set_sensitive(e_tile_add, false);
         gtk_widget_set_sensitive(e_chain_add, false);
