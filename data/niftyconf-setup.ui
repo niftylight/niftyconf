@@ -574,6 +574,9 @@
               <object class="GtkComboBoxText" id="hardware_add_plugin_combobox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <items>
+                  <item translatable="yes">Install some plugins first...</item>
+                </items>
               </object>
               <packing>
                 <property name="left_attach">1</property>

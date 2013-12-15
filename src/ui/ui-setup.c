@@ -229,9 +229,13 @@ gboolean ui_setup_init()
         gtk_file_filter_add_mime_type(filter, "application/xml");
         gtk_file_filter_add_mime_type(filter, "text/xml");
 
-        /* build "plugin" combobox for "add hardware" dialog */
-        int p;
-        for(p = 0; p < led_hardware_plugin_total_count(); p++)
+        /* clear "plugin family" comobobox */
+        gtk_list_store_clear(GTK_LIST_STORE(
+            gtk_combo_box_get_model(
+                GTK_COMBO_BOX(UI("hardware_add_plugin_combobox")))));
+    
+        /* build "plugin family" combobox for "add hardware" dialog */        
+        for(int p = 0; p < led_hardware_plugin_total_count(); p++)
         {
                 gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT
                                                (UI
