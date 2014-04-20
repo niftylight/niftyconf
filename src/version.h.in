@@ -61,8 +61,8 @@
 #define NIFTYCONF_GIT_VERSION    (version_git())
 /** nicely composed long version string */
 #define NIFTYCONF_LONG_VERSION   (version_long())
-
-
+/** niftyconf preference file format version */
+#define NIFTYCONF_PREFS_VERSION (@PACKAGE_PREFS_VERSION@)
 
 
 const char                     *version_git();
