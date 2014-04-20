@@ -45,6 +45,7 @@
 #include <gtk/gtk.h>
 #include <niftyprefs.h>
 #include "prefs.h"
+#include "version.h"
 
 
 #define PREFS_FILENAME ".niftyconfrc"
@@ -73,7 +74,7 @@ NftPrefs *prefs()
 gboolean prefs_load()
 {
         NftPrefsNode *setup;
-        if(!(setup = nft_prefs_node_from_file(_filename)))
+        if(!(setup = nft_prefs_node_from_file(_prefs, _filename)))
                 return false;
 
         NftPrefsNode *n;
@@ -105,14 +106,14 @@ gboolean prefs_save()
         }
 
 
-        return nft_prefs_node_to_file(setup, _filename, true);
+        return nft_prefs_node_to_file(_prefs, setup, _filename, true);
 }
 
 
 /** initialize preferences */
 gboolean prefs_init()
 {
-        if(!(_prefs = nft_prefs_init()))
+        if(!(_prefs = nft_prefs_init(NIFTYCONF_PREFS_VERSION)))
                 return false;
 
         if(snprintf
