@@ -81,9 +81,9 @@ char *hardware_dump(NiftyconfHardware * hardware, gboolean encapsulation)
 
         char *result = NULL;
         if(encapsulation)
-                result = led_prefs_node_to_buffer(n);
+                result = led_prefs_node_to_buffer(setup_get_prefs(), n);
         else
-                result = led_prefs_node_to_buffer_light(n);
+                result = led_prefs_node_to_buffer_minimal(setup_get_prefs(), n);
 
         led_prefs_node_free(n);
 

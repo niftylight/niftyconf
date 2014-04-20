@@ -527,7 +527,7 @@ NftResult ui_clipboard_cut_current_selection()
                 return NFT_FAILURE;
 
         char *xml;
-        if(!(xml = led_prefs_node_to_buffer(n)))
+        if(!(xml = led_prefs_node_to_buffer(setup_get_prefs(), n)))
                 return NFT_FAILURE;
 
         /* set the clipboard text */
@@ -567,7 +567,7 @@ NftResult ui_clipboard_copy_current_selection()
                 return NFT_FAILURE;
 
         char *xml;
-        if(!(xml = led_prefs_node_to_buffer(n)))
+        if(!(xml = led_prefs_node_to_buffer(setup_get_prefs(), n)))
                 return NFT_FAILURE;
 
         /* set the clipboard text */
@@ -609,7 +609,7 @@ NftResult ui_clipboard_paste_current_selection()
 
         /* parse buffer to LedPrefsNode */
         LedPrefsNode *n;
-        if(!(n = led_prefs_node_from_buffer(xml, strlen(xml))))
+        if(!(n = led_prefs_node_from_buffer(setup_get_prefs(), xml, strlen(xml))))
         {
                 NFT_LOG(L_ERROR, "failed to parse XML from clipboard");
                 g_free(xml);
@@ -679,7 +679,7 @@ NftResult ui_clipboard_copy_to_file(const char *filename)
                 }
         }
 
-        return led_prefs_node_to_file_light(n, filename, true);
+        return led_prefs_node_to_file_minimal(setup_get_prefs(), n, filename, true);
 }
 
 
@@ -692,7 +692,7 @@ NftResult ui_clipboard_paste_from_file(const char *filename)
         ui_setup_tree_get_first_selected_element(&t, &e);
 
         LedPrefsNode *n;
-        if(!(n = led_prefs_node_from_file(filename)))
+        if(!(n = led_prefs_node_from_file(setup_get_prefs(), filename)))
         {
                 NFT_LOG(L_ERROR, "failed to parse XML from \"%s\"", filename);
                 return NFT_FAILURE;

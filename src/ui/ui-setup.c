@@ -159,7 +159,7 @@ gboolean ui_setup_save(gchar * filename)
         }
 
         /* save */
-        if(!led_prefs_node_to_file(n, filename, false))
+        if(!led_prefs_node_to_file(setup_get_prefs(), n, filename, false))
         {
                 ui_log_alert_show("Failed to save preferences to \"%s\"",
                                   filename);
@@ -176,7 +176,7 @@ gboolean ui_setup_load(gchar * filename)
 {
         /* load file */
         LedPrefsNode *n;
-        if(!(n = led_prefs_node_from_file(filename)))
+        if(!(n = led_prefs_node_from_file(setup_get_prefs(), filename)))
                 return false;
 
         /* build setup from prefs node */
