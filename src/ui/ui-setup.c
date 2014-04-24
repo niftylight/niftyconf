@@ -566,14 +566,12 @@ G_MODULE_EXPORT void on_setup_open_clicked(GtkButton * b, gpointer u)
 
         if(!ui_setup_load(filename))
         {
-                ui_log_alert_show("Error while loading file \"%s\"",
+                ui_log_alert_show("Error while loading file\n \"%s\"\n"
+                                  "(s. log for further info)",
                                   filename);
-                goto osoc_exit;
         }
 
         gtk_widget_hide(GTK_WIDGET(UI("filechooserdialog_load")));
-
-osoc_exit:
         g_free(filename);
 }
 
