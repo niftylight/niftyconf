@@ -199,10 +199,7 @@ static void _logger(void *userdata,
         if(msg)
                 size += strlen(msg);
 
-        gchar *s;
-        if(!(s = alloca(size)))
-                return;
-
+        gchar s[size];
         snprintf(s, size, "(%s) ", nft_log_level_to_string(level));
 
         /* include filename? */
@@ -219,9 +216,7 @@ static void _logger(void *userdata,
         if(gtk_toggle_button_get_active
            (GTK_TOGGLE_BUTTON(UI("checkbutton_line"))))
         {
-                gchar *number;
-                if(!(number = alloca(64)))
-                        return;
+                gchar number[64];                
                 snprintf(number, 64, ":%d ", line);
                 strncat(s, number,
                         (size - strlen(s) > 0 ? size - strlen(s) : 0));
@@ -309,13 +304,8 @@ gboolean ui_log_dialog_yesno(char *title, char *message, ...)
                 NFT_LOG_NULL(false);
 
         /* allocate mem to build message */
-        char *tmp;
-        if(!(tmp = alloca(MAX_MSG_SIZE)))
-        {
-                NFT_LOG_PERROR("alloca");
-                return false;
-        }
-
+        char tmp[MAX_MSG_SIZE];
+        
         /* build message */
         va_list ap;
         va_start(ap, message);
