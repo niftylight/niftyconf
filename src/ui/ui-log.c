@@ -277,7 +277,10 @@ static void _logger(void *userdata,
                                                                  NULL);
 
                         /* force show the log window on errors */
-                        ui_log_show(true);
+                        if(!ui_log_visible())
+                        {
+                                ui_log_show(true);
+                        }
                         break;
                 }
 
