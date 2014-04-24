@@ -64,15 +64,15 @@ static gint _pos_x, _pos_y;
  ****************************** STATIC FUNCTIONS ******************************
  ******************************************************************************/
 
-/** configure from preferences */
+/** configure logging from preferences */
 static NftResult _this_from_prefs(NftPrefs * prefs,
                                   void **newObj,
                                   NftPrefsNode * node, void *userptr)
 {
-        /* dummy object */
+        /* dummy object to return (we don't actually create an object) */
         *newObj = (void *) 1;
 
-        /* window geometry */
+        /* restore window geometry from stored preferences */
         gint width = 0, height = 0;
         nft_prefs_node_prop_int_get(node, "x", &_pos_x);
         nft_prefs_node_prop_int_get(node, "y", &_pos_y);
@@ -83,14 +83,18 @@ static NftResult _this_from_prefs(NftPrefs * prefs,
         gtk_window_resize(GTK_WINDOW(UI("window")), width, height);
 
 
-        /* log visible? */
-        bool boolean = false;
-        nft_prefs_node_prop_boolean_get(node, "window-visible", &boolean);
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM
-                                       (ui("item_log_win")), boolean);
-        ui_log_show(boolean);
+        /* restore log visibility from stored preferences if log window 
+	       is invisible */
+        if(!ui_log_visible())
+        {
+                bool visible = false;
+                nft_prefs_node_prop_boolean_get(node,
+                                                "window-visible",
+		                                &visible);
+                ui_log_show(visible);
+        }
 
-        /* log level */
+        /* restore log level */
         char *loglevel;
         if((loglevel = nft_prefs_node_prop_string_get(node, "loglevel")))
         {
@@ -103,21 +107,24 @@ static NftResult _this_from_prefs(NftPrefs * prefs,
         }
 
         /* log flags */
-        nft_prefs_node_prop_boolean_get(node, "show-file", &boolean);
+        bool toggled;
+        nft_prefs_node_prop_boolean_get(node, "show-file", &toggled);
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON
-                                     (UI("checkbutton_file")), boolean);
-        nft_prefs_node_prop_boolean_get(node, "show-line", &boolean);
+                                     (UI("checkbutton_file")), toggled);
+
+        nft_prefs_node_prop_boolean_get(node, "show-line", &toggled);
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON
-                                     (UI("checkbutton_line")), boolean);
-        nft_prefs_node_prop_boolean_get(node, "show-function", &boolean);
+                                     (UI("checkbutton_line")), toggled);
+
+        nft_prefs_node_prop_boolean_get(node, "show-function", &toggled);
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON
-                                     (UI("checkbutton_function")), boolean);
+                                     (UI("checkbutton_function")), toggled);
 
         return NFT_SUCCESS;
 }
 
 
-/** save configuration to preferences */
+/** save logging configuration to preferences */
 static NftResult _this_to_prefs(NftPrefs * prefs,
                                 NftPrefsNode * newNode,
                                 void *obj, void *userptr)
@@ -172,6 +179,7 @@ static NftResult _this_to_prefs(NftPrefs * prefs,
 }
 
 
+/** logging function */
 static void _logger(void *userdata,
                     NftLoglevel level,
                     const char *file,
@@ -238,11 +246,53 @@ static void _logger(void *userdata,
         strncat(s, msg, (size - strlen(s) > 0 ? size - strlen(s) : 0));
         strncat(s, "\n", (size - strlen(s) > 0 ? size - strlen(s) : 0));
 
+	/* the text view is passed to us as userdata pointer */
         GtkTextView *tv = GTK_TEXT_VIEW(userdata);
+
+	/* get text buffer of our text view */
         GtkTextBuffer *buf = gtk_text_view_get_buffer(tv);
+
+	/* create iterator at end of buffer */
         GtkTextIter iter;
         gtk_text_buffer_get_end_iter(buf, &iter);
-        gtk_text_buffer_insert(buf, &iter, s, -1);
+
+        /* treat L_ERROR and L_WARNING specially */
+        switch(level)
+        {
+                case L_WARNING:
+                {
+                        /* append bold text */
+                        gtk_text_buffer_insert_with_tags_by_name(buf,
+                                                                 &iter,
+                                                                 s,
+                                                                 -1,
+                                                                 "warning",
+                                                                 NULL);
+                        break;
+                }
+
+                case L_ERROR:
+                {
+                        /* append red text */
+                        gtk_text_buffer_insert_with_tags_by_name(buf,
+                                                                 &iter,
+                                                                 s,
+                                                                 -1,
+                                                                 "error",
+                                                                 NULL);
+
+                        /* force show the log window on errors */
+                        ui_log_show(true);
+                        break;
+                }
+
+                default:
+                {
+                        /* normally append our string to the buffer */
+                        gtk_text_buffer_insert(buf, &iter, s, -1);
+                        break;
+                }
+        }
 }
 
 
@@ -251,7 +301,7 @@ static void _logger(void *userdata,
  ******************************************************************************/
 
 /**
- *  show yes/no dialog and wat for answer
+ *  show yes/no dialog and wait for answer
  */
 gboolean ui_log_dialog_yesno(char *title, char *message, ...)
 {
@@ -375,7 +425,9 @@ void ui_log_show(gboolean visible)
         /* deactivate togglebuttons */
         gtk_toggle_action_set_active(GTK_TOGGLE_ACTION
                                      (ui("toggleaction_log_show")), visible);
-
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM
+                               (ui("item_log_win")), visible);
+	
         /* show/hide */
         gtk_widget_set_visible(GTK_WIDGET(UI("window")), visible);
 }
@@ -432,6 +484,15 @@ gboolean ui_log_init()
         /* register our custom logger function */
         nft_log_func_register(_logger, UI("textview"));
 
+        /* get text buffer of our text view */
+        GtkTextBuffer *buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(UI("textview")));
+	
+        /* create tags - to format text */
+        gtk_text_buffer_create_tag(buf, "warning", 
+                                   "weight", PANGO_WEIGHT_BOLD, NULL);
+        gtk_text_buffer_create_tag(buf, "error", 
+                                   "foreground", "red", NULL);
+	
         /* register prefs class for this module */
         if(!nft_prefs_class_register
            (prefs(), "ui-log", _this_from_prefs, _this_to_prefs))
