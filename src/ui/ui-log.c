@@ -374,12 +374,7 @@ void ui_log_alert_show(char *message, ...)
         }
 
         /* allocate mem to build message */
-        char *tmp;
-        if(!(tmp = alloca(MAX_MSG_SIZE)))
-        {
-                NFT_LOG_PERROR("alloca");
-                return;
-        }
+        char tmp[MAX_MSG_SIZE];
 
         /* build message */
         va_list ap;
