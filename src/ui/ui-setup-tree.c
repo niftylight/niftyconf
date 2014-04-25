@@ -58,6 +58,7 @@
 #include "renderer/renderer-setup.h"
 #include "renderer/renderer-tile.h"
 #include "renderer/renderer-chain.h"
+#include "prefs/prefs.h"
 
 
 /** @todo improve design - i hate this */
@@ -96,6 +97,41 @@ static bool _clear_in_progress;
  ******************************************************************************/
 
 static void on_selection_changed(GtkTreeSelection * selection, gpointer u);
+
+
+/** configure this module from preferences */
+static NftResult _this_from_prefs(NftPrefs * prefs,
+                                  void **newObj,
+                                  NftPrefsNode * node, void *userptr)
+{
+        /* dummy object to return (we don't actually create an object) */
+        *newObj = (void *) 1;
+
+
+        /* restore paned position from prefs */
+        gint pos = 0;
+        if(nft_prefs_node_prop_int_get(node, "paned_position", &pos))
+        {
+                /* set position */
+                gtk_paned_set_position(GTK_PANED(ui("paned")), pos);
+        }
+
+        return NFT_SUCCESS;
+}
+
+
+/** save current configuration to preferences */
+static NftResult _this_to_prefs(NftPrefs * prefs,
+                                NftPrefsNode * newNode,
+                                void *obj, void *userptr)
+{
+        /* store paned position in prefs */
+        gint pos = gtk_paned_get_position(GTK_PANED(ui("paned")));
+        if(!nft_prefs_node_prop_int_set(newNode, "paned_position", pos))
+                return NFT_FAILURE;
+
+        return NFT_SUCCESS;
+}
 
 
 /** helper to append element to treeview */
@@ -847,6 +883,10 @@ gboolean ui_setup_tree_init()
         gtk_tree_view_column_add_attribute(col, renderer, "text",
                                            C_SETUP_TITLE);
 
+        /* register prefs class for this module */
+        if(!nft_prefs_class_register
+           (prefs(), "ui-setup-tree", _this_from_prefs, _this_to_prefs))
+                g_error("Failed to register prefs class for \"ui-setup-tree\"");
 
         return true;
 }
@@ -855,6 +895,9 @@ gboolean ui_setup_tree_init()
 /** deinitialize this module */
 void ui_setup_tree_deinit()
 {
+        /* unregister prefs class */
+        nft_prefs_class_unregister(prefs(), "ui-setup-tree");
+
         g_object_unref(_ui);
 }
 

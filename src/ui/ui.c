@@ -113,6 +113,9 @@ static NftResult _this_to_prefs(NftPrefs * prefs,
         nft_prefs_node_add_child(newNode,
                                  nft_prefs_obj_to_node(prefs, "ui-log", NULL,
                                                        NULL));
+        nft_prefs_node_add_child(newNode,
+                                 nft_prefs_obj_to_node(prefs, "ui-setup-tree", NULL,
+                                                       NULL));
 
         /* main window geometry */
         gint x, y, width, height;
