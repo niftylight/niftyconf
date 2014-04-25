@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.16.1 -->
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkActionGroup" id="actiongroup_global">
     <child>
       <object class="GtkAction" id="action_quit">
@@ -344,6 +344,7 @@
                             <property name="can_focus">False</property>
                             <child>
                               <object class="GtkImageMenuItem" id="item_hardware_add">
+                                <property name="use_action_appearance">True</property>
                                 <property name="related_action">action_hardware_add</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
@@ -354,12 +355,23 @@
                             </child>
                             <child>
                               <object class="GtkImageMenuItem" id="item_hardware_remove">
+                                <property name="use_action_appearance">True</property>
                                 <property name="related_action">action_hardware_remove</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="use_stock">True</property>
                                 <accelerator key="Delete" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkImageMenuItem" id="item_hardware_info">
+                                <property name="use_action_appearance">True</property>
+                                <property name="related_action">action_hardware_info</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="use_stock">True</property>
                               </object>
                             </child>
                           </object>
@@ -378,6 +390,7 @@
                             <property name="can_focus">False</property>
                             <child>
                               <object class="GtkImageMenuItem" id="item_tile_add">
+                                <property name="use_action_appearance">True</property>
                                 <property name="related_action">action_tile_add</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
@@ -388,6 +401,7 @@
                             </child>
                             <child>
                               <object class="GtkImageMenuItem" id="item_tile_remove">
+                                <property name="use_action_appearance">True</property>
                                 <property name="related_action">action_tile_remove</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
@@ -412,6 +426,7 @@
                             <property name="can_focus">False</property>
                             <child>
                               <object class="GtkImageMenuItem" id="item_chain_add">
+                                <property name="use_action_appearance">True</property>
                                 <property name="related_action">action_chain_add</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
@@ -422,6 +437,7 @@
                             </child>
                             <child>
                               <object class="GtkImageMenuItem" id="item_chain_remove">
+                                <property name="use_action_appearance">True</property>
                                 <property name="related_action">action_chain_remove</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
@@ -443,7 +459,26 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkImageMenuItem" id="item_edit_up">
+                        <property name="use_action_appearance">True</property>
+                        <property name="related_action">action_element_up</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="item_edit_down">
+                        <property name="use_action_appearance">True</property>
+                        <property name="related_action">action_element_down</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkImageMenuItem" id="item_edit_cut">
+                        <property name="use_action_appearance">True</property>
                         <property name="related_action">action_cut</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -453,6 +488,7 @@
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="item_edit_copy">
+                        <property name="use_action_appearance">True</property>
                         <property name="related_action">action_copy</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -462,6 +498,7 @@
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="item_edit_paste">
+                        <property name="use_action_appearance">True</property>
                         <property name="related_action">action_paste</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -471,6 +508,7 @@
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="item_edit_import">
+                        <property name="use_action_appearance">True</property>
                         <property name="related_action">action_import</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -480,6 +518,7 @@
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="item_edit_export">
+                        <property name="use_action_appearance">True</property>
                         <property name="related_action">action_export</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -534,6 +573,7 @@
                         <property name="related_action">action_zoom_out</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -542,6 +582,7 @@
                         <property name="related_action">action_zoom_in</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -843,15 +884,17 @@
     <property name="can_focus">False</property>
     <child>
       <object class="GtkImageMenuItem" id="menuitem_cut">
+        <property name="use_action_appearance">True</property>
         <property name="related_action">action_cut</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
       </object>
     </child>
     <child>
       <object class="GtkImageMenuItem" id="menuitem_copy">
+        <property name="label">gtk-copy</property>
+        <property name="use_action_appearance">True</property>
         <property name="related_action">action_copy</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -861,6 +904,8 @@
     </child>
     <child>
       <object class="GtkImageMenuItem" id="menuitem_paste">
+        <property name="label">gtk-paste</property>
+        <property name="use_action_appearance">True</property>
         <property name="related_action">action_paste</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -870,6 +915,7 @@
     </child>
     <child>
       <object class="GtkImageMenuItem" id="menuitem_element_up">
+        <property name="use_action_appearance">True</property>
         <property name="related_action">action_element_up</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -879,6 +925,7 @@
     </child>
     <child>
       <object class="GtkImageMenuItem" id="menuitem_element_down">
+        <property name="use_action_appearance">True</property>
         <property name="related_action">action_element_down</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -888,6 +935,7 @@
     </child>
     <child>
       <object class="GtkImageMenuItem" id="menuitem_hardware_add">
+        <property name="use_action_appearance">True</property>
         <property name="related_action">action_hardware_add</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -897,6 +945,7 @@
     </child>
     <child>
       <object class="GtkImageMenuItem" id="menuitem_tile_add">
+        <property name="use_action_appearance">True</property>
         <property name="related_action">action_tile_add</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -906,6 +955,7 @@
     </child>
     <child>
       <object class="GtkImageMenuItem" id="menuitem_chain_add">
+        <property name="use_action_appearance">True</property>
         <property name="related_action">action_chain_add</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -915,6 +965,7 @@
     </child>
     <child>
       <object class="GtkImageMenuItem" id="menuitem_hardware_remove">
+        <property name="use_action_appearance">True</property>
         <property name="related_action">action_hardware_remove</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -924,6 +975,7 @@
     </child>
     <child>
       <object class="GtkImageMenuItem" id="menuitem_tile_remove">
+        <property name="use_action_appearance">True</property>
         <property name="related_action">action_tile_remove</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -933,6 +985,7 @@
     </child>
     <child>
       <object class="GtkImageMenuItem" id="menuitem_chain_remove">
+        <property name="use_action_appearance">True</property>
         <property name="related_action">action_chain_remove</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -942,6 +995,7 @@
     </child>
     <child>
       <object class="GtkImageMenuItem" id="menuitem_import">
+        <property name="use_action_appearance">True</property>
         <property name="related_action">action_import</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -951,6 +1005,7 @@
     </child>
     <child>
       <object class="GtkImageMenuItem" id="menuitem_export">
+        <property name="use_action_appearance">True</property>
         <property name="related_action">action_export</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -960,6 +1015,7 @@
     </child>
     <child>
       <object class="GtkImageMenuItem" id="menuitem_hardware_info">
+        <property name="use_action_appearance">True</property>
         <property name="related_action">action_hardware_info</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
