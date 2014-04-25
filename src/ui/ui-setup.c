@@ -345,16 +345,28 @@ G_MODULE_EXPORT void on_action_setup_save_activate(GtkAction * a, gpointer u)
 
 
 /** menuitem "save as" selected */
-G_MODULE_EXPORT void on_action_setup_saveas_activate(GtkAction * a,
-                                                     gpointer u)
+G_MODULE_EXPORT void on_action_setup_saveas_activate(GtkAction * a, gpointer u)
 {
         gtk_widget_show(GTK_WIDGET(UI("filechooserdialog_save")));
 }
 
 
+/** menuitem "move up" selected */
+G_MODULE_EXPORT void on_action_element_up_activate(GtkAction * a, gpointer u)
+{
+        /* @todo */
+}
+
+
+/** menuitem "move down" selected */
+G_MODULE_EXPORT void on_action_element_down_activate(GtkAction * a, gpointer u)
+{
+        /* @todo */
+}
+
+
 /** hardware add */
-G_MODULE_EXPORT void on_action_hardware_add_activate(GtkAction * i,
-                                                     gpointer u)
+G_MODULE_EXPORT void on_action_hardware_add_activate(GtkAction * a, gpointer u)
 {
         /* show "add hardware" dialog */
         gtk_widget_set_visible(GTK_WIDGET(ui_setup("hardware_add_window")),
@@ -362,7 +374,7 @@ G_MODULE_EXPORT void on_action_hardware_add_activate(GtkAction * i,
 }
 
 /** tile add */
-G_MODULE_EXPORT void on_action_tile_add_activate(GtkAction * i, gpointer u)
+G_MODULE_EXPORT void on_action_tile_add_activate(GtkAction * a, gpointer u)
 {
         NIFTYLED_TYPE t;
         gpointer e;
@@ -400,7 +412,7 @@ G_MODULE_EXPORT void on_action_tile_add_activate(GtkAction * i, gpointer u)
 
 
 /** chain add */
-G_MODULE_EXPORT void on_action_chain_add_activate(GtkAction * i, gpointer u)
+G_MODULE_EXPORT void on_action_chain_add_activate(GtkAction * a, gpointer u)
 {
         gtk_widget_set_visible(GTK_WIDGET(ui_setup("chain_add_window")),
                                true);
@@ -418,8 +430,7 @@ static void _foreach_remove_hardware(NIFTYLED_TYPE t, gpointer e)
 
 
 /** hardware remove */
-G_MODULE_EXPORT void on_action_hardware_remove_activate(GtkAction * i,
-                                                        gpointer u)
+G_MODULE_EXPORT void on_action_hardware_remove_activate(GtkAction * a, gpointer u)
 {
         /* remove all currently selected elements */
         ui_setup_tree_do_foreach_selected_element(_foreach_remove_hardware);
@@ -443,7 +454,7 @@ static void _foreach_remove_tile(NIFTYLED_TYPE t, gpointer e)
 
 
 /** tile remove */
-G_MODULE_EXPORT void on_action_tile_remove_activate(GtkAction * i, gpointer u)
+G_MODULE_EXPORT void on_action_tile_remove_activate(GtkAction * a, gpointer u)
 {
         /* remove all currently selected elements */
         ui_setup_tree_do_foreach_selected_element(_foreach_remove_tile);
@@ -468,8 +479,7 @@ static void _foreach_remove_chain(NIFTYLED_TYPE type, gpointer e)
 
 
 /** chain remove */
-G_MODULE_EXPORT void on_action_chain_remove_activate(GtkWidget * i,
-                                                     gpointer u)
+G_MODULE_EXPORT void on_action_chain_remove_activate(GtkWidget * a, gpointer u)
 {
         /* remove all currently selected elements */
         ui_setup_tree_do_foreach_selected_element(_foreach_remove_chain);
@@ -483,22 +493,21 @@ G_MODULE_EXPORT void on_action_chain_remove_activate(GtkWidget * i,
 
 
 /** import */
-G_MODULE_EXPORT void on_action_import_activate(GtkAction * i, gpointer u)
+G_MODULE_EXPORT void on_action_import_activate(GtkAction * a, gpointer u)
 {
         gtk_widget_show(GTK_WIDGET(UI("filechooserdialog_import")));
 }
 
 
 /** export */
-G_MODULE_EXPORT void on_action_export_activate(GtkAction * i, gpointer u)
+G_MODULE_EXPORT void on_action_export_activate(GtkAction * a, gpointer u)
 {
         gtk_widget_show(GTK_WIDGET(UI("filechooserdialog_export")));
 }
 
 
 /** hardware info */
-G_MODULE_EXPORT void on_action_hardware_info_activate(GtkAction * w,
-                                                      gpointer u)
+G_MODULE_EXPORT void on_action_hardware_info_activate(GtkAction * w, gpointer u)
 {
         ui_info_hardware_set_visible(true);
 }
@@ -506,11 +515,10 @@ G_MODULE_EXPORT void on_action_hardware_info_activate(GtkAction * w,
 
 /** live preview toggled */
 G_MODULE_EXPORT void on_toggleaction_live_preview_show_toggled(GtkToggleAction
-                                                               * item,
-                                                               gpointer
-                                                               user_data)
+                                                               * a,
+                                                               gpointer user_data)
 {
-        live_preview_set_enabled(gtk_toggle_action_get_active(item));
+        live_preview_set_enabled(gtk_toggle_action_get_active(a));
 }
 
 
