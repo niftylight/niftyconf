@@ -1,6 +1,6 @@
 ############
 # niftyconf configure.ac
-# v0.5 - (c) Daniel Hiepler (2010-2013)
+# v0.5 - (c) Daniel Hiepler (2010-2014)
 
 
 # --------------------------------
@@ -13,7 +13,7 @@ AC_INIT([niftyconf],
         [http://github.com/niftylight/niftyconf/issues],
         [niftyconf],
         [http://wiki.niftylight.de/AC_PACKAGE_NAME])
-AC_COPYRIGHT([Copyright (C) 2002-2013 Daniel Hiepler])        
+AC_COPYRIGHT([Copyright (C) 2002-2014 Daniel Hiepler])        
 
 # for cross compiling
 AC_CANONICAL_SYSTEM

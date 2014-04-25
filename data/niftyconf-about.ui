@@ -10,7 +10,7 @@
     <property name="type_hint">dialog</property>
     <property name="program_name">niftyconf</property>
     <property name="version">unknown version</property>
-    <property name="copyright" translatable="yes">Copyright (C) 2011-2013 Daniel Hiepler</property>
+    <property name="copyright" translatable="yes">Copyright (C) 2011-2014 Daniel Hiepler</property>
     <property name="comments" translatable="yes">niftyled setup configuration utility
 (Please use the issue tracker to report bugs or request features.)</property>
     <property name="website">http://wiki.niftylight.de/niftyconf</property>
