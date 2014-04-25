@@ -948,7 +948,7 @@ G_MODULE_EXPORT void on_setup_treeview_expanded(GtkTreeView * tv,
 }
 
 
-/** selection changed */
+/** selection changed - new element(s) highlighted */
 static void on_selection_changed(GtkTreeSelection * selection, gpointer u)
 {
         if(_clear_in_progress)
@@ -974,6 +974,103 @@ static void on_selection_changed(GtkTreeSelection * selection, gpointer u)
         /* process all selected elements */
         ui_setup_tree_do_foreach_selected_element(_foreach_element_selected);
 
+
+        /* enable/disable actions - according to new selection */
+        GtkAction *a_hardware_remove = GTK_ACTION(ui("action_hardware_remove"));
+        gtk_action_set_sensitive(a_hardware_remove, false);
+
+        GtkAction *a_hardware_info = GTK_ACTION(ui("action_hardware_info"));
+        gtk_action_set_sensitive(a_hardware_info, false);
+
+        GtkAction *a_tile_add = GTK_ACTION(ui("action_tile_add"));
+        gtk_action_set_sensitive(a_tile_add, false);
+
+        GtkAction *a_tile_remove = GTK_ACTION(ui("action_tile_remove"));
+        gtk_action_set_sensitive(a_tile_remove, false);
+
+        GtkAction *a_chain_add = GTK_ACTION(ui("action_chain_add"));
+        gtk_action_set_sensitive(a_chain_add, false);
+
+        GtkAction *a_chain_remove = GTK_ACTION(ui("action_chain_remove"));
+        gtk_action_set_sensitive(a_chain_remove, false);
+
+        GtkAction *a_element_up = GTK_ACTION(ui("action_element_up"));
+        gtk_action_set_sensitive(a_element_up, false);
+
+        GtkAction *a_element_down = GTK_ACTION(ui("action_element_down"));
+        gtk_action_set_sensitive(a_element_down, false);
+
+
+        /* decide about type of currently selected element */
+        switch (_current_type)
+        {
+                /* popup menu for hardware element */
+                case LED_HARDWARE_T:
+                {
+                        /* enable "remove hardware" */
+                        gtk_action_set_sensitive(a_hardware_remove, true);
+                        /* enable "info" */
+                        gtk_action_set_sensitive(a_hardware_info, true);
+                        /* every hardware can have subtiles - enable "add tile" */
+                        gtk_action_set_sensitive(a_tile_add, true);
+
+                        /* get current hardware */
+                        LedHardware *hw = hardware_niftyled(_current_hw);
+					
+                        /* if hardware has a previous sibling, enable "move up" */
+                        gtk_action_set_sensitive(a_element_up,
+                           (led_hardware_list_get_prev(hw) ? true : false));
+
+                        /* if hardware has a next sibling, enable "move down" */
+                        gtk_action_set_sensitive(a_element_down,
+                           (led_hardware_list_get_next(hw) ? true : false));
+                        break;
+                }
+
+                /* popup menu for tile element */
+                case LED_TILE_T:
+                {
+                        /* every tile can have subtiles - enable "add tile" */
+                        gtk_action_set_sensitive(a_tile_add, true);
+                        /* enable "remove tile" */
+                        gtk_action_set_sensitive(a_tile_remove, true);
+
+
+                        /* get current tile */
+                        LedTile *tile = tile_niftyled(_current_tile);
+
+                        /* tile has a chain, enable "remove chain" menu */
+                        gtk_action_set_sensitive(a_chain_remove,
+                                  (led_tile_get_chain(tile) ? true : false));
+
+                        /* if tile has no chain, enable "add chain" menu */
+                        gtk_action_set_sensitive(a_chain_add,
+                                  led_tile_get_chain(tile) ? false : true);
+
+                        /* if tile has a previous sibling, enable "move up" */
+			gtk_action_set_sensitive(a_element_up, 
+                           (led_tile_list_get_prev(tile) ? true : false));
+
+                        /* if tile has a next sibling, enable "move down" */
+                        gtk_action_set_sensitive(a_element_down,
+                           (led_tile_list_get_next(tile) ? true : false));
+
+                        break;
+                }
+
+                /* popup menu for chain element */
+                case LED_CHAIN_T:
+                {
+                        break;
+                }
+
+                default:
+                {
+                        NFT_LOG(L_DEBUG, "Unhandled element selected");
+                        break;
+                }
+        }
+
         /* update live preview */
         live_preview_show();
 
@@ -990,80 +1087,6 @@ static void _tree_popup_menu(GtkWidget * w, GdkEventButton * e, gpointer u)
         ui_setup_tree_do_for_last_selected_element
                 (_foreach_set_current_element);
 
-
-        /* get popup menu */
-        GtkWidget *menu = GTK_WIDGET(ui("popup_menu"));
-        // ~ GtkWidget *e_cut = GTK_WIDGET(ui("menuitem_cut"));
-        // ~ GtkWidget *e_copy = GTK_WIDGET(ui("menuitem_copy"));
-        // ~ GtkWidget *e_paste = GTK_WIDGET(ui("menuitem_paste"));
-        // ~ GtkWidget *e_import = GTK_WIDGET(ui("menuitem_import"));
-        // ~ GtkWidget *e_export = GTK_WIDGET(ui("menuitem_export"));
-        // ~ GtkWidget *e_hardware_add = GTK_WIDGET(ui("menuitem_hardware_add"));
-        GtkWidget *e_hardware_remove =
-                GTK_WIDGET(ui("menuitem_hardware_remove"));
-        GtkWidget *e_tile_add = GTK_WIDGET(ui("menuitem_tile_add"));
-        GtkWidget *e_tile_remove = GTK_WIDGET(ui("menuitem_tile_remove"));
-        GtkWidget *e_chain_add = GTK_WIDGET(ui("menuitem_chain_add"));
-        GtkWidget *e_chain_remove = GTK_WIDGET(ui("menuitem_chain_remove"));
-        GtkWidget *e_hardware_info = GTK_WIDGET(ui("menuitem_hardware_info"));
-        // ~ GtkWidget *e_hardware_up = GTK_WIDGET(ui("menuitem_hardware_up"));
-        // ~ GtkWidget *e_hardware_down =
-        // GTK_WIDGET(ui("menuitem_hardware_down"));
-
-        /* disable all menus except always-on ones */
-        gtk_widget_set_sensitive(e_tile_add, false);
-        gtk_widget_set_sensitive(e_tile_add, false);
-        gtk_widget_set_sensitive(e_chain_add, false);
-        gtk_widget_set_sensitive(e_chain_remove, false);
-        gtk_widget_set_sensitive(e_tile_remove, false);
-
-        /* decide about type of currently selected element */
-        switch (_current_type)
-        {
-
-                case LED_HARDWARE_T:
-                {
-
-
-                        /* enable needed menus */
-                        gtk_widget_set_sensitive(e_hardware_remove, true);
-                        gtk_widget_set_sensitive(e_hardware_info, true);
-                        gtk_widget_set_sensitive(e_tile_add, true);
-                        break;
-                }
-
-                case LED_TILE_T:
-                {
-                        /* if tile has no chain, enable "add" menu */
-                        gtk_widget_set_sensitive(e_chain_add,
-                                                 (gboolean) !
-                                                 led_tile_get_chain
-                                                 (tile_niftyled
-                                                  (_current_tile)));
-
-                        /* tile has a chain, enable "remove" menu */
-                        LedTile *tile = tile_niftyled(_current_tile);
-                        gtk_widget_set_sensitive(e_chain_remove,
-                                                 led_tile_get_chain(tile) !=
-                                                 NULL);
-
-                        /* enable "remove tile" */
-                        gtk_widget_set_sensitive(e_tile_remove, true);
-                        break;
-                }
-
-                case LED_CHAIN_T:
-                {
-                        break;
-                }
-
-                default:
-                {
-                        break;
-                }
-        }
-
-
         /* set event-time */
         int button, event_time;
         if(e)
@@ -1076,6 +1099,9 @@ static void _tree_popup_menu(GtkWidget * w, GdkEventButton * e, gpointer u)
                 button = 0;
                 event_time = gtk_get_current_event_time();
         }
+
+        /* get popup menu */
+        GtkWidget *menu = GTK_WIDGET(ui("popup_menu"));
 
         /* draw... */
         gtk_widget_show_all(menu);
@@ -1098,6 +1124,7 @@ G_MODULE_EXPORT gboolean on_setup_treeview_button_pressed(GtkTreeView * t,
         /* what kind of button pressed? */
         switch (e->button)
         {
+                /* RMB */
                 case 3:
                 {
                         _tree_popup_menu(GTK_WIDGET(t), e, u);
