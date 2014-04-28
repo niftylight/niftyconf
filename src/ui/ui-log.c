@@ -442,7 +442,7 @@ const char *ui_log_loglevels()
         {
                 strcat(s, nft_log_level_to_string(i));
                 if(i < L_MIN - 2)
-                        strncat(s, ", ", sizeof(s));
+                        strncat(s, ", ", sizeof(s)-strlen(s)-1);
         }
 
         return (const char *) s;
