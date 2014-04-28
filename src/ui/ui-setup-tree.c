@@ -645,6 +645,108 @@ static void _tree_build()
 
 }
 
+
+
+static void _enable_actions_according_to_selected_element()
+{
+        /* enable/disable actions - according to new selection */
+        GtkAction *a_hardware_remove = GTK_ACTION(ui("action_hardware_remove"));
+        gtk_action_set_sensitive(a_hardware_remove, false);
+
+        GtkAction *a_hardware_info = GTK_ACTION(ui("action_hardware_info"));
+        gtk_action_set_sensitive(a_hardware_info, false);
+
+        GtkAction *a_tile_add = GTK_ACTION(ui("action_tile_add"));
+        gtk_action_set_sensitive(a_tile_add, false);
+
+        GtkAction *a_tile_remove = GTK_ACTION(ui("action_tile_remove"));
+        gtk_action_set_sensitive(a_tile_remove, false);
+
+        GtkAction *a_chain_add = GTK_ACTION(ui("action_chain_add"));
+        gtk_action_set_sensitive(a_chain_add, false);
+
+        GtkAction *a_chain_remove = GTK_ACTION(ui("action_chain_remove"));
+        gtk_action_set_sensitive(a_chain_remove, false);
+
+        GtkAction *a_element_up = GTK_ACTION(ui("action_element_up"));
+        gtk_action_set_sensitive(a_element_up, false);
+
+        GtkAction *a_element_down = GTK_ACTION(ui("action_element_down"));
+        gtk_action_set_sensitive(a_element_down, false);
+
+
+        /* decide about type of currently selected element */
+        switch (_current_type)
+        {
+                /* popup menu for hardware element */
+                case LED_HARDWARE_T:
+                {
+                        /* enable "remove hardware" */
+                        gtk_action_set_sensitive(a_hardware_remove, true);
+                        /* enable "info" */
+                        gtk_action_set_sensitive(a_hardware_info, true);
+                        /* every hardware can have subtiles - enable "add tile" */
+                        gtk_action_set_sensitive(a_tile_add, true);
+
+                        /* get current hardware */
+                        LedHardware *hw = hardware_niftyled(_current_hw);
+					
+                        /* if hardware has a previous sibling, enable "move up" */
+                        gtk_action_set_sensitive(a_element_up,
+                           (led_hardware_list_get_prev(hw) ? true : false));
+
+                        /* if hardware has a next sibling, enable "move down" */
+                        gtk_action_set_sensitive(a_element_down,
+                           (led_hardware_list_get_next(hw) ? true : false));
+                        break;
+                }
+
+                /* popup menu for tile element */
+                case LED_TILE_T:
+                {
+                        /* every tile can have subtiles - enable "add tile" */
+                        gtk_action_set_sensitive(a_tile_add, true);
+                        /* enable "remove tile" */
+                        gtk_action_set_sensitive(a_tile_remove, true);
+
+
+                        /* get current tile */
+                        LedTile *tile = tile_niftyled(_current_tile);
+
+                        /* tile has a chain, enable "remove chain" menu */
+                        gtk_action_set_sensitive(a_chain_remove,
+                                  (led_tile_get_chain(tile) ? true : false));
+
+                        /* if tile has no chain, enable "add chain" menu */
+                        gtk_action_set_sensitive(a_chain_add,
+                                  led_tile_get_chain(tile) ? false : true);
+
+                        /* if tile has a previous sibling, enable "move up" */
+			gtk_action_set_sensitive(a_element_up, 
+                           (led_tile_list_get_prev(tile) ? true : false));
+
+                        /* if tile has a next sibling, enable "move down" */
+                        gtk_action_set_sensitive(a_element_down,
+                           (led_tile_list_get_next(tile) ? true : false));
+
+                        break;
+                }
+
+                /* popup menu for chain element */
+                case LED_CHAIN_T:
+                {
+                        break;
+                }
+
+                default:
+                {
+                        NFT_LOG(L_DEBUG, "Unhandled element selected");
+                        break;
+                }
+        }
+}
+
+
 /******************************************************************************
  ******************************************************************************/
 
@@ -1018,101 +1120,8 @@ static void on_selection_changed(GtkTreeSelection * selection, gpointer u)
         ui_setup_tree_do_foreach_selected_element(_foreach_element_selected);
 
 
-        /* enable/disable actions - according to new selection */
-        GtkAction *a_hardware_remove = GTK_ACTION(ui("action_hardware_remove"));
-        gtk_action_set_sensitive(a_hardware_remove, false);
-
-        GtkAction *a_hardware_info = GTK_ACTION(ui("action_hardware_info"));
-        gtk_action_set_sensitive(a_hardware_info, false);
-
-        GtkAction *a_tile_add = GTK_ACTION(ui("action_tile_add"));
-        gtk_action_set_sensitive(a_tile_add, false);
-
-        GtkAction *a_tile_remove = GTK_ACTION(ui("action_tile_remove"));
-        gtk_action_set_sensitive(a_tile_remove, false);
-
-        GtkAction *a_chain_add = GTK_ACTION(ui("action_chain_add"));
-        gtk_action_set_sensitive(a_chain_add, false);
-
-        GtkAction *a_chain_remove = GTK_ACTION(ui("action_chain_remove"));
-        gtk_action_set_sensitive(a_chain_remove, false);
-
-        GtkAction *a_element_up = GTK_ACTION(ui("action_element_up"));
-        gtk_action_set_sensitive(a_element_up, false);
-
-        GtkAction *a_element_down = GTK_ACTION(ui("action_element_down"));
-        gtk_action_set_sensitive(a_element_down, false);
-
-
-        /* decide about type of currently selected element */
-        switch (_current_type)
-        {
-                /* popup menu for hardware element */
-                case LED_HARDWARE_T:
-                {
-                        /* enable "remove hardware" */
-                        gtk_action_set_sensitive(a_hardware_remove, true);
-                        /* enable "info" */
-                        gtk_action_set_sensitive(a_hardware_info, true);
-                        /* every hardware can have subtiles - enable "add tile" */
-                        gtk_action_set_sensitive(a_tile_add, true);
-
-                        /* get current hardware */
-                        LedHardware *hw = hardware_niftyled(_current_hw);
-					
-                        /* if hardware has a previous sibling, enable "move up" */
-                        gtk_action_set_sensitive(a_element_up,
-                           (led_hardware_list_get_prev(hw) ? true : false));
-
-                        /* if hardware has a next sibling, enable "move down" */
-                        gtk_action_set_sensitive(a_element_down,
-                           (led_hardware_list_get_next(hw) ? true : false));
-                        break;
-                }
-
-                /* popup menu for tile element */
-                case LED_TILE_T:
-                {
-                        /* every tile can have subtiles - enable "add tile" */
-                        gtk_action_set_sensitive(a_tile_add, true);
-                        /* enable "remove tile" */
-                        gtk_action_set_sensitive(a_tile_remove, true);
-
-
-                        /* get current tile */
-                        LedTile *tile = tile_niftyled(_current_tile);
-
-                        /* tile has a chain, enable "remove chain" menu */
-                        gtk_action_set_sensitive(a_chain_remove,
-                                  (led_tile_get_chain(tile) ? true : false));
-
-                        /* if tile has no chain, enable "add chain" menu */
-                        gtk_action_set_sensitive(a_chain_add,
-                                  led_tile_get_chain(tile) ? false : true);
-
-                        /* if tile has a previous sibling, enable "move up" */
-			gtk_action_set_sensitive(a_element_up, 
-                           (led_tile_list_get_prev(tile) ? true : false));
-
-                        /* if tile has a next sibling, enable "move down" */
-                        gtk_action_set_sensitive(a_element_down,
-                           (led_tile_list_get_next(tile) ? true : false));
-
-                        break;
-                }
-
-                /* popup menu for chain element */
-                case LED_CHAIN_T:
-                {
-                        break;
-                }
-
-                default:
-                {
-                        NFT_LOG(L_DEBUG, "Unhandled element selected");
-                        break;
-                }
-        }
+        /* enable/disable actions, according to currently selected element */
+        _enable_actions_according_to_selected_element();
 
         /* update live preview */
         live_preview_show();
@@ -1184,4 +1193,80 @@ G_MODULE_EXPORT gboolean on_setup_treeview_popup(GtkWidget * t, gpointer u)
 {
         _tree_popup_menu(GTK_WIDGET(t), NULL, u);
         return true;
+}
+/** menuitem "move up" selected */
+G_MODULE_EXPORT void on_action_element_up_activate(GtkAction * a, gpointer u)
+{
+        switch(_current_type)
+        {
+                case LED_HARDWARE_T:
+                {
+                        LedHardware *h = hardware_niftyled(_current_hw);
+                        if(!led_hardware_list_swap(h, led_hardware_list_get_prev(h)))
+                        {
+                                NFT_LOG(L_ERROR, "Failed to swap hardware elements.");
+                        }
+                        break;
+                }
+
+                case LED_TILE_T:
+                {
+                        LedTile *t = tile_niftyled(_current_tile);
+                        if(!led_tile_list_swap(t, led_tile_list_get_prev(t)))
+                        {
+                                NFT_LOG(L_ERROR, "Failed to swap tile elements");
+                        }
+                        break;
+                }
+
+                default:
+                {
+                        NFT_LOG(L_WARNING, "attempt to move up "
+                                         "unknown type \"%d\"", _current_type);
+                        break;
+                }
+        }
+
+        /* refresh tree */
+        ui_setup_tree_refresh();
+        _enable_actions_according_to_selected_element();
+}
+
+
+/** menuitem "move down" selected */
+G_MODULE_EXPORT void on_action_element_down_activate(GtkAction * a, gpointer u)
+{
+        switch(_current_type)
+        {
+                case LED_HARDWARE_T:
+                {
+                        LedHardware *h = hardware_niftyled(_current_hw);
+                        if(!led_hardware_list_swap(h, led_hardware_list_get_next(h)))
+                        {
+                                NFT_LOG(L_ERROR, "Failed to swap hardware elements.");
+                        }
+                        break;
+                }
+
+                case LED_TILE_T:
+                {
+                        LedTile *t = tile_niftyled(_current_tile);
+                        if(!led_tile_list_swap(t, led_tile_list_get_next(t)))
+                        {
+                                NFT_LOG(L_ERROR, "Failed to swap tile elements");
+                        }
+                        break;
+                }
+
+                default:
+                {
+                        NFT_LOG(L_WARNING, "attempt to move up "
+                                         "unknown type \"%d\"", _current_type);
+                        break;
+                }
+        }
+
+        /* refresh tree */
+        ui_setup_tree_refresh();
+        _enable_actions_according_to_selected_element();
 }
