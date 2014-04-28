@@ -98,7 +98,7 @@ void ui_info_hardware_set_visible(gboolean visible)
 
 
 /** initialize setup tree module */
-gboolean ui_info_hardware_init()
+gboolean ui_hardware_init()
 {
         if(!(_ui = ui_builder("niftyconf-info-hardware.ui")))
                 return false;
@@ -108,7 +108,7 @@ gboolean ui_info_hardware_init()
 
 
 /** deinitialize this module */
-void ui_info_hardware_deinit()
+void ui_hardware_deinit()
 {
         g_object_unref(_ui);
 }
@@ -117,3 +117,11 @@ void ui_info_hardware_deinit()
 /******************************************************************************
  ***************************** CALLBACKS **************************************
  ******************************************************************************/
+
+/** hardware add */
+G_MODULE_EXPORT void on_action_hardware_add_activate(GtkAction * a, gpointer u)
+{
+        /* show "add hardware" dialog */
+        gtk_widget_set_visible(GTK_WIDGET(UI("hardware_add_window")),
+                               true);
+}

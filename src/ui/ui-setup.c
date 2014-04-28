@@ -54,7 +54,7 @@
 #include "ui/ui-setup-tree.h"
 #include "ui/ui-setup-ledlist.h"
 #include "ui/ui-clipboard.h"
-#include "ui/ui-info-hardware.h"
+#include "ui/ui-hardware.h"
 #include "elements/element-setup.h"
 #include "elements/element-hardware.h"
 #include "live-preview/live-preview.h"
@@ -350,28 +350,6 @@ G_MODULE_EXPORT void on_action_setup_saveas_activate(GtkAction * a, gpointer u)
         gtk_widget_show(GTK_WIDGET(UI("filechooserdialog_save")));
 }
 
-
-/** menuitem "move up" selected */
-G_MODULE_EXPORT void on_action_element_up_activate(GtkAction * a, gpointer u)
-{
-        /* @todo */
-}
-
-
-/** menuitem "move down" selected */
-G_MODULE_EXPORT void on_action_element_down_activate(GtkAction * a, gpointer u)
-{
-        /* @todo */
-}
-
-
-/** hardware add */
-G_MODULE_EXPORT void on_action_hardware_add_activate(GtkAction * a, gpointer u)
-{
-        /* show "add hardware" dialog */
-        gtk_widget_set_visible(GTK_WIDGET(ui_setup("hardware_add_window")),
-                               true);
-}
 
 /** tile add */
 G_MODULE_EXPORT void on_action_tile_add_activate(GtkAction * a, gpointer u)

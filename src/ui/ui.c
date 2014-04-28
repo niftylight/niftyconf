@@ -52,7 +52,7 @@
 #include "ui/ui-setup-props.h"
 #include "ui/ui-setup-tree.h"
 #include "ui/ui-setup-ledlist.h"
-#include "ui/ui-info-hardware.h"
+#include "ui/ui-hardware.h"
 #include "prefs/prefs.h"
 #include "config.h"
 
@@ -155,8 +155,8 @@ gboolean ui_init()
 
         if(!ui_log_init())
                 g_error("Failed to initialize \"log\" module");
-        if(!ui_info_hardware_init())
-                g_error("Failed to initialize \"info-hardware\" module");
+        if(!ui_hardware_init())
+                g_error("Failed to initialize \"hardware\" module");
         if(!ui_setup_init())
                 g_error("Failed to initialize \"setup\" module");
         if(!ui_clipboard_init())
@@ -189,7 +189,7 @@ void ui_deinit()
         ui_about_deinit();
         ui_clipboard_deinit();
         ui_setup_deinit();
-        ui_info_hardware_deinit();
+        ui_hardware_deinit();
         ui_log_deinit();
 
         /* unregister prefs class */

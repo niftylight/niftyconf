@@ -41,15 +41,15 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _UI_INFO_HARDWARE_H
-#define _UI_INFO_HARDWARE_H
+#ifndef _UI_HARDWARE_H
+#define _UI_HARDWARE_H
 
 #include "elements/element-hardware.h"
 
 
 /* GUI model functions */
-gboolean                        ui_info_hardware_init();
-void                            ui_info_hardware_deinit();
+gboolean                        ui_hardware_init();
+void                            ui_hardware_deinit();
 
 
 /* GUI functions */
