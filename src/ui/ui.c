@@ -59,7 +59,7 @@
 
 
 /** GtkBuilder for this module (check data/ directory) */
-static GtkBuilder *_ui;
+static GtkBuilder *_builder;
 
 
 /******************************************************************************
@@ -150,7 +150,7 @@ gboolean ui_init()
                 g_error("Failed to register prefs class for \"ui\"");
 
         /* build our ui */
-        _ui = ui_builder("niftyconf.ui");
+        _builder = ui_builder("niftyconf.ui");
 
 
         if(!ui_log_init())
@@ -195,7 +195,7 @@ void ui_deinit()
         /* unregister prefs class */
         nft_prefs_class_unregister(prefs(), "ui");
 
-        g_object_unref(_ui);
+        g_object_unref(_builder);
 }
 
 

@@ -50,7 +50,7 @@
 
 
 /** GtkBuilder for this module */
-static GtkBuilder *_ui;
+static GtkBuilder *_builder;
 
 
 
@@ -101,7 +101,7 @@ void ui_info_hardware_set_visible(gboolean visible)
 /** initialize setup tree module */
 gboolean ui_hardware_init()
 {
-        if(!(_ui = ui_builder("niftyconf-info-hardware.ui")))
+        if(!(_builder = ui_builder("niftyconf-info-hardware.ui")))
                 return false;
 
         return true;
@@ -111,7 +111,7 @@ gboolean ui_hardware_init()
 /** deinitialize this module */
 void ui_hardware_deinit()
 {
-        g_object_unref(_ui);
+        g_object_unref(_builder);
 }
 
 

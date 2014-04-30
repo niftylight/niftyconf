@@ -66,7 +66,7 @@ typedef enum
 
 
 /** GtkBuilder for this module */
-static GtkBuilder *_ui;
+static GtkBuilder *_builder;
 /** narf! */
 static bool _clear_in_progress;
 
@@ -147,7 +147,7 @@ void ui_setup_ledlist_refresh(NiftyconfChain * c)
 /** initialize this module */
 gboolean ui_setup_ledlist_init()
 {
-        _ui = ui_builder("niftyconf-setup-ledlist.ui");
+        _builder = ui_builder("niftyconf-setup-ledlist.ui");
 
 
         /* set selection mode for tree */
@@ -172,7 +172,7 @@ gboolean ui_setup_ledlist_init()
 /** deinitialize this module */
 void ui_setup_ledlist_deinit()
 {
-        g_object_unref(_ui);
+        g_object_unref(_builder);
 }
 
 /** run function on every selected tree-element (multiple selections) */

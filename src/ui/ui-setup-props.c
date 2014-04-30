@@ -60,7 +60,7 @@
 
 
 /** GtkBuilder for this module */
-static GtkBuilder *_ui;
+static GtkBuilder *_builder;
 
 
 /* currently shown elements */
@@ -982,7 +982,7 @@ void ui_setup_props_hide()
 /** initialize this module */
 gboolean ui_setup_props_init()
 {
-        _ui = ui_builder("niftyconf-setup-props.ui");
+        _builder = ui_builder("niftyconf-setup-props.ui");
 
         /* set platform specific stuff */
         gtk_adjustment_set_lower(GTK_ADJUSTMENT(UI("adjustment_hw_prop_int")),
@@ -1003,7 +1003,7 @@ gboolean ui_setup_props_init()
 /** deinitialize this module */
 void ui_setup_props_deinit()
 {
-        g_object_unref(_ui);
+        g_object_unref(_builder);
 }
 
 /** show "hardware initialized" image */

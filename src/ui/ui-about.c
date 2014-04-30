@@ -49,7 +49,7 @@
 
 
 /** GtkBuilder for this module */
-static GtkBuilder *_ui;
+static GtkBuilder *_builder;
 
 
 
@@ -78,7 +78,7 @@ void ui_about_set_visible(gboolean visible)
 /** initialize setup tree module */
 gboolean ui_about_init()
 {
-        if(!(_ui = ui_builder("niftyconf-about.ui")))
+        if(!(_builder = ui_builder("niftyconf-about.ui")))
                 return false;
 
         GtkAboutDialog *d;
@@ -95,7 +95,7 @@ gboolean ui_about_init()
 /** deinitialize this module */
 void ui_about_deinit()
 {
-        g_object_unref(_ui);
+        g_object_unref(_builder);
 }
 
 

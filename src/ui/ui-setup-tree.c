@@ -79,7 +79,7 @@ typedef enum
 
 
 /** GtkBuilder for this module */
-static GtkBuilder *_ui;
+static GtkBuilder *_builder;
 
 /* type of currently selected element */
 static NIFTYLED_TYPE _current_type;
@@ -967,7 +967,7 @@ NIFTYLED_TYPE ui_setup_tree_current_element_type()
 /** initialize setup tree module */
 gboolean ui_setup_tree_init()
 {
-        if(!(_ui = ui_builder("niftyconf-setup-tree.ui")))
+        if(!(_builder = ui_builder("niftyconf-setup-tree.ui")))
                 return false;
 
         /* set selection mode for setup tree */
@@ -1001,7 +1001,7 @@ void ui_setup_tree_deinit()
         /* unregister prefs class */
         nft_prefs_class_unregister(prefs(), "ui-setup-tree");
 
-        g_object_unref(_ui);
+        g_object_unref(_builder);
 }
 
 

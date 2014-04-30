@@ -83,7 +83,7 @@ static struct
 
 
 /** GtkBuilder for this module */
-static GtkBuilder *_ui;
+static GtkBuilder *_builder;
 
 
 
@@ -223,7 +223,7 @@ gboolean ui_renderer_init()
                 g_error("Failed to register prefs class for \"renderer\"");
 
         /* build ui */
-        _ui = ui_builder("niftyconf-renderer.ui");
+        _builder = ui_builder("niftyconf-renderer.ui");
 
         /* initial scale */
         _r.view.scale = 0.5;
@@ -247,7 +247,7 @@ void ui_renderer_deinit()
         /* unregister prefs class */
         nft_prefs_class_unregister(prefs(), "renderer");
 
-        g_object_unref(_ui);
+        g_object_unref(_builder);
 }
 
 

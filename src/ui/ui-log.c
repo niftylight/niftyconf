@@ -55,7 +55,7 @@
 #define MAX_MSG_SIZE	2048
 
 /** GtkBuilder for this module */
-static GtkBuilder *_ui;
+static GtkBuilder *_builder;
 
 /* current log window position */
 static gint _pos_x, _pos_y;
@@ -454,7 +454,7 @@ const char *ui_log_loglevels()
  */
 gboolean ui_log_init()
 {
-        _ui = ui_builder("niftyconf-log.ui");
+        _builder = ui_builder("niftyconf-log.ui");
 
         /* initialize loglevel combobox */
         NftLoglevel i;
@@ -496,7 +496,7 @@ void ui_log_deinit()
         /* unregister prefs class */
         nft_prefs_class_unregister(prefs(), "ui-log");
 
-        g_object_unref(_ui);
+        g_object_unref(_builder);
 }
 
 /******************************************************************************
