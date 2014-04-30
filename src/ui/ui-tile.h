@@ -41,30 +41,19 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _UI_SETUP_H
-#define _UI_SETUP_H
-
-#include <niftyled.h>
-#include "elements/element-tile.h"
-#include "elements/element-chain.h"
-#include "elements/element-hardware.h"
+#ifndef _UI_TILE_H
+#define _UI_TILE_H
 
 
 
 /* GUI model functions */
-gboolean                        ui_setup_init();
-GtkWidget *                     ui_setup_get_widget();
+
 
 /* GUI functions */
-gboolean                        ui_setup_load(gchar * filename);
-gboolean                        ui_setup_save(gchar * filename);
-void                            ui_setup_deinit();
-GObject *                       ui_setup(const char *n);
+
 
 /* model functions */
 
 
 
-
-
-#endif /* _UI_SETUP_H */
+#endif /* _UI_TILE_H */

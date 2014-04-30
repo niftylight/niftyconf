@@ -53,7 +53,7 @@ void                            ui_hardware_deinit();
 
 
 /* GUI functions */
-void                            ui_info_hardware_set(NiftyconfHardware * hardware);
+void                            ui_info_hardware_refresh(NiftyconfHardware * hardware);
 void                            ui_info_hardware_set_visible(gboolean visible);
 
 
@@ -61,4 +61,4 @@ void                            ui_info_hardware_set_visible(gboolean visible);
 
 
 
-#endif /* _UI_INFO_HARDWARE_H */
+#endif /* _UI_HARDWARE_H */

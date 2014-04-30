@@ -44,7 +44,8 @@
 #include <gtk/gtk.h>
 #include "ui/ui.h"
 #include "elements/element-hardware.h"
-
+#include "ui/ui-setup-tree.h"
+#include "ui/ui-setup-props.h"
 
 
 
@@ -65,8 +66,8 @@ static GtkBuilder *_ui;
 /******************************************************************************
  ******************************************************************************/
 
-/** set info */
-void ui_info_hardware_set(NiftyconfHardware * hardware)
+/** refresh info view */
+void ui_info_hardware_refresh(NiftyconfHardware * hardware)
 {
         LedHardware *h = hardware_niftyled(hardware);
 
@@ -125,3 +126,112 @@ G_MODULE_EXPORT void on_action_hardware_add_activate(GtkAction * a, gpointer u)
         gtk_widget_set_visible(GTK_WIDGET(UI("hardware_add_window")),
                                true);
 }
+
+
+/** hardware info */
+G_MODULE_EXPORT void on_action_hardware_info_activate(GtkAction * w, gpointer u)
+{
+        ui_info_hardware_set_visible(true);
+}
+
+
+/** foreach helper */
+static void _foreach_remove_hardware(NIFTYLED_TYPE t, gpointer e)
+{
+        if(t != LED_HARDWARE_T)
+                return;
+
+        hardware_destroy((NiftyconfHardware *) e);
+}
+
+
+/** hardware remove */
+G_MODULE_EXPORT void on_action_hardware_remove_activate(GtkAction * a, gpointer u)
+{
+        /* remove all currently selected elements */
+        ui_setup_tree_do_foreach_selected_element(_foreach_remove_hardware);
+
+        /* refresh tree */
+        ui_setup_tree_refresh();
+
+        /* hide properties */
+        ui_setup_props_hide();
+}
+
+
+/** add hardware "add" clicked */
+G_MODULE_EXPORT void on_add_hardware_add_clicked(GtkButton * b, gpointer u)
+{
+        /* add new hardware */
+        if(!hardware_new(gtk_entry_get_text
+                         (GTK_ENTRY(UI("hardware_add_name_entry"))),
+                         gtk_combo_box_get_active_text(GTK_COMBO_BOX
+                                                       (UI
+                                                        ("hardware_add_plugin_combobox"))),
+                         gtk_entry_get_text(GTK_ENTRY
+                                            (UI
+                                             ("hardware_add_id_entry"))),
+                         gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+                                                          (UI
+                                                           ("hardware_add_ledcount_spinbutton"))),
+                         gtk_combo_box_get_active_text(GTK_COMBO_BOX
+                                                       (UI
+                                                        ("hardware_add_pixelformat_comboboxtext")))))
+                return;
+
+        /* hide window */
+        gtk_widget_set_visible(GTK_WIDGET(UI("hardware_add_window")), false);
+
+                /** @todo refresh our menu */
+
+        /* refresh tree */
+        ui_setup_tree_refresh();
+
+}
+
+
+/** add hardware "cancel" clicked */
+G_MODULE_EXPORT void on_add_hardware_cancel_clicked(GtkButton * b, gpointer u)
+{
+        gtk_widget_set_visible(GTK_WIDGET(UI("hardware_add_window")), false);
+}
+
+
+/** add hardware "pixelformat" changed */
+G_MODULE_EXPORT void
+on_hardware_add_pixelformat_comboboxtext_changed(GtkComboBox * w, gpointer u)
+{
+        LedPixelFormat *f;
+        if(!(f = led_pixel_format_from_string(gtk_combo_box_get_active_text
+                                              (w))))
+        {
+                /* invalid pixel format? */
+                gtk_widget_set_sensitive(GTK_WIDGET
+                                         (UI
+                                          ("hardware_add_ledcount_spinbutton")),
+                                         false);
+                return;
+        }
+
+        gtk_widget_set_sensitive(GTK_WIDGET
+                                 (UI("hardware_add_ledcount_spinbutton")),
+                                 true);
+
+        /* set minimum for "ledcount" spinbutton according to format */
+        LedCount minimum = led_pixel_format_get_n_components(f);
+        gtk_adjustment_set_lower(GTK_ADJUSTMENT(UI("ledcount_adjustment")),
+                                 minimum);
+        if((LedCount)
+           gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
+                                            (UI
+                                             ("hardware_add_ledcount_spinbutton")))
+           < minimum)
+        {
+                gtk_spin_button_set_value(GTK_SPIN_BUTTON
+                                          (UI
+                                           ("hardware_add_ledcount_spinbutton")),
+                                          (gdouble) minimum);
+        }
+}
+
+

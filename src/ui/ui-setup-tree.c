@@ -50,7 +50,7 @@
 #include "ui/ui-setup-props.h"
 #include "ui/ui-setup-tree.h"
 #include "ui/ui-setup-ledlist.h"
-#include "ui/ui-info-hardware.h"
+#include "ui/ui-hardware.h"
 #include "ui/ui-clipboard.h"
 #include "ui/ui-log.h"
 #include "live-preview/live-preview.h"
@@ -556,7 +556,7 @@ static void _foreach_set_current_element(NIFTYLED_TYPE t, gpointer e)
                         _current_hw = (NiftyconfHardware *) e;
 
                         /* refresh info view */
-                        ui_info_hardware_set(_current_hw);
+                        ui_info_hardware_refresh(_current_hw);
                         break;
                 }
 
@@ -689,15 +689,16 @@ static void _enable_actions_according_to_selected_element()
                         gtk_action_set_sensitive(a_tile_add, true);
 
                         /* get current hardware */
-                        LedHardware *hw = hardware_niftyled(_current_hw);
+                        //~ LedHardware *hw = hardware_niftyled(_current_hw);
 					
-                        /* if hardware has a previous sibling, enable "move up" */
-                        gtk_action_set_sensitive(a_element_up,
-                           (led_hardware_list_get_prev(hw) ? true : false));
+                        //~ /* if hardware has a previous sibling, enable "move up" */
+                        //~ gtk_action_set_sensitive(a_element_up,
+                           //~ (led_hardware_list_get_prev(hw) ? true : false));
 
-                        /* if hardware has a next sibling, enable "move down" */
-                        gtk_action_set_sensitive(a_element_down,
-                           (led_hardware_list_get_next(hw) ? true : false));
+                        //~ /* if hardware has a next sibling, enable "move down" */
+                        //~ gtk_action_set_sensitive(a_element_down,
+                           //~ (led_hardware_list_get_next(hw) ? true : false));
+                        
                         break;
                 }
 
@@ -721,13 +722,13 @@ static void _enable_actions_according_to_selected_element()
                         gtk_action_set_sensitive(a_chain_add,
                                   led_tile_get_chain(tile) ? false : true);
 
-                        /* if tile has a previous sibling, enable "move up" */
-			gtk_action_set_sensitive(a_element_up, 
-                           (led_tile_list_get_prev(tile) ? true : false));
+                        //~ /* if tile has a previous sibling, enable "move up" */
+			//~ gtk_action_set_sensitive(a_element_up, 
+                           //~ (led_tile_list_get_prev(tile) ? true : false));
 
-                        /* if tile has a next sibling, enable "move down" */
-                        gtk_action_set_sensitive(a_element_down,
-                           (led_tile_list_get_next(tile) ? true : false));
+                        //~ /* if tile has a next sibling, enable "move down" */
+                        //~ gtk_action_set_sensitive(a_element_down,
+                           //~ (led_tile_list_get_next(tile) ? true : false));
 
                         break;
                 }
@@ -1201,21 +1202,24 @@ G_MODULE_EXPORT void on_action_element_up_activate(GtkAction * a, gpointer u)
         {
                 case LED_HARDWARE_T:
                 {
-                        LedHardware *h = hardware_niftyled(_current_hw);
-                        if(!led_hardware_list_swap(h, led_hardware_list_get_prev(h)))
-                        {
-                                NFT_LOG(L_ERROR, "Failed to swap hardware elements.");
-                        }
+                        //~ LedHardware *h = hardware_niftyled(_current_hw);
+                        //~ LedHardware *prev = led_hardware_list_get_prev(h);
+
+                        
+                        //~ if(!led_hardware_list_swap(h, ))
+                        //~ {
+                                //~ NFT_LOG(L_ERROR, "Failed to swap hardware elements.");
+                        //~ }
                         break;
                 }
 
                 case LED_TILE_T:
                 {
-                        LedTile *t = tile_niftyled(_current_tile);
-                        if(!led_tile_list_swap(t, led_tile_list_get_prev(t)))
-                        {
-                                NFT_LOG(L_ERROR, "Failed to swap tile elements");
-                        }
+                        //~ LedTile *t = tile_niftyled(_current_tile);
+                        //~ if(!led_tile_list_swap(t, led_tile_list_get_prev(t)))
+                        //~ {
+                                //~ NFT_LOG(L_ERROR, "Failed to swap tile elements");
+                        //~ }
                         break;
                 }
 
@@ -1240,21 +1244,21 @@ G_MODULE_EXPORT void on_action_element_down_activate(GtkAction * a, gpointer u)
         {
                 case LED_HARDWARE_T:
                 {
-                        LedHardware *h = hardware_niftyled(_current_hw);
-                        if(!led_hardware_list_swap(h, led_hardware_list_get_next(h)))
-                        {
-                                NFT_LOG(L_ERROR, "Failed to swap hardware elements.");
-                        }
+                        //~ LedHardware *h = hardware_niftyled(_current_hw);
+                        //~ if(!led_hardware_list_swap(h, led_hardware_list_get_next(h)))
+                        //~ {
+                                //~ NFT_LOG(L_ERROR, "Failed to swap hardware elements.");
+                        //~ }
                         break;
                 }
 
                 case LED_TILE_T:
                 {
-                        LedTile *t = tile_niftyled(_current_tile);
-                        if(!led_tile_list_swap(t, led_tile_list_get_next(t)))
-                        {
-                                NFT_LOG(L_ERROR, "Failed to swap tile elements");
-                        }
+                        //~ LedTile *t = tile_niftyled(_current_tile);
+                        //~ if(!led_tile_list_swap(t, led_tile_list_get_next(t)))
+                        //~ {
+                                //~ NFT_LOG(L_ERROR, "Failed to swap tile elements");
+                        //~ }
                         break;
                 }
 
