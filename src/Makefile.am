@@ -50,7 +50,7 @@ niftyconf_INCLUDES = \
         -I. -I..
 
 niftyconf_CFLAGS = \
-        -std=c99 -D_BSD_SOURCE \
+        -std=c99 -D_DEFAULT_SOURCE \
         -DDATADIR=\"$(datadir)\" \
         -Wall -Wextra -Werror -Wno-unused-parameter \
         $(NIFTYCONF_CFLAGS)
