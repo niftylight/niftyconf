@@ -8,7 +8,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 
 SUBDIRS = data src
-EXTRA_DIST = debian
+EXTRA_DIST = dist
 
 
 # indent source & header-files
