@@ -161,11 +161,10 @@ AC_CONFIG_FILES([
    src/Makefile
    src/version.c
    src/version.h
-   gentoo/media-gfx/niftyconf/niftyconf-9999.ebuild
-   debian/changelog
-   debian/control.tmpl
-   debian/rules.tmpl
-   debian/watch
+   dist/debian/changelog
+   dist/debian/control.tmpl
+   dist/debian/rules.tmpl
+   dist/debian/watch
 ])
 AC_OUTPUT
 
